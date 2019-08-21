@@ -1,3 +1,4 @@
+
 // Source: http://fairroot.gsi.de/?q=node/34
 //
 // The following parameters are needed:
@@ -2300,6 +2301,15 @@ STTelectronics     -2  28.0855  15.9994  14.  8.  2.20  1  2
 
 // ----------------- end STT
 
+// e12014 materials (196Pb fission) -----------
+
+// 1 bar H gas at 293k
+H_1bar		    1	1.007   1.   8.27e-5
+		    1	1	20.  0.001
+		    0
+
+// ------------- end e12014
+
 // ----- Caution with putting materials below that line -----
 // The next materials must specify additional parameters!
 
@@ -2310,7 +2320,7 @@ vacuum2             1 1.e-16 1.e-16 1.e-16
                     0.1 0.05 0.0001 0.00001
                     0
 
-heco2               3  4.0026  12.01  15.999  2.  6.  8.  3.2716e-4  0.9 0.0333 0.0667
+heco2               3  4.0026  12.01  15.999  2.  6.  8.  1.9e-4  0.95 0.015 0.035
                     1  1  20.  .001
                     99. 0.001    0.0001  0.0000001
                     0
@@ -2355,3 +2365,4 @@ He_1bar	            1	4.0026	2.	1.641e-4
                     1  1  20.  .001
                     99. 0.001    0.0001  0.0000001
                     0
+
