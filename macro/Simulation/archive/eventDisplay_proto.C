@@ -1,28 +1,16 @@
-/* Displays events for input fileName.root and parameter file fileNamePar.root
- * 
- * Adam Anthony 8/21/19
- */
-
-void eventDisplay(TString fileName="Tl195_sim")
+void eventDisplay_proto()
 {
-
-  //Form file names
-  TString  InputFile = TString::Format("./data/%s.root", fileName.Data());
-  TString  ParFile   = TString::Format("./data/%sPar.root", fileName.Data());
-  TString  OutFile   = TString::Format("./data/%sOut.root", fileName.Data());
-
+  //-----User Settings:-----------------------------------------------
+  TString  InputFile     ="./data/attpcsim_proto.root";
+  TString  ParFile       ="./data/attpcpar_proto.root";
+  TString  OutFile	 ="./data/attpctest_proto.root";
 
 
   // -----   Reconstruction run   -------------------------------------------
-  //FairRunAna *fRun= new FairRunAna();
-  //fRun->SetSource( new FairFileSource(InputFile) );
-  //fRun->SetSink( new FairFileSink(OutFile) );
-
   FairRunAna *fRun= new FairRunAna();
   fRun->SetInputFile(InputFile.Data());
   fRun->SetOutputFile(OutFile.Data());
 
-  
   FairRuntimeDb* rtdb = fRun->GetRuntimeDb();
   FairParRootFileIo* parInput1 = new FairParRootFileIo();
   parInput1->open(ParFile.Data());

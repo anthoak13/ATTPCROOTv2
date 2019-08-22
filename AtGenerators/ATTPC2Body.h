@@ -70,7 +70,7 @@ private:
  // Double_t fBeamMass;
  // Double_t fTargetMass;
   Bool_t fNoSolution;
-  std::vector<Double_t> fWm;                                 // Total mass
+  std::vector<Double_t> fWm;           // Total mass in MeV if the partical (from A + excitation energy)
  
  
 

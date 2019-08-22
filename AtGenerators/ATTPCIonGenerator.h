@@ -52,7 +52,7 @@ class ATTPCIonGenerator : public FairGenerator
    **@param vx,vy,vz  Vertex coordinates [cm]
    **/
   ATTPCIonGenerator(const char* name,Int_t z, Int_t a, Int_t q, Int_t mult, Double_t px, 
-		  Double_t py, Double_t pz, Double_t Ex, Double_t m, Double_t ener);
+		    Double_t py, Double_t pz, Double_t Ex, Double_t m, Double_t ener, Double_t eLoss = -1);
 
 
   ATTPCIonGenerator(const ATTPCIonGenerator&);
@@ -91,7 +91,8 @@ private:
   FairIon   *fIon;          // Pointer to the FairIon to be generated
   Int_t    fQ;		    // Electric charge [e]
   Int_t fNomEner;           
-
+  Double_t fMaxEnLoss;      // Maximum energy loss in material
+  
   Bool_t fBeamSpotIsSet;    // True if point beamspot is set
     
   ClassDef(ATTPCIonGenerator,1)

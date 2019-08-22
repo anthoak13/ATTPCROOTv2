@@ -12,17 +12,11 @@ void eventDisplay(TString fileName="Tl195_sim")
   TString  OutFile   = TString::Format("./data/%sOut.root", fileName.Data());
 
 
-
   // -----   Reconstruction run   -------------------------------------------
-  //FairRunAna *fRun= new FairRunAna();
-  //fRun->SetSource( new FairFileSource(InputFile) );
-  //fRun->SetSink( new FairFileSink(OutFile) );
-
   FairRunAna *fRun= new FairRunAna();
-  fRun->SetInputFile(InputFile.Data());
-  fRun->SetOutputFile(OutFile.Data());
+  fRun->SetSource( new FairFileSource(InputFile) );
+  fRun->SetSink( new FairFileSink(OutFile) );
 
-  
   FairRuntimeDb* rtdb = fRun->GetRuntimeDb();
   FairParRootFileIo* parInput1 = new FairParRootFileIo();
   parInput1->open(ParFile.Data());
