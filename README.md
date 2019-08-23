@@ -48,4 +48,8 @@ The folder `macro/Simulation` holds all of the ROOT macros for physics simulatio
 
 For every simulation, the detector must be created, and a geometry file set. A `FairPrimaryGenerator` must also exist. *This is responsible for managing all of the other generators.(True?)*
 
-Typically, an `ATTPCIonGenerator` is used to create the beam. It creates an ion within some beamspot and adds a track to the primary generator. It also generates a random number between 0 and the nominal beam energy (or some other specified value) that is stored in the global instance of `ATVertexPropagator` (gATVP). When the beam particle (TrackID = 0) looses energy equal to this random number, the simulation stops the track. *The next generator is then called, this is the reaction.*
+Typically, an `ATTPCIonGenerator` is used to create the beam. It creates an ion within some beamspot and adds a track to the primary generator. It also generates a random number between 0 and the nominal beam energy (or some other specified value) that is stored in the global instance of `ATVertexPropagator` (gATVP). When the beam particle (TrackID = 0) looses energy equal to this random number, the simulation stops the track. Due to the tracking of the TrackID and `aATVP`'s tracking of the current track number, tracks from the beam/reaction generator are only added when it is the right type of event (even = beam, odd = reaction).
+
+# Adding a class
+
+Classes, for example a new generator, can be added by created the header and source files. In that directory the `CMakeLists.txt` file must be edited to add any include directories needed as well as add the source file so the make file knows to compile it. In addition the class should be added the the local `GenLinkDef.h` file, if needed.

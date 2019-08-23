@@ -47,15 +47,14 @@ Int_t ATTPCFissionGeneratorV2::fgNIon = 0;
 
 ATTPCFissionGeneratorV2::ATTPCFissionGeneratorV2()
   :  fP1x(0.), fP1y(0.), fP1z(0.),
-    fP2x(0.), fP2y(0.), fP2z(0.),
-    fVx(0.), fVy(0.), fVz(0.)
+     fP2x(0.), fP2y(0.), fP2z(0.),
+     fVx(0.),  fVy(0.),  fVz(0.)
 {
-//  cout << "-W- ATTPCIonGenerator: "
-//      << " Please do not use the default constructor! " << endl;
+
 }
 
 // -----   Default constructor   ------------------------------------------
-ATTPCFissionGeneratorV2::ATTPCFissionGeneratorV2(const char* name,TString simfile):
+ATTPCFissionGeneratorV2::ATTPCFissionGeneratorV2(const char* name, TString simfile):
   fP1x(0.), fP1y(0.), fP1z(0.),
   fP2x(0.), fP2y(0.), fP2z(0.),
   fVx(0.), fVy(0.), fVz(0.)
@@ -119,15 +118,23 @@ ATTPCFissionGeneratorV2::ATTPCFissionGeneratorV2(const char* name,TString simfil
 
     TString simfilepath = dir + "/macro/Simulation/data/"+ simfile;
     TFile *f = new TFile(simfilepath.Data());
-    if(f->IsZombie()){
-    std::cout<<cRED<<" ATTPCFissionGenerator: No simulation file found! Check VMCWORKDIR variable. Exiting... "<<cNORMAL<<std::endl;
+    if(f->IsZombie())
+    {
+      
+      std::cout << cRED
+		<< " ATTPCFissionGenerator: No simulation file found! Check VMCWORKDIR variable. Exiting... "
+		<< cNORMAL << std::endl;
     delete f;
-    }else std::cout<<cGREEN<<" ATTPCFissionGenerator : Prototype geometry found in : "<<simfilepath.Data()<<cNORMAL<<std::endl;
+    
+    } else
+      std::cout << cGREEN
+		<< " ATTPCFissionGenerator : Prototype geometry found in : "
+		<< simfilepath.Data() << cNORMAL << std::endl;
 
 
     TTree* fTree = (TTree*) f-> Get("tree101");
     Int_t nEvents = fTree -> GetEntriesFast();
-    std::cout<<" Number of events : "<<nEvents<<std::endl;
+    std::cout << " Number of events : " << nEvents << std::endl;
     fTree->SetBranchAddress("Evnt",&Evnt);
     fTree->SetBranchAddress("Ntrack",&Ntrack);
     fTree->SetBranchAddress("Aout",Aout);
@@ -137,7 +144,7 @@ ATTPCFissionGeneratorV2::ATTPCFissionGeneratorV2(const char* name,TString simfil
     fTree->SetBranchAddress("fOutPz",fOutPz);
     pTree.push_back(fTree);
 
-    event=0;
+    event = 0;
 
 
 
@@ -153,7 +160,7 @@ ATTPCFissionGeneratorV2::~ATTPCFissionGeneratorV2()
 Bool_t ATTPCFissionGeneratorV2::ReadEvent(FairPrimaryGenerator* primGen) {
 
   fVx=0.,fVy=0.,fVz=0.;
-  Double_t uma=931.494028,mp=938.272013, c=29.972458;
+  Double_t uma = 931.494028, mp = 938.272013, c = 29.972458;
   Double_t px,py,pz;
 
   TDatabasePDG* fPDG = TDatabasePDG::Instance();
@@ -161,72 +168,50 @@ Bool_t ATTPCFissionGeneratorV2::ReadEvent(FairPrimaryGenerator* primGen) {
   pTree.at(0)->GetEntry(event);
 
 
-   AtStack* stack = (AtStack*) gMC->GetStack();
+  AtStack* stack = (AtStack*) gMC->GetStack();
 
-   //fIsDecay = kFALSE;
+  // Define event
+  Int_t     I = 0;
 
+  // Define track variables
+  Int_t    iPid   = -1;
+  Int_t    ia1      = 12;
+  Int_t    iz1      = 6;
+  Int_t pdgType = 0;
 
-   //fBeamEnergy = gATVP->GetEnergy();
-   //std::cout<<" -I- ATTPC2Body Residual energy  : "<<gATVP->GetEnergy()<<std::endl;
+  for(Int_t j = 0; j < Ntrack; j++)
+  {
 
-   //fPxBeam = gATVP->GetPx();
-   //fPyBeam = gATVP->GetPy();
-   //fPzBeam = gATVP->GetPz();
+    ia1 = Aout[j];
+    iz1 = Zout[j];
 
+    if(ia1 > 2 && iz1 > 2)
+    {
+      if ( iPid < 0 )
+      {
+	char ionName[20];
+	sprintf(ionName, "Ion_%d_%d", ia1, iz1);
+	TParticlePDG* part = fPDG->GetParticle(ionName);
 
-  //gATVP->SetRecoilE(Ene.at(1));
-  //gATVP->SetRecoilA(Ang.at(1)*180.0/TMath::Pi());
-  //gATVP->SetScatterE(Ene.at(0));
-  //gATVP->SetScatterA(Ang.at(0)*180.0/TMath::Pi());
+	if ( !part )
+	  std::cout << "ATTPCFissionGenerator::ReadEvent: Cannot find "
+		    << ionName << " in database!" << std::endl;
+	else
+	  pdgType = part->PdgCode();
+      } else
+	pdgType = ia1;  // "normal" particle
+      
+      px = fOutPx[j];
+      py = fOutPy[j];
+      pz = fOutPz[j];
 
-	     // Propagate the vertex of the previous event
+      primGen->AddTrack(pdgType, px, py, pz, fVx, fVy, fVz);
 
-			 //fVx = gATVP->GetVx();
-			 //fVy = gATVP->GetVy();
-			 //fVz = gATVP->GetVz();
-
-    //if(i>1 && gATVP->GetDecayEvtCnt() && pdgType!=1000500500 && fPType.at(i)=="Ion" ){// TODO: Dirty way to propagate only the products (0 and 1 are beam and target respectively)
-
-    // Define event
-    Int_t     I = 0;
-
-    // Define track variables
-    Int_t    iPid   = -1;
-    Int_t    ia1      = 12;
-    Int_t    iz1      = 6;
-    Int_t pdgType=0;
-
-    for(Int_t j=0;j<Ntrack;j++){
-
-        ia1=Aout[j];
-        iz1=Zout[j];
-
-    if(ia1>2 && iz1>2){
-     if ( iPid < 0 ) {
-  	  char ionName[20];
-  	  sprintf(ionName, "Ion_%d_%d", ia1, iz1);
-  	  TParticlePDG* part = fPDG->GetParticle(ionName);
-  	  if ( ! part ) {
-  	      std::cout << "ATTPCFissionGenerator::ReadEvent: Cannot find "
-  		  << ionName << " in database!" << std::endl;
-  	      //continue;
-  	  }
-  	  if(part) pdgType = part->PdgCode();
-        }
-        else pdgType = ia1;  // "normal" particle
-
-       px=fOutPx[j];
-       py=fOutPy[j];
-       pz=fOutPz[j];
-
-       primGen->AddTrack(pdgType, px, py, pz, fVx, fVy, fVz);
-
-     }
-
-   }
+    } //end if hat s and z > 2
+  } // end loop over number of tracks
 
 
-  std::cout<<cRED<<" Fission event : "<<event<<cNORMAL<<std::endl;
+  std::cout << cRED << " Fission event : " << event << cNORMAL << std::endl;
   event++;
 
   return kTRUE;

@@ -40,9 +40,9 @@ class ATTPCFissionGeneratorV2 : public FairGenerator
 private:
 
   static Int_t fgNIon;                      //! Number of the instance of this class
-  Int_t    fMult;                           // Multiplicity per event
-  Bool_t fIsDecay;
-  Bool_t fNoSolution;
+  Int_t        fMult;                       // Multiplicity per event
+  Bool_t       fIsDecay;
+  Bool_t       fNoSolution;
 
   std::vector<TTree*> pTree;                // vector to contain a pointer to the tree
   Double_t fVx, fVy, fVz;                   // Vertex coordinates [cm]
