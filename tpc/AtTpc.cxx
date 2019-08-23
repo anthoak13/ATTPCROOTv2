@@ -111,13 +111,15 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
     gMC->TrackPosition(fPosIn);
     gMC->TrackMomentum(fMomIn);
     fTrackID  = gMC->GetStack()->GetCurrentTrackNumber();
-    if(gATVP->GetBeamEvtCnt()%2 != 0 && fTrackID == 0 &&
+
+    //If it is the beam entering
+    if(gATVP->IsBeamEvt() && fTrackID == 0 &&
        (fVolName=="drift_volume" || fVolName=="cell") )
       InPos = fPosIn;
 
     // Position of the first hit of the beam in the TPC volume ( For tracking purposes in the TPC)
     Int_t VolumeID;
-    if(gATVP->GetBeamEvtCnt()%2 != 0)
+    if(gATVP->IsBeamEvt())
       LOG(INFO) << " ATTPC: Beam Event " <<FairLogger::endl;
     else
       LOG(INFO) << " ATTPC: Reaction/Decay Event " <<FairLogger::endl;
@@ -204,7 +206,9 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
       fPosOut.SetY(newpos[1]);
       fPosOut.SetZ(newpos[2]);
 
-      if( (fVolName=="drift_volume" || fVolName=="cell") && gATVP->GetBeamEvtCnt()%2!=0 && fTrackID==0 ){
+      if( (fVolName=="drift_volume" || fVolName=="cell") &&
+	  gATVP->IsBeamEvt() && fTrackID==0 )
+      {
 	gATVP->ResetVertex(); 
 	LOG(INFO)<<" - AtTpc Warning : Beam punched through the ATTPC. Reseting Vertex! "<<std::endl;
       }
@@ -215,7 +219,7 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
 
 
 
-  if( gATVP->GetBeamEvtCnt()%2 != 0 && fTrackID == 0)
+  if( gATVP->IsBeamEvt() && fTrackID == 0)
   { // We assume that the beam-like particle is fTrackID==0 since it is the first one added
     //  in the Primary Generator
 
@@ -241,7 +245,7 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
 	   AZ.second);
 
   }
-  else if(gATVP->GetDecayEvtCnt()%2 == 0 && fTrackID==1)
+  else if(!gATVP->IsBeamEvt() && fTrackID==1)
   {
 
     AddHit(fTrackID,
@@ -263,7 +267,7 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
 
 
 
-  }else if(gATVP->GetDecayEvtCnt()%2 == 0 && fTrackID == 2)
+  }else if(!gATVP->IsBeamEvt() && fTrackID == 2)
   {
 
     AddHit(fTrackID,
@@ -285,7 +289,7 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
 
 
   }
-  else if(gATVP->GetDecayEvtCnt()%2 == 0 && fTrackID==3)
+  else if(!gATVP->IsBeamEvt() && fTrackID==3)
   {
 
     AddHit(fTrackID,
@@ -307,7 +311,7 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
 
 
   }
-  else if(gATVP->GetDecayEvtCnt()%2==0 && fTrackID==4)
+  else if(!gATVP->IsBeamEvt() && fTrackID==4)
   {
     AddHit(fTrackID,
 	   fVolumeID,
@@ -325,7 +329,7 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
 	   AZ.first,
 	   AZ.second);
   }
-  else if(gATVP->GetDecayEvtCnt()%2==0 && fTrackID==5)
+  else if(!gATVP->IsBeamEvt() && fTrackID==5)
   {
     AddHit(fTrackID,
 	   fVolumeID,
@@ -344,8 +348,9 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
 	   AZ.second);
   }
 
+  //If we have hit the reaction point stop the track
   if(fELossAcc * 1000 > gATVP->GetRndELoss() &&
-     (gATVP->GetBeamEvtCnt() % 2 != 0 && fTrackID==0) &&
+     (gATVP->IsBeamEvt() && fTrackID==0) &&
      (fVolName=="drift_volume" || fVolName=="cell"))
   {
     LOG(INFO) << " Beam energy loss before reaction : " << fELossAcc*1000 << FairLogger::endl;
@@ -373,13 +378,7 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
   }
   // Increment number of AtTpc det points in TParticle
 
-
-
   stack->AddPoint(kAtTpc);
-
-
-
-
 
   /*std::cout<<" Current Track Number : "<<stack->GetCurrentTrackNumber()<<std::endl;
     stack->Print(1);
@@ -397,9 +396,6 @@ Bool_t  AtTpc::ProcessHits(FairVolume* vol)
 
   // ResetParameters();
   // Reset();
-
-
-
 
 
   return kTRUE;

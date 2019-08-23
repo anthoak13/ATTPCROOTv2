@@ -22,9 +22,6 @@ class ATVertexPropagator : public TObject
 
     ClassDef(ATVertexPropagator,1)
 
-   Int_t fGlobalEvtCnt;
-   Int_t fBeamEvtCnt;
-   Int_t fDecayEvtCnt;
 
    void SetVertex(Double_t vx,Double_t vy,Double_t vz,Double_t invx,Double_t invy,Double_t invz,Double_t px,Double_t py, Double_t pz, Double_t E);
    void SetBeamMass(Double_t m);
@@ -42,9 +39,6 @@ class ATVertexPropagator : public TObject
    void SetMassNum(Int_t mnum);
    void SetAtomicNum(Int_t anum);
 
-   Int_t GetGlobalEvtCnt();
-   Int_t GetBeamEvtCnt();
-   Int_t GetDecayEvtCnt();
    Double_t GetBeamMass();
    Double_t GetVx();
    Double_t GetVy();
@@ -69,16 +63,24 @@ class ATVertexPropagator : public TObject
    Int_t GetMassNum();
    Int_t GetAtomicNum();
 
+   //Tracking of event counters
+
+   Bool_t fBeamEvt = false;
+   Bool_t IsBeamEvt() { return fBeamEvt; }
+   void FlipBeamEvt()  { fBeamEvt = !fBeamEvt; }
+
+   Bool_t fDecayEvt = true;
+   Bool_t IsDecayEvt() { return fDecayEvt; }
+   void FlipDecayEvt()  { fDecayEvt = !fDecayEvt; }
 
 
-   void IncGlobalEvtCnt();
-   void IncBeamEvtCnt();
+   Int_t GetDecayEvtCnt();
    void IncDecayEvtCnt();
+
+   Int_t fDecayEvtCnt;
 
    void SetValidKine(Bool_t val);
    Bool_t GetValidKine();
-
-
 
    Double_t fVx;
    Double_t fVy;

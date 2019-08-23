@@ -179,6 +179,7 @@ Bool_t ATTPCIonGenerator::ReadEvent(FairPrimaryGenerator* primGen) {
  //   return kFALSE;
  // }
 
+  //Get the particle information
   TParticlePDG* thisPart = 
     TDatabasePDG::Instance()->GetParticle(fIon->GetName());
   if ( ! thisPart ) {
@@ -191,30 +192,32 @@ Bool_t ATTPCIonGenerator::ReadEvent(FairPrimaryGenerator* primGen) {
 
   //cout << "fR=" << fR << " fz=" << fz <<endl;
 
-  Phi= gRandom->Uniform(0,360)*TMath::DegToRad();
-  SpotR=gRandom->Uniform(0,fR);
+  //Generate where in the beamspot the particle comes from
+  Phi = gRandom->Uniform(0,360)*TMath::DegToRad();
+  SpotR = gRandom->Uniform(0,fR);
 
   if(fBeamSpotIsSet) {
     fVx   = SpotR*cos(Phi); //gRandom->Uniform(-fx,fx);
     fVy   = fOffset + SpotR*sin(Phi); //gRandom->Uniform(-fy,fy);
     fVz   = fz;
   }else
-    {
-      fVx=0.0;
-      fVy=0.0;
-      fVz=0.0;
-    }
-
+  {
+    fVx=0.0;
+    fVy=0.0;
+    fVz=0.0;
+  }
+  
   cout << "-I- FairIonGenerator: Generating " << fMult <<" with mass "<<thisPart->Mass() << " ions of type "
        << fIon->GetName() << " (PDG code " << pdgType << ")" << endl;
   cout << "    Momentum (" << fPx << ", " << fPy << ", " << fPz 
        << ") Gev from vertex (" << fVx << ", " << fVy
        << ", " << fVz << ") cm" << endl;
 
-  gATVP->IncBeamEvtCnt(); 
+  //Increment the beam evt count. If this is an odd number, then it is a beam-like event
+  //If it is an even number then it is a reaction type event
+  gATVP->FlipBeamEvt();
 
-
-  if(gATVP->GetBeamEvtCnt()%2!=0)
+  if(gATVP->IsBeamEvt())
   {
     Double_t Er = gRandom->Uniform(0.,fMaxEnLoss);
     gATVP->SetRndELoss(Er);
