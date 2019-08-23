@@ -226,7 +226,6 @@ Bool_t ATTPCFissionGeneratorV2::ReadEvent(FairPrimaryGenerator* primGen) {
    }
 
 
-  gATVP->IncDecayEvtCnt();  //TODO: Okay someone should put a more suitable name but we are on a hurry...
   std::cout<<cRED<<" Fission event : "<<event<<cNORMAL<<std::endl;
   event++;
 

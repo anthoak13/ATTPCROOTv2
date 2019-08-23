@@ -69,16 +69,6 @@ class ATVertexPropagator : public TObject
    Bool_t IsBeamEvt() { return fBeamEvt; }
    void FlipBeamEvt()  { fBeamEvt = !fBeamEvt; }
 
-   Bool_t fDecayEvt = true;
-   Bool_t IsDecayEvt() { return fDecayEvt; }
-   void FlipDecayEvt()  { fDecayEvt = !fDecayEvt; }
-
-
-   Int_t GetDecayEvtCnt();
-   void IncDecayEvtCnt();
-
-   Int_t fDecayEvtCnt;
-
    void SetValidKine(Bool_t val);
    Bool_t GetValidKine();
 

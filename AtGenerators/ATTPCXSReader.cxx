@@ -197,7 +197,7 @@ Bool_t ATTPCXSReader::ReadEvent(FairPrimaryGenerator* primGen) {
   fBeamEnergy = gATVP->GetEnergy();
   
   //Requires a non zero vertex energy and pre-generated Beam event (not punch thorugh)
-  if(gATVP->GetEnergy()>0 && gATVP->GetDecayEvtCnt()%2!=0){
+  if(gATVP->GetEnergy() > 0 && !gATVP->IsBeamEvt()){
     //proton parameters come from the XS PDF
     Double_t energyFromPDF, thetaFromPDF;
     fh_pdf->GetRandom2(energyFromPDF,thetaFromPDF);
@@ -298,7 +298,7 @@ Bool_t ATTPCXSReader::ReadEvent(FairPrimaryGenerator* primGen) {
       fVz = gATVP->GetVz();
       
       // TODO: Dirty way to propagate only the products (0 and 1 are beam and target respectively)
-      if(i>1 && gATVP->GetDecayEvtCnt() && pdgType!=1000500500 && fPType.at(i)=="Ion" ){
+      if(i>1 && !gATVP->IsBeamEvt() && pdgType!=1000500500 && fPType.at(i)=="Ion" ){
 	std::cout << "-I- FairIonGenerator: Generating ions of type "
 		  << fIon.at(i)->GetName() << " (PDG code " << pdgType << ")" << std::endl;
 	std::cout << "    Momentum (" << fPx.at(i) << ", " << fPy.at(i) << ", " << fPz.at(i)
@@ -306,7 +306,7 @@ Bool_t ATTPCXSReader::ReadEvent(FairPrimaryGenerator* primGen) {
 		  << ", " << fVz << ") cm" << std::endl;
 	primGen->AddTrack(pdgType, fPx.at(i), fPy.at(i), fPz.at(i), fVx, fVy, fVz);
       }
-      else if(i>1 && gATVP->GetDecayEvtCnt() && pdgType==2212 && fPType.at(i)=="Proton" ){
+      else if(i>1 && !gATVP->IsBeamEvt() && pdgType==2212 && fPType.at(i)=="Proton" ){
 	std::cout << "-I- FairIonGenerator: Generating ions of type "
 		  << fParticle.at(i)->GetName() << " (PDG code " << pdgType << ")" << std::endl;
 	std::cout << "    Momentum (" << fPx.at(i) << ", " << fPy.at(i) << ", " << fPz.at(i)
@@ -314,7 +314,7 @@ Bool_t ATTPCXSReader::ReadEvent(FairPrimaryGenerator* primGen) {
 		  << ", " << fVz << ") cm" << std::endl;
 	primGen->AddTrack(pdgType, fPx.at(i), fPy.at(i), fPz.at(i), fVx, fVy, fVz);	
       }
-      else if(i>1 && gATVP->GetDecayEvtCnt() && pdgType==2112 && fPType.at(i)=="Neutron" ){
+      else if(i>1 && !gATVP->IsBeamEvt() && pdgType==2112 && fPType.at(i)=="Neutron" ){
 	std::cout << "-I- FairIonGenerator: Generating ions of type "
 		  << fParticle.at(i)->GetName() << " (PDG code " << pdgType << ")" << std::endl;
 	std::cout << "    Momentum (" << fPx.at(i) << ", " << fPy.at(i) << ", " << fPz.at(i)
@@ -325,7 +325,6 @@ Bool_t ATTPCXSReader::ReadEvent(FairPrimaryGenerator* primGen) {
     }
   }//if residual energy > 0
  
-  gATVP->IncDecayEvtCnt();  //TODO: Okay someone should put a more suitable name but we are on a hurry...
  
   return kTRUE;
 }
