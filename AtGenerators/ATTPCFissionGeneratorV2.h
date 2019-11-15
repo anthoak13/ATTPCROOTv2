@@ -24,6 +24,8 @@ class ATTPCFissionGeneratorV2 : public FairGenerator
   /** Default constructor **/
   ATTPCFissionGeneratorV2();
 
+  //const char* name is unused
+  //simfile is the name of the file in /macro/Simulation/data/
   ATTPCFissionGeneratorV2(const char* name,TString simfile);
 
   ATTPCFissionGeneratorV2(const ATTPCFissionGeneratorV2&);
@@ -50,8 +52,8 @@ private:
   Double_t fP2x, fP2y, fP2z;                // Momentum components [GeV] per nucleon
   Int_t Evnt;
   Int_t event;
-  Int_t Aout[100],Zout[100],Ntrack;
-  Double_t fOutPx[100],fOutPy[100],fOutPz[100];
+  Int_t Aout[100], Zout[100], Ntrack;
+  Double_t fOutPx[100], fOutPy[100], fOutPz[100];
 
 
   ClassDef(ATTPCFissionGeneratorV2,1)

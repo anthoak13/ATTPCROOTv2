@@ -51,19 +51,7 @@ void Tl195_sim(Int_t nEvents = 10, TString mcEngine = "TGeant4")
   //ATTPC->SetModifyGeometry(kTRUE);
   run->AddModule(ATTPC);
 
- // ------------------------------------------------------------------------
-
-  
-  // -----   Magnetic field   -------------------------------------------
-  // Constant Field
-  /*  AtConstField  *fMagField = new AtConstField();
-    fMagField->SetField(0., 0. ,0. ); // values are in kG
-    fMagField->SetFieldRegion(-50, 50,-50, 50, -10,230); // values are in cm
-    //  (xmin,xmax,ymin,ymax,zmin,zmax)
-    run->SetField(fMagField);*/
-  // --------------------------------------------------------------------
-
-
+  // ------------------------------------------------------------------------
 
   // -----   Create PrimaryGenerator   --------------------------------------
   //This is what everyother generator is added to
@@ -81,6 +69,7 @@ void Tl195_sim(Int_t nEvents = 10, TString mcEngine = "TGeant4")
   
   Double_t px = 0.000/a;    // X-Momentum / per nucleon!!!!!!
   Double_t py = 0.000/a;    // Y-Momentum / per nucleon!!!!!!
+  // 70 MeV / nucleon
   Double_t pz = 71702.6/a;  // Z-Momentum / per nucleon!!!!!!
 
   Double_t BExcEner = 0.0;
@@ -92,6 +81,8 @@ void Tl195_sim(Int_t nEvents = 10, TString mcEngine = "TGeant4")
   // (Tracking energy is determined with momentum).
   // TODO: Change this to the energy after the IC
   Double_t NomEnergy = 70.0*a;
+
+  //This is for what?
   Double_t eLoss = 100;
 
   //Create the ion generator
@@ -186,6 +177,7 @@ void Tl195_sim(Int_t nEvents = 10, TString mcEngine = "TGeant4")
 				       ResEner, ThetaMinCMS, ThetaMaxCMS);
   primGen->AddGenerator(TwoBody);
 
+  //ATTPCFissionGeneratorV3 *fissionGen = new ATTPCFissionGeneratorV3("FissionGen", "/macro/simulation/Pb196.txt");
 
   run->SetGenerator(primGen);
 
