@@ -9,9 +9,20 @@
  *
  */
 
+
+
 #include "FairGenerator.h"
 #include "FairIon.h"
+#include "FairLogger.h"
 #include "FairParticle.h"
+#include "FairPrimaryGenerator.h"
+#include "FairRunSim.h"
+
+#include "TDatabasePDG.h"
+#include "TVirtualMC.h" //For gMC
+
+#include "AtStack.h"
+#include "ATVertexPropagator.h"
 
 #include <cstdlib>
 #include <fstream>
@@ -27,8 +38,10 @@ public:
   ATTPCFissionGeneratorV3();
 
   // Generator that takes in a file that specifies the expected distribution of
-  // fission particles. This file name is passed as the title for TNamed
-  ATTPCFissionGeneratorV3(const char *name, TString fissionDistro);
+  // fission particles as a fully realized path. The ion list should have no repeated
+  // entries.
+  // The name is passed as the title for TNamed
+  ATTPCFissionGeneratorV3(const char *name, TString ionList, TString fissionDistro);
 
   // Deep copy constructor
   ATTPCFissionGeneratorV3(ATTPCFissionGeneratorV3 &copy);
@@ -41,13 +54,21 @@ public:
 
   // Internal variables for tracking the physics 
 private:
+  //Tree
+  TTree *fissionEvents;
   //Variables read from the file for each event
-  Int_t fMult;
-  std::vector<FairIon*> fIons;
-  std::vector<FairParticle*> fParticles;
+  Int_t nTracks;
+  Int_t Aout[100];
+  Int_t Zout[100];
+  Double_t pX[100];
+  Double_t pY[100];
+  Double_t pZ[100];
+  Double_t pT[100];
   
+  Int_t nEvents; // Number of unique fission simualtion events
+  Int_t event;   // Track what event we are at. Reset to 0 if we flow over the number of events in the tree
   
-  ClassDef(ATTPCFissionGeneratorV3, 1)
+  ClassDef(ATTPCFissionGeneratorV3, 2)
     
 };
 

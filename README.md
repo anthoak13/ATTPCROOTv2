@@ -53,3 +53,42 @@ Typically, an `ATTPCIonGenerator` is used to create the beam. It creates an ion 
 # Adding a class
 
 Classes, for example a new generator, can be added by created the header and source files. In that directory the `CMakeLists.txt` file must be edited to add any include directories needed as well as add the source file so the make file knows to compile it. In addition the class should be added the the local `GenLinkDef.h` file, if needed.
+
+# Thoughts on design
+ATTPCROOT is task based and there are two main input streams of data. One is from simulations, the other experimental data. The two streams come together at the level of waveforms on the pads, either simulated or real. From then on the analysis is identiacal.
+
+## Simulation Tasks
+
+### FairRunSim
+Physics (Primary Generators/physics lists) -> MC Tracks
+
+### FairRunAna
+
+#### ATClusterize task
+MC Tracks -> e- locations along track (TClonesArray of ATSimulationPoints)
+
+#### ATPulseTask
+e- locations along track (TClonesArray of ATSimulationPoints) -> waveform on pads (TClonesArray of ATRawEvent)
+
+## Data Tasks
+
+### FairRunAna
+
+#### HDFParserTask
+HDF5 file -> waveform on pads (TClonesArray of ATRawEvent)
+
+## Analysis Tasks
+
+### FairRunAna
+
+#### ATPSATask
+There are many diffrent options for this task depending on how you want to treat the wavefrom (the standard ATTPC version is ATPSASimple2), but in general:
+
+Waveform on pads (TClonesArray of ATRawEvent) -> record of hits, 3D position and charge in tpc, (ATHit) on pad (TClonesArray of ATEvent)
+
+#### ATPRATask
+Has options for RANSAC, Hierarchical Clustering, and Houghs algorithms for track finding.
+
+record of hits (TClonesArray of AtEvent) -> record of reconstructed tracks (ATTrack) (TClonesArray of ATPatternEvent)
+
+#### AT
