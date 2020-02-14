@@ -60,23 +60,35 @@ ATTPCROOT is task based and there are two main input streams of data. One is fro
 ## Simulation Tasks
 
 ### FairRunSim
-<- Physics (Primary Generators/physics lists)
--> MC Tracks
+Physics (Primary Generators/physics lists) -> MC Tracks
 
 ### FairRunAna
 
 #### ATClusterize task
-<- MC Tracks
--> e- locations along track (TClonesArray of ATSimulationPoints)
+MC Tracks -> e- locations along track (TClonesArray of ATSimulationPoints)
 
 #### ATPulseTask
-<- e- locations along track (TClonesArray of ATSimulationPoints)
--> waveform on pads (TClonesArray of ATRawEvent)
+e- locations along track (TClonesArray of ATSimulationPoints) -> waveform on pads (TClonesArray of ATRawEvent)
 
 ## Data Tasks
 
 ### FairRunAna
 
 #### HDFParserTask
-<- HDF5 file
--> waveform on pads (TClonesArray of ATRawEvent)
+HDF5 file -> waveform on pads (TClonesArray of ATRawEvent)
+
+## Analysis Tasks
+
+### FairRunAna
+
+#### ATPSATask
+There are many diffrent options for this task depending on how you want to treat the wavefrom (the standard ATTPC version is ATPSASimple2), but in general:
+
+Waveform on pads (TClonesArray of ATRawEvent) -> record of hits, 3D position and charge in tpc, (ATHit) on pad (TClonesArray of ATEvent)
+
+#### ATPRATask
+Has options for RANSAC, Hierarchical Clustering, and Houghs algorithms for track finding.
+
+record of hits (TClonesArray of AtEvent) -> record of reconstructed tracks (ATTrack) (TClonesArray of ATPatternEvent)
+
+#### AT
