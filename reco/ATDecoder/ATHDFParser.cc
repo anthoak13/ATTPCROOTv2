@@ -151,11 +151,17 @@ std::vector<int64_t> ATHDFParser::get_header(std::string headerName)
 
   _dataset = std::get<0>(dataset_dims);
 
-  int64_t  data[2];
+
+  //Get the length of the header
+  auto len = std::get<1>(dataset_dims).at(0);
+    
+  int64_t  *data = new int64_t[len];
   auto status = H5Dread(_dataset, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
 
   //Add read data to the vector and return it
-  retVec.push_back(data[0]);   retVec.push_back(data[1]);
+  for ( int i = 0; i < len; ++i)
+    retVec.push_back(data[i]);
+  
   return retVec;
   
 }

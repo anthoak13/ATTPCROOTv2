@@ -29,6 +29,8 @@ public:
       };
   hid_t open_file(char const* file, IO_MODE mode);
   std::tuple<hid_t, hsize_t> open_group(hid_t fileId, char const* group);
+
+  //Returns the id of the dataspace and the dimesnions in the vector
   std::tuple<hid_t, std::vector<hsize_t> > open_dataset(hid_t locId, char const* dataset);
   void close_file(hid_t file);
   void close_group(hid_t group);

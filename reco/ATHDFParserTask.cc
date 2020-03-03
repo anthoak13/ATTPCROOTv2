@@ -21,11 +21,11 @@ ATHDFParserTask::ATHDFParserTask():
   fRawEventArray = new TClonesArray("ATRawEvent");
   fEventID = 0;
   fIniEventID = 0;
+  fTimestampIndex = 1;
   fRawEvent = new ATRawEvent();
   
   kOpt = 0;
-
-
+  
   fIsProtoGeoSet = kFALSE;
   fIsProtoMapSet = kFALSE;
   if(kOpt==0) fAtMapPtr = new AtTpcMap();
@@ -43,10 +43,14 @@ ATHDFParserTask::ATHDFParserTask(Int_t opt):
   fRawEventArray = new TClonesArray("ATRawEvent");
   fEventID = 0;
   fIniEventID = 0;
+  fTimestampIndex = 1;
   fRawEvent = new ATRawEvent();
+
   kOpt = opt;
+
   fIsProtoGeoSet = kFALSE;
   fIsProtoMapSet = kFALSE;
+
   if(kOpt==0) fAtMapPtr = new AtTpcMap();
   else if(kOpt==1) fAtMapPtr = new AtTpcProtoMap();
   else std::cout << "== ATHDFParserTask Initialization Error : Option not found. Current available options: ATTPC Map 0 / Prototype Map 1" << std::endl;
@@ -199,6 +203,8 @@ void ATHDFParserTask::Exec(Option_t *opt)
   fRawEvent->Clear();
 
   std::string event_name = HDFParser->get_event_name(fEventID);
+
+  std::cout << "Trying to unpack: " << event_name <<std::endl;
   
   if(event_name.find("data") != std::string::npos || fIsOldFormat == kTRUE)
   {
@@ -206,17 +212,16 @@ void ATHDFParserTask::Exec(Option_t *opt)
     std::string header_name;
     std::getline(std::stringstream(event_name), header_name, '_');
     header_name += "_header";
-
+    
     auto header = HDFParser->get_header(header_name);
     
     fRawEvent->SetEventID(header.at(0));
-    fRawEvent->SetTimestamp(header.at(1));
+    fRawEvent->SetTimestamp(header.at(fTimestampIndex));
 
-    std::cout <<  fRawEvent->GetTimestamp() << std::endl;
     std::size_t npads = HDFParser->n_pads(event_name);
-
-//    std::cout << " Event : " << fEventID << " Event name " << event_name << " with header "
-//	      << header_name << " and " << npads << " ch with " << n.at(0) << " " << n.at(1) << std::endl;
+    
+    std::cout << " Event : " << fRawEvent->GetEventID() << " Event name " << event_name << " with timestamp "
+	      << fRawEvent->GetTimestamp() << std::endl;
     
     for(auto ipad = 0; ipad < npads; ++ipad)
     {
