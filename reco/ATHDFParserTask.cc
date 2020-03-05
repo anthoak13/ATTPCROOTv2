@@ -204,7 +204,10 @@ void ATHDFParserTask::Exec(Option_t *opt)
 
   std::string event_name = HDFParser->get_event_name(fEventID);
 
-  std::cout << "Trying to unpack: " << event_name <<std::endl;
+  while(event_name.find("header") != std::string::npos && fIsOldFormat == kFALSE)
+    event_name = HDFParser->get_event_name(++fEventID);
+  
+  //std::cout << "Trying to unpack: " << event_name <<std::endl;
   
   if(event_name.find("data") != std::string::npos || fIsOldFormat == kTRUE)
   {
@@ -220,8 +223,8 @@ void ATHDFParserTask::Exec(Option_t *opt)
 
     std::size_t npads = HDFParser->n_pads(event_name);
     
-    std::cout << " Event : " << fRawEvent->GetEventID() << " Event name " << event_name << " with timestamp "
-	      << fRawEvent->GetTimestamp() << std::endl;
+    // std::cout << " Event : " << fRawEvent->GetEventID() << " Event name " << event_name
+    //<< " with timestamp " << fRawEvent->GetTimestamp() << std::endl;
     
     for(auto ipad = 0; ipad < npads; ++ipad)
     {

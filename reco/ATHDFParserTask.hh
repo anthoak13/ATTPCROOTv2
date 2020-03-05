@@ -48,7 +48,7 @@ public:
 
   void SetTimestampIndex(int index) { fTimestampIndex = index; };
   int GetTimestampIndex()    { return fTimestampIndex; };
-
+  std::size_t GetNumEvents() { return fNumEvents; };
   
   virtual InitStatus Init();
   virtual void SetParContainers();
