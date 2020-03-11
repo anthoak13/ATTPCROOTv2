@@ -47,7 +47,7 @@ public:
   std::pair<bool,std::string> FindAuxChannel(uint32_t hash);
 
   void SetTimestampIndex(int index) { fTimestampIndex = index; };
-  int GetTimestampIndex()    { return fTimestampIndex; };
+  int  GetTimestampIndex()    { return fTimestampIndex; };
   std::size_t GetNumEvents() { return fNumEvents; };
   
   virtual InitStatus Init();

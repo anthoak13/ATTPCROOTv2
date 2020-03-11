@@ -168,16 +168,17 @@ InitStatus ATHDFParserTask::Init()
   HDFParser = new ATHDFParser();
   fNumEvents = HDFParser->open(fFileName.c_str());
   std::cout<<" Number of events : " << fNumEvents << std::endl;
-  //fEventsByName = HDFParser->get_events_by_name();
-
-
-  if(fIniEventID > fNumEvents)
+  
+  auto numUniqueEvents = HDFParser->getFirstEvent() - HDFParser->getLastEvent();
+  
+  if(fIniEventID > numUniqueEvents)
   {
-    fLogger -> Fatal(MESSAGE_ORIGIN, "Exceeded the maximum event number");
-     return kERROR;
-  } else
-    fEventID=fIniEventID;
-
+    fLogger -> Fatal(MESSAGE_ORIGIN, "Exceeded the valid range of event numbers");
+    return kERROR;
+  }
+  else
+    fEventID = fIniEventID + HDFParser->getFirstEvent();
+  
   ioMan -> Register("ATRawEvent", "ATTPC", fRawEventArray, fIsPersistence);
   return kSUCCESS;
 }
@@ -202,100 +203,95 @@ void ATHDFParserTask::Exec(Option_t *opt)
   fRawEventArray -> Delete();
   fRawEvent->Clear();
 
-  std::string event_name = HDFParser->get_event_name(fEventID);
-
-  while(event_name.find("header") != std::string::npos && fIsOldFormat == kFALSE)
-    event_name = HDFParser->get_event_name(++fEventID);
-  
-  //std::cout << "Trying to unpack: " << event_name <<std::endl;
-  
-  if(event_name.find("data") != std::string::npos || fIsOldFormat == kTRUE)
+  if (fEventID > HDFParser->getLastEvent())
   {
-    //Construct the name of the header event
-    std::string header_name;
-    std::getline(std::stringstream(event_name), header_name, '_');
-    header_name += "_header";
-    
-    auto header = HDFParser->get_header(header_name);
-    
-    fRawEvent->SetEventID(header.at(0));
-    fRawEvent->SetTimestamp(header.at(fTimestampIndex));
+    fLogger -> Fatal(MESSAGE_ORIGIN, "Tried to unpack an event that was too large!");
+    return;
+  }
+  
+  //Get the names of the header and data
+  TString event_name  = TString::Format("evt%d_data", fEventID);
+  TString header_name = TString::Format("evt%d_header", fEventID);
 
-    std::size_t npads = HDFParser->n_pads(event_name);
+  auto header = HDFParser->get_header(header_name.Data());
+  
+  fRawEvent->SetEventID(header.at(0));
+  fRawEvent->SetTimestamp(header.at(fTimestampIndex));
+
+  std::size_t npads = HDFParser->n_pads(event_name.Data());
     
-    // std::cout << " Event : " << fRawEvent->GetEventID() << " Event name " << event_name
-    //<< " with timestamp " << fRawEvent->GetTimestamp() << std::endl;
+  //std::cout << "Found at " << fEventID << " event " << fRawEvent->GetEventID() << " Event name " << event_name
+  //<< " with timestamp " << fRawEvent->GetTimestamp() << std::endl;
     
-    for(auto ipad = 0; ipad < npads; ++ipad)
+  for(auto ipad = 0; ipad < npads; ++ipad)
+  {
+      
+    std::vector<int16_t> rawadc = HDFParser->pad_raw_data(ipad);
+      
+    int iCobo = rawadc[0];
+    int iAsad = rawadc[1];
+    int iAget = rawadc[2];
+    int iCh   = rawadc[3];
+    int iPad  = rawadc[4];
+
+    std::vector<int> PadRef = {iCobo,iAsad,iAget,iCh};
+    int PadRefNum = fAtMapPtr->GetPadNum(PadRef);
+
+    //std::cout<<iCobo<<" "<<iAsad<<" "<<iAget<<" "<<iCh<<" "<<iPad<<"  "<<PadRefNum<<"\n";
+
+    std::vector<Float_t> PadCenterCoord;
+    PadCenterCoord.reserve(2);
+    PadCenterCoord = fAtMapPtr->CalcPadCenter(PadRefNum);
+
+    ATPad *pad = new ATPad(PadRefNum);
+    pad->SetPadXCoord(PadCenterCoord[0]);
+    pad->SetPadYCoord(PadCenterCoord[1]);
+
+    if(iPad == -1)
     {
-      
-      std::vector<int16_t> rawadc = HDFParser->pad_raw_data(ipad);
-      
-      int iCobo = rawadc[0];
-      int iAsad = rawadc[1];
-      int iAget = rawadc[2];
-      int iCh   = rawadc[3];
-      int iPad  = rawadc[4];
+      auto hash  = CalculateHash(uint32_t(iCobo),uint32_t(iAsad),uint32_t(iAget),uint32_t(iCh)); 
+      std::pair<bool,std::string> isAux = FindAuxChannel(hash);
 
-      std::vector<int> PadRef = {iCobo,iAsad,iAget,iCh};
-      int PadRefNum = fAtMapPtr->GetPadNum(PadRef);
-
-      //std::cout<<iCobo<<" "<<iAsad<<" "<<iAget<<" "<<iCh<<" "<<iPad<<"  "<<PadRefNum<<"\n";
-
-      std::vector<Float_t> PadCenterCoord;
-      PadCenterCoord.reserve(2);
-      PadCenterCoord = fAtMapPtr->CalcPadCenter(PadRefNum);
-
-      ATPad *pad = new ATPad(PadRefNum);
-      pad->SetPadXCoord(PadCenterCoord[0]);
-      pad->SetPadYCoord(PadCenterCoord[1]);
-
-      if(iPad == -1)
-      {
-	auto hash  = CalculateHash(uint32_t(iCobo),uint32_t(iAsad),uint32_t(iAget),uint32_t(iCh)); 
-	std::pair<bool,std::string> isAux = FindAuxChannel(hash);
-
-	if(isAux.first){
-	  pad->SetIsAux(true);
-	  pad->SetAuxName(isAux.second);
-	}
-
+      if(isAux.first){
+	pad->SetIsAux(true);
+	pad->SetAuxName(isAux.second);
       }
 
-      //std::cout<<PadCenterCoord[0]<<" "<<PadCenterCoord[1]<<"\n";
+    } //end if aux pad
+
+    //std::cout<<PadCenterCoord[0]<<" "<<PadCenterCoord[1]<<"\n";
 
 
-      //Baseline subtraction
-      double adc[512] = {0};
-      double baseline =0;
+    //Baseline subtraction
+    double adc[512] = {0};
+    double baseline =0;
 
-      for (Int_t iTb = 5; iTb < 25; iTb++)
-	baseline+=rawadc[iTb];
+    for (Int_t iTb = 5; iTb < 25; iTb++)
+      baseline+=rawadc[iTb];
 
-      baseline/=20.0;
+    baseline/=20.0;
 
-      for (Int_t iTb = 0; iTb < 512; iTb++){
+    for (Int_t iTb = 0; iTb < 512; iTb++){
       				  
-	pad -> SetRawADC(iTb, rawadc.at(iTb+5));
-	adc[iTb] = (double)rawadc[iTb+5] - baseline;
-	//std::cout<<" iTb "<<iTb<<" rawadc "<<rawadc[iTb]<<"	"<<adc[iTb]<<"\n";
-	pad -> SetADC(iTb, adc[iTb]);
-      }          
+      pad -> SetRawADC(iTb, rawadc.at(iTb+5));
+      adc[iTb] = (double)rawadc[iTb+5] - baseline;
+      //std::cout<<" iTb "<<iTb<<" rawadc "<<rawadc[iTb]<<"	"<<adc[iTb]<<"\n";
+      pad -> SetADC(iTb, adc[iTb]);
+    }          
 
-      pad -> SetPedestalSubtracted(kTRUE);
+    pad -> SetPedestalSubtracted(kTRUE);
             
-      fRawEvent -> SetIsGood(kTRUE);
-      fRawEvent -> SetPad(pad); 
+    fRawEvent -> SetIsGood(kTRUE);
+    fRawEvent -> SetPad(pad); 
       
       
-    }// End loop over pads
+  }// End loop over pads
       
-    new ((*fRawEventArray)[0]) ATRawEvent(fRawEvent);
+  new ((*fRawEventArray)[0]) ATRawEvent(fRawEvent);
     
-  } //End if statment for if it is data or header
-
+  
   ++fEventID;
-
+  
 }
 
 
