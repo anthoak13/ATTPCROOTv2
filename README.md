@@ -95,7 +95,7 @@ e- locations along track (TClonesArray of ATSimulationPoints) -> waveform on pad
 
 #### HDFParserTask
 HDF5 file -> waveform on pads (TClonesArray of ATRawEvent)
-
+Output is named: "ATRawEvent"
 ## Analysis Tasks
 
 ### FairRunAna
@@ -104,6 +104,7 @@ HDF5 file -> waveform on pads (TClonesArray of ATRawEvent)
 There are many diffrent options for this task depending on how you want to treat the wavefrom (the standard ATTPC version is ATPSASimple2), but in general:
 
 Waveform on pads (TClonesArray of ATRawEvent) -> record of hits, 3D position and charge in tpc, (ATHit) on pad (TClonesArray of ATEvent)
+Output is named: "ATEventH"
 
 #### ATPRATask
 Has options for RANSAC, Hierarchical Clustering, and Houghs algorithms for track finding.
