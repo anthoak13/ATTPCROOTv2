@@ -4,19 +4,9 @@
 #define cGREEN "\033[1;32m"
 
 #include <iostream>
-
-/*#include "FairLogger.h"
-#include "FairRunAna.h"
-#include "FairRuntimeDb.h"
-#include "FairParAsciiFileIo.h"
-
-#include "ATHDFParserTask.hh"
-#include "ATPSATask.hh"
-*/
-
 using namespace std;
 
-void run_unpack_adam(std::string dataFile = "/mnt/user/e12014/attpc/run_0309.h5",
+void run_unpack_adam(std::string dataFile = "/mnt/user/e12014/attpc/run_0260.h5",
 		     TString parameterFile = "ATTPC.e15250.par", TString mappath="")
 {
 
@@ -28,7 +18,6 @@ void run_unpack_adam(std::string dataFile = "/mnt/user/e12014/attpc/run_0309.h5"
   timer.Start();
  // ------------------------------------------------------------------------
 
-  gSystem->Load("libATdigi");
   gSystem->Load("libXMLParser.so");
 
   // -----------------------------------------------------------------
@@ -83,21 +72,21 @@ void run_unpack_adam(std::string dataFile = "/mnt/user/e12014/attpc/run_0309.h5"
   psaTask -> SetPersistence(kTRUE);
   psaTask -> SetThreshold(10);
   psaTask -> SetPSAMode(1); //NB: 1 is ATTPC - 2 is pATTPC - 3 Filter for ATTPC - 4: Full Time Buckets
-  psaTask -> SetMaxFinder();
+    
   
   run -> AddTask(HDFParserTask);
-  run -> AddTask(psaTask);
+  //run -> AddTask(psaTask);
 
   run -> Init();
-  auto numEvents = HDFParserTask->GetNumEvents()/2;
+  auto numEvents = HDFParserTask->GetNumEvents();
   
-  std::cout << "There are " << numEvents << " events." << std::endl;
+  std::cout << "There are " << numEvents << "Events." << std::endl;
   
   //Only look at first 10 events
   //run->Run(0,10);
 
   // Unpack all events
-  run->Run(0,numEvents);
+  run->Run(0,numEvents/2);
 
 
 

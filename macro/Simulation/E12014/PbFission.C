@@ -27,6 +27,7 @@ void PbFission(Int_t nEvents = 10, TString mcEngine = "TGeant4")
 
   // -----   Create simulation run   ----------------------------------------
   FairRunSim* run = new FairRunSim();
+  FairRunAna* fRun = new FairRunAna();
   run->SetName(mcEngine);              // Transport engine
   run->SetOutputFile(outFile);          // Output file
   FairRuntimeDb* rtdb = run->GetRuntimeDb();
@@ -85,7 +86,6 @@ void PbFission(Int_t nEvents = 10, TString mcEngine = "TGeant4")
 
   // Nominal Energy of the beam: Only used for cross section calculation
   // (Tracking energy is determined with momentum).
-  // TODO: Change this to the energy after the IC
   Double_t NomEnergy = 70.0*a;
 
   //E loss until reaction occurs
