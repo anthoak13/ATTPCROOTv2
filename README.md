@@ -50,6 +50,25 @@ For every simulation, the detector must be created, and a geometry file set. A `
 
 Typically, an `ATTPCIonGenerator` is used to create the beam. It creates an ion within some beamspot and adds a track to the primary generator. It also generates a random number between 0 and the nominal beam energy (or some other specified value) that is stored in the global instance of `ATVertexPropagator` (gATVP). When the beam particle (TrackID = 0) looses energy equal to this random number, the simulation stops the track. Due to the tracking of the TrackID and `aATVP`'s tracking of the current track number, tracks from the beam/reaction generator are only added when it is the right type of event (even = beam, odd = reaction).
 
+#### ATFissionGeneratorV3
+
+This class takes two input files. One is a space seperated file that contains a list of every ion used by that fission simulation so they can be registered for the run. The other is root file containing a tree with the simulation data for the fission fragments int he CM frame. It has the structure:
+
+trEvents ->
+ - nTracks /I
+ - Aout[nTracks] /I
+ - Zout[nTracks] /I
+ - pX[nTracks] /D in units MeV/c
+ - pY[nTracks] /D in units MeV/c
+ - pZ[nTracks] /D in units MeV/c
+ - pT[nTracks] /D in units MeV/c
+
+
+During a run, the generator will boost the fragments before generating the particles to the beam momentum. It pulls the beam momentum from the global vertex propogator. 
+
+There is a macro for generating these input files in [macro/Simulation/E12014](macro/Simulation/E12014).
+
+
 # Adding a class
 
 Classes, for example a new generator, can be added by created the header and source files. In that directory the `CMakeLists.txt` file must be edited to add any include directories needed as well as add the source file so the make file knows to compile it. In addition the class should be added the the local `GenLinkDef.h` file, if needed.
@@ -76,7 +95,7 @@ e- locations along track (TClonesArray of ATSimulationPoints) -> waveform on pad
 
 #### HDFParserTask
 HDF5 file -> waveform on pads (TClonesArray of ATRawEvent)
-
+Output is named: "ATRawEvent"
 ## Analysis Tasks
 
 ### FairRunAna
@@ -85,10 +104,10 @@ HDF5 file -> waveform on pads (TClonesArray of ATRawEvent)
 There are many diffrent options for this task depending on how you want to treat the wavefrom (the standard ATTPC version is ATPSASimple2), but in general:
 
 Waveform on pads (TClonesArray of ATRawEvent) -> record of hits, 3D position and charge in tpc, (ATHit) on pad (TClonesArray of ATEvent)
+Output is named: "ATEventH"
 
 #### ATPRATask
 Has options for RANSAC, Hierarchical Clustering, and Houghs algorithms for track finding.
 
 record of hits (TClonesArray of AtEvent) -> record of reconstructed tracks (ATTrack) (TClonesArray of ATPatternEvent)
 
-#### AT
