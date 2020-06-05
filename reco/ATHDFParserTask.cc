@@ -23,7 +23,8 @@ ATHDFParserTask::ATHDFParserTask():
   fIniEventID = 0;
   fTimestampIndex = 1;
   fRawEvent = new ATRawEvent();
-  
+  fIsOldFormat  = kFALSE;
+  fIsBaseLineSubtraction = kFALSE;  
   kOpt = 0;
   
   fIsProtoGeoSet = kFALSE;
@@ -40,6 +41,7 @@ ATHDFParserTask::ATHDFParserTask(Int_t opt):
   fLogger = FairLogger::GetLogger();
   fIsPersistence = kFALSE;
   fIsOldFormat  = kFALSE;
+  fIsBaseLineSubtraction = kFALSE;
   fRawEventArray = new TClonesArray("ATRawEvent");
   fEventID = 0;
   fIniEventID = 0;
@@ -71,6 +73,13 @@ Bool_t  ATHDFParserTask::SetOldFormat(Bool_t oldF)
   fIsOldFormat = oldF;
   return kTRUE; 
 }
+
+Bool_t ATHDFParserTask::SetBaseLineSubtraction(Bool_t value)
+{
+  fIsBaseLineSubtraction = value;
+  return kTRUE;
+}
+
 
 bool   ATHDFParserTask::SetAuxChannel(uint32_t hash, std::string channel_name)
 {
@@ -203,6 +212,7 @@ void ATHDFParserTask::Exec(Option_t *opt)
   fRawEventArray -> Delete();
   fRawEvent->Clear();
 
+  
   if (fEventID > HDFParser->getLastEvent())
   {
     fLogger -> Fatal(MESSAGE_ORIGIN, "Tried to unpack an event that was too large!");
@@ -246,50 +256,50 @@ void ATHDFParserTask::Exec(Option_t *opt)
     ATPad *pad = new ATPad(PadRefNum);
     pad->SetPadXCoord(PadCenterCoord[0]);
     pad->SetPadYCoord(PadCenterCoord[1]);
-
-    if(iPad == -1)
+    
+    auto hash  = CalculateHash(uint32_t(iCobo),uint32_t(iAsad),uint32_t(iAget),uint32_t(iCh)); 
+    std::pair<bool,std::string> isAux = FindAuxChannel(hash);
+    
+    if(isAux.first)
     {
-      auto hash  = CalculateHash(uint32_t(iCobo),uint32_t(iAsad),uint32_t(iAget),uint32_t(iCh)); 
-      std::pair<bool,std::string> isAux = FindAuxChannel(hash);
-
-      if(isAux.first){
-	pad->SetIsAux(true);
-	pad->SetAuxName(isAux.second);
-      }
-
-    } //end if aux pad
-
+      pad->SetIsAux(true);
+      pad->SetAuxName(isAux.second);
+    }
+    
+    
     //std::cout<<PadCenterCoord[0]<<" "<<PadCenterCoord[1]<<"\n";
-
-
+    
     //Baseline subtraction
     double adc[512] = {0};
     double baseline =0;
-
-    for (Int_t iTb = 5; iTb < 25; iTb++)
-      baseline+=rawadc[iTb];
-
-    baseline/=20.0;
-
-    for (Int_t iTb = 0; iTb < 512; iTb++){
-      				  
+    
+    if(fIsBaseLineSubtraction)
+    {
+      for (Int_t iTb = 5; iTb < 25; iTb++)
+	baseline+=rawadc[iTb];
+      
+      baseline/=20.0;
+    }
+    
+    for (Int_t iTb = 0; iTb < 512; iTb++)
+    {
       pad -> SetRawADC(iTb, rawadc.at(iTb+5));
       adc[iTb] = (double)rawadc[iTb+5] - baseline;
       //std::cout<<" iTb "<<iTb<<" rawadc "<<rawadc[iTb]<<"	"<<adc[iTb]<<"\n";
       pad -> SetADC(iTb, adc[iTb]);
     }          
-
+    
     pad -> SetPedestalSubtracted(kTRUE);
-            
+    
     fRawEvent -> SetIsGood(kTRUE);
-    fRawEvent -> SetPad(pad); 
+    fRawEvent -> SetPad(pad);
+    delete pad;
+    
       
-      
-  }// End loop over pads
-      
+  }// End loop over pads 
+  
   new ((*fRawEventArray)[0]) ATRawEvent(fRawEvent);
     
-  
   ++fEventID;
   
 }

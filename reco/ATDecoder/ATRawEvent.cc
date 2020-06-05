@@ -29,6 +29,7 @@ ATRawEvent::ATRawEvent(ATRawEvent *object)
   fEventID = object -> GetEventID();
   fPadArray = *(object -> GetPads());
   fTimestamp = object->GetTimestamp();
+
   fIsGood = object -> IsGood();
 }
 
