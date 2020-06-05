@@ -27,6 +27,7 @@
 #include "ATHoughSpaceLine.hh"
 #include "ATHoughSpaceCircle.hh"
 #include "AtTpcPoint.h"
+#include "ATPSATask.hh"
 
 //PCL
 #include <pcl/console/parse.h>

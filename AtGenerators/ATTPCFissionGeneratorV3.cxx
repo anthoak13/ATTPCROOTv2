@@ -94,6 +94,9 @@ Bool_t ATTPCFissionGeneratorV3::ReadEvent(FairPrimaryGenerator * primeGen)
 	endl;
     return true;
   }
+  else
+    std::cout << "ATTPCFissionGeneratorV3: Runing reaction-like event" << std::endl;
+    
 
   auto fPDG = TDatabasePDG::Instance();
   auto stack = (AtStack *) gMC->GetStack();
@@ -135,4 +138,4 @@ Bool_t ATTPCFissionGeneratorV3::ReadEvent(FairPrimaryGenerator * primeGen)
   event++;
 }
 
-ClassImp(ATTPCFissionGeneratorV3)
+ClassImp(ATTPCFissionGeneratorV3);

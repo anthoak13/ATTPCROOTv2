@@ -1,34 +1,33 @@
-//Code to simulate fission event
-
-#include "FairEventManager.h"
-#include "FairMCTracks.h"
-#include "FairMCPointDraw.h"
+/* Displays events for input fileName.root and parameter file fileNamePar.root
+ * 
+ * Adam Anthony 8/21/19
+ */
 
 void eventDisplay(TString fileName="PbFission_sim")
 {
-
-  TString dir = getenv("VMCWORKDIR");
 
   //Form file names
   TString  InputFile = TString::Format("./data/%s.root", fileName.Data());
   TString  ParFile   = TString::Format("./data/%sPar.root", fileName.Data());
   TString  OutFile   = TString::Format("./data/%sOut.root", fileName.Data());
 
-  //For some reason this line needs to be here for ROOT to load in all of the required libraries?
-  ATVertexPropagator* vertex_prop = new ATVertexPropagator();
 
-  // -----   Create Reconstruction run   ----------------------------------------
-  FairRunAna* fRun = new FairRunAna();
+
+  // -----   Reconstruction run   -------------------------------------------
+  //FairRunAna *fRun= new FairRunAna();
+  //fRun->SetSource( new FairFileSource(InputFile) );
+  //fRun->SetSink( new FairFileSink(OutFile) );
+
+  FairRunAna *fRun= new FairRunAna();
   fRun->SetInputFile(InputFile.Data());
   fRun->SetOutputFile(OutFile.Data());
 
-
-  FairRuntimeDb* rtdb = fRun->GetRuntimeDb();
-  FairParRootFileIo* parInput = new FairParRootFileIo();
-  parInput->open(ParFile.Data());
-  rtdb->setOutput(parInput);
-
   
+  FairRuntimeDb* rtdb = fRun->GetRuntimeDb();
+  FairParRootFileIo* parInput1 = new FairParRootFileIo();
+  parInput1->open(ParFile.Data());
+  rtdb->setFirstInput(parInput1);
+
   FairEventManager *fMan= new FairEventManager();
 
   //----------------------Traks and points -------------------------------------

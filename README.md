@@ -106,6 +106,24 @@ There are many diffrent options for this task depending on how you want to treat
 Waveform on pads (TClonesArray of ATRawEvent) -> record of hits, 3D position and charge in tpc, (ATHit) on pad (TClonesArray of ATEvent)
 Output is named: "ATEventH"
 
+This task uses the parameters in the ATTPC .par files. In particular this loads (bolded are used by PSASimple):
+* PadPlaneX (?)
+* PadSizeX (?)
+* PadPlaneZ (?)
+* PadSizeZ (?)
+* PadRows (?)
+* PadLayers (?)
+* **NumTbs (Number of time buckets)**
+* **TBTTime (Sampling rate in ns)**
+* **DriftVelocity (cm/us)**
+* MaxDriftLength (Length of TPC)
+* BField
+* EField
+* TiltAng
+* TB0 (Depricated: time bucket refrence for micromegas)
+* EntTB (position in time buckets for detector entrance)
+
+
 #### ATPRATask
 Has options for RANSAC, Hierarchical Clustering, and Houghs algorithms for track finding.
 

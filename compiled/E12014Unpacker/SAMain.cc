@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
    
   //Set the mapping for the TPC
   TString scriptfile = "Lookup20150611.xml";
-  TString parameterFile = "ATTPC.e15250.par";
+  TString parameterFile = "ATTPC.e12014.par";
    
   //Set directories
   TString dir = gSystem->Getenv("VMCWORKDIR");
@@ -69,8 +69,17 @@ int main(int argc, char* argv[])
   HDFParserTask->SetOldFormat(false);
   HDFParserTask->SetTimestampIndex(2);
 
+  //Create PSA task
+  ATPSATask *psaTask = new ATPSATask();
+  psaTask -> SetPersistence(kTRUE);
+  psaTask -> SetThreshold(10);
+  psaTask -> SetPSAMode(1); //NB: 1 is ATTPC - 2 is pATTPC - 3 Filter for ATTPC - 4: Full Time Buckets
+  psaTask -> SetMaxFinder();
+
+  
   //Add unpacker to the run
   run -> AddTask(HDFParserTask);
+  run -> AddTask(psaTask);
   run -> Init();
 
   //Get the number of events and unpack the whole run
