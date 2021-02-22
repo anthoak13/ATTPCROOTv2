@@ -1,3 +1,4 @@
+
 /********************************************************************************
  *    Copyright (C) 2014 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH    *
  *                                                                              *
@@ -5,8 +6,8 @@
  *         GNU Lesser General Public Licence version 3 (LGPL) version 3,        *
  *                  copied verbatim in the file "LICENSE"                       *
  ********************************************************************************/
-#include "AtApollo.h"
-#include "AtApolloPoint.h"
+#include "AtApollo.hh"
+#include "AtApolloPoint.hh"
 
 #include "FairVolume.h"
 #include "FairRootManager.h"

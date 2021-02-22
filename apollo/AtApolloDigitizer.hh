@@ -10,9 +10,9 @@
 #define ATAPOLLODIGITIZER_H
 
 #include "FairTask.h"
-#include "AtApollo.h"
-#include "AtApolloCrystalCalData.h"
-#include "AtApolloPoint.h"
+#include "AtApollo.hh"
+#include "AtApolloCrystalCalData.hh"
+#include "AtApolloPoint.hh"
 #include "TClonesArray.h"
 #include "string"
 

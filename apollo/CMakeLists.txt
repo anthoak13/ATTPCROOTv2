@@ -30,11 +30,11 @@ link_directories( ${LINK_DIRECTORIES})
 
 set(SRCS
 #Put here your sourcefiles
-AtApollo.cxx
-AtApolloContFact.cxx
-AtApolloPoint.cxx
-AtApolloCrystalCalData.cxx
-AtApolloDigitizer.cxx
+AtApollo.cc
+AtApolloContFact.cc
+AtApolloPoint.cc
+AtApolloCrystalCalData.cc
+AtApolloDigitizer.cc
 )
 
 Set(LINKDEF AtApolloLinkDef.h)

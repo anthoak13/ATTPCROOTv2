@@ -5,7 +5,7 @@
  *         GNU Lesser General Public Licence version 3 (LGPL) version 3,        *
  *                  copied verbatim in the file "LICENSE"                       *
  ********************************************************************************/
-#include "AtApolloContFact.h"
+#include "AtApolloContFact.hh"
 #include "FairRuntimeDb.h"
 
 #include <iostream>

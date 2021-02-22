@@ -6,11 +6,12 @@
   *                  copied verbatim in the file "LICENSE"                       *
   ********************************************************************************/
 
-#include "AtApolloDigitizer.h"
+#include "AtApolloDigitizer.hh"
+
 #include "FairRootManager.h"
-#include "AtApollo.h"
-#include "AtApolloCrystalCalData.h"
-#include "AtApolloPoint.h"
+#include "AtApollo.hh"
+#include "AtApolloCrystalCalData.hh"
+#include "AtApolloPoint.hh"
 #include "TArrayD.h"
 #include "TClonesArray.h"
 #include "TMath.h"

@@ -6,7 +6,7 @@
  *                  copied verbatim in the file "LICENSE"                       *
  ********************************************************************************/
 
-#include "AtApolloCrystalCalData.h"
+#include "AtApolloCrystalCalData.hh"
 
 #include <iostream>
 

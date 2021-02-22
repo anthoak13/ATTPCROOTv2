@@ -6,8 +6,7 @@
  *                  copied verbatim in the file "LICENSE"                       *
  ********************************************************************************/
 #ifndef APOLLOPOINT_H
-#define APOLLOPOINT_H 1
-
+#define APOLLOPOINT_H
 
 #include "FairMCPoint.h"
 #include "TVector3.h"
