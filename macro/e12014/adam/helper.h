@@ -42,6 +42,7 @@ AtTpcMap *tpcMap = nullptr;
 TChain *tpcTree = nullptr;
 TTreeReader *reader = nullptr;
 TTreeReaderValue<TClonesArray> *rawEventReader = nullptr;
+TTreeReaderValue<TClonesArray> *rawEventFilteredReader = nullptr;
 TTreeReaderValue<TClonesArray> *eventFilteredReader = nullptr;
 TTreeReaderValue<TClonesArray> *eventReader = nullptr;
 TTreeReaderValue<TClonesArray> *patternEventReader = nullptr;
@@ -76,12 +77,21 @@ void loadRun(TString filePath, TString rawEventBranchName, TString rawEventFilte
 
    if (eventReader != nullptr)
       delete eventReader;
+   if (tpcTree->GetBranch(eventBranchName) == nullptr)
+      LOG(error) << "Could not find event branch";
    eventReader = new TTreeReaderValue<TClonesArray>(*reader, eventBranchName);
 
    if (eventFilteredReader != nullptr)
       delete eventFilteredReader;
+   if (tpcTree->GetBranch(eventFilteredBranchName) != nullptr)
+      eventFilteredReader = new TTreeReaderValue<TClonesArray>(*reader, eventFilteredBranchName);
+   else
+      LOG(error) << "Could not find filtered  event branch " << eventFilteredBranchName;
+
+   if (rawEventFilteredReader != nullptr)
+      delete rawEventFilteredReader;
    if (tpcTree->GetBranch(rawEventFilteredBranchName) != nullptr)
-      eventFilteredReader = new TTreeReaderValue<TClonesArray>(*reader, rawEventFilteredBranchName);
+      rawEventFilteredReader = new TTreeReaderValue<TClonesArray>(*reader, rawEventFilteredBranchName);
    else
       LOG(error) << "Could not find filtered raw event branch " << rawEventFilteredBranchName;
 

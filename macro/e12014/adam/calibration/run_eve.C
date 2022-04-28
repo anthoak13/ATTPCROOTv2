@@ -7,7 +7,7 @@
 #include "FairRunAna.h"
 */
 
-void run_eve(int runNum = 210, TString OutputDataFile = "./output/output.reco_display.root")
+void run_eve(int runNum = 193, TString OutputDataFile = "./output/output.reco_display.root")
 {
 
    TString filePath = "/mnt/analysis/e12014/TPC/unpacked/run_%04d.root";

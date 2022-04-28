@@ -30,7 +30,7 @@ void run_unpack_attpc(int runNumber = 210)
 
    // Set directories
    TString dir = gSystem->Getenv("VMCWORKDIR");
-   TString mapDir = dir + "/scripts/" + mapFile;
+   TString mapDir = gSystem->Getenv("VMCWORKDIR") + "/scripts/e12014_pad_mapping.xml";
    TString geomDir = dir + "/geometry/";
    gSystem->Setenv("GEOMPATH", geomDir.Data());
    TString digiParFile = dir + "/parameters/" + parameterFile;
