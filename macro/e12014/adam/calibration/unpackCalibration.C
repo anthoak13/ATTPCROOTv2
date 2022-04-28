@@ -1,7 +1,7 @@
 // Unpacks tpc files from /mnt/rawdata/ to /mnt/analysis/e12014/TPC/unpacked
 
 // Requires the TPC run number
-void unpackCalibrated(int runNumber)
+void unpackCalibration(int runNumber)
 {
    // Load the library for unpacking and reconstruction
    gSystem->Load("libAtReconstruction.so");
@@ -128,7 +128,7 @@ void unpackCalibrated(int runNumber)
    auto numEvents = unpackTask->GetNumEvents();
 
    // numEvents = 1700;//217;
-   numEvents = 20;
+   // numEvents = 2;
 
    std::cout << "Unpacking " << numEvents << " events. " << std::endl;
 

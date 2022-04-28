@@ -15,7 +15,7 @@ void SpaceChargeCorrection1(int runNumber = 206)
    // Set the input/output directories
 
    TString inputDir = "/mnt/rawdata/e12014_attpc/h5/";
-   TString outDir = "/mnt/analysis/hira_collaboration/e12014/Joe/UnpackedRuns/";
+   TString outDir = "/mnt/analysis/e12014/TPC/unpacked/";
 
    // Set the in/out files
    TString inputFile = inputDir + TString::Format("/run_%04d.h5", runNumber);

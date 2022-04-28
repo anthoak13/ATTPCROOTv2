@@ -80,8 +80,7 @@ void unpack_e20020_full(TString fileName = "run_0160")
    praTask->SetMaxNumHits(3000);
    praTask->SetMinNumHits(200);
    praTask->SetTcluster(8.0);
-   
-   
+
    run->AddTask(unpackTask);
    run->AddTask(filterTask);
    run->AddTask(psaTask);
@@ -95,6 +94,7 @@ void unpack_e20020_full(TString fileName = "run_0160")
    auto numEvents = unpackTask->GetNumEvents();
    std::cout << "Unpacking " << numEvents << " events. " << std::endl;
 
+   // return;
    run->Run(0, numEvents);
 
    std::cout << std::endl << std::endl;

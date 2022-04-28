@@ -13,6 +13,7 @@
 
 /***** "Public" functions ******/
 void loadRun(int runNum);
+// Show filtered and unfiltered for a pad
 void viewFFT(int eventNum, int padNum);
 // Get the ratio of magnitude of fourier representation for hits with a charge between
 // qMin and qMax
@@ -145,7 +146,7 @@ void loadRun(int runNum)
       return;
 
    TString filePath = "/mnt/analysis/e12014/TPC/filterTesting/run_%04d.root";
-   loadRun(TString::Format(filePath, runNum), "AtRawEvent", "AtRawEventFFTRaw", "AtEventH");
+   loadRun(TString::Format(filePath, runNum), "AtRawEvent", "AtRawEventFFT", "AtEventH");
    loadEvent(0);
 
    if (dynamic_cast<AtPadFFT *>(rawEventPtr->GetPads().back().get()) == nullptr)
@@ -170,6 +171,8 @@ void loadRun(int runNum)
 
 void viewFFT(int eventNum, int padNum)
 {
+   if (!reader)
+      return;
    if (!loadEvent(eventNum))
       return;
    if (!loadPad(padNum))
