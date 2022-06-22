@@ -3,6 +3,8 @@ name: Doxygen Action
 on:
   release:
     types: [ published ]
+  push:
+    branch: [ doxygen ]
     
 jobs:
   build-and-publish-doxygen:
