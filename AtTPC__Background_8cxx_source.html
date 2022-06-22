@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -238,10 +238,10 @@ $(function() {
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;   <span class="keywordtype">double</span> a = 4. * m2b * s;</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;   <span class="keywordtype">double</span> b = (pow(m3b, 2) - pow(m4b, 2) + s) * (pow(m1b, 2) - pow(m2b, 2) - s);</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;   <span class="keywordtype">double</span> c =</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;   <span class="keywordtype">double</span> <a class="code" href="AtRadialChargeModel_8cxx.html#a4fa597cdd9a67fc4cef7c8beebd1baa8">c</a> =</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;      <a class="code" href="classAtTPC__Background.html#a5dac8cf7824a36abfde1d6b529e76a6e">AtTPC_Background::omega</a>(s, pow(m1b, 2), pow(m2b, 2)) * <a class="code" href="classAtTPC__Background.html#a5dac8cf7824a36abfde1d6b529e76a6e">AtTPC_Background::omega</a>(s, pow(m3b, 2), pow(m4b, 2));</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;   <span class="keywordtype">double</span> Et3 = (c * cos((180. - thetacm) * 3.1415926535 / 180) - b) / a; <span class="comment">// estamos viendo el recoil en cm (pi-theta)</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;   <span class="keywordtype">double</span> Et3 = (<a class="code" href="AtRadialChargeModel_8cxx.html#a4fa597cdd9a67fc4cef7c8beebd1baa8">c</a> * cos((180. - thetacm) * 3.1415926535 / 180) - b) / a; <span class="comment">// estamos viendo el recoil en cm (pi-theta)</span></div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;   <span class="comment">// double Et4 = (Et1 + m2b - Et3);</span></div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;   <span class="keywordtype">double</span> K3 = Et3 - m3b;</div>
@@ -545,11 +545,12 @@ $(function() {
 <div class="ttc" id="aclassAtVertexPropagator_html_a641795fbb95d61aaa44670bb6c651d93"><div class="ttname"><a href="classAtVertexPropagator.html#a641795fbb95d61aaa44670bb6c651d93">AtVertexPropagator::Instance</a></div><div class="ttdeci">static AtVertexPropagator * Instance()</div><div class="ttdef"><b>Definition:</b> <a href="AtVertexPropagator_8cxx_source.html#l00018">AtVertexPropagator.cxx:18</a></div></div>
 <div class="ttc" id="aAtTPC__Background_8h_html"><div class="ttname"><a href="AtTPC__Background_8h.html">AtTPC_Background.h</a></div></div>
 <div class="ttc" id="aclassAtVertexPropagator_html_a6d93aa66a85a3d2548137b8e5d5c864a"><div class="ttname"><a href="classAtVertexPropagator.html#a6d93aa66a85a3d2548137b8e5d5c864a">AtVertexPropagator::IncDecayEvtCnt</a></div><div class="ttdeci">void IncDecayEvtCnt()</div><div class="ttdef"><b>Definition:</b> <a href="AtVertexPropagator_8cxx_source.html#l00313">AtVertexPropagator.cxx:313</a></div></div>
+<div class="ttc" id="aAtRadialChargeModel_8cxx_html_a4fa597cdd9a67fc4cef7c8beebd1baa8"><div class="ttname"><a href="AtRadialChargeModel_8cxx.html#a4fa597cdd9a67fc4cef7c8beebd1baa8">c</a></div><div class="ttdeci">constexpr auto c</div><div class="ttdef"><b>Definition:</b> <a href="AtRadialChargeModel_8cxx_source.html#l00013">AtRadialChargeModel.cxx:13</a></div></div>
 <div class="ttc" id="aclassAtTPC__Background_html"><div class="ttname"><a href="classAtTPC__Background.html">AtTPC_Background</a></div><div class="ttdef"><b>Definition:</b> <a href="AtTPC__Background_8h_source.html#l00024">AtTPC_Background.h:24</a></div></div>
 <div class="ttc" id="aclassAtTPC__Background_html_a49c6e3b2894d75ceaa304402b5160edb"><div class="ttname"><a href="classAtTPC__Background.html#a49c6e3b2894d75ceaa304402b5160edb">AtTPC_Background::TwoB</a></div><div class="ttdeci">virtual Double_t * TwoB(Double_t m1b, Double_t m2b, Double_t m3b, Double_t m4b, Double_t Kb, Double_t thetacm)</div><div class="ttdef"><b>Definition:</b> <a href="AtTPC__Background_8cxx_source.html#l00154">AtTPC_Background.cxx:154</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:47 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:00 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

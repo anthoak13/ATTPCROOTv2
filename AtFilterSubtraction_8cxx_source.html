@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -82,7 +82,7 @@ $(function() {
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="classAtFilterSubtraction.html#a6e14427b4c9a4f57ca27474597603c58">   12</a></span>&#160;<a class="code" href="classAtFilterSubtraction.html#a6e14427b4c9a4f57ca27474597603c58">AtFilterSubtraction::AtFilterSubtraction</a>(<a class="code" href="AtPulseTask_8h.html#afb3fd71d91d15f5f9a946c048cbbd8fd">AtMapPtr</a> map, Int_t numCoBos) : fNumberCoBo(numCoBos), fMapping(std::move(map))</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="classAtFilterSubtraction.html#a6e14427b4c9a4f57ca27474597603c58">   12</a></span>&#160;<a class="code" href="classAtFilterSubtraction.html#a6e14427b4c9a4f57ca27474597603c58">AtFilterSubtraction::AtFilterSubtraction</a>(<a class="code" href="AtSpaceChargeTask_8h.html#afb3fd71d91d15f5f9a946c048cbbd8fd">AtMapPtr</a> map, Int_t numCoBos) : fNumberCoBo(numCoBos), fMapping(std::move(map))</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;   fBaseline.resize(fNumberCoBo);</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;   fRawBaseline.resize(fNumberCoBo);</div>
@@ -186,10 +186,10 @@ $(function() {
 <div class="ttc" id="aclassAtPad_html_ab2788c724a02de7149438a4205273b75"><div class="ttname"><a href="classAtPad.html#ab2788c724a02de7149438a4205273b75">AtPad::SetRawADC</a></div><div class="ttdeci">void SetRawADC(const rawTrace &amp;val)</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00054">AtPad.h:54</a></div></div>
 <div class="ttc" id="aclassAtFilterSubtraction_html_a8596286493cb66467463b0bba9d482ff"><div class="ttname"><a href="classAtFilterSubtraction.html#a8596286493cb66467463b0bba9d482ff">AtFilterSubtraction::InitEvent</a></div><div class="ttdeci">virtual void InitEvent(AtRawEvent *event) override</div><div class="ttdef"><b>Definition:</b> <a href="AtFilterSubtraction_8cxx_source.html#l00034">AtFilterSubtraction.cxx:34</a></div></div>
 <div class="ttc" id="aclassAtPad_html_abb35f4fb9eef12c24317bed59398d816"><div class="ttname"><a href="classAtPad.html#abb35f4fb9eef12c24317bed59398d816">AtPad::SetADC</a></div><div class="ttdeci">void SetADC(const trace &amp;val)</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00056">AtPad.h:56</a></div></div>
-<div class="ttc" id="aclassAtRawEvent_html"><div class="ttname"><a href="classAtRawEvent.html">AtRawEvent</a></div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00035">AtRawEvent.h:35</a></div></div>
-<div class="ttc" id="aAtPulseTask_8h_html_afb3fd71d91d15f5f9a946c048cbbd8fd"><div class="ttname"><a href="AtPulseTask_8h.html#afb3fd71d91d15f5f9a946c048cbbd8fd">AtMapPtr</a></div><div class="ttdeci">std::shared_ptr&lt; AtMap &gt; AtMapPtr</div><div class="ttdef"><b>Definition:</b> <a href="AtPulseTask_8h_source.html#l00033">AtPulseTask.h:33</a></div></div>
+<div class="ttc" id="aclassAtRawEvent_html"><div class="ttname"><a href="classAtRawEvent.html">AtRawEvent</a></div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00036">AtRawEvent.h:36</a></div></div>
 <div class="ttc" id="aclassAtFilterSubtraction_html_a227714b67f09151ce29042aea7fa2cf9"><div class="ttname"><a href="classAtFilterSubtraction.html#a227714b67f09151ce29042aea7fa2cf9">AtFilterSubtraction::IsGoodEvent</a></div><div class="ttdeci">virtual bool IsGoodEvent() override</div><div class="ttdef"><b>Definition:</b> <a href="AtFilterSubtraction_8cxx_source.html#l00101">AtFilterSubtraction.cxx:101</a></div></div>
-<div class="ttc" id="aclassAtRawEvent_html_af93bc0854bc2f0d99100f0799913d191"><div class="ttname"><a href="classAtRawEvent.html#af93bc0854bc2f0d99100f0799913d191">AtRawEvent::GetPads</a></div><div class="ttdeci">const PadVector &amp; GetPads() const</div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00099">AtRawEvent.h:99</a></div></div>
+<div class="ttc" id="aclassAtRawEvent_html_af93bc0854bc2f0d99100f0799913d191"><div class="ttname"><a href="classAtRawEvent.html#af93bc0854bc2f0d99100f0799913d191">AtRawEvent::GetPads</a></div><div class="ttdeci">const PadVector &amp; GetPads() const</div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00121">AtRawEvent.h:121</a></div></div>
+<div class="ttc" id="aAtSpaceChargeTask_8h_html_afb3fd71d91d15f5f9a946c048cbbd8fd"><div class="ttname"><a href="AtSpaceChargeTask_8h.html#afb3fd71d91d15f5f9a946c048cbbd8fd">AtMapPtr</a></div><div class="ttdeci">std::shared_ptr&lt; AtMap &gt; AtMapPtr</div><div class="ttdef"><b>Definition:</b> <a href="AtSpaceChargeTask_8h_source.html#l00018">AtSpaceChargeTask.h:18</a></div></div>
 <div class="ttc" id="aAtFilterSubtraction_8h_html"><div class="ttname"><a href="AtFilterSubtraction_8h.html">AtFilterSubtraction.h</a></div></div>
 <div class="ttc" id="aclassAtPad_html_a9d0444a41880359d9571e65e88bf2282"><div class="ttname"><a href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">AtPad::GetPadNum</a></div><div class="ttdeci">Int_t GetPadNum() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00061">AtPad.h:61</a></div></div>
 <div class="ttc" id="aclassAtPad_html_a91c89e0b6f1f521b663ee7246965f1eb"><div class="ttname"><a href="classAtPad.html#a91c89e0b6f1f521b663ee7246965f1eb">AtPad::GetADC</a></div><div class="ttdeci">const trace &amp; GetADC() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8cxx_source.html#l00027">AtPad.cxx:27</a></div></div>
@@ -202,7 +202,7 @@ $(function() {
 <div class="ttc" id="aclassAtPad_html_a036ace819d34b7c745fb6f554b6ee8b8"><div class="ttname"><a href="classAtPad.html#a036ace819d34b7c745fb6f554b6ee8b8">AtPad::GetRawADC</a></div><div class="ttdeci">const rawTrace &amp; GetRawADC() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00069">AtPad.h:69</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:47 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:00 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

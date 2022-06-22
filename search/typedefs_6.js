@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['lmcurve_5fdata_5fstruct_5283',['lmcurve_data_struct',['../lmcurve_8cxx.html#aa1f0be3908489644f3ce33580f1dd61b',1,'lmcurve.cxx']]]
+  ['hitptr_5510',['hitPtr',['../AtEvent_8h.html#a01a97ddc0dfe2a67c55b58c050dce1f0',1,'AtEvent.h']]],
+  ['hitvector_5511',['hitVector',['../AtEvent_8h.html#a7d4eefd40266a92db433dbf1d558d9bb',1,'AtEvent.h']]]
 ];

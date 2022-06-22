@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -70,15 +70,18 @@ $(function() {
 : <a class="el" href="classAtTpcProtoMap.html#af991513141bb0a340dc0942425e8d2af">AtTpcProtoMap</a>
 </li>
 <li>f3DHist
-: <a class="el" href="classAtEventDrawTaskProto.html#a3f629c7deeac56d81db555a8fcf26496">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a489f83c281927acc7c95da77c1d2e4ec">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a3f629c7deeac56d81db555a8fcf26496">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a1ea57e5ed71016aa3bae313eb1ab16b9">AtEventDrawTaskS800</a>
 </li>
 <li>f3DHitStyle
-: <a class="el" href="classAtEventDrawTaskProto.html#a889dbc6295149c7b6ea3e97056ec0c9e">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a899bee1b9e34bdd20ec01984421445c6">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a889dbc6295149c7b6ea3e97056ec0c9e">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a5d1d9753c61019c116bf1271bed61d89">AtEventDrawTaskS800</a>
 </li>
 <li>f3DThreshold
-: <a class="el" href="classAtEventDrawTaskS800.html#aa98ad24daa2846aa71d0f58d87090d41">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a467f20e2f2c7a01c68ac8b2a8574d0c3">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#aa98ad24daa2846aa71d0f58d87090d41">AtEventDrawTaskS800</a>
 </li>
 <li>fAccum
 : <a class="el" href="classAtTrigger.html#abdc23bc19778cd87e3003f2030bb143b">AtTrigger</a>
@@ -98,15 +101,6 @@ $(function() {
 <li>fAngleIni
 : <a class="el" href="classAtMCPoint.html#ac1b0175419c01ba95b5315b7a51d33a2">AtMCPoint</a>
 </li>
-<li>fAngleYDet
-: <a class="el" href="classAtTrack.html#a9ef48c3b0e799819d91a9713c3ab161d">AtTrack</a>
-</li>
-<li>fAngleZAxis
-: <a class="el" href="classAtTrack.html#ad7d523dfc0af1e996fd51186116304ec">AtTrack</a>
-</li>
-<li>fAngleZDet
-: <a class="el" href="classAtTrack.html#aa784f1e6ac56bd01ffc21a2a2b331f4d">AtTrack</a>
-</li>
 <li>fanode
 : <a class="el" href="classCRDC.html#ac388943a9cfc8c7737bee3775656d523">CRDC</a>
 , <a class="el" href="classGCrdc.html#abbf2439726dfa069351f519b1ebb6e72">GCrdc</a>
@@ -114,17 +108,21 @@ $(function() {
 <li>fAtMapPtr
 : <a class="el" href="classAtEventDrawTaskS800.html#a8adfa1645e2e4dd4c608a3f55906b646">AtEventDrawTaskS800</a>
 </li>
+<li>fAtPadCoordPtr
+: <a class="el" href="classAtMap.html#a408e915d7649f831848c151c14870ecf">AtMap</a>
+</li>
 <li>fAuxChannels
-: <a class="el" href="classAtEventDrawTaskProto.html#a3643f7ff3bd302d733297892f9c33313">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#acb807d49b4cefcee206b5ab1126632d4">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a3643f7ff3bd302d733297892f9c33313">AtEventDrawTaskProto</a>
 </li>
 <li>fAuxName
 : <a class="el" href="classAtAuxPad.html#ac026e880b6a7ab03580f6282e3ea8c6f">AtAuxPad</a>
 </li>
+<li>fAuxPadMap
+: <a class="el" href="classAtMap.html#ae076069dec3ae1e2842d71ca47961bbb">AtMap</a>
+</li>
 <li>fBadFile
 : <a class="el" href="classS800Settings.html#a433033e91a8d6aa500ecb1ea98719ebf">S800Settings</a>
-</li>
-<li>fBaseCorr
-: <a class="el" href="classAtHit.html#af22f9d3f5d12d93046337152679e6d81">AtHit</a>
 </li>
 <li>fBeginFact
 : <a class="el" href="structAtFilterFFT_1_1AtFreqRange.html#a973996e3ad83ad0b87b0701bb80f0ae6">AtFilterFFT::AtFreqRange</a>
@@ -145,11 +143,11 @@ $(function() {
 <li>fCalFileIC
 : <a class="el" href="classS800Settings.html#a09e1440852b3450c8acc8ee6efb5a4ab">S800Settings</a>
 </li>
-<li>fCalibration
-: <a class="el" href="classAtPSA.html#a66522e7aef3db8f5e19f6bc3c292c648">AtPSA</a>
-</li>
 <li>fcathode
 : <a class="el" href="classCRDC.html#ad0bd920b5fc2846f6557dd95695b3073">CRDC</a>
+</li>
+<li>fCDF
+: <a class="el" href="classRandomSample_1_1AtSample.html#a5a5d71263cdc9e5f3cea2c225774f6b6">RandomSample::AtSample</a>
 </li>
 <li>fchan
 : <a class="el" href="classCRDC.html#aa32c4b84f1e9ce16557d8db160106334">CRDC</a>
@@ -163,17 +161,25 @@ $(function() {
 : <a class="el" href="classAtHit.html#ab4e4d4b5a7b5fef7e5bda6b1821940c6">AtHit</a>
 , <a class="el" href="classAtSimulatedPoint.html#a288bbbd34c2c683bae1126c946ad011c">AtSimulatedPoint</a>
 </li>
-<li>fChargeThres
-: <a class="el" href="classAtLmedsMod.html#a90b8c21291c43ee5211679af50c0336e">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#ad1b2b9a76e6e1d72ae7294c753f08c4e">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a14494bc33575c0929cde0b09c8693343">AtRansacMod</a>
+<li>fChargeSample
+: <a class="el" href="classRandomSample_1_1AtWeightedGaussian.html#aec3c1ec7b75750b1c9c2fdd295944c5a">RandomSample::AtWeightedGaussian</a>
+</li>
+<li>fChargeVariance
+: <a class="el" href="classAtHit.html#a9f02ce6a5ad6dc1cb7536de870f66ee5">AtHit</a>
 </li>
 <li>fChi2
-: <a class="el" href="classAtProtoEventAna.html#ab9c94a046127066508f2cfb75b2675a8">AtProtoEventAna</a>
+: <a class="el" href="classAtPatterns_1_1AtPattern.html#a14b91f38a2a78530f3418807ce023c24">AtPatterns::AtPattern</a>
+, <a class="el" href="classAtProtoEventAna.html#ab9c94a046127066508f2cfb75b2675a8">AtProtoEventAna</a>
+</li>
+<li>fClusterDistance
+: <a class="el" href="classAtPATTERN_1_1AtPRA.html#af25291c1630664b2e8f1ac7da3e25db3">AtPATTERN::AtPRA</a>
 </li>
 <li>fClusterID
 : <a class="el" href="classAtHitCluster.html#a99318fcbdec6ea640b3ef214df353097">AtHitCluster</a>
 , <a class="el" href="classAtSimulatedPoint.html#a68973f3a649257266ed7093d910135bf">AtSimulatedPoint</a>
+</li>
+<li>fClusterRadius
+: <a class="el" href="classAtPATTERN_1_1AtPRA.html#ad2db167b33265a416b0a33530e588fa4">AtPATTERN::AtPRA</a>
 </li>
 <li>fCobo
 : <a class="el" href="classAtTrigger.html#af541431f3b812d0eee0e748839a7be48">AtTrigger</a>
@@ -186,6 +192,15 @@ $(function() {
 </li>
 <li>fCoefT
 : <a class="el" href="classAtClusterizeTask.html#abc386b211180cfdc2e3aa6ea4e06f1a6">AtClusterizeTask</a>
+</li>
+<li>fCorrectedEventArray
+: <a class="el" href="classAtEventDrawTask.html#ae4fad6a12de583a9232a00f87464ee8c">AtEventDrawTask</a>
+</li>
+<li>fCorrectedEventBranchName
+: <a class="el" href="classAtEventDrawTask.html#aaa51b4c4ef6bc8f555fbec2f672eae33">AtEventDrawTask</a>
+</li>
+<li>fCorrectedHitSet
+: <a class="el" href="classAtEventDrawTask.html#aea882cdb94541803d43eee5745a19c33">AtEventDrawTask</a>
 </li>
 <li>fCount
 : <a class="el" href="classAtTrigger.html#a29cbbb2f9e28c8cb99ac444ca615ce69">AtTrigger</a>
@@ -215,10 +230,12 @@ $(function() {
 : <a class="el" href="classAtClusterizeTask.html#aa6f1f984d4fdfbbb11500327e4c779d8">AtClusterizeTask</a>
 </li>
 <li>fCvs3DHist
-: <a class="el" href="classAtEventDrawTaskS800.html#a4dd0579b92866a067f1bcfe907897083">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a2d89a647832eb27f28509697abf840a0">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a4dd0579b92866a067f1bcfe907897083">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsAux
-: <a class="el" href="classAtEventDrawTaskProto.html#ad8151bd3a61f325545b8c9362c99b1cb">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#ac88cb6c1c2add2ab6a152322f8fa9d38">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#ad8151bd3a61f325545b8c9362c99b1cb">AtEventDrawTaskProto</a>
 </li>
 <li>fCvsELQuadrant1
 : <a class="el" href="classAtEventDrawTaskProto.html#a7c3ac1fc03258838faf71784569679ca">AtEventDrawTaskProto</a>
@@ -233,7 +250,8 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskProto.html#acc4455a938152f6b2b2ffc9891699ac2">AtEventDrawTaskProto</a>
 </li>
 <li>fCvsHoughSpace
-: <a class="el" href="classAtEventDrawTaskS800.html#aee9c89f704ab3aca1263d5aa88ad048b">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#ad467c3d1f1c9584604545f8446bc541e">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#aee9c89f704ab3aca1263d5aa88ad048b">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsKineAA
 : <a class="el" href="classAtEventDrawTaskProto.html#a73e9b7155d113138e8fa143bc4d32e2b">AtEventDrawTaskProto</a>
@@ -242,29 +260,36 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskS800.html#ab46384b5cc56c122b5d01a6438764e7e">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsMC_XY
-: <a class="el" href="classAtEventDrawTaskS800.html#a70bda838a786c1401fb1464473630a71">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a5f66ca85d06af41d1b9d4cbb433cd891">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a70bda838a786c1401fb1464473630a71">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsMC_Z
-: <a class="el" href="classAtEventDrawTaskS800.html#ab1a08aa124b05aad7db434c984037a99">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a7ead0d3010ebe1e92dbc908e8fa3e0b3">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#ab1a08aa124b05aad7db434c984037a99">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsMesh
-: <a class="el" href="classAtEventDrawTaskProto.html#afaa7db8e8114f45aa096e8bdb4ef1889">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a9c7c0cb86b160fa1ea9938619ee99b44">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#afaa7db8e8114f45aa096e8bdb4ef1889">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#af8f3299947be952598afc6ecee8a546c">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsPadAll
-: <a class="el" href="classAtEventDrawTaskProto.html#a9159d4c1debc334ebe817af802455f39">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#aa84ff2a42cae72e968488fb3a8fcded7">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a9159d4c1debc334ebe817af802455f39">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#aa78fe4c9fe664e1aea7bf22734a450f5">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsPadPlane
-: <a class="el" href="classAtEventDrawTaskProto.html#ab1c9ebf7c2158b64f2ddfea3e6e3e055">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a01e6d1e917082ce75f22ae884178fb16">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#ab1c9ebf7c2158b64f2ddfea3e6e3e055">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a765f2ef30f14735ee03645be2cb10646">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsPadWave
-: <a class="el" href="classAtEventDrawTaskProto.html#a89e99de83ce4d32f0eb3493e81dfb6fd">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a9b4407f63d830169461df5d5523b928d">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a89e99de83ce4d32f0eb3493e81dfb6fd">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a1d9a49978a6b32e42d284e13fa9cd361">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsPhi
-: <a class="el" href="classAtEventDrawTaskS800.html#afb78c43da2d36793b73862b7a9523840">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a6a2753fbb007986d11fb40cdb594cca7">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#afb78c43da2d36793b73862b7a9523840">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsPID
 : <a class="el" href="classAtEventDrawTaskS800.html#a2f9fb5641c8c2a5cc9872c01bb0f2d20">AtEventDrawTaskS800</a>
@@ -279,35 +304,44 @@ $(function() {
 : <a class="el" href="classAtEventManagerS800.html#a8e4cb7b708325193e730a77c95a4f96a">AtEventManagerS800</a>
 </li>
 <li>fCvsQEvent
-: <a class="el" href="classAtEventDrawTaskS800.html#a2ddbe2afc00494e0dd499f0b39aad653">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a9524836f176e4843c055ef3565d6fb6e">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a2ddbe2afc00494e0dd499f0b39aad653">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsQuadrant1
-: <a class="el" href="classAtEventDrawTaskProto.html#a1eb9f6f6a1bf6cad8067a79b62140e86">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a7e48350f5d1ea869fd80fb255d957bac">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a1eb9f6f6a1bf6cad8067a79b62140e86">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#aac2902bb72d5f4c6b1b221a65a3a078a">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsQuadrant2
-: <a class="el" href="classAtEventDrawTaskProto.html#a870eac7b23d0ebedd735ac9ac8b113fc">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#afaf51b79375c9d03f43cc53894d917eb">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a870eac7b23d0ebedd735ac9ac8b113fc">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a7c037a348d22ae748e0ec68085027721">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsQuadrant3
-: <a class="el" href="classAtEventDrawTaskProto.html#a1d1e257499fe2272c3fb16b48d21ed59">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a46025da370895b089d965f4acf4faa74">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a1d1e257499fe2272c3fb16b48d21ed59">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a1d07557c824aeba96df02451548fc775">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsQuadrant4
-: <a class="el" href="classAtEventDrawTaskProto.html#acc8b8f3a037ede17352649405a57becd">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a9339f4867491e96c503ff9e011cc33cc">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#acc8b8f3a037ede17352649405a57becd">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#ace67ff8084561fb276e27756f5726ca5">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsRad
-: <a class="el" href="classAtEventDrawTaskS800.html#a0db856a48a68744ed023ecd8853f4b1b">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a936bd4ab2b735126daf7ce6ac8c9ed15">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a0db856a48a68744ed023ecd8853f4b1b">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsRhoVariance
-: <a class="el" href="classAtEventDrawTaskS800.html#a05ecd89e0d2dd09506d63e37ecb589e7">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a4808bc5f7f63d7a7379b606a9e09f47c">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a05ecd89e0d2dd09506d63e37ecb589e7">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsTheta
-: <a class="el" href="classAtEventDrawTaskS800.html#a6abe56138d4610df2e08612de0114371">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#ac7a4843614f9451be6364cdcff036cc9">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a6abe56138d4610df2e08612de0114371">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsThetaxPhi
-: <a class="el" href="classAtEventDrawTaskS800.html#a0fb6984d015d4ac70bde31c2bcbe2ca9">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#ab4c34cb86a7e10ae2b3484a992a84333">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a0fb6984d015d4ac70bde31c2bcbe2ca9">AtEventDrawTaskS800</a>
 </li>
 <li>fCvsVertex
 : <a class="el" href="classAtEventDrawTaskProto.html#a30d5bbdf3dee1fc1ef20fd1a7b37aae9">AtEventDrawTaskProto</a>
@@ -340,7 +374,8 @@ $(function() {
 : <a class="el" href="classAtMCPoint.html#a47dfb9cfe7aba0422885830897634180">AtMCPoint</a>
 </li>
 <li>fDetmap
-: <a class="el" href="classAtEventDrawTaskProto.html#a66338c646f882076529744df03df9088">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a60c73d951dfe515daf7533ebab1505f0">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a66338c646f882076529744df03df9088">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a4daebbaafc1b4928405e02ee1de92665">AtEventDrawTaskS800</a>
 </li>
 <li>fDetPadPlane
@@ -377,7 +412,7 @@ $(function() {
 : <a class="el" href="structAtFilterFFT_1_1AtFreqRange.html#a29845665216e3cfe17c969f54a00e20d">AtFilterFFT::AtFreqRange</a>
 </li>
 <li>fEndTB
-: <a class="el" href="classAtPSA.html#ae87496d4f9c7d14683644c0c68e1005d">AtPSA</a>
+: <a class="el" href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">AtPSAHitPerTB</a>
 </li>
 <li>fEnergy
 : <a class="el" href="classAtApolloCrystalCalData.html#a20256b4409e49bafbfb4738c6ec852b2">AtApolloCrystalCalData</a>
@@ -395,6 +430,12 @@ $(function() {
 <li>fEvent
 : <a class="el" href="classAtTrigger.html#a5d21a9dfcbfba3d9d2267f91a9328300">AtTrigger</a>
 </li>
+<li>fEventArray
+: <a class="el" href="classAtEventDrawTask.html#adb545399a89310ef96cf152cf30f33af">AtEventDrawTask</a>
+</li>
+<li>fEventBranchName
+: <a class="el" href="classAtEventDrawTask.html#aaf93aae25ca191c9dc28f039ad8061ac">AtEventDrawTask</a>
+</li>
 <li>fEventID
 : <a class="el" href="classAtClusterizeTask.html#a28b4d934c79007bc36c36e89fa87393b">AtClusterizeTask</a>
 , <a class="el" href="classAtProtoEvent.html#a9b9c880d4e91d6a0c7f271b95a0b9294">AtProtoEvent</a>
@@ -404,7 +445,8 @@ $(function() {
 , <a class="el" href="classAtUnpacker.html#a066e2a467ccac6012794f3578666733f">AtUnpacker</a>
 </li>
 <li>fEventManager
-: <a class="el" href="classAtEventDrawTaskProto.html#a8daaa4cae66d055dc2bea6500263cc24">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a338c748cfb5bec984f2564f7bda81abb">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a8daaa4cae66d055dc2bea6500263cc24">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#aaea2b299373eb4a627ad06cb5fbf0efb">AtEventDrawTaskS800</a>
 </li>
 <li>fevtnr
@@ -441,9 +483,6 @@ $(function() {
 </li>
 <li>fFit
 : <a class="el" href="classAtEventDrawTaskProto.html#ae40a60f531798b3da04782925112dc80">AtEventDrawTaskProto</a>
-</li>
-<li>fFitPar
-: <a class="el" href="classAtTrack.html#a0bccf506da61d5c8b9167a47405ce725">AtTrack</a>
 </li>
 <li>ffitprm
 : <a class="el" href="classCRDC.html#a2c6c5177a9cd9c32c3e05d1beca033f3">CRDC</a>
@@ -506,9 +545,6 @@ $(function() {
 <li>fGnewadc
 : <a class="el" href="classAtCalibration.html#afdfff939deaf6435150d607be36a0001">AtCalibration</a>
 </li>
-<li>fGraph
-: <a class="el" href="structAtRANSACN_1_1AtRansac_1_1SumDistance2.html#a99f89c35c4b7b6ec9c64c6fe3d5465f1">AtRANSACN::AtRansac::SumDistance2</a>
-</li>
 <li>fHit
 : <a class="el" href="classAtTrigger.html#a09bb4e5fb6712ed12d4c6d20898772ab">AtTrigger</a>
 </li>
@@ -521,24 +557,36 @@ $(function() {
 : <a class="el" href="classAtProtoQuadrant.html#a5fbbe5138bed569e4f03723c02832dd6">AtProtoQuadrant</a>
 </li>
 <li>fhitBoxSet
-: <a class="el" href="classAtEventDrawTaskProto.html#ab92c6f3bdc550022a9270ce701193572">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#afb8e099f6098502daf0f94dec54ffdfd">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#ab92c6f3bdc550022a9270ce701193572">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a931822a03aea3450e767568c80636ae1">AtEventDrawTaskS800</a>
 </li>
 <li>fHitClusterArray
 : <a class="el" href="classAtTrack.html#ab85fc0ff3a6d8ba4722ecbeb5c08be8a">AtTrack</a>
 </li>
+<li>fHitClusterSet
+: <a class="el" href="classAtEventDrawTask.html#a81940fe798ba2e4b8aa2bc10ba733d6f">AtEventDrawTask</a>
+</li>
 <li>fHitColor
-: <a class="el" href="classAtEventDrawTaskProto.html#a5d396cffd7f279d0867fbfb123fefd54">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#aa1f137e62e4fc37aa5f37f488034f81a">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a5d396cffd7f279d0867fbfb123fefd54">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a4778f76192d1b30efde73204f8d57597">AtEventDrawTaskS800</a>
 </li>
 <li>fHitID
 : <a class="el" href="classAtHit.html#a4ce5dbec903dbcb995ab7590039fd91a">AtHit</a>
 </li>
+<li>fHitLine
+: <a class="el" href="classAtEventDrawTask.html#a9f01a5925fe9fe1c01cc22fee8053afe">AtEventDrawTask</a>
+</li>
 <li>fHitMult
 : <a class="el" href="classAtHit.html#a68c6ac203cb18266e9b98d07e4e98e68">AtHit</a>
 </li>
+<li>fHits
+: <a class="el" href="classRandomSample_1_1AtSample.html#a372670ab260ee56e2a2b46353e6a5786">RandomSample::AtSample</a>
+</li>
 <li>fHitSet
-: <a class="el" href="classAtEventDrawTaskProto.html#a688163157a906bf3610a559aa7a1211d">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#ae15dee686090723e786730fa3135c2bd">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a688163157a906bf3610a559aa7a1211d">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a5ecc28abd40fec2d49aacc5f82d66926">AtEventDrawTaskS800</a>
 </li>
 <li>fHitSetMC
@@ -551,14 +599,17 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskProto.html#ad1db8e257af328fb1cb7c1368859e434">AtEventDrawTaskProto</a>
 </li>
 <li>fHitSetTFHC
-: <a class="el" href="classAtEventDrawTaskS800.html#a9eb547ab889f5c36293aeb1691aeb251">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a9b7d63b544378b5c716358c3fe98cde9">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a9eb547ab889f5c36293aeb1691aeb251">AtEventDrawTaskS800</a>
 </li>
 <li>fHitSize
-: <a class="el" href="classAtEventDrawTaskProto.html#acfd4a1b9f3a3f1cb1759c31ff9f3b5d1">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a1559495aecba3c0140a1a7645d69dd06">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#acfd4a1b9f3a3f1cb1759c31ff9f3b5d1">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a14ee106e223e67177ee85d954041635f">AtEventDrawTaskS800</a>
 </li>
 <li>fHitStyle
-: <a class="el" href="classAtEventDrawTaskProto.html#a8500f33c9e4a5cae80ccc796365106bc">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a93ae06d46988897c6407ea782f56d76d">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a8500f33c9e4a5cae80ccc796365106bc">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a7e0d2de212cf311e020acbcee9ec933d">AtEventDrawTaskS800</a>
 </li>
 <li>fHNL
@@ -583,7 +634,8 @@ $(function() {
 : <a class="el" href="classAtProtoEventAna.html#a3e2a2829a69e1175529c9f4f76e37261">AtProtoEventAna</a>
 </li>
 <li>fHoughSpace
-: <a class="el" href="classAtEventDrawTaskS800.html#a89fafc6b2278f4a4d81b54a921d0d0cc">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a70eca6edbff41763913388cb70b70d8f">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a89fafc6b2278f4a4d81b54a921d0d0cc">AtEventDrawTaskS800</a>
 </li>
 <li>fHoughSpaceArray
 : <a class="el" href="classAtEventDrawTaskS800.html#a2fde62f31bf104ccc9601738ec3007a7">AtEventDrawTaskS800</a>
@@ -605,14 +657,19 @@ $(function() {
 : <a class="el" href="classAtPadFFT.html#aca5a4397cabeb9a5a6ad389ad3a9bc4a">AtPadFFT</a>
 </li>
 <li>fIniHit
-: <a class="el" href="classAtEventDrawTaskProto.html#a0f4dc458b86902f2d6ecaf61bdcb245f">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a4e61cc480451665262df30e533df8a29">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a0f4dc458b86902f2d6ecaf61bdcb245f">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a3db4a07c7d820be94d28d27d6e34beeb">AtEventDrawTaskS800</a>
 </li>
 <li>fIniHitRansac
-: <a class="el" href="classAtEventDrawTaskS800.html#aed7861e8c8ae9f93e8120efbb0825484">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a922240ce885b52725dc403d7bbf2938c">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#aed7861e8c8ae9f93e8120efbb0825484">AtEventDrawTaskS800</a>
+</li>
+<li>fIniPads
+: <a class="el" href="classAtMap.html#a61c11920853e3bff61023b847cfe6e70">AtMap</a>
 </li>
 <li>fIniTB
-: <a class="el" href="classAtPSA.html#a0dab08870ecc3632115f3af7a8072b2f">AtPSA</a>
+: <a class="el" href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">AtPSAHitPerTB</a>
 </li>
 <li>fInputBranchName
 : <a class="el" href="classAtSpaceChargeTask.html#a55a944c233949f7ef7bff3f535becd58">AtSpaceChargeTask</a>
@@ -627,10 +684,8 @@ $(function() {
 : <a class="el" href="classS800.html#af7fcb8710e196d65ea1fadb8514a8ed6">S800</a>
 </li>
 <li>fIs2DPlotRange
-: <a class="el" href="classAtEventDrawTaskS800.html#a000651baaaeebebf368d213a725ca678">AtEventDrawTaskS800</a>
-</li>
-<li>fIsAux
-: <a class="el" href="classAtHit.html#af936733b06df14d4f4494ef98915f99b">AtHit</a>
+: <a class="el" href="classAtEventDrawTask.html#a2f155b5dabbd6d2e7ecec37ebdb1aadc">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a000651baaaeebebf368d213a725ca678">AtEventDrawTaskS800</a>
 </li>
 <li>fIsCircularHough
 : <a class="el" href="classAtEventDrawTaskProto.html#a09c52044709d3a848f4b04bfc15236a3">AtEventDrawTaskProto</a>
@@ -641,18 +696,19 @@ $(function() {
 </li>
 <li>fIsGainCalibrated
 : <a class="el" href="classAtCalibration.html#a9de5a87fd377b2217e63e765ed760263">AtCalibration</a>
-, <a class="el" href="classAtPSA.html#aeb1978da1b5802eacbbbc36862303cb6">AtPSA</a>
 </li>
 <li>fIsInCut
 : <a class="el" href="classS800Calc.html#a9db58d13b081c6b0a54e1519513bd11c">S800Calc</a>
 </li>
 <li>fIsJitterCalibrated
 : <a class="el" href="classAtCalibration.html#af91cadb0a00cd2b22240e6c523600207">AtCalibration</a>
-, <a class="el" href="classAtPSA.html#a095c7212bb833476ca8f0f3c460d0dd4">AtPSA</a>
 </li>
 <li>fIsLinearHough
 : <a class="el" href="classAtEventDrawTaskProto.html#ad55f863b65d159a349332a98142e1ff1">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a5325998aa276ff8fe0ec5d1c5b37fc33">AtEventDrawTaskS800</a>
+</li>
+<li>fIsMerged
+: <a class="el" href="classAtTrack.html#aa21c14c3f636968f70c325fdf49916b5">AtTrack</a>
 </li>
 <li>fIsNegativePolarity
 : <a class="el" href="classAtGRAWUnpacker.html#a6f17579da1543e882519b603c7083ba6">AtGRAWUnpacker</a>
@@ -670,7 +726,8 @@ $(function() {
 , <a class="el" href="classAtSpaceChargeTask.html#aa9489a3c99c62a39edc5fc8f27cd569d">AtSpaceChargeTask</a>
 </li>
 <li>fIsRawData
-: <a class="el" href="classAtEventDrawTaskProto.html#ad6a5010879475c50fe178ffa05c2b333">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a544f45aad6f75a8e5e81db3349bb814e">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#ad6a5010879475c50fe178ffa05c2b333">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a5cf186cc84258cb0b9fc9098a8481863">AtEventDrawTaskS800</a>
 </li>
 <li>fIsSaveMCInfo
@@ -711,39 +768,15 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskProto.html#ac3247025e03df612a354358c81a75899">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a03868a51350a4be0264584314c212dd4">AtEventDrawTaskS800</a>
 </li>
-<li>fLineDistThreshold
-: <a class="el" href="classAtLmedsMod.html#aee054d2763b3f76ef85959bdab7eb39e">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#a518f3775c259355ac3fd2e7ddf89852b">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a8a66d3aa3ae9372f3c10b2e37dd593e5">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#a387142d7d3b4e4eace9c90a86c22ac18">AtRANSACN::AtRansac</a>
-</li>
 <li>fLineNum
 : <a class="el" href="classAtEventDrawTaskProto.html#a2382802e727740d6572cc7069211f033">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a84b6087f5ae5616d98cd56fe62b8fc5d">AtEventDrawTaskS800</a>
 </li>
-<li>fLmedsChargeThreshold
-: <a class="el" href="classAtLmedsMod.html#aede3882b9d34e8812726ad9ef049a25c">AtLmedsMod</a>
-</li>
-<li>fLmedsMaxIteration
-: <a class="el" href="classAtLmedsMod.html#af9d311b0bce35ea0a1c4edc69504aa88">AtLmedsMod</a>
-</li>
-<li>fLmedsMinPoints
-: <a class="el" href="classAtLmedsMod.html#accdb1ee98d27c6260d344953793ad4f6">AtLmedsMod</a>
-</li>
 <li>fLmedsMod
 : <a class="el" href="classAtEventDrawTaskS800.html#a8748ae064bacb5cc991ce9b82920e2c3">AtEventDrawTaskS800</a>
 </li>
-<li>fLmedsPointThreshold
-: <a class="el" href="classAtLmedsMod.html#add22d310653ff3939fcbc13f011c1173">AtLmedsMod</a>
-</li>
-<li>fLmedsThreshold
-: <a class="el" href="classAtLmedsMod.html#a96fc51c8d5efbe4ef98dace987bf3526">AtLmedsMod</a>
-</li>
 <li>fLogger
 : <a class="el" href="classAtFITTER_1_1AtFitter.html#a1ac47152a2500d0ca3137c92d3786108">AtFITTER::AtFitter</a>
-</li>
-<li>fLorentzVector
-: <a class="el" href="classAtPSA.html#ac2bd97f314a7b5c39f9ba0ca28c2ca45">AtPSA</a>
 </li>
 <li>fLowGainFactor
 : <a class="el" href="classAtPulseTask.html#a07c9aa0394f8db2dc5cfb65b3f54fef2">AtPulseTask</a>
@@ -752,7 +785,8 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskS800.html#a7056ded6439ad24fed0aa623480e6c9f">AtEventDrawTaskS800</a>
 </li>
 <li>fMap
-: <a class="el" href="classAtEventDrawTaskProto.html#a18f4b1dd32458458708c230e35ef4b20">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#aa7ebc482e6a5f111d382fd3bcb808bf5">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a18f4b1dd32458458708c230e35ef4b20">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#af1c4c60f3821574bfd0e541e731269cc">AtEventDrawTaskS800</a>
 , <a class="el" href="classAtPulseTask.html#aaa77751c5157724608abc35dcd4f27c3">AtPulseTask</a>
 , <a class="el" href="classAtSpaceChargeTask.html#a4d93bd8d0046409ebe31c8c24373469f">AtSpaceChargeTask</a>
@@ -763,9 +797,6 @@ $(function() {
 </li>
 <li>fMaxClusterWidth
 : <a class="el" href="classCRDC.html#ad00d5a32b4bce1d932326964bf296de2">CRDC</a>
-</li>
-<li>fMaxDriftLength
-: <a class="el" href="classAtPSA.html#ae4d5db4d8b7a48741a4c46333d5bbbd1">AtPSA</a>
 </li>
 <li>fMaxHits
 : <a class="el" href="classAtPATTERN_1_1AtPRA.html#ae1a19b06ffc8fb3fce38b2c1e88747c1">AtPATTERN::AtPRA</a>
@@ -780,40 +811,52 @@ $(function() {
 : <a class="el" href="classAtTrigger.html#ac5dec22acf9ff247e1cd7b85f0c03587">AtTrigger</a>
 </li>
 <li>fMaxX
-: <a class="el" href="classAtEventDrawTaskS800.html#a2202e8b403b71193480c67ddb00f804f">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#ad888e226e3da96d4df4c8c8facc1c74b">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a2202e8b403b71193480c67ddb00f804f">AtEventDrawTaskS800</a>
 </li>
 <li>fMaxZ
-: <a class="el" href="classAtEventDrawTaskS800.html#a91fa4a8bfad6f85f36def0570a2f10b0">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a43043e4cc27c3751d7ef1bc6710e6695">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a91fa4a8bfad6f85f36def0570a2f10b0">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_XY
-: <a class="el" href="classAtEventDrawTaskS800.html#a92b71985314fce253dd848cd25d8c5a7">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a02794820f59dd2e960f0f27f1a5d7126">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a92b71985314fce253dd848cd25d8c5a7">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_XY_back
-: <a class="el" href="classAtEventDrawTaskS800.html#a0a74d147327f20cfce1792e177b52d25">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#acd624d244f4a239e398ec1d3415aa0f9">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a0a74d147327f20cfce1792e177b52d25">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_XY_exp
-: <a class="el" href="classAtEventDrawTaskS800.html#a748a6e541a7bd553f6856d836f1daad9">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a570722ca71ca38ffb0c53237657cd995">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a748a6e541a7bd553f6856d836f1daad9">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_XY_int
-: <a class="el" href="classAtEventDrawTaskS800.html#ac5ca1f20a5a1e995f9be37654c5d446a">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a293ef389acc9c2bcf5992d9dcc542baa">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#ac5ca1f20a5a1e995f9be37654c5d446a">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_ZX
-: <a class="el" href="classAtEventDrawTaskS800.html#ae37f5869c406a636bb92292dbdcd42f6">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#afd337ef9ab823fd5fa643708ba6afeae">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#ae37f5869c406a636bb92292dbdcd42f6">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_ZX_back
-: <a class="el" href="classAtEventDrawTaskS800.html#afbb604b8ee4a43aad463f8be0ab1b5b7">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#ada4eb7c547718145b964d47e067906b6">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#afbb604b8ee4a43aad463f8be0ab1b5b7">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_ZX_int
-: <a class="el" href="classAtEventDrawTaskS800.html#ab2347b9f855af8d1027af78f2f220085">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a24daddb15823b1751bbab4a8e55d1b30">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#ab2347b9f855af8d1027af78f2f220085">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_ZY
-: <a class="el" href="classAtEventDrawTaskS800.html#a456cae2f10c189a3b626aaf28ee863d5">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a363c2e870f15e182dd2ef965ad17044b">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a456cae2f10c189a3b626aaf28ee863d5">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_ZY_back
-: <a class="el" href="classAtEventDrawTaskS800.html#a432f3dad5c77eb077054bbdb59d51576">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a864ea87091203e1826ed5f2c698fe1df">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a432f3dad5c77eb077054bbdb59d51576">AtEventDrawTaskS800</a>
 </li>
 <li>fMC_ZY_int
-: <a class="el" href="classAtEventDrawTaskS800.html#a84647cce9ba8acd151cbe9c235174595">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#aa25111c8dc7ed959afc5e31a768316a6">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a84647cce9ba8acd151cbe9c235174595">AtEventDrawTaskS800</a>
 </li>
 <li>fMCEventID
 : <a class="el" href="classAtSimulatedPoint.html#aca0368ad9f204158f6ba019f288ee404">AtSimulatedPoint</a>
@@ -837,54 +880,33 @@ $(function() {
 : <a class="el" href="classAtPATTERN_1_1AtPRA.html#a8da43dd6fdaa2a3bbeee0bf92d131176">AtPATTERN::AtPRA</a>
 </li>
 <li>fMesh
-: <a class="el" href="classAtEventDrawTaskProto.html#a9e2c0f02bbefab69a0ecbdeffb9c43b4">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#afd2394c90612eaaeff6618ee1fc6ce50">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a9e2c0f02bbefab69a0ecbdeffb9c43b4">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a9ddd7aa7a3b1077b6464e60e1ecc4be7">AtEventDrawTaskS800</a>
 </li>
 <li>fMinHits
 : <a class="el" href="classAtPATTERN_1_1AtPRA.html#a36a30ccad4157c6f5e261723fcbee571">AtPATTERN::AtPRA</a>
 </li>
-<li>fMinHitsLine
-: <a class="el" href="classAtRANSACN_1_1AtRansac.html#a1738eaf83fcfd8ee51933640fba78b8c">AtRANSACN::AtRansac</a>
-</li>
 <li>fMinIdx
 : <a class="el" href="classAtTrigger.html#a91b0542f7cf61a05f27e286ba63928ff">AtTrigger</a>
 </li>
-<li>fMinimum
-: <a class="el" href="classAtLmedsMod.html#a721d505656f9dbbd8f5acc19b0281545">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#a980892b25afc6b4b76b0ec4944aef03c">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a05de9fb6414aa8bc50935086deea61d7">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#a45f15525747c22a6d86f2925e24c81bc">AtRANSACN::AtRansac</a>
-, <a class="el" href="classAtTrack.html#a5e891a0b8bc57aa10933eecb9b756d29">AtTrack</a>
-</li>
 <li>fMinX
-: <a class="el" href="classAtEventDrawTaskS800.html#ac6aa569932ee2e55f116447c03b645a2">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#ae6fb91435ff4c3a13ef788d49682c339">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#ac6aa569932ee2e55f116447c03b645a2">AtEventDrawTaskS800</a>
 </li>
 <li>fMinZ
-: <a class="el" href="classAtEventDrawTaskS800.html#a2899f108487b30d475d982bf96fd8996">AtEventDrawTaskS800</a>
-</li>
-<li>fMlesacChargeThreshold
-: <a class="el" href="classAtMlesacMod.html#a41d651d45a07d18127d9b03753fdeefc">AtMlesacMod</a>
-</li>
-<li>fMlesacMaxIteration
-: <a class="el" href="classAtMlesacMod.html#ab90141afab1ccea0b68f95a810afdc9b">AtMlesacMod</a>
-</li>
-<li>fMlesacMinPoints
-: <a class="el" href="classAtMlesacMod.html#afd55628e90b7c37430aa177793bf1d4d">AtMlesacMod</a>
+: <a class="el" href="classAtEventDrawTask.html#a835c2ca916ef4c6da51b9fe7f9bf0a4f">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a2899f108487b30d475d982bf96fd8996">AtEventDrawTaskS800</a>
 </li>
 <li>fMlesacMod
 : <a class="el" href="classAtEventDrawTaskS800.html#a09251228f79a1778180c008cfe247ffe">AtEventDrawTaskS800</a>
-</li>
-<li>fMlesacPointThreshold
-: <a class="el" href="classAtMlesacMod.html#a2751ff7df1c4e0cbfcb510299f410bba">AtMlesacMod</a>
-</li>
-<li>fMlesacThreshold
-: <a class="el" href="classAtMlesacMod.html#ac606b28257c20deb0ad694c56132c044">AtMlesacMod</a>
 </li>
 <li>fMom
 : <a class="el" href="classPythia8Generator.html#aecd1eb517519f22228741b6ed62d1a43">Pythia8Generator</a>
 </li>
 <li>fMultiHit
-: <a class="el" href="classAtEventDrawTaskProto.html#a799451a80924cc9e8d14c6b928b1e481">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#ad6d797a3fdc504395c2e1d37fad1597e">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a799451a80924cc9e8d14c6b928b1e481">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a9db7198bcf3f848a37136709ed7c5c33">AtEventDrawTaskS800</a>
 </li>
 <li>fMultiHitTOF
@@ -901,7 +923,7 @@ $(function() {
 : <a class="el" href="classAtProtoEventAna.html#a2d6d5a975a55fa9790bd65c2021a97de">AtProtoEventAna</a>
 </li>
 <li>fNFree
-: <a class="el" href="classAtTrack.html#a95b7fff94a5b4df90831c9b4dd67b0c5">AtTrack</a>
+: <a class="el" href="classAtPatterns_1_1AtPattern.html#a9092271032d19a99eb43de35d188516e">AtPatterns::AtPattern</a>
 </li>
 <li>fnorm
 : <a class="el" href="structlm__status__struct.html#a58712a83fea5d46dd8351d6045cc1bb5">lm_status_struct</a>
@@ -909,10 +931,8 @@ $(function() {
 <li>fNQuads
 : <a class="el" href="classAtEventDrawTaskS800.html#a6945a849956dded48533fc29d0fef3f8">AtEventDrawTaskS800</a>
 </li>
-<li>fNumberOfTracksMax
-: <a class="el" href="classAtLmedsMod.html#abf98c9c275f0123a78b3d05a5236d060">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#adb1afd844c4668b9e6b22abc4c91ee9b">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a79f6134ee7101f08b93e8ad71c320d06">AtRansacMod</a>
+<li>fNumberPads
+: <a class="el" href="classAtMap.html#a0824f4238853ea94354b51849fb714bc">AtMap</a>
 </li>
 <li>fNumClusters
 : <a class="el" href="classCRDC.html#acec1f09aebb05f23175de622a66b5865">CRDC</a>
@@ -925,6 +945,12 @@ $(function() {
 </li>
 <li>fNumFiles
 : <a class="el" href="classAtGRAWUnpacker.html#a63bd8bd2d6dbe048f420ca9404638486">AtGRAWUnpacker</a>
+</li>
+<li>fNumPads
+: <a class="el" href="classAtEventDrawTask.html#a539df1439b3fdd87a38b91c5de81e1c3">AtEventDrawTask</a>
+</li>
+<li>fNumPoints
+: <a class="el" href="classAtPatterns_1_1AtPattern.html#a87d803ba69122b048717a08ade23a5db">AtPatterns::AtPattern</a>
 </li>
 <li>fNumTbs
 : <a class="el" href="classAtPSA.html#a08c22c98b73f030cff2a5abf0c42f191">AtPSA</a>
@@ -942,11 +968,6 @@ $(function() {
 <li>fobj
 : <a class="el" href="classTOF.html#a8f7b38cdf13c126ef47676023285df21">TOF</a>
 </li>
-<li>fOriginalCloudSize
-: <a class="el" href="classAtLmedsMod.html#a8e328f847981c546280a6597c1fe74d7">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#a8bc1124af77eb12f4f8e602530207124">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#ab40c1fa80aae2d80f343aedc07c8ca7e">AtRansacMod</a>
-</li>
 <li>fOutputBranchName
 : <a class="el" href="classAtSpaceChargeTask.html#af6a7ab393b4a255f6ff03da6108bbc38">AtSpaceChargeTask</a>
 </li>
@@ -957,14 +978,18 @@ $(function() {
 : <a class="el" href="classAtTrigger.html#a425333a7743e5e9f01531b7856c214b7">AtTrigger</a>
 </li>
 <li>fPadAll
-: <a class="el" href="classAtEventDrawTaskProto.html#abec5cb8ef8528e1d1f385dc899f3f801">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a51b7f7b45750fc78128012e63ee4b47f">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#abec5cb8ef8528e1d1f385dc899f3f801">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a5a4c3b90f620a8f4fbfa15bbb667476e">AtEventDrawTaskS800</a>
 </li>
 <li>fPadCoord
 : <a class="el" href="classAtPad.html#ad6e5c50868f390eaf40f90665f2a32bf">AtPad</a>
 </li>
-<li>fPadLayers
-: <a class="el" href="classAtPSA.html#adfef2542092ae8311b77cc625768f67f">AtPSA</a>
+<li>fPadMap
+: <a class="el" href="classAtMap.html#af327caaa32de321487965eff33b82f35">AtMap</a>
+</li>
+<li>fPadMapInverse
+: <a class="el" href="classAtMap.html#a6818510aa45f025dc6e1ce22ae04240e">AtMap</a>
 </li>
 <li>fPadNum
 : <a class="el" href="classAtCalibration.html#ade9b2feb42297f2984b8a9f16d861348">AtCalibration</a>
@@ -973,36 +998,32 @@ $(function() {
 , <a class="el" href="classAtTrigger.html#a8b68cef4e02eb2a728942b10f7e145f1">AtTrigger</a>
 </li>
 <li>fPadPlane
-: <a class="el" href="classAtEventDrawTaskProto.html#a346523ce270b639237ca7d2c82136e34">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a493d1e839b981fca4c87ad4d5faefd4e">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a346523ce270b639237ca7d2c82136e34">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a1c5225a224eaef6fa67f473273a840ed">AtEventDrawTaskS800</a>
+, <a class="el" href="classAtMap.html#a82a27c79c29211e86ef672b094902949">AtMap</a>
 , <a class="el" href="classAtPulseTask.html#a96a63b181f459beb6cc070179d808b0a">AtPulseTask</a>
 </li>
+<li>fPadPlaneCanvas
+: <a class="el" href="classAtMap.html#a085929248a0358d5bb4b26563ddfc797">AtMap</a>
+</li>
 <li>fPadPlanePal
-: <a class="el" href="classAtEventDrawTaskProto.html#ac7a49aef370b80b2bca7220a46e80348">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a1f39601138fbab4ab2ff7cfeb883ce08">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#ac7a49aef370b80b2bca7220a46e80348">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a46a4746adbcdc182a80c46746867805f">AtEventDrawTaskS800</a>
 </li>
-<li>fPadPlaneX
-: <a class="el" href="classAtPSA.html#ae42dd503714fc655d9458da11dd99b91">AtPSA</a>
-</li>
-<li>fPadRows
-: <a class="el" href="classAtPSA.html#a2b9fc17b016ece30f3711d271a899ba8">AtPSA</a>
-</li>
-<li>fPadSizeX
-: <a class="el" href="classAtPSA.html#ae2220b3672d92a8747552ce77e1a17db">AtPSA</a>
-</li>
-<li>fPadSizeZ
-: <a class="el" href="classAtPSA.html#a490d86ee6140232528767a96b3c751f1">AtPSA</a>
+<li>fPadSizeMap
+: <a class="el" href="classAtMap.html#a03d4aff12bd1f6aa2306cf5bc5fff43a">AtMap</a>
 </li>
 <li>fPadWave
-: <a class="el" href="classAtEventDrawTaskProto.html#a62ff27f52c4cc5a1a8fef4155235bced">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a10383c8ef662122b41a40eb45a849ed6">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a62ff27f52c4cc5a1a8fef4155235bced">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#af0a393a50dd5fa4eff6317d7d055baf2">AtEventDrawTaskS800</a>
 </li>
 <li>fPar
 : <a class="el" href="classAtClusterizeTask.html#a1f1627a6be250b3d7b7e779cdad63520">AtClusterizeTask</a>
 , <a class="el" href="classAtFITTER_1_1AtFitter.html#aa7e5e47b8da7e89bfcb252453a386d94">AtFITTER::AtFitter</a>
 , <a class="el" href="classAtPATTERN_1_1AtPRA.html#a23a9d29b3ac72ea34fdd22e4a836f388">AtPATTERN::AtPRA</a>
-, <a class="el" href="classAtPSA.html#a5f4b6cc164785aaa0074deab6ab27d97">AtPSA</a>
-, <a class="el" href="classAtPulseTask.html#a80f4117ce9fb57d8b4f072c1af46d14c">AtPulseTask</a>
 , <a class="el" href="classAtSpaceChargeTask.html#a953192ff1f10381f827e76bf3fddf99e">AtSpaceChargeTask</a>
 </li>
 <li>fPar0_fit
@@ -1011,9 +1032,19 @@ $(function() {
 <li>fPar1_fit
 : <a class="el" href="classAtProtoEventAna.html#a8023c9944e2d6425cb08129559be42f2">AtProtoEventAna</a>
 </li>
+<li>fPattern
+: <a class="el" href="classAtTrack.html#ac7219164c21749b3ff41c4c5bdc1cbc9">AtTrack</a>
+</li>
 <li>fPatternEventArray
-: <a class="el" href="classAtEventDrawTaskProto.html#ae4b5ed1fd57dbb301588a346e5093ec7">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a7edb497ddd6ada31a0b2be0751e47383">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#ae4b5ed1fd57dbb301588a346e5093ec7">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a2e2cb8c51e3e4a467abe721ce547327c">AtEventDrawTaskS800</a>
+</li>
+<li>fPatternLines
+: <a class="el" href="classAtEventDrawTask.html#aa1bb1781443d88b4fc6e29f336863d0b">AtEventDrawTask</a>
+</li>
+<li>fPatternPar
+: <a class="el" href="classAtPatterns_1_1AtPattern.html#a39e516a7593821dedb8f795263c389cf">AtPatterns::AtPattern</a>
 </li>
 <li>fPeakingTime
 : <a class="el" href="classAtPulseTask.html#a8d5869924bc9ce7848af23ba9ea24c5e">AtPulseTask</a>
@@ -1029,7 +1060,8 @@ $(function() {
 : <a class="el" href="classCRDC.html#a865ed3d1280e7a430061cc58f1dd249a">CRDC</a>
 </li>
 <li>fPhiDistr
-: <a class="el" href="classAtEventDrawTaskProto.html#a26531abb2f496c34e0d90b6d618f7561">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#ac88fec785bb0608a8959ff2f7421531b">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a26531abb2f496c34e0d90b6d618f7561">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a261e7624ec00029402ecaf8388e68531">AtEventDrawTaskS800</a>
 , <a class="el" href="classAtProtoQuadrant.html#adf48cb2a2c5ed77856ada657aba172c0">AtProtoQuadrant</a>
 </li>
@@ -1051,27 +1083,15 @@ $(function() {
 <li>fPIDFull
 : <a class="el" href="classAtEventManagerS800.html#afc6bdccb169886d39eb29c6830452ad8">AtEventManagerS800</a>
 </li>
-<li>fPOCAX
-: <a class="el" href="classAtHitCluster.html#aa808beb3ba7fd69ee8357a6a51c624a5">AtHitCluster</a>
-</li>
-<li>fPOCAY
-: <a class="el" href="classAtHitCluster.html#ab8d0125d74f77f95090c7b1454e0df09">AtHitCluster</a>
-</li>
-<li>fPOCAZ
-: <a class="el" href="classAtHitCluster.html#aa8fb5b1ba6403347a542b288e9c9f8ea">AtHitCluster</a>
-</li>
 <li>fPosition
 : <a class="el" href="classAtHit.html#ae260f2eeffa0382f0c2b65d9b7dc7919">AtHit</a>
 , <a class="el" href="classAtSimulatedPoint.html#a524b09631508d987bfb83f3ff3f74e56">AtSimulatedPoint</a>
 </li>
-<li>fPositionCorr
-: <a class="el" href="classAtHit.html#a1993db3df5cdfae4008847df1e953881">AtHit</a>
-</li>
 <li>fPositionFinal
 : <a class="el" href="classAtSimulatedLine.html#a10e481c5314d5444d98b0805f701701a">AtSimulatedLine</a>
 </li>
-<li>fPositionSigma
-: <a class="el" href="classAtHit.html#a729bab3253c6632e00e7db14bce02b85">AtHit</a>
+<li>fPositionVariance
+: <a class="el" href="classAtHit.html#a7493902321fcbdbd0ac049f3eda6153a">AtHit</a>
 </li>
 <li>fPrevPoint
 : <a class="el" href="classAtClusterizeTask.html#ad984c7e501423015239eb756ebfc363d">AtClusterizeTask</a>
@@ -1102,10 +1122,12 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskProto.html#a36a7a42f98d618cee50695df1edf8098">AtEventDrawTaskProto</a>
 </li>
 <li>fQEventHist
-: <a class="el" href="classAtEventDrawTaskS800.html#a1795014f084eb1e016f47d666660b709">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#ae1087e1b10b17097cc54682faa14a986">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a1795014f084eb1e016f47d666660b709">AtEventDrawTaskS800</a>
 </li>
 <li>fQEventHist_H
-: <a class="el" href="classAtEventDrawTaskS800.html#ad0ef35a21ffc0136ed254ab3e4be5c7f">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#acad02d3f3e303c0ea3dfe7ccccdccaa0">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#ad0ef35a21ffc0136ed254ab3e4be5c7f">AtEventDrawTaskS800</a>
 </li>
 <li>fQHitPattern
 : <a class="el" href="classAtEventDrawTaskProto.html#ab791f9ad0f4b917a2d22197962c96f92">AtEventDrawTaskProto</a>
@@ -1114,16 +1136,20 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskProto.html#ac2150f32faec0bb76160dead06f45e4a">AtEventDrawTaskProto</a>
 </li>
 <li>fQuadrant1
-: <a class="el" href="classAtEventDrawTaskS800.html#a9c1879e8c626d0fa04acc52cac7c89e9">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a5a94ab08d205384ba8a2d993e3f35b6e">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a9c1879e8c626d0fa04acc52cac7c89e9">AtEventDrawTaskS800</a>
 </li>
 <li>fQuadrant2
-: <a class="el" href="classAtEventDrawTaskS800.html#aec6475c721b16f16b41d24a82804a2bc">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a9895e5576c3a1de8441ad46a344b636d">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#aec6475c721b16f16b41d24a82804a2bc">AtEventDrawTaskS800</a>
 </li>
 <li>fQuadrant3
-: <a class="el" href="classAtEventDrawTaskS800.html#abff744239bb2a86a30f36edde831d9ba">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#ad98d78e982c57207e698acaf1d13291c">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#abff744239bb2a86a30f36edde831d9ba">AtEventDrawTaskS800</a>
 </li>
 <li>fQuadrant4
-: <a class="el" href="classAtEventDrawTaskS800.html#a935acc60da3745f5a0c0edcfd3c56e54">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#aa2645bf98b033dc92137cc7f63e6cfc6">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a935acc60da3745f5a0c0edcfd3c56e54">AtEventDrawTaskS800</a>
 </li>
 <li>fQuadrantID
 : <a class="el" href="classAtProtoQuadrant.html#a44c38856202a4f367959ab86aea4e6df">AtProtoQuadrant</a>
@@ -1133,12 +1159,8 @@ $(function() {
 , <a class="el" href="classAtProtoEventAna.html#a4b845638fff017efe223a59b3205ac4c">AtProtoEventAna</a>
 </li>
 <li>fRadVSTb
-: <a class="el" href="classAtEventDrawTaskS800.html#a20eddec08cd2841f4dab6f43e5427f83">AtEventDrawTaskS800</a>
-</li>
-<li>fRandSamplMode
-: <a class="el" href="classAtLmedsMod.html#a6f74b9a9627c4654ca75fb8776eb8455">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#ac38ba7e3af8ed3841c0eb829a31e2709">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a140b12439d85a6e2a59b9820526c897c">AtRansacMod</a>
+: <a class="el" href="classAtEventDrawTask.html#a88e6ebffe3a8b5f96ca6ab3646cf799e">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a20eddec08cd2841f4dab6f43e5427f83">AtEventDrawTaskS800</a>
 </li>
 <li>fRange
 : <a class="el" href="classAtProtoEventAna.html#a6e5010ece105d5475b2d52920ac6b887">AtProtoEventAna</a>
@@ -1152,43 +1174,21 @@ $(function() {
 <li>fRansacArray
 : <a class="el" href="classAtEventDrawTaskS800.html#a07474ff8ae3eee103afd7d205112d567">AtEventDrawTaskS800</a>
 </li>
-<li>fRANSACChargeThreshold
-: <a class="el" href="classAtRansacMod.html#a1ec255df4a44411504ab542be580a2d7">AtRansacMod</a>
-</li>
-<li>fRANSACCoeff
-: <a class="el" href="classAtTrack.html#adc4a504420ad9488bfe024bc5d9851e3">AtTrack</a>
-</li>
 <li>fRansacLinearFit
 : <a class="el" href="classAtEventDrawTaskS800.html#ac26b53b012a4bd29c55dd337d3dca50a">AtEventDrawTaskS800</a>
-</li>
-<li>fRANSACMaxIteration
-: <a class="el" href="classAtRansacMod.html#a39d46348acf77179ba8d38ef9b5a528e">AtRansacMod</a>
-</li>
-<li>fRANSACMinPoints
-: <a class="el" href="classAtRansacMod.html#a9c35ed99d2f0c2f8dff3f853dbac8c11">AtRansacMod</a>
 </li>
 <li>fRansacMod
 : <a class="el" href="classAtEventDrawTaskS800.html#a7c083fb5ff777fe0cca4276df5dec4a6">AtEventDrawTaskS800</a>
 </li>
-<li>fRANSACModel
-: <a class="el" href="classAtRANSACN_1_1AtRansac.html#a90f2d51c759137d0357ea7df9338ad57">AtRANSACN::AtRansac</a>
-</li>
-<li>fRANSACPointThreshold
-: <a class="el" href="classAtRansacMod.html#a8bfe98ea8521cb7f0d8f31d88ca225af">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#a8599a9b32e11dd17a0be8d5778c44d59">AtRANSACN::AtRansac</a>
-</li>
-<li>fRANSACThreshold
-: <a class="el" href="classAtRansacMod.html#a5e27216e2d56902b3b4a45e157a35c23">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#a1048893f6d49827d9257cec8dc2bb647">AtRANSACN::AtRansac</a>
-</li>
-<li>fRansacTracks
-: <a class="el" href="classAtRANSACN_1_1AtRansac.html#a4f0a944c3e785e86abf30f6078adcd2d">AtRANSACN::AtRansac</a>
+<li>fRansacUnified
+: <a class="el" href="classAtEventDrawTask.html#a89f749b1dbd23fb31e2969f594c50d05">AtEventDrawTask</a>
 </li>
 <li>fRawAdc
 : <a class="el" href="classAtPad.html#a7ad5815015514b190cded13304dd8ff8">AtPad</a>
 </li>
 <li>fRawevent
-: <a class="el" href="classAtEventDrawTaskProto.html#af81708d3db3656d493ddf706c0f29ff8">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a135e0a08e722aaeaab5f5a47ef9c8170">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#af81708d3db3656d493ddf706c0f29ff8">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a542aba75afb75b9adee8bbaeb35e3dde">AtEventDrawTaskS800</a>
 </li>
 <li>fRawEvent
@@ -1197,9 +1197,13 @@ $(function() {
 , <a class="el" href="classAtUnpacker.html#af0bedd76cc4731ad599624a9b384a22f">AtUnpacker</a>
 </li>
 <li>fRawEventArray
-: <a class="el" href="classAtEventDrawTaskProto.html#a68305737803fae395a68e77331f0f98d">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#af10eddcfa2047329a95645c6c0f2fb49">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a68305737803fae395a68e77331f0f98d">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a0d077f80e511beecf36f81e808125fb8">AtEventDrawTaskS800</a>
 , <a class="el" href="classAtPulseTask.html#a1e0bd5897309ce955862148ac456a0dc">AtPulseTask</a>
+</li>
+<li>fRawEventBranchName
+: <a class="el" href="classAtEventDrawTask.html#a61f26fed0c0007eaadbab914794cf5c6">AtEventDrawTask</a>
 </li>
 <li>fRawEventMutex
 : <a class="el" href="classAtGRAWUnpacker.html#a0d848da3c0cbf670396150fada1df000">AtGRAWUnpacker</a>
@@ -1207,9 +1211,15 @@ $(function() {
 <li>fRe
 : <a class="el" href="classAtPadFFT.html#a3c9507c0468bcd3cd0ed370922f135eb">AtPadFFT</a>
 </li>
+<li>fReferenceHit
+: <a class="el" href="classRandomSample_1_1AtSampleFromReference.html#a9e05eb859f44a4aa14ed0d942b045a12">RandomSample::AtSampleFromReference</a>
+</li>
 <li>fregistr
 : <a class="el" href="classGTrigger.html#a20b25a828f1e21ed2ed52c0fd0b60585">GTrigger</a>
 , <a class="el" href="classTrigger.html#ac690ab12c7b3238abe2926910ce5cb76">Trigger</a>
+</li>
+<li>fResponseFunction
+: <a class="el" href="classAtPulseTask.html#a8f12b425e85ab41e78280dd3877e2060">AtPulseTask</a>
 </li>
 <li>fRf
 : <a class="el" href="classGMultiHitTOF.html#a7d688e678dfcf373b75b65d9fc30e7bd">GMultiHitTOF</a>
@@ -1226,8 +1236,12 @@ $(function() {
 <li>frfc
 : <a class="el" href="classTOF.html#ac2d4b1e2f4d1fadf534c862c1ed371ec">TOF</a>
 </li>
+<li>fRGBAPalette
+: <a class="el" href="classAtEventDrawTask.html#a012ad5221f3a842dbfbb4028e58e213c">AtEventDrawTask</a>
+</li>
 <li>fRhoVariance
-: <a class="el" href="classAtEventDrawTaskS800.html#a377cc8fcbfbe5475a18b9c48020826d9">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a9b6f7f6231c3784a4d0c1ef2ec031e62">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a377cc8fcbfbe5475a18b9c48020826d9">AtEventDrawTaskS800</a>
 </li>
 <li>fs800
 : <a class="el" href="classGTrigger.html#a7f9e454589618fd00a0424554308cb2c">GTrigger</a>
@@ -1245,7 +1259,8 @@ $(function() {
 : <a class="el" href="classGCrdc.html#a03799984a410fffcbe08e219cdd39271">GCrdc</a>
 </li>
 <li>fSaveTextData
-: <a class="el" href="classAtEventDrawTaskProto.html#a381fdfa999b17445d0c4fc7a927b4da5">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#ae2ddf6c9ab632a1130143b4f286aff07">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a381fdfa999b17445d0c4fc7a927b4da5">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a408dfc46b55420b735497657f4f4aecb">AtEventDrawTaskS800</a>
 </li>
 <li>fSaveTransform
@@ -1264,6 +1279,10 @@ $(function() {
 <li>fsi
 : <a class="el" href="classGTimeOfFlight.html#a9d3fd03226a894aa5daa5eb05ca4a369">GTimeOfFlight</a>
 </li>
+<li>fSigma
+: <a class="el" href="classRandomSample_1_1AtGaussian.html#a764d94275523bc7389f8cb021b05bca1">RandomSample::AtGaussian</a>
+, <a class="el" href="classRandomSample_1_1AtWeightedGaussian.html#aa638f4ff49b3f1bbfbb9354e3592072b">RandomSample::AtWeightedGaussian</a>
+</li>
 <li>fSigmaLongDiffusion
 : <a class="el" href="classAtSimulatedLine.html#a9ca1f9155d3d44e76ad751c0b7aef66f">AtSimulatedLine</a>
 </li>
@@ -1277,14 +1296,14 @@ $(function() {
 <li>fSizeID
 : <a class="el" href="classAtPad.html#a3381ef3561fb00b97b9d2c56f8572d22">AtPad</a>
 </li>
-<li>fSlopeCnt
-: <a class="el" href="classAtHit.html#aa114b728fe6b2308a2d9697907891060">AtHit</a>
-</li>
 <li>fSpaceChargePointArray
 : <a class="el" href="classAtSpaceChargeTask.html#a842f110946f7caecb8ac1e758e43182e">AtSpaceChargeTask</a>
 </li>
 <li>fStdDevMulkNN
 : <a class="el" href="classAtPATTERN_1_1AtPRA.html#ab9359353442faa798bfb0b0215aadfb6">AtPATTERN::AtPRA</a>
+</li>
+<li>fSubtractBackground
+: <a class="el" href="classAtFilterFFT.html#a29b0b9bc240ac71f3001f27eb1b0ac90">AtFilterFFT</a>
 </li>
 <li>fsum
 : <a class="el" href="classIC.html#a6e8e8353f30da30e7a08df312c83225a">IC</a>
@@ -1321,30 +1340,28 @@ $(function() {
 , <a class="el" href="classAtPulseTask.html#aa238ca1751ec6a3bbdff5d47dffac170">AtPulseTask</a>
 </li>
 <li>fTheta
-: <a class="el" href="classAtEventDrawTaskS800.html#adfcad9952b7aef2155a778322c3537fb">AtEventDrawTaskS800</a>
-</li>
-<li>fThetaPad
-: <a class="el" href="classAtPSA.html#a254f538b41bb42d51d7929885d541154">AtPSA</a>
+: <a class="el" href="classAtEventDrawTask.html#a58da2a883745efe4793e700b59a73bcf">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#adfcad9952b7aef2155a778322c3537fb">AtEventDrawTaskS800</a>
 </li>
 <li>fThetaxPhi
-: <a class="el" href="classAtEventDrawTaskS800.html#a05972fc5daf392c2470b43258df46a8f">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a4f634f2c3792effe6d7b8a665fd9032b">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a05972fc5daf392c2470b43258df46a8f">AtEventDrawTaskS800</a>
 </li>
 <li>fThetaxPhi_Ini
-: <a class="el" href="classAtEventDrawTaskS800.html#af4b9a0ab8712fd96987db360140920c0">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#aff8d5998e7427639933e14da75ff72a6">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#af4b9a0ab8712fd96987db360140920c0">AtEventDrawTaskS800</a>
 </li>
 <li>fThetaxPhi_Ini_RANSAC
-: <a class="el" href="classAtEventDrawTaskS800.html#a60e8713063ff745ba33093f6630d2960">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a61d4ac5380674105a4c81d6ff01b5837">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a60e8713063ff745ba33093f6630d2960">AtEventDrawTaskS800</a>
 </li>
 <li>fThreshold
-: <a class="el" href="classAtEventDrawTaskS800.html#a0eafc02894d03cc5e3d0c33189451555">AtEventDrawTaskS800</a>
+: <a class="el" href="classAtEventDrawTask.html#a8bc0d90f087ffe4c1c6c2de15fe9339e">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskS800.html#a0eafc02894d03cc5e3d0c33189451555">AtEventDrawTaskS800</a>
 , <a class="el" href="classAtPSA.html#a3c35e30186756471a3728db7c995cf99">AtPSA</a>
 </li>
 <li>fThresholdlow
 : <a class="el" href="classAtPSA.html#a824db6c57af51dbdbc89ae3ec4de6c0f">AtPSA</a>
-</li>
-<li>fTiltAng
-: <a class="el" href="classAtPSA.html#aec2ab96e54661b27c1979e825ed2693f">AtPSA</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#a109659fe5e343074b46e022d3ffc0be0">AtRANSACN::AtRansac</a>
 </li>
 <li>fTime
 : <a class="el" href="classAtApolloCrystalCalData.html#a1d0562b1f2572071d035affafe805d4c">AtApolloCrystalCalData</a>
@@ -1391,19 +1408,11 @@ $(function() {
 <li>ftol
 : <a class="el" href="structlm__control__struct.html#a9e0bd6b18019c5adff189ad09aed8782">lm_control_struct</a>
 </li>
-<li>fTotalCharge
-: <a class="el" href="classAtLmedsMod.html#ade85d9633b6d7be67c9977a9fef372dd">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#aaa2eac1010cc6620fb9cde8e6b79ae0f">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a6bdd4870a29852996117f7d788eee838">AtRansacMod</a>
-</li>
 <li>fTraceIntegral
 : <a class="el" href="classAtHit.html#abecd79044e003cdde8e400bbac7b16b8">AtHit</a>
 </li>
 <li>fTrackCand
-: <a class="el" href="classAtLmedsMod.html#ac8e816a1c888ba6e68cadc89283002c1">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#a4281fa4b5efd5e0f56a54098993c37ba">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a58067089499dd43014a6a28f0102fd7c">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#a15fc60a89929e725ce0aff5550d6c022">AtRANSACN::AtRansac</a>
+: <a class="el" href="classAtPATTERN_1_1AtPRA.html#a72502184a33b329f5f7a8beb81bccae5">AtPATTERN::AtPRA</a>
 </li>
 <li>fTrackFinderHC
 : <a class="el" href="classAtEventDrawTaskS800.html#aa02a886be82dcb2c1ab265773bbd7c24">AtEventDrawTaskS800</a>
@@ -1412,8 +1421,7 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskS800.html#ac0c4af420fd302f618b799dba6eb4cbc">AtEventDrawTaskS800</a>
 </li>
 <li>fTrackID
-: <a class="el" href="classAtHit.html#a9b3ba98b177a0f2c7b917466b97f25cd">AtHit</a>
-, <a class="el" href="classAtTrack.html#a3dc0550ffce879e013e2b53f8254dc9d">AtTrack</a>
+: <a class="el" href="classAtTrack.html#a3dc0550ffce879e013e2b53f8254dc9d">AtTrack</a>
 </li>
 <li>fTrackingEventAna
 : <a class="el" href="classAtEventDrawTaskS800.html#a0083576cecb918234b48a31d9aebbf72">AtEventDrawTaskS800</a>
@@ -1422,11 +1430,13 @@ $(function() {
 : <a class="el" href="classAtEventDrawTaskS800.html#aedd8cca563144f537fa968641d55524e">AtEventDrawTaskS800</a>
 </li>
 <li>fTrackNum
-: <a class="el" href="classAtEventDrawTaskProto.html#a55b23de8488251cefd917d2e12c35acb">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#a3101e72521c307a1cfc304633abed044">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a55b23de8488251cefd917d2e12c35acb">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a65892dd93dc6af5fa66110f6603c99b3">AtEventDrawTaskS800</a>
 </li>
-<li>fTrackVertex
-: <a class="el" href="classAtTrack.html#adb5d1b1d51c02876e27930a6c79619f0">AtTrack</a>
+<li>fTrackTransformer
+: <a class="el" href="classAtFITTER_1_1AtFitter.html#a25ff61586d42c6194fd8bcccc963365d">AtFITTER::AtFitter</a>
+, <a class="el" href="classAtPATTERN_1_1AtPRA.html#a1bb57409f29fe97b943a4d436f32b594">AtPATTERN::AtPRA</a>
 </li>
 <li>fTransformedEvent
 : <a class="el" href="classAtFilterFFT.html#a42888a96f57b7aa28fb9a4a1c0b042e6">AtFilterFFT</a>
@@ -1450,7 +1460,8 @@ $(function() {
 , <a class="el" href="classS800Calc.html#ab82c51bf307df3e05216b6a50d77d969">S800Calc</a>
 </li>
 <li>fUnpackHough
-: <a class="el" href="classAtEventDrawTaskProto.html#a7054d48e07445bc0b69ee574e2d82123">AtEventDrawTaskProto</a>
+: <a class="el" href="classAtEventDrawTask.html#acf946320e01b6acf56e54ec2e6b432a4">AtEventDrawTask</a>
+, <a class="el" href="classAtEventDrawTaskProto.html#a7054d48e07445bc0b69ee574e2d82123">AtEventDrawTaskProto</a>
 , <a class="el" href="classAtEventDrawTaskS800.html#a269df5b1430f95fbac8081e8d259518a">AtEventDrawTaskS800</a>
 </li>
 <li>fUseFastGain
@@ -1472,11 +1483,6 @@ $(function() {
 : <a class="el" href="classAtClusterizeTask.html#a31870ba5a551553c3d9d13d1c4c03c7a">AtClusterizeTask</a>
 , <a class="el" href="classAtSpaceChargeTask.html#aaadac00c420fff1a4b94a53a6fce3e49">AtSpaceChargeTask</a>
 </li>
-<li>fVerbose
-: <a class="el" href="classAtLmedsMod.html#ae8c7e1fcd50584ea4a82ea9fffa526bb">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#aa30f0b8c6632f3a880c56203c6af8dc0">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a7cf5cc7da77b76dedf10bf1888c86eec">AtRansacMod</a>
-</li>
 <li>fVertex
 : <a class="el" href="classAtEventDrawTaskS800.html#a6f9965c64e29c77dec47dd7f8ef2a83b">AtEventDrawTaskS800</a>
 </li>
@@ -1486,40 +1492,14 @@ $(function() {
 <li>fVertex13
 : <a class="el" href="classAtProtoEventAna.html#a53f6b26a164dc48c4bab05ca144b56d8">AtProtoEventAna</a>
 </li>
-<li>fVertex_1
-: <a class="el" href="classAtLmedsMod.html#a0ddcd5fb1346d404b9656b8b84eccf3c">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#a423edfb89584b57764161ffd9b897bc4">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#ace3830f61cf29c8b0b64d1b8f61fc82f">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#a2826f3c5b6a47b52a0ae977439face5f">AtRANSACN::AtRansac</a>
+<li>fVertexToZDist
+: <a class="el" href="classAtTrack.html#a77b3f12fa7f8e1bb3c87a370b457b95c">AtTrack</a>
 </li>
-<li>fVertex_2
-: <a class="el" href="classAtLmedsMod.html#a937832d6cf31371a240bd09aea69ca51">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#a8f80d1aa57c54c55ab7cd63b68311552">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#aac98c72a9728807d08a56a01599cbfbb">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#ab9f61c6fd48496f8a81d1b78aac9c6a6">AtRANSACN::AtRansac</a>
+<li>fVetoIn
+: <a class="el" href="classRandomSample_1_1AtWeightedY.html#a2a60147b97e7f45d37db964a9be6a483">RandomSample::AtWeightedY</a>
 </li>
-<li>fVertex_mean
-: <a class="el" href="classAtLmedsMod.html#a67d6c24e51783f9011753d568c8ca199">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#ae5f0664e24803f1dab5abe6be61a29a9">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#aa7370779ae9b059e7e328f2cf1ce12be">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#aaec4cbeb9862b1fe60900a00b83c786b">AtRANSACN::AtRansac</a>
-</li>
-<li>fVertex_tracks
-: <a class="el" href="classAtLmedsMod.html#ad161c1baec858ab714ab09ccfb347745">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#ae63dd88fe24fa9a0921d233d1a4cc26c">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#af38556b0fe00192136b3498f5989c023">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#add95b60fcf7f54025fbff14dc1a563a6">AtRANSACN::AtRansac</a>
-</li>
-<li>fVertexMod
-: <a class="el" href="classAtLmedsMod.html#a3d8a784c33d0770aa5c07d288d7d5475">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#ad5b7f190d0e428fa53268de1d7573431">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#aee9a3defec9e50fa763ea0bac3e2df02">AtRansacMod</a>
-</li>
-<li>fVertexTime
-: <a class="el" href="classAtLmedsMod.html#a54964946696c49436abb393eef72fb46">AtLmedsMod</a>
-, <a class="el" href="classAtMlesacMod.html#a0dae251a788b6a4ce0a504a2a222f7d2">AtMlesacMod</a>
-, <a class="el" href="classAtRansacMod.html#a2c559d3b5828acc04cb0961b42d4eda0">AtRansacMod</a>
-, <a class="el" href="classAtRANSACN_1_1AtRansac.html#a0dd8c6e98ec52918f45e525751963af5">AtRANSACN::AtRansac</a>
+<li>fVetoOut
+: <a class="el" href="classRandomSample_1_1AtWeightedY.html#af4feec99d05ae1b595f69ae830d7e15b">RandomSample::AtWeightedY</a>
 </li>
 <li>fVolName
 : <a class="el" href="classAtMCPoint.html#a41e0965d3da9f77bc97904842e2a058b">AtMCPoint</a>
@@ -1529,6 +1509,9 @@ $(function() {
 </li>
 <li>fwidth
 : <a class="el" href="classGCrdc.html#aad9ab5d010ff3e67429f669f7939d2fd">GCrdc</a>
+</li>
+<li>fWithReplacement
+: <a class="el" href="classRandomSample_1_1AtSample.html#a300b4f41e28271c74cf3c267a48e3d9b">RandomSample::AtSample</a>
 </li>
 <li>fx
 : <a class="el" href="classCRDC.html#a0d8b825781a9d743b70e21f8374261ae">CRDC</a>
@@ -1541,9 +1524,6 @@ $(function() {
 </li>
 <li>fX_out
 : <a class="el" href="classAtSiPoint.html#ae4ad822d6419312069da07fc3c372b62">AtSiPoint</a>
-</li>
-<li>fXCenter
-: <a class="el" href="classAtRANSACN_1_1AtRansac.html#a6456ea2684dde3f1df3a882a1ae1546d">AtRANSACN::AtRansac</a>
 </li>
 <li>fXf
 : <a class="el" href="classGMultiHitTOF.html#a4e46cb771996f88cc8ef340253cfa88b">GMultiHitTOF</a>
@@ -1574,9 +1554,6 @@ $(function() {
 <li>fY_out
 : <a class="el" href="classAtSiPoint.html#a17b81eff80b56c06063f26cf50db88b1">AtSiPoint</a>
 </li>
-<li>fYCenter
-: <a class="el" href="classAtRANSACN_1_1AtRansac.html#a5de25fe484db0528d0459f287cf57964">AtRANSACN::AtRansac</a>
-</li>
 <li>fyOffset
 : <a class="el" href="classS800Settings.html#a0254d37aed26676bf779d901a42fde10">S800Settings</a>
 </li>
@@ -1599,7 +1576,7 @@ $(function() {
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:50 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:03 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

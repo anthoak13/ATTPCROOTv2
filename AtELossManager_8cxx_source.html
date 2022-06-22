@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -133,7 +133,7 @@ $(function() {
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      Energy_in_range = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      IonMass = Mass; <span class="comment">// In MeV/c^2</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;      c = 29.9792458; <span class="comment">// Speed of light in cm/ns.</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;      <a class="code" href="AtRadialChargeModel_8cxx.html#a4fa597cdd9a67fc4cef7c8beebd1baa8">c</a> = 29.9792458; <span class="comment">// Speed of light in cm/ns.</span></div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      EvD = std::make_shared&lt;TGraph&gt;();</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;   }</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
@@ -387,10 +387,10 @@ $(function() {
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;      <span class="keywordflow">while</span> (Kn &gt; FinalEnergy &amp;&amp; Kn1 &gt; FinalEnergy &amp;&amp; n &lt; (<span class="keywordtype">int</span>)pow(10.0, 6)) {</div>
 <div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160; </div>
 <div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;         <span class="comment">// L += sqrt(Kn); // 2016-06-15 changed</span></div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;         L += sqrt((Kn + Kn1) / 2) * sqrt(2 / IonMass) * DeltaT * c; <span class="comment">// DeltaL going from point n to n+1.</span></div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;         L += sqrt((Kn + Kn1) / 2) * sqrt(2 / IonMass) * DeltaT * <a class="code" href="AtRadialChargeModel_8cxx.html#a4fa597cdd9a67fc4cef7c8beebd1baa8">c</a>; <span class="comment">// DeltaL going from point n to n+1.</span></div>
 <div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;         <span class="comment">// cout&lt;&lt;&quot;1 = &quot;&lt;&lt;Kn&lt;&lt;&quot;  &quot;&lt;&lt;Kn1&lt;&lt;endl;</span></div>
 <div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160; </div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;         DeltaX = sqrt((Kn + Kn1) / IonMass) * DeltaT * c;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;         DeltaX = sqrt((Kn + Kn1) / IonMass) * DeltaT * <a class="code" href="AtRadialChargeModel_8cxx.html#a4fa597cdd9a67fc4cef7c8beebd1baa8">c</a>;</div>
 <div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160; </div>
 <div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;         Kn1 = Kn;</div>
 <div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;         <span class="comment">// Kn -= GetEnergyLoss(Kn,DeltaX); // 2016-06-15 changed</span></div>
@@ -464,7 +464,7 @@ $(function() {
 <div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160; </div>
 <div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">int</span> n = 0; n &lt; Steps; n++) {</div>
 <div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160; </div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;         <a class="code" href="classTOF.html">TOF</a> += sqrt(IonMass / (2 * Kn)) * StepSize / c; <span class="comment">// DeltaT going from point n to n+1.</span></div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;         <a class="code" href="classTOF.html">TOF</a> += sqrt(IonMass / (2 * Kn)) * StepSize / <a class="code" href="AtRadialChargeModel_8cxx.html#a4fa597cdd9a67fc4cef7c8beebd1baa8">c</a>; <span class="comment">// DeltaT going from point n to n+1.</span></div>
 <div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;         Kn -= GetEnergyLoss(Kn, StepSize);              <span class="comment">// After the TOF is added the K.E. at point n+1 is calc.}</span></div>
 <div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;      }</div>
 <div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;      <span class="keywordflow">return</span> <a class="code" href="classTOF.html">TOF</a>;</div>
@@ -631,9 +631,10 @@ $(function() {
 <div class="ttc" id="aAtELossManager_8cxx_html_ac7d644edac0e2d68885471dc0a0fa7be"><div class="ttname"><a href="AtELossManager_8cxx.html#ac7d644edac0e2d68885471dc0a0fa7be">ClassImp</a></div><div class="ttdeci">ClassImp(AtTools::AtELossManager)</div></div>
 <div class="ttc" id="aclassAtTools_1_1AtELossManager_html_aeb0f41b9ebeb966d14b42f517b5cdfc1"><div class="ttname"><a href="classAtTools_1_1AtELossManager.html#aeb0f41b9ebeb966d14b42f517b5cdfc1">AtTools::AtELossManager::GetPathLength</a></div><div class="ttdeci">Double_t GetPathLength(Float_t InitialEnergy, Float_t FinalEnergy, Float_t DeltaT)</div><div class="ttdef"><b>Definition:</b> <a href="AtELossManager_8cxx_source.html#l00303">AtELossManager.cxx:303</a></div></div>
 <div class="ttc" id="aclassAtTools_1_1AtELossManager_html_adc071b6818660411136bac8aa37b4524"><div class="ttname"><a href="classAtTools_1_1AtELossManager.html#adc071b6818660411136bac8aa37b4524">AtTools::AtELossManager::AtELossManager</a></div><div class="ttdeci">AtELossManager()</div><div class="ttdef"><b>Definition:</b> <a href="AtELossManager_8cxx_source.html#l00013">AtELossManager.cxx:13</a></div></div>
+<div class="ttc" id="aAtRadialChargeModel_8cxx_html_a4fa597cdd9a67fc4cef7c8beebd1baa8"><div class="ttname"><a href="AtRadialChargeModel_8cxx.html#a4fa597cdd9a67fc4cef7c8beebd1baa8">c</a></div><div class="ttdeci">constexpr auto c</div><div class="ttdef"><b>Definition:</b> <a href="AtRadialChargeModel_8cxx_source.html#l00013">AtRadialChargeModel.cxx:13</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:48 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

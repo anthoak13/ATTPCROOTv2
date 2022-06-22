@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -98,7 +98,7 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classAtTpcMap.html#a725b4225f5610f4db2009ee1d842753e">Dump</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classAtTpcMap.html#a94c9d74f2c23331fbdfffc3ec6902bbe">GeneratePadPlane</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;   <span class="keyword">virtual</span> <a class="code" href="AtGadgetIIMap_8cxx.html#aa22c237a573cf8be8b06fce090a73290">ROOT::Math::XYPoint</a> <a class="code" href="classAtTpcMap.html#a5caf38df5bf1438e602b85092be322f9">CalcPadCenter</a>(Int_t PadRef) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;   <span class="keyword">virtual</span> <a class="code" href="AtPatternCircle2D_8cxx.html#aa22c237a573cf8be8b06fce090a73290">ROOT::Math::XYPoint</a> <a class="code" href="classAtTpcMap.html#a5caf38df5bf1438e602b85092be322f9">CalcPadCenter</a>(Int_t PadRef) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;   <span class="keyword">virtual</span> TH2Poly *<a class="code" href="classAtTpcMap.html#a10324ed94900a9f6d0762d7bc342c576">GetPadPlane</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classAtTpcMap.html#a8168fb81e614f379c8f5e744c57f00b5">   30</a></span>&#160;   <span class="keyword">virtual</span> Int_t <a class="code" href="classAtTpcMap.html#a8168fb81e614f379c8f5e744c57f00b5">BinToPad</a>(Int_t binval)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> binval - 1; };</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
@@ -127,10 +127,10 @@ $(function() {
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassAtMap_html"><div class="ttname"><a href="classAtMap.html">AtMap</a></div><div class="ttdef"><b>Definition:</b> <a href="AtMap_8h_source.html#l00033">AtMap.h:33</a></div></div>
+<div class="ttc" id="aclassAtMap_html"><div class="ttname"><a href="classAtMap.html">AtMap</a></div><div class="ttdef"><b>Definition:</b> <a href="AtMap_8h_source.html#l00034">AtMap.h:34</a></div></div>
 <div class="ttc" id="aclassAtTpcMap_html_a8168fb81e614f379c8f5e744c57f00b5"><div class="ttname"><a href="classAtTpcMap.html#a8168fb81e614f379c8f5e744c57f00b5">AtTpcMap::BinToPad</a></div><div class="ttdeci">virtual Int_t BinToPad(Int_t binval) override</div><div class="ttdef"><b>Definition:</b> <a href="AtTpcMap_8h_source.html#l00030">AtTpcMap.h:30</a></div></div>
 <div class="ttc" id="aclassAtTpcMap_html_a94c9d74f2c23331fbdfffc3ec6902bbe"><div class="ttname"><a href="classAtTpcMap.html#a94c9d74f2c23331fbdfffc3ec6902bbe">AtTpcMap::GeneratePadPlane</a></div><div class="ttdeci">virtual void GeneratePadPlane() override</div><div class="ttdef"><b>Definition:</b> <a href="AtTpcMap_8cxx_source.html#l00075">AtTpcMap.cxx:75</a></div></div>
-<div class="ttc" id="aAtGadgetIIMap_8cxx_html_aa22c237a573cf8be8b06fce090a73290"><div class="ttname"><a href="AtGadgetIIMap_8cxx.html#aa22c237a573cf8be8b06fce090a73290">XYPoint</a></div><div class="ttdeci">ROOT::Math::XYPoint XYPoint</div><div class="ttdef"><b>Definition:</b> <a href="AtGadgetIIMap_8cxx_source.html#l00026">AtGadgetIIMap.cxx:26</a></div></div>
+<div class="ttc" id="aAtPatternCircle2D_8cxx_html_aa22c237a573cf8be8b06fce090a73290"><div class="ttname"><a href="AtPatternCircle2D_8cxx.html#aa22c237a573cf8be8b06fce090a73290">XYPoint</a></div><div class="ttdeci">ROOT::Math::XYPoint XYPoint</div><div class="ttdef"><b>Definition:</b> <a href="AtPatternCircle2D_8cxx_source.html#l00015">AtPatternCircle2D.cxx:15</a></div></div>
 <div class="ttc" id="aclassAtTpcMap_html_a725b4225f5610f4db2009ee1d842753e"><div class="ttname"><a href="classAtTpcMap.html#a725b4225f5610f4db2009ee1d842753e">AtTpcMap::Dump</a></div><div class="ttdeci">virtual void Dump() override</div><div class="ttdef"><b>Definition:</b> <a href="AtTpcMap_8cxx_source.html#l00051">AtTpcMap.cxx:51</a></div></div>
 <div class="ttc" id="aclassAtTpcMap_html"><div class="ttname"><a href="classAtTpcMap.html">AtTpcMap</a></div><div class="ttdef"><b>Definition:</b> <a href="AtTpcMap_8h_source.html#l00020">AtTpcMap.h:20</a></div></div>
 <div class="ttc" id="aclassAtTpcMap_html_a2fd03d7eab753198da8d1152c77fccfe"><div class="ttname"><a href="classAtTpcMap.html#a2fd03d7eab753198da8d1152c77fccfe">AtTpcMap::fill_coord</a></div><div class="ttdeci">Int_t fill_coord(int pindex, float padxoff, float padyoff, float triside, float fort)</div><div class="ttdef"><b>Definition:</b> <a href="AtTpcMap_8cxx_source.html#l00200">AtTpcMap.cxx:200</a></div></div>
@@ -142,7 +142,7 @@ $(function() {
 <div class="ttc" id="aclassAtTpcMap_html_a5caf38df5bf1438e602b85092be322f9"><div class="ttname"><a href="classAtTpcMap.html#a5caf38df5bf1438e602b85092be322f9">AtTpcMap::CalcPadCenter</a></div><div class="ttdeci">virtual ROOT::Math::XYPoint CalcPadCenter(Int_t PadRef) override</div><div class="ttdef"><b>Definition:</b> <a href="AtTpcMap_8cxx_source.html#l00240">AtTpcMap.cxx:240</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:47 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:00 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

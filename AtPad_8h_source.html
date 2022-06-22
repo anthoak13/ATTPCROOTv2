@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -99,7 +99,7 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classAtPad.html#a3a47cd6b350a2693f2f6fc34c6fc0603">   27</a></span>&#160;   <span class="keyword">using</span> <a class="code" href="classAtPad.html#a3a47cd6b350a2693f2f6fc34c6fc0603">rawTrace</a> = std::array&lt;Int_t, 512&gt;;</div>
 <div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classAtPad.html#a0e52aacfe76a3940c018c481476263e6">   28</a></span>&#160;   <span class="keyword">using</span> <a class="code" href="classAtPad.html#a0e52aacfe76a3940c018c481476263e6">trace</a> = std::array&lt;Double_t, 512&gt;;</div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classAtPad.html#a9b5f4bfcc4525bf453eba2d4893f2aaa">   29</a></span>&#160;   <span class="keyword">using</span> <a class="code" href="classAtPad.html#a9b5f4bfcc4525bf453eba2d4893f2aaa">XYPoint</a> = <a class="code" href="AtGadgetIIMap_8cxx.html#aa22c237a573cf8be8b06fce090a73290">ROOT::Math::XYPoint</a>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classAtPad.html#a9b5f4bfcc4525bf453eba2d4893f2aaa">   29</a></span>&#160;   <span class="keyword">using</span> <a class="code" href="classAtPad.html#a9b5f4bfcc4525bf453eba2d4893f2aaa">XYPoint</a> = <a class="code" href="AtPatternCircle2D_8cxx.html#aa22c237a573cf8be8b06fce090a73290">ROOT::Math::XYPoint</a>;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classAtPad.html#a9efa9bab566fc8975b0d0ad1d1dc185d">   32</a></span>&#160;   Int_t <a class="code" href="classAtPad.html#a9efa9bab566fc8975b0d0ad1d1dc185d">fPadNum</a>; <span class="comment">// Pad reference number in AtMap</span></div>
@@ -165,8 +165,8 @@ $(function() {
 <div class="ttc" id="aclassAtPad_html_a3586996d827691bd54577ff91c0f61ea"><div class="ttname"><a href="classAtPad.html#a3586996d827691bd54577ff91c0f61ea">AtPad::GetRawADC</a></div><div class="ttdeci">Int_t GetRawADC(Int_t idx) const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00070">AtPad.h:70</a></div></div>
 <div class="ttc" id="aclassAtPad_html_a3381ef3561fb00b97b9d2c56f8572d22"><div class="ttname"><a href="classAtPad.html#a3381ef3561fb00b97b9d2c56f8572d22">AtPad::fSizeID</a></div><div class="ttdeci">Int_t fSizeID</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00033">AtPad.h:33</a></div></div>
 <div class="ttc" id="aclassAtPad_html_a40cf79695b32cac4a0c5d0c24b85b48e"><div class="ttname"><a href="classAtPad.html#a40cf79695b32cac4a0c5d0c24b85b48e">AtPad::Clone</a></div><div class="ttdeci">virtual std::unique_ptr&lt; AtPad &gt; Clone()</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8cxx_source.html#l00022">AtPad.cxx:22</a></div></div>
+<div class="ttc" id="aAtPatternCircle2D_8cxx_html_aa22c237a573cf8be8b06fce090a73290"><div class="ttname"><a href="AtPatternCircle2D_8cxx.html#aa22c237a573cf8be8b06fce090a73290">XYPoint</a></div><div class="ttdeci">ROOT::Math::XYPoint XYPoint</div><div class="ttdef"><b>Definition:</b> <a href="AtPatternCircle2D_8cxx_source.html#l00015">AtPatternCircle2D.cxx:15</a></div></div>
 <div class="ttc" id="aclassAtPad_html_ab1d39b5ee857869e9e5ac27b3a3e16fa"><div class="ttname"><a href="classAtPad.html#ab1d39b5ee857869e9e5ac27b3a3e16fa">AtPad::SetPedestalSubtracted</a></div><div class="ttdeci">void SetPedestalSubtracted(Bool_t val=kTRUE)</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00051">AtPad.h:51</a></div></div>
-<div class="ttc" id="aAtGadgetIIMap_8cxx_html_aa22c237a573cf8be8b06fce090a73290"><div class="ttname"><a href="AtGadgetIIMap_8cxx.html#aa22c237a573cf8be8b06fce090a73290">XYPoint</a></div><div class="ttdeci">ROOT::Math::XYPoint XYPoint</div><div class="ttdef"><b>Definition:</b> <a href="AtGadgetIIMap_8cxx_source.html#l00026">AtGadgetIIMap.cxx:26</a></div></div>
 <div class="ttc" id="aclassAtPad_html_a0e52aacfe76a3940c018c481476263e6"><div class="ttname"><a href="classAtPad.html#a0e52aacfe76a3940c018c481476263e6">AtPad::trace</a></div><div class="ttdeci">std::array&lt; Double_t, 512 &gt; trace</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00028">AtPad.h:28</a></div></div>
 <div class="ttc" id="aclassAtPad_html_a888100ff76d878d7faf960f403d3ca42"><div class="ttname"><a href="classAtPad.html#a888100ff76d878d7faf960f403d3ca42">AtPad::GetSizeID</a></div><div class="ttdeci">Int_t GetSizeID() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00063">AtPad.h:63</a></div></div>
 <div class="ttc" id="aclassAtPad_html_abb35f4fb9eef12c24317bed59398d816"><div class="ttname"><a href="classAtPad.html#abb35f4fb9eef12c24317bed59398d816">AtPad::SetADC</a></div><div class="ttdeci">void SetADC(const trace &amp;val)</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00056">AtPad.h:56</a></div></div>
@@ -177,7 +177,7 @@ $(function() {
 <div class="ttc" id="aclassAtPad_html_a91c89e0b6f1f521b663ee7246965f1eb"><div class="ttname"><a href="classAtPad.html#a91c89e0b6f1f521b663ee7246965f1eb">AtPad::GetADC</a></div><div class="ttdeci">const trace &amp; GetADC() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8cxx_source.html#l00027">AtPad.cxx:27</a></div></div>
 <div class="ttc" id="aclassAtPad_html_a3a47cd6b350a2693f2f6fc34c6fc0603"><div class="ttname"><a href="classAtPad.html#a3a47cd6b350a2693f2f6fc34c6fc0603">AtPad::rawTrace</a></div><div class="ttdeci">std::array&lt; Int_t, 512 &gt; rawTrace</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00027">AtPad.h:27</a></div></div>
 <div class="ttc" id="aclassAtPad_html_a209eb8e1eb9243078bef8fd6132c64ac"><div class="ttname"><a href="classAtPad.html#a209eb8e1eb9243078bef8fd6132c64ac">AtPad::IsPedestalSubtracted</a></div><div class="ttdeci">Bool_t IsPedestalSubtracted() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00059">AtPad.h:59</a></div></div>
-<div class="ttc" id="aAtCalibration_8h_html_af1bbdd97e9ce2dc1f59c00b470437c80"><div class="ttname"><a href="AtCalibration_8h.html#af1bbdd97e9ce2dc1f59c00b470437c80">trace</a></div><div class="ttdeci">std::array&lt; Double_t, 512 &gt; trace</div><div class="ttdef"><b>Definition:</b> <a href="AtCalibration_8h_source.html#l00014">AtCalibration.h:14</a></div></div>
+<div class="ttc" id="aAtCalibration_8h_html_af1bbdd97e9ce2dc1f59c00b470437c80"><div class="ttname"><a href="AtCalibration_8h.html#af1bbdd97e9ce2dc1f59c00b470437c80">trace</a></div><div class="ttdeci">std::array&lt; Double_t, 512 &gt; trace</div><div class="ttdef"><b>Definition:</b> <a href="AtCalibration_8h_source.html#l00009">AtCalibration.h:9</a></div></div>
 <div class="ttc" id="aclassAtPad_html_ad6e5c50868f390eaf40f90665f2a32bf"><div class="ttname"><a href="classAtPad.html#ad6e5c50868f390eaf40f90665f2a32bf">AtPad::fPadCoord</a></div><div class="ttdeci">XYPoint fPadCoord</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00034">AtPad.h:34</a></div></div>
 <div class="ttc" id="aclassAtPad_html"><div class="ttname"><a href="classAtPad.html">AtPad</a></div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00025">AtPad.h:25</a></div></div>
 <div class="ttc" id="aclassAtPad_html_aec35b058af1b622b27c7d8afd82cea9d"><div class="ttname"><a href="classAtPad.html#aec35b058af1b622b27c7d8afd82cea9d">AtPad::SetSizeID</a></div><div class="ttdeci">void SetSizeID(Int_t sizeID)</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00049">AtPad.h:49</a></div></div>
@@ -187,7 +187,7 @@ $(function() {
 <div class="ttc" id="aclassAtPad_html_a1cd83206db1c7f1ab5c7091a0dc72e3f"><div class="ttname"><a href="classAtPad.html#a1cd83206db1c7f1ab5c7091a0dc72e3f">AtPad::SetRawADC</a></div><div class="ttdeci">void SetRawADC(Int_t idx, Int_t val)</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00055">AtPad.h:55</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:46 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:00 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

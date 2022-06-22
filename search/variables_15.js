@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['y_5265',['y',['../structPoint.html#a6101960c8d2d4e8ea1d32c9234bbeb8d',1,'Point::y()'],['../lmcurve_8cxx.html#ac41520b3fdae6af3fa0d9dbbf3211471',1,'y():&#160;lmcurve.cxx']]]
+  ['x_5489',['x',['../structPoint.html#a05dfe2dfbde813ad234b514f30e662f1',1,'Point::x()'],['../structPoint.html#ab99c56589bc8ad5fa5071387110a5bc7',1,'Point::x()']]],
+  ['xtol_5490',['xtol',['../structlm__control__struct.html#a51294ab068d30ba084ef0c17c9766744',1,'lm_control_struct']]]
 ];

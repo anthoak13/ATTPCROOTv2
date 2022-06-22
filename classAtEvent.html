@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -109,11 +109,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9c7269a388507abf0c8268c56c9f7442"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10cdc40598bb23c246058f3f874e7fe2"><td class="memTemplParams" colspan="2">template&lt;typename... Ts&gt; </td></tr>
 <tr class="memitem:a10cdc40598bb23c246058f3f874e7fe2"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAtEvent.html#a10cdc40598bb23c246058f3f874e7fe2">AddHit</a> (Ts &amp;&amp;...params)</td></tr>
+<tr class="memdesc:a10cdc40598bb23c246058f3f874e7fe2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new hit in this event Adds a new hit, calling a constructor of <a class="el" href="classAtHit.html">AtHit</a> using the passed parameters. Will set the hitID to the next availible if it was not set by the <a class="el" href="classAtHit.html">AtHit</a> constructor. Allowing this function to handle hitIDs will ensure they remain unique within an event.  <a href="classAtEvent.html#a10cdc40598bb23c246058f3f874e7fe2">More...</a><br /></td></tr>
 <tr class="separator:a10cdc40598bb23c246058f3f874e7fe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7166a1b99b1f2bffc2bc6ba4b1dc4f99"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtEvent.html#a7166a1b99b1f2bffc2bc6ba4b1dc4f99">AddHit</a> (const <a class="el" href="classAtHit.html">AtHit</a> &amp;hit)</td></tr>
-<tr class="separator:a7166a1b99b1f2bffc2bc6ba4b1dc4f99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a0e55f42c185045fc24be3f4a7d9720"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtEvent.html#a2a0e55f42c185045fc24be3f4a7d9720">AddHit</a> (<a class="el" href="classAtHit.html">AtHit</a> &amp;hit)</td></tr>
-<tr class="separator:a2a0e55f42c185045fc24be3f4a7d9720"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4942933cb856e955710b3ca880214dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtEvent.html#ab4942933cb856e955710b3ca880214dc">AddAuxPad</a> (<a class="el" href="classAtAuxPad.html">AtAuxPad</a> auxPad)</td></tr>
 <tr class="separator:ab4942933cb856e955710b3ca880214dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72636adc94368d7562a7563ed80781e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtEvent.html#a72636adc94368d7562a7563ed80781e5">SetEventID</a> (Int_t evtid)</td></tr>
@@ -328,68 +325,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00083">83</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
-
-</div>
-</div>
-<a id="a2a0e55f42c185045fc24be3f4a7d9720"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a0e55f42c185045fc24be3f4a7d9720">&#9670;&nbsp;</a></span>AddHit() <span class="overload">[1/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classAtHit.html">AtHit</a>&amp; AtEvent::AddHit </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td>
-          <td class="paramname"><em>hit</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00080">80</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
-
-</div>
-</div>
-<a id="a7166a1b99b1f2bffc2bc6ba4b1dc4f99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7166a1b99b1f2bffc2bc6ba4b1dc4f99">&#9670;&nbsp;</a></span>AddHit() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classAtHit.html">AtHit</a>&amp; AtEvent::AddHit </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td>
-          <td class="paramname"><em>hit</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00072">72</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00079">79</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
 <a id="a10cdc40598bb23c246058f3f874e7fe2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10cdc40598bb23c246058f3f874e7fe2">&#9670;&nbsp;</a></span>AddHit() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a10cdc40598bb23c246058f3f874e7fe2">&#9670;&nbsp;</a></span>AddHit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -414,7 +355,16 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00063">63</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p>Create a new hit in this event Adds a new hit, calling a constructor of <a class="el" href="classAtHit.html">AtHit</a> using the passed parameters. Will set the hitID to the next availible if it was not set by the <a class="el" href="classAtHit.html">AtHit</a> constructor. Allowing this function to handle hitIDs will ensure they remain unique within an event. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">params</td><td>Parameters to be perfect-forwarded to the constructor of <a class="el" href="classAtHit.html">AtHit</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to added hit </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00068">68</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -517,7 +467,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00098">98</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00094">94</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -544,7 +494,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00102">102</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00098">98</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -571,7 +521,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00099">99</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00095">95</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -599,7 +549,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00096">96</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00092">92</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -626,7 +576,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00097">97</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00093">93</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -673,7 +623,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00104">104</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00100">100</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -700,7 +650,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00106">106</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00102">102</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -727,7 +677,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00101">101</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00097">97</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -754,7 +704,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00103">103</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00099">99</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -781,7 +731,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00100">100</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00096">96</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -808,7 +758,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00108">108</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00104">104</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -835,7 +785,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00109">109</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00105">105</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -863,7 +813,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00087">87</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00083">83</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -891,7 +841,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00085">85</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00081">81</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -919,7 +869,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00089">89</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00085">85</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -947,7 +897,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00090">90</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00086">86</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -1025,7 +975,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00092">92</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00088">88</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -1053,7 +1003,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00088">88</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00084">84</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -1081,7 +1031,7 @@ template&lt;typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00086">86</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEvent_8h_source.html#l00082">82</a> of file <a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>.</p>
 
 </div>
 </div>
@@ -1130,7 +1080,7 @@ template&lt;typename... Ts&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:49 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

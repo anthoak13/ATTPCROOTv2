@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -99,12 +99,22 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a01fa214b77c325d88109fc5c8e4d8b93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adeaf0fadf0a46da7d99268d8410a6ffc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatternEvent.html#adeaf0fadf0a46da7d99268d8410a6ffc">SetTrackCand</a> (std::vector&lt; <a class="el" href="classAtTrack.html">AtTrack</a> &gt; tracks)</td></tr>
 <tr class="separator:adeaf0fadf0a46da7d99268d8410a6ffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d9c4fe1d08bcda46ab002a5d61d2052"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatternEvent.html#a2d9c4fe1d08bcda46ab002a5d61d2052">AddTrack</a> (const <a class="el" href="classAtTrack.html">AtTrack</a> &amp;track)</td></tr>
+<tr class="separator:a2d9c4fe1d08bcda46ab002a5d61d2052"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55515e91b3da076a9511921c614797c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatternEvent.html#a55515e91b3da076a9511921c614797c8">AddTrack</a> (<a class="el" href="classAtTrack.html">AtTrack</a> &amp;&amp;track)</td></tr>
+<tr class="separator:a55515e91b3da076a9511921c614797c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a376ea17ad446bd0aa3d712b53014f67c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatternEvent.html#a376ea17ad446bd0aa3d712b53014f67c">AddNoise</a> (<a class="el" href="classAtHit.html">AtHit</a> hit)</td></tr>
+<tr class="separator:a376ea17ad446bd0aa3d712b53014f67c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d447f47c8133f1ed15babf39f83fbea"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatternEvent.html#a5d447f47c8133f1ed15babf39f83fbea">GetNoiseHits</a> ()</td></tr>
+<tr class="separator:a5d447f47c8133f1ed15babf39f83fbea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b6dd506d0c1b95b832c0f26ce5e6183"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classAtTrack.html">AtTrack</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatternEvent.html#a5b6dd506d0c1b95b832c0f26ce5e6183">GetTrackCand</a> ()</td></tr>
 <tr class="separator:a5b6dd506d0c1b95b832c0f26ce5e6183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae84043997c578f518485d37e68fbb6e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatternEvent.html#ae84043997c578f518485d37e68fbb6e2">ClassDef</a> (<a class="el" href="classAtPatternEvent.html">AtPatternEvent</a>, 2)</td></tr>
+<tr class="separator:ae84043997c578f518485d37e68fbb6e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="AtPatternEvent_8h_source.html#l00015">15</a> of file <a class="el" href="AtPatternEvent_8h_source.html">AtPatternEvent.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPatternEvent_8h_source.html#l00018">18</a> of file <a class="el" href="AtPatternEvent_8h_source.html">AtPatternEvent.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a180df91a47f37f439c9635c748331387"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a180df91a47f37f439c9635c748331387">&#9670;&nbsp;</a></span>AtPatternEvent()</h2>
@@ -151,6 +161,145 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a376ea17ad446bd0aa3d712b53014f67c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a376ea17ad446bd0aa3d712b53014f67c">&#9670;&nbsp;</a></span>AddNoise()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtPatternEvent::AddNoise </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtHit.html">AtHit</a>&#160;</td>
+          <td class="paramname"><em>hit</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPatternEvent_8h_source.html#l00031">31</a> of file <a class="el" href="AtPatternEvent_8h_source.html">AtPatternEvent.h</a>.</p>
+
+</div>
+</div>
+<a id="a55515e91b3da076a9511921c614797c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55515e91b3da076a9511921c614797c8">&#9670;&nbsp;</a></span>AddTrack() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtPatternEvent::AddTrack </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtTrack.html">AtTrack</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>track</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPatternEvent_8h_source.html#l00029">29</a> of file <a class="el" href="AtPatternEvent_8h_source.html">AtPatternEvent.h</a>.</p>
+
+</div>
+</div>
+<a id="a2d9c4fe1d08bcda46ab002a5d61d2052"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d9c4fe1d08bcda46ab002a5d61d2052">&#9670;&nbsp;</a></span>AddTrack() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtPatternEvent::AddTrack </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classAtTrack.html">AtTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>track</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPatternEvent_8h_source.html#l00028">28</a> of file <a class="el" href="AtPatternEvent_8h_source.html">AtPatternEvent.h</a>.</p>
+
+</div>
+</div>
+<a id="ae84043997c578f518485d37e68fbb6e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae84043997c578f518485d37e68fbb6e2">&#9670;&nbsp;</a></span>ClassDef()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AtPatternEvent::ClassDef </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtPatternEvent.html">AtPatternEvent</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">2&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5d447f47c8133f1ed15babf39f83fbea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d447f47c8133f1ed15babf39f83fbea">&#9670;&nbsp;</a></span>GetNoiseHits()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt;<a class="el" href="classAtHit.html">AtHit</a>&gt;&amp; AtPatternEvent::GetNoiseHits </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPatternEvent_8h_source.html#l00032">32</a> of file <a class="el" href="AtPatternEvent_8h_source.html">AtPatternEvent.h</a>.</p>
+
+</div>
+</div>
 <a id="a5b6dd506d0c1b95b832c0f26ce5e6183"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5b6dd506d0c1b95b832c0f26ce5e6183">&#9670;&nbsp;</a></span>GetTrackCand()</h2>
 
@@ -197,7 +346,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:49 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

@@ -1,9 +1,9 @@
 <map id="AtPSA" name="AtPSA">
-<area shape="rect" id="node1" title=" " alt="" coords="306,5,369,32"/>
-<area shape="rect" id="node2" href="$classAtPSAFilter.html" title=" " alt="" coords="5,80,96,107"/>
-<area shape="rect" id="node3" href="$classAtPSAFull.html" title=" " alt="" coords="120,80,203,107"/>
-<area shape="rect" id="node4" href="$classAtPSAProto.html" title=" " alt="" coords="227,80,320,107"/>
-<area shape="rect" id="node5" href="$classAtPSAProtoFull.html" title=" " alt="" coords="344,80,459,107"/>
-<area shape="rect" id="node6" href="$classAtPSASimple.html" title=" " alt="" coords="483,80,586,107"/>
-<area shape="rect" id="node7" href="$classAtPSASimple2.html" title=" " alt="" coords="611,80,720,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="326,5,389,32"/>
+<area shape="rect" id="node2" href="$classAtPSAFull.html" title=" " alt="" coords="5,80,88,107"/>
+<area shape="rect" id="node3" href="$classAtPSAHitPerTB.html" title=" " alt="" coords="113,80,229,107"/>
+<area shape="rect" id="node4" href="$classAtPSAMax.html" title="Simple max finding PSA method." alt="" coords="253,80,339,107"/>
+<area shape="rect" id="node5" href="$classAtPSASimple2.html" title=" " alt="" coords="364,80,473,107"/>
+<area shape="rect" id="node6" href="$classAtPSASpectrum.html" title="PSA method using TSpectrum." alt="" coords="498,80,617,107"/>
+<area shape="rect" id="node7" href="$classAtPSATBAvg.html" title="Simple max finding PSA method." alt="" coords="641,80,743,107"/>
 </map>

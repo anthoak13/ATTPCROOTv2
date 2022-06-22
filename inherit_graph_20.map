@@ -1,9 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
 <area shape="rect" id="node1" href="$classAtPSA.html" title=" " alt="" coords="5,132,68,159"/>
-<area shape="rect" id="node2" href="$classAtPSAFilter.html" title=" " alt="" coords="128,5,219,32"/>
-<area shape="rect" id="node3" href="$classAtPSAFull.html" title=" " alt="" coords="132,56,215,83"/>
-<area shape="rect" id="node4" href="$classAtPSAProto.html" title=" " alt="" coords="127,107,220,133"/>
-<area shape="rect" id="node5" href="$classAtPSAProtoFull.html" title=" " alt="" coords="116,157,231,184"/>
-<area shape="rect" id="node6" href="$classAtPSASimple.html" title=" " alt="" coords="122,208,225,235"/>
-<area shape="rect" id="node7" href="$classAtPSASimple2.html" title=" " alt="" coords="119,259,228,285"/>
+<area shape="rect" id="node2" href="$classAtPSAFull.html" title=" " alt="" coords="134,5,217,32"/>
+<area shape="rect" id="node3" href="$classAtPSAHitPerTB.html" title=" " alt="" coords="117,56,233,83"/>
+<area shape="rect" id="node4" href="$classAtPSAMax.html" title="Simple max finding PSA method." alt="" coords="132,107,219,133"/>
+<area shape="rect" id="node5" href="$classAtPSASimple2.html" title=" " alt="" coords="121,157,230,184"/>
+<area shape="rect" id="node6" href="$classAtPSASpectrum.html" title="PSA method using TSpectrum." alt="" coords="116,208,235,235"/>
+<area shape="rect" id="node7" href="$classAtPSATBAvg.html" title="Simple max finding PSA method." alt="" coords="124,259,227,285"/>
 </map>

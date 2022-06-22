@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">ATTPCROOT
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">0.3.0-alpha</span>
    </div>
    <div id="projectbrief">A ROOT-based framework for analyzing data from active target detectors</div>
   </td>
@@ -86,9 +86,6 @@ $(function() {
 </li>
 <li>~AtAuxPad()
 : <a class="el" href="classAtAuxPad.html#a79c675f21a7db16bbe5b796f28cce1e3">AtAuxPad</a>
-</li>
-<li>~AtCalibration()
-: <a class="el" href="classAtCalibration.html#ace013bfa53df9fca1145a5f9ebd3fc8b">AtCalibration</a>
 </li>
 <li>~AtCave()
 : <a class="el" href="classAtCave.html#ae2c9c4820d880ac1004a4f8f9eaf8d70">AtCave</a>
@@ -192,6 +189,9 @@ $(function() {
 <li>~AtHitCluster()
 : <a class="el" href="classAtHitCluster.html#a52b61aa4b65e74febfe3ea58d40b3d04">AtHitCluster</a>
 </li>
+<li>~AtIndependentSample()
+: <a class="el" href="classRandomSample_1_1AtIndependentSample.html#a34a96007faf720294c8d1031b932ff26">RandomSample::AtIndependentSample</a>
+</li>
 <li>~AtKinematics()
 : <a class="el" href="classAtTools_1_1AtKinematics.html#a33afc28a232fea8b33922da564aa11cc">AtTools::AtKinematics</a>
 </li>
@@ -200,9 +200,6 @@ $(function() {
 </li>
 <li>~AtLinkDAQTask()
 : <a class="el" href="classAtLinkDAQTask.html#a4f8150b5516db32869fc6d2c8060d316">AtLinkDAQTask</a>
-</li>
-<li>~AtLmedsMod()
-: <a class="el" href="classAtLmedsMod.html#a8ec321adaa6d7a9507a0125cc13c55a4">AtLmedsMod</a>
 </li>
 <li>~AtMagnet()
 : <a class="el" href="classAtMagnet.html#a4a208409fd8b2ac5d0cbe5c8d5907d70">AtMagnet</a>
@@ -219,9 +216,6 @@ $(function() {
 <li>~AtMergeTask()
 : <a class="el" href="classAtMergeTask.html#adc5a6b1322446bf544cba1ab03d7f24a">AtMergeTask</a>
 </li>
-<li>~AtMlesacMod()
-: <a class="el" href="classAtMlesacMod.html#a2bd54668e224badcc97067f569c1b7ec">AtMlesacMod</a>
-</li>
 <li>~AtPad()
 : <a class="el" href="classAtPad.html#ab1f228afa31d8cda557c5d1e5e360b09">AtPad</a>
 </li>
@@ -233,6 +227,9 @@ $(function() {
 </li>
 <li>~AtPassiveContFact()
 : <a class="el" href="classAtPassiveContFact.html#a3d3d57fce4c5111457e4367b8ba2f825">AtPassiveContFact</a>
+</li>
+<li>~AtPattern()
+: <a class="el" href="classAtPatterns_1_1AtPattern.html#aa941c27eedab862604666d2ddd056ef1">AtPatterns::AtPattern</a>
 </li>
 <li>~AtPatternEvent()
 : <a class="el" href="classAtPatternEvent.html#a01fa214b77c325d88109fc5c8e4d8b93">AtPatternEvent</a>
@@ -258,38 +255,17 @@ $(function() {
 <li>~AtPSA()
 : <a class="el" href="classAtPSA.html#a61e26a02dda5e6ec885c7a8801815589">AtPSA</a>
 </li>
-<li>~AtPSAFilter()
-: <a class="el" href="classAtPSAFilter.html#ab507f136a59842c775e4dcb8f814c568">AtPSAFilter</a>
-</li>
 <li>~AtPSAFull()
 : <a class="el" href="classAtPSAFull.html#ae18ab41dbbdd87dd5003d110c669aa13">AtPSAFull</a>
 </li>
-<li>~AtPSAProto()
-: <a class="el" href="classAtPSAProto.html#a97da042591cc370fd7e8bc7e79cc7a09">AtPSAProto</a>
-</li>
-<li>~AtPSAProtoFull()
-: <a class="el" href="classAtPSAProtoFull.html#a69b2b4da74d560bf08f42e1e2a30762d">AtPSAProtoFull</a>
-</li>
-<li>~AtPSASimple()
-: <a class="el" href="classAtPSASimple.html#adfaef16f973f4feb4ed17221a327c64c">AtPSASimple</a>
-</li>
-<li>~AtPSASimple2()
-: <a class="el" href="classAtPSASimple2.html#a6e86228b84a14021953759ec9dfd0ffc">AtPSASimple2</a>
-</li>
 <li>~AtPSAtask()
-: <a class="el" href="classAtPSAtask.html#a513f987304d0767db8becb4c17bdf3d7">AtPSAtask</a>
+: <a class="el" href="classAtPSAtask.html#af4a8564150a34f784ff67bb45c31166a">AtPSAtask</a>
 </li>
 <li>~AtPulseLineTask()
 : <a class="el" href="classAtPulseLineTask.html#abbbe3219e4caadc4fb7639b4fe6a0c9a">AtPulseLineTask</a>
 </li>
 <li>~AtPulseTask()
 : <a class="el" href="classAtPulseTask.html#aec91061dd2609d8ebaaf4f72a8990271">AtPulseTask</a>
-</li>
-<li>~AtRansac()
-: <a class="el" href="classAtRANSACN_1_1AtRansac.html#a349c9fadcdd6749faaef3cb92084c600">AtRANSACN::AtRansac</a>
-</li>
-<li>~AtRansacMod()
-: <a class="el" href="classAtRansacMod.html#a2070a495e713d2c3d2382c164c83290a">AtRansacMod</a>
 </li>
 <li>~AtRansacTask()
 : <a class="el" href="classAtRansacTask.html#ae0d8e5b7b91e6edd8e03cf47d2607f8b">AtRansacTask</a>
@@ -302,6 +278,12 @@ $(function() {
 </li>
 <li>~AtS800Task()
 : <a class="el" href="classAtS800Task.html#a3dfd7252982ff50e6ce4039b76e5d233">AtS800Task</a>
+</li>
+<li>~AtSample()
+: <a class="el" href="classRandomSample_1_1AtSample.html#a60333077797b6f2b243862fbb3ac1791">RandomSample::AtSample</a>
+</li>
+<li>~AtSampleFromReference()
+: <a class="el" href="classRandomSample_1_1AtSampleFromReference.html#a02571288138f47a1cfde6993d17fb977">RandomSample::AtSampleFromReference</a>
 </li>
 <li>~AtSiArray()
 : <a class="el" href="classAtSiArray.html#ad552c88a78fabba7890c5f798aea68d6">AtSiArray</a>
@@ -319,13 +301,10 @@ $(function() {
 : <a class="el" href="classAtSimulatedPoint.html#acfc6daab25e2c493e95398dcd0ffe695">AtSimulatedPoint</a>
 </li>
 <li>~AtSiPoint()
-: <a class="el" href="classAtSiPoint.html#a9cc9d473247bc75fc9b211d4d75a8ba7">AtSiPoint</a>
+: <a class="el" href="classAtSiPoint.html#a4af29fd61f65182e4b3120ec6ce5872d">AtSiPoint</a>
 </li>
 <li>~AtSpaceChargeCorrectionTask()
 : <a class="el" href="classAtSpaceChargeCorrectionTask.html#a12af0a7aa8e919181ecc2f46c9640021">AtSpaceChargeCorrectionTask</a>
-</li>
-<li>~AtSpaceChargeModel()
-: <a class="el" href="classAtSpaceChargeModel.html#a4d86ab9c70a9f73c1df4fbfb7d08b7ae">AtSpaceChargeModel</a>
 </li>
 <li>~AtSpaceChargeTask()
 : <a class="el" href="classAtSpaceChargeTask.html#af0592632ec93f276d9f9eadd88f58d4f">AtSpaceChargeTask</a>
@@ -399,11 +378,14 @@ $(function() {
 <li>~AtTrackFinderHC()
 : <a class="el" href="classAtPATTERN_1_1AtTrackFinderHC.html#a134b6d898a3233cd8be96809738afb3d">AtPATTERN::AtTrackFinderHC</a>
 </li>
-<li>~AtTrackFinderHCTask()
-: <a class="el" href="classAtTrackFinderHCTask.html#a6523f27b7e4f27f68b77138a96930e6e">AtTrackFinderHCTask</a>
+<li>~AtTrackFinderTC()
+: <a class="el" href="classAtPATTERN_1_1AtTrackFinderTC.html#aceec1aad385e242888f0583bf312fa36">AtPATTERN::AtTrackFinderTC</a>
 </li>
 <li>~AtTrackingEventAna()
 : <a class="el" href="classAtTrackingEventAna.html#ad9a80ad8658085a2b40f51b44303737d">AtTrackingEventAna</a>
+</li>
+<li>~AtTrackTransformer()
+: <a class="el" href="classAtTools_1_1AtTrackTransformer.html#afefc85ef73306f0a34a5413647ffa8fd">AtTools::AtTrackTransformer</a>
 </li>
 <li>~AtTrigger()
 : <a class="el" href="classAtTrigger.html#ae284be753fabaecc91ffbb42b42a9bdd">AtTrigger</a>
@@ -434,6 +416,18 @@ $(function() {
 </li>
 <li>~CRDC()
 : <a class="el" href="classCRDC.html#a98f6b7dfdbd207dda7a2d8e15a9c23ad">CRDC</a>
+</li>
+<li>~DistanceL0()
+: <a class="el" href="classKdtree_1_1DistanceL0.html#affd6d3272f374d53364bd330df7aaddb">Kdtree::DistanceL0</a>
+</li>
+<li>~DistanceL1()
+: <a class="el" href="classKdtree_1_1DistanceL1.html#a80a642f2e987a854bc94c249d97a9e3d">Kdtree::DistanceL1</a>
+</li>
+<li>~DistanceL2()
+: <a class="el" href="classKdtree_1_1DistanceL2.html#a7b45a84658c719d5c54a91b050894fa9">Kdtree::DistanceL2</a>
+</li>
+<li>~DistanceMeasure()
+: <a class="el" href="classKdtree_1_1DistanceMeasure.html#ae9a789923d5c53b87ba9eead7d62377e">Kdtree::DistanceMeasure</a>
 </li>
 <li>~doubly_linked_list()
 : <a class="el" href="classdoubly__linked__list.html#ab4b12d695348271bfe83d590ec03dd32">doubly_linked_list</a>
@@ -467,6 +461,15 @@ $(function() {
 </li>
 <li>~IC()
 : <a class="el" href="classIC.html#ab703675827f6ade262f07999f301ead7">IC</a>
+</li>
+<li>~KdNodePredicate()
+: <a class="el" href="structKdtree_1_1KdNodePredicate.html#a669f557b8aeab9ce2b9bc94b2eeda3e3">Kdtree::KdNodePredicate</a>
+</li>
+<li>~KdTree()
+: <a class="el" href="classKdtree_1_1KdTree.html#ae68299c0d001e796b79edd4681b0b7a4">Kdtree::KdTree</a>
+</li>
+<li>~kdtree_node()
+: <a class="el" href="classKdtree_1_1kdtree__node.html#a37fed460b7dce0ffdda8e81239b9958a">Kdtree::kdtree_node</a>
 </li>
 <li>~MultiHitTOF()
 : <a class="el" href="classMultiHitTOF.html#a23f024554f55c0178d96d7ccbb7fe4c0">MultiHitTOF</a>
@@ -508,7 +511,7 @@ $(function() {
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 27 2022 00:47:50 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

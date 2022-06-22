@@ -1,5 +1,6 @@
 <map id="AtSpaceChargeModel" name="AtSpaceChargeModel">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,153,107"/>
-<area shape="rect" id="node3" href="$classAtLineChargeModel.html" title=" " alt="" coords="11,155,147,181"/>
-<area shape="rect" id="node2" title=" " alt="" coords="45,5,113,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="82,80,230,107"/>
+<area shape="rect" id="node3" href="$classAtLineChargeModel.html" title=" " alt="" coords="5,155,141,181"/>
+<area shape="rect" id="node4" href="$classAtRadialChargeModel.html" title="Space charge model from arbitrary radial E&#45;field,." alt="" coords="165,155,312,181"/>
+<area shape="rect" id="node2" title=" " alt="" coords="122,5,190,32"/>
 </map>

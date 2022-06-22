@@ -1,0 +1,13 @@
+<map id="RandomSample::AtWeightedY" name="RandomSample::AtWeightedY">
+<area shape="rect" id="node1" title="Sample AtHits according to charge for Y shaped tracks." alt="" coords="155,648,351,675"/>
+<area shape="rect" id="node2" href="$classRandomSample_1_1AtChargeWeighted.html" title="Sample AtHits according to charge." alt="" coords="40,544,268,571"/>
+<area shape="rect" id="node3" href="$classRandomSample_1_1AtIndependentSample.html" title="Interface for independent samples." alt="" coords="52,453,256,495"/>
+<area shape="rect" id="node4" href="$classRandomSample_1_1AtSample.html" title="Interface for randomly sampling AtHits." alt="" coords="65,377,243,404"/>
+<area shape="rect" id="node5" title=" " alt="" coords="5,288,140,315"/>
+<area shape="rect" id="node6" href="$classAtHit.html" title=" " alt="" coords="47,199,99,225"/>
+<area shape="rect" id="node7" title=" " alt="" coords="17,102,85,129"/>
+<area shape="rect" id="node8" title=" " alt="" coords="110,95,233,136"/>
+<area shape="rect" id="node9" href="$structAtHit_1_1MCSimPoint.html" title=" " alt="" coords="106,5,237,32"/>
+<area shape="rect" id="node10" title=" " alt="" coords="164,288,307,315"/>
+<area shape="rect" id="node11" title=" " alt="" coords="292,544,411,571"/>
+</map>
