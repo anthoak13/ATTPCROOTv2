@@ -1,12 +1,13 @@
 
-void checkICLink(Int_t runNumber = 118)
+void checkICLink(Int_t runNumber = 214)
 {
    gSystem->Load("libAtReconstruction.so");
 
+   TString inDir = "/mnt/analysis/e12014/TPC/unpackedLinked";
    TChain evtTr("E12014");
-   evtTr.Add(TString::Format("./evtRun_%04d.root", runNumber));
+   evtTr.Add(TString::Format(inDir + "/evtRun_%04d.root", runNumber));
    TChain tpcTr("cbmsim");
-   tpcTr.Add(TString::Format("./run_%04d.root", runNumber));
+   tpcTr.Add(TString::Format(inDir + "/run_%04d.root", runNumber));
    evtTr.AddFriend(&tpcTr);
 
    TTreeReader reader(&evtTr);
@@ -14,25 +15,37 @@ void checkICLink(Int_t runNumber = 118)
    TTreeReaderValue<TClonesArray> eventArray(reader, "AtRawEvent");
 
    std::vector<double> icRatio;
+   std::vector<double> icPeaks;
+   std::vector<double> ics;
+
    while (reader.Next()) {
       AtRawEvent *event = dynamic_cast<AtRawEvent *>(eventArray->At(0));
 
       // Search through and get the IC pad
       std::vector<Short_t> trace;
-      for (auto &pad : *(event->GetPads()))
-         if (pad.GetAuxName() == "IC") {
+      for (auto &[name, pad] : (event->GetAuxPads()))
+         if (name == "IC") {
             for (int i = 0; i < 512; ++i)
                trace.push_back(pad.GetRawADC(i));
             break;
          }
 
       Short_t icPeak = *std::max_element(std::begin(trace), std::end(trace));
-      icRatio.push_back(icPeak / ic->GetEnergy(0));
+      if (icPeak > 0 && ic->GetEnergy(0) > 0) {
+         icRatio.push_back(icPeak / ic->GetEnergy(0));
+         icPeaks.push_back(icPeak);
+         ics.push_back(ic->GetEnergy(0));
+      }
    }
 
    TGraph *gr = new TGraph(icRatio.size());
-   for (int i = 0; i < icRatio.size(); ++i)
+   TGraph *gr2 = new TGraph(icRatio.size());
+   TGraph *gr3 = new TGraph(icRatio.size());
+   for (int i = 0; i < icRatio.size(); ++i) {
       gr->SetPoint(i, i, icRatio[i]);
+      gr2->SetPoint(i, i, icPeaks[i]);
+      gr3->SetPoint(i, i, ics[i]);
+   }
 
    gr->Draw();
 }

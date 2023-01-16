@@ -3,7 +3,7 @@ bool reduceFunc(AtRawEvent *evt)
    return (evt->GetNumPads() > 0) && evt->IsGood();
 }
 
-void unpackLinked(int tpcRunNum = 118, int nsclRunNum = 310)
+void unpackLinked(int tpcRunNum = 214, int nsclRunNum = 428)
 {
    gSystem->Load("libAtReconstruction.so");
 
@@ -16,8 +16,8 @@ void unpackLinked(int tpcRunNum = 118, int nsclRunNum = 310)
    TString outDir = "/mnt/analysis/e12014/TPC/unpackedLinked";
    TString evtOutDir = "/mnt/analysis/e12014/TPC/unpackedLinked";
 
-   outDir = "./";
-   evtOutDir = "./";
+   // outDir = "./";
+   // evtOutDir = "./";
    /**** Should not have to change code between this line and the next star comment ****/
 
    // Set the in/out files
@@ -138,7 +138,7 @@ void unpackLinked(int tpcRunNum = 118, int nsclRunNum = 310)
    auto numEvents = unpackTask->GetNumEvents();
 
    // numEvents = 5000;//217;
-   numEvents = 200;
+   // numEvents = 200;
 
    std::cout << "Unpacking " << numEvents << " events. " << std::endl;
 
