@@ -41,4 +41,7 @@
 #pragma link C++ class ElectronicResponse::AtVectorResponse - !;
 #pragma link C++ class ElectronicResponse::AtFileResponse - !;
 
+#pragma link C++ class CSVRow < int> - !;
+#pragma link C++ class CSVIterator < int> - !;
+#pragma link C++ class CSVRange < int> - !;
 #endif
