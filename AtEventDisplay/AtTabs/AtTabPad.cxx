@@ -12,6 +12,8 @@
 #include "AtViewerManager.h"
 
 #include <FairLogger.h>
+#include <FairRun.h>
+#include <FairRuntimeDb.h>
 
 #include <TCanvas.h>
 #include <TF1.h>

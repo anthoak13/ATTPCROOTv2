@@ -17,9 +17,11 @@
 class TEveWindowSlot;
 class TBuffer;
 class TClass;
+class TPad;
 class TMemberInspector;
 class TF1;
 class AtPad;
+class AtHit;
 class TH1D;
 
 namespace DataHandling {
