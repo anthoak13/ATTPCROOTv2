@@ -85,6 +85,8 @@ protected:
 
    std::vector<AtPadReference> fVetoPads;
 
+   // Histograms to fill with charge information
+
 public:
    AtTabEnergyLoss();
    ~AtTabEnergyLoss();
