@@ -85,7 +85,9 @@ protected:
 
    std::vector<AtPadReference> fVetoPads;
 
-   // Histograms to fill with charge information
+   // Histograms to fill with charge sum
+   THStack *dEdxStackSum{new THStack("hsSum", "Stacked dE/dx curves")};
+   std::array<TH1Ptr, 2> fSumQ;
 
 public:
    AtTabEnergyLoss();
