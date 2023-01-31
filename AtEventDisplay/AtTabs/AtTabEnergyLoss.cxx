@@ -102,12 +102,12 @@ AtTabEnergyLoss::AtTabEnergyLoss()
    }
 
    fSumQ[0] = std::make_unique<TH1F>("qSum_0", "Q Sum Frag 1", 512, 0, 512);
-   fSumQ[0]->SetDirectory(0);
    fSumQ[1] = std::make_unique<TH1F>("qSum_1", "Q Sum Frag 2", 512, 0, 512);
-   fSumQ[1]->SetDirectory(0);
+   SetStyle(fSumQ, dEdxStackSum);
 
-   dEdxStackSum->Add(fSumQ[0].get());
-   dEdxStackSum->Add(fSumQ[1].get());
+   fSumFit[0] = std::make_unique<TH1F>("fitSum_0", "Fit Sum Frag 1", 512, 0, 512);
+   fSumFit[1] = std::make_unique<TH1F>("fitSum_1", "Fit Sum Frag 2", 512, 0, 512);
+   SetStyle(fSumFit, dEdxStackFit);
 
    fEntry.Attach(this);
 }
@@ -152,7 +152,7 @@ void AtTabEnergyLoss::Update()
 
    setAngleAndVertex();
    setdEdX();
-   FillChargeSum();
+   FillSums();
 
    // Fill fSumQ and fSumFit
    FillSums();
@@ -256,7 +256,7 @@ bool AtTabEnergyLoss::isGoodHit(const AtHit &hit)
    return true;
 }
 
-void AtTabEnergyLoss::FillChargeSum(TH1F *hist, const std::vector<AtHit> &hits, int threshold)
+void AtTabEnergyLoss::FillSums(TH1F *hist, const std::vector<AtHit> &hits, int threshold)
 {
    auto rawEvent = fRawEvent.GetInfo();
    if (rawEvent == nullptr) {
