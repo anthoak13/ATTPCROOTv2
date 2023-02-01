@@ -111,6 +111,8 @@ AtTabEnergyLoss::AtTabEnergyLoss()
 
    fRatioQ = std::make_unique<TH1F>("ratioQ", "Ratio of Q Sum", 512, 0, 512);
    fRatioFit = std::make_unique<TH1F>("ratioFit", "Ratio of Fit Sum", 512, 0, 512);
+   fProxy = std::make_unique<TH1F>("proxy", "Z Proxy", 512, 0, 512);
+   fZHist = std::make_unique<TH1F>("zHist", "Z of light fragment", 512, 0, 512);
 
    fVetoPads = {{0, 1, 1, 6},  {0, 1, 1, 7},  {0, 1, 1, 9},  {0, 1, 1, 10}, {0, 1, 1, 12}, {0, 1, 1, 39},
                 {0, 1, 1, 40}, {0, 1, 1, 41}, {0, 1, 1, 44}, {0, 1, 1, 43}, {0, 1, 1, 46}, {0, 1, 3, 13}};
