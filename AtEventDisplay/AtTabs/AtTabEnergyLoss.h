@@ -92,6 +92,16 @@ protected:
    THStack dEdxStackFit{"hsFit", "Stacked dE/dx curves"};
    std::array<TH1Ptr, 2> fSumFit;
 
+   TH1Ptr fRatioQ;   //<Ratio of max(fSumQ)/min(fSumQ)
+   TH1Ptr fRatioFit; //<Ratio of max(fSumFit)/min(fSumFit)
+
+   std::array<float, 2> fTrackStart;
+   std::array<AtHit *, 2> fFirstHit{nullptr, nullptr}; //< First hit calculated according to the gaussian fits
+
+   std::unique_ptr<TF1> fRatioFunc;
+
+   std::vector<AtPadReference> fVetoPads;
+
 public:
    AtTabEnergyLoss();
    ~AtTabEnergyLoss();

@@ -109,6 +109,23 @@ AtTabEnergyLoss::AtTabEnergyLoss()
    fSumFit[1] = std::make_unique<TH1F>("fitSum_1", "Fit Sum Frag 2", 512, 0, 512);
    SetStyle(fSumFit, dEdxStackFit);
 
+   fRatioQ = std::make_unique<TH1F>("ratioQ", "Ratio of Q Sum", 512, 0, 512);
+   fRatioFit = std::make_unique<TH1F>("ratioFit", "Ratio of Fit Sum", 512, 0, 512);
+
+   fVetoPads = {{0, 1, 1, 6},  {0, 1, 1, 7},  {0, 1, 1, 9},  {0, 1, 1, 10}, {0, 1, 1, 12}, {0, 1, 1, 39},
+                {0, 1, 1, 40}, {0, 1, 1, 41}, {0, 1, 1, 44}, {0, 1, 1, 43}, {0, 1, 1, 46}, {0, 1, 3, 13}};
+
+   std::ifstream file("/mnt/projects/hira/e12014/tpcSharedInfo/e12014_zap.csv");
+   if (!file.is_open())
+      LOG(fatal) << "File not open";
+
+   std::string header;
+   std::getline(file, header);
+
+   for (auto &row : CSVRange<int>(file)) {
+      fVetoPads.push_back({row[0], row[1], row[2], row[3]});
+   }
+
    fEntry.Attach(this);
 }
 
@@ -152,7 +169,10 @@ void AtTabEnergyLoss::Update()
 
    setAngleAndVertex();
    setdEdX();
+
+   // Fill fSumQ and fSumFit
    FillSums();
+   FillRatio();
 
    // Fill fSumQ and fSumFit
    FillSums();
@@ -256,7 +276,7 @@ bool AtTabEnergyLoss::isGoodHit(const AtHit &hit)
    return true;
 }
 
-void AtTabEnergyLoss::FillSums(TH1F *hist, const std::vector<AtHit> &hits, int threshold)
+void AtTabEnergyLoss::FillChargeSum(TH1F *hist, const std::vector<AtHit> &hits, int threshold)
 {
    auto rawEvent = fRawEvent.GetInfo();
    if (rawEvent == nullptr) {
