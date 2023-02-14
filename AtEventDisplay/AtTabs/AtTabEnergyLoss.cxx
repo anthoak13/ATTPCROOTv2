@@ -105,14 +105,14 @@ AtTabEnergyLoss::AtTabEnergyLoss()
    fSumQ[1] = std::make_unique<TH1F>("qSum_1", "Q Sum Frag 2", 512, 0, 512);
    SetStyle(fSumQ, dEdxStackSum);
 
-   fSumFit[0] = std::make_unique<TH1F>("fitSum_0", "Fit Sum Frag 1", 512, 0, 512);
-   fSumFit[1] = std::make_unique<TH1F>("fitSum_1", "Fit Sum Frag 2", 512, 0, 512);
+   fSumFit[0] = std::make_unique<TH1F>("fitSum_0", "Fit Sum Frag 1", numBins, minBin, maxBin);
+   fSumFit[1] = std::make_unique<TH1F>("fitSum_1", "Fit Sum Frag 2", numBins, minBin, maxBin);
    SetStyle(fSumFit, dEdxStackFit);
 
-   fRatioQ = std::make_unique<TH1F>("ratioQ", "Ratio of Q Sum", 512, 0, 512);
-   fRatioFit = std::make_unique<TH1F>("ratioFit", "Ratio of Fit Sum", 512, 0, 512);
-   fProxy = std::make_unique<TH1F>("proxy", "Z Proxy", 512, 0, 512);
-   fZHist = std::make_unique<TH1F>("zHist", "Z of light fragment", 512, 0, 512);
+   fRatioQ = std::make_unique<TH1F>("ratioQ", "Ratio of Q Sum", numBins, minBin, maxBin);
+   fRatioFit = std::make_unique<TH1F>("ratioFit", "Ratio of Fit Sum", numBins, minBin, maxBin);
+   fProxy = std::make_unique<TH1F>("proxy", "Z Proxy", numBins, minBin, maxBin);
+   fZHist = std::make_unique<TH1F>("zHist", "Z of light fragment", numBins, minBin, maxBin);
 
    fVetoPads = {{0, 1, 1, 6},  {0, 1, 1, 7},  {0, 1, 1, 9},  {0, 1, 1, 10}, {0, 1, 1, 12}, {0, 1, 1, 39},
                 {0, 1, 1, 40}, {0, 1, 1, 41}, {0, 1, 1, 44}, {0, 1, 1, 43}, {0, 1, 1, 46}, {0, 1, 3, 13}};
