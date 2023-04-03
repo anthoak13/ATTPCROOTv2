@@ -85,27 +85,6 @@ protected:
 
    std::vector<AtPadReference> fVetoPads;
 
-   // Histograms to fill with charge sum
-   THStack dEdxStackSum{"hsSum", "Stacked dE/dx curves"};
-   std::array<TH1Ptr, 2> fSumQ;
-
-   THStack dEdxStackFit{"hsFit", "dQ/dZ (summing gaussian fits)"};
-   std::array<TH1Ptr, 2> fSumFit;
-
-   TH1Ptr fRatioQ;   //<Ratio of max(fSumQ)/min(fSumQ)
-   TH1Ptr fRatioFit; //<Ratio of max(fSumFit)/min(fSumFit)
-   TH1Ptr fProxy;    //<Proxy for Z in an event
-   TH1Ptr fZHist;    //<Z in an event
-
-   std::array<float, 2> fTrackStart;
-   std::array<AtHit *, 2> fFirstHit{nullptr, nullptr}; //< First hit calculated according to the gaussian fits
-
-   std::unique_ptr<TF1> fRatioFunc;
-   std::unique_ptr<TF1> fProxyFunc;
-   std::unique_ptr<TF1> fZFunc;
-
-   std::vector<AtPadReference> fVetoPads;
-
 public:
    AtTabEnergyLoss();
    ~AtTabEnergyLoss();

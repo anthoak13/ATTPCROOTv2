@@ -101,33 +101,6 @@ AtTabEnergyLoss::AtTabEnergyLoss()
       fVetoPads.push_back({row[0], row[1], row[2], row[3]});
    }
 
-   fSumQ[0] = std::make_unique<TH1F>("qSum_0", "Q Sum Frag 1", 512, 0, 512);
-   fSumQ[1] = std::make_unique<TH1F>("qSum_1", "Q Sum Frag 2", 512, 0, 512);
-   SetStyle(fSumQ, dEdxStackSum);
-
-   fSumFit[0] = std::make_unique<TH1F>("fitSum_0", "Fit Sum Frag 1", numBins, minBin, maxBin);
-   fSumFit[1] = std::make_unique<TH1F>("fitSum_1", "Fit Sum Frag 2", numBins, minBin, maxBin);
-   SetStyle(fSumFit, dEdxStackFit);
-
-   fRatioQ = std::make_unique<TH1F>("ratioQ", "Ratio of Q Sum", numBins, minBin, maxBin);
-   fRatioFit = std::make_unique<TH1F>("ratioFit", "Ratio of Fit Sum", numBins, minBin, maxBin);
-   fProxy = std::make_unique<TH1F>("proxy", "Z Proxy", numBins, minBin, maxBin);
-   fZHist = std::make_unique<TH1F>("zHist", "Z of light fragment", numBins, minBin, maxBin);
-
-   fVetoPads = {{0, 1, 1, 6},  {0, 1, 1, 7},  {0, 1, 1, 9},  {0, 1, 1, 10}, {0, 1, 1, 12}, {0, 1, 1, 39},
-                {0, 1, 1, 40}, {0, 1, 1, 41}, {0, 1, 1, 44}, {0, 1, 1, 43}, {0, 1, 1, 46}, {0, 1, 3, 13}};
-
-   std::ifstream file("/mnt/projects/hira/e12014/tpcSharedInfo/e12014_zap.csv");
-   if (!file.is_open())
-      LOG(fatal) << "File not open";
-
-   std::string header;
-   std::getline(file, header);
-
-   for (auto &row : CSVRange<int>(file)) {
-      fVetoPads.push_back({row[0], row[1], row[2], row[3]});
-   }
-
    fEntry.Attach(this);
 }
 
@@ -171,10 +144,6 @@ void AtTabEnergyLoss::Update()
 
    setAngleAndVertex();
    setdEdX();
-
-   // Fill fSumQ and fSumFit
-   FillSums();
-   FillRatio();
 
    // Fill fSumQ and fSumFit
    FillSums();
