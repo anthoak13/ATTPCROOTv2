@@ -1,3 +1,4 @@
+constexpr double lambda = 1e-7;
 
 double noField(double r, double z)
 {
@@ -11,7 +12,7 @@ double constField(double r, double z)
 
 double lineField(double r, double z)
 {
-   double lambda = 5.28e-8;               // SI
+   // double lambda = 5.28e-8;               // SI
    constexpr double eps = 8.85418782E-12; // SI
    constexpr double pi = 3.14159265358979;
    constexpr double eps2pi = 2 * pi * eps;
@@ -22,7 +23,7 @@ double lineField(double r, double z)
 
 AtRadialChargeModel model(&lineField);
 
-AtLineChargeModel oldModel;
+AtLineChargeModel oldModel(lambda);
 
 void test()
 {
@@ -30,12 +31,14 @@ void test()
    for (int i = -2; i <= 5; ++i) {
       auto dT = pow(10, -i);
       model.SetStepSize(dT);
-      ROOT::Math::XYZPoint p(100, 0, 100);
+      ROOT::Math::XYZPoint p(100, 0, 500);
       auto pRad = model.CorrectSpaceCharge(p);
       auto pAna = oldModel.CorrectSpaceCharge(p);
-      auto diff = pRad.X() - pAna.X();
-      std::cout << "Time step (us) " << dT << " Difference in corrected point " << diff << " % diff "
+      auto diff = pRad.Rho() - pAna.Rho();
+      /*std::cout << "Time step (us) " << dT << " Difference in corrected point " << diff << " % diff "
                 << diff / pAna.X() * 100 << std::endl;
+      */
+      cout << dT << "," << diff << endl;
    }
 
    ROOT::Math::XYZPoint p(100, 0, 100);

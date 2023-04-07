@@ -26,7 +26,7 @@ void AtTestSimulation::Exec(Option_t *)
    fSimulation->NewEvent();
 
    XYZPoint pos(0, 0, 500);
-   XYZVector momDir = XYZVector(0, 0, 1).Unit();
+   XYZVector momDir = XYZVector(0, 1, 1).Unit();
    // Assume Pb208 (mass is 207.93 amu)
    double m = 207.93 * 931.4936; // Mev
    // Assume initial KE is 35 MeV/u
