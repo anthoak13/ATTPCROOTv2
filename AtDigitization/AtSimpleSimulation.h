@@ -14,6 +14,7 @@
 
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string> // for string
 namespace AtTools {
 class AtELossModel;
@@ -38,15 +39,16 @@ protected:
    using XYZPoint = ROOT::Math::XYZPoint;
    using XYZVector = ROOT::Math::XYZVector;
    using PxPyPzEVector = ROOT::Math::PxPyPzEVector;
+   using MCPointVec = std::vector<AtMCPoint>;
 
    std::map<ParticleID, ModelPtr> fModels;
    SpaceChargeModel fSCModel{nullptr};
-   TClonesArray fMCPoints;
-
-   // Variables to across an entire event
-   int fTrackID{0};
-
    double fDistStep{1.}; // Distance step in mm for particles
+   std::mutex fGeoMutex;
+
+   // Memory not shared across threads
+   static thread_local MCPointVec fMCPoints;
+   static thread_local int fTrackID;
 
 public:
    /**
@@ -57,7 +59,7 @@ public:
    AtSimpleSimulation(const AtSimpleSimulation &other) = default;
    ~AtSimpleSimulation() = default;
 
-   void RegisterBranch(std::string branchName = "AtTpcPoint", bool pers = true);
+   // void RegisterBranch(std::string branchName = "AtTpcPoint", bool pers = true);
    void AddModel(int Z, int A, ModelPtr model);
    void SetSpaceChargeModel(SpaceChargeModel model) { fSCModel = model; }
    void SetDistanceStep(double step) { fDistStep = step; } //<In mm
@@ -65,9 +67,9 @@ public:
    void NewEvent();
    void SimulateParticle(int Z, int A, const XYZPoint &iniPos, const PxPyPzEVector &iniMom);
 
-   AtMCPoint &GetMcPoint(int i) { return dynamic_cast<AtMCPoint &>(*fMCPoints.At(i)); }
-   int GetNumPoints() { return fMCPoints.GetEntries(); }
-   TClonesArray &GetPointsArray() { return fMCPoints; }
+   AtMCPoint &GetMcPoint(int i) { return (fMCPoints.at(i)); }
+   int GetNumPoints() { return fMCPoints.size(); }
+   MCPointVec &GetPointsArray() { return fMCPoints; }
    SpaceChargeModel GetSpaceChargeModel() { return fSCModel; }
 
 protected:

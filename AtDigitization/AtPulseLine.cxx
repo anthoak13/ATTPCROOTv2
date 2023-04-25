@@ -84,6 +84,7 @@ bool AtPulseLine::AssignElectronsToPad(AtSimulatedPoint *point)
          auto zLoc = fPadCharge[0]->GetXaxis()->GetBinCenter(i + binMin);
          auto charge = line->GetCharge() * zIntegration[i] * percentEle;
          double gain = GetGain(padNum, charge);
+
          fPadCharge[padNum]->Fill(zLoc, gain * charge);
          fPadsWithCharge.insert(padNum);
       }

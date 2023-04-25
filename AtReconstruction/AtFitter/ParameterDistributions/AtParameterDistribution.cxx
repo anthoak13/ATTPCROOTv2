@@ -3,7 +3,8 @@ namespace MCFitter {
 
 thread_local std::unique_ptr<std::mt19937> AtParameterDistribution::fRand = nullptr;
 
-AtParameterDistribution::AtParameterDistribution(double mean, double spread, long seed) : fMean(mean), fSpread(spread)
+AtParameterDistribution::AtParameterDistribution(double mean, double spread, long seed)
+   : fMean(mean), fSpread(spread), fSeed(seed)
 {
    // Use a random seed if a seed was not passed
    if (fSeed == 0) {

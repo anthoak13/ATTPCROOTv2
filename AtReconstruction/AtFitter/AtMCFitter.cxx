@@ -19,6 +19,7 @@
 #include <FairRuntimeDb.h> // for FairRuntimeDb
 
 #include <TObject.h> // for TObject
+#include <TROOT.h>
 
 #include <chrono>
 #include <mutex>
@@ -59,25 +60,30 @@ void AtMCFitter::Init()
    fThPulse.resize(fNumThreads);
    for (int i = 0; i < fNumThreads; ++i)
       fThPulse[i] = fPulse->Clone();
+   fThPSA.resize(fNumThreads);
+   for (int i = 0; i < fNumThreads; ++i)
+      fThPSA[i] = fPSA->Clone();
 }
 
-void AtMCFitter::RunIterRange(int startIter, int numIter, AtPulse *pulse)
+void AtMCFitter::RunIterRange(int startIter, int numIter, AtPulse *pulse, AtPSA *psa)
 {
    // Here we should copy each thread their own version of the clusterize, pulse, and simulation
-   // objects (only if the number of threads is greater than 1). Needs to be deep copies
-
-   auto sim = std::make_shared<AtSimpleSimulation>(*fSim); // Underlying models are shared
-   auto clusterize = fClusterize->Clone();
-
+   // objects (only if // TODO: he number of threads is greater than 1). Needs to be deep copies
+   LOG(info) << "Starting iter range from " << startIter;
    for (int i = 0; i < numIter; ++i) {
 
       int idx = startIter + i;
+      LOG(info) << "Defining event: " << idx;
       auto result = DefineEvent();
-      auto mcPoints = SimulateEvent(result, sim.get());
+      LOG(info) << "Simulating event: " << idx;
+      auto mcPoints = SimulateEvent(result, fSim.get());
 
-      DigitizeEvent(mcPoints, idx, clusterize.get(), fPulse.get(), fPSA.get());
+      LOG(info) << "Digitizing event: " << idx;
+      // TODO: Problem appears to be pulse task atm
+      DigitizeEvent(mcPoints, idx, fClusterize.get(), pulse, psa);
       double obj = ObjectiveFunction(*fCurrentEvent, idx, result);
 
+      LOG(info) << "Saving event: " << idx;
       result.fIterNum = idx;
       result.fObjective = obj;
       // result.Print();
@@ -120,21 +126,22 @@ void AtMCFitter::Exec(const AtPatternEvent &event)
    // Set the conditions for simulating the event
    fCurrentEvent = &event;
 
+   /*
    std::vector<std::thread> threads;
    for (int i = 0; i < fNumThreads; ++i) {
       LOG(info) << "Creating thread " << i << " with " << threadParam[i].first << " " << threadParam[i].second
                 << " and " << fPulse.get();
       threads.emplace_back([this](std::pair<int, int> param, AtPulse *pulse,
-                                  const AtDigiPar *par) { this->RunIterRange(param.first, param.second, pulse); },
-                           threadParam[i], fPulse.get(), fPar);
+                                  AtPSA *psa) { this->RunIterRange(param.first, param.second, pulse, psa); },
+                           threadParam[i], fThPulse[i].get(), fThPSA[i].get());
    }
 
    for (auto &th : threads)
       th.join();
-
+   */
    // RunIterRange called on each thread.
 
-   // RunIterRange(0, fNumIter, fPulse.get());
+   RunIterRange(0, fNumIter, fPulse.get(), fPSA.get());
    LOG(info) << "Done with run iter range";
    auto stop = std::chrono::high_resolution_clock::now();
 
@@ -143,17 +150,18 @@ void AtMCFitter::Exec(const AtPatternEvent &event)
                 << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() << " ms.";
 }
 
-int AtMCFitter::DigitizeEvent(const TClonesArray &points, int idx, AtClusterize *clusterize, AtPulse *pulse, AtPSA *psa)
+int AtMCFitter::DigitizeEvent(const std::vector<AtMCPoint> &points, int idx, AtClusterize *clusterize, AtPulse *pulse,
+                              AtPSA *psa)
 {
    // Event has been simulated and is sitting in the fSim
    auto vec = clusterize->ProcessEvent(points);
-   LOG(info) << "Digitizing event at " << idx;
 
+   LOG(info) << "Running pulse at " << idx;
    fRawEventArray[idx] = pulse->GenerateEvent(vec);
 
-   if (psa) {
+   if (fPSA) {
       LOG(info) << "Running PSA at " << idx;
-      fEventArray[idx] = psa->Analyze(fRawEventArray[idx]);
+      fEventArray[idx] = fPSA->Analyze(fRawEventArray[idx]);
    }
    LOG(info) << "Done digitizing event at " << idx;
    return idx;
@@ -172,7 +180,7 @@ void AtMCFitter::FillResultArrays(TClonesArray &resultArray, TClonesArray &simEv
 
       int clonesIdx = resultArray.GetEntries();
       int eventIdx = res.fIterNum;
-      LOG(info) << "Filling iteration " << eventIdx << " at index " << resultArray.GetEntries();
+      LOG(debug) << "Filling iteration " << eventIdx << " at index " << resultArray.GetEntries();
 
       auto result = dynamic_cast<AtMCResult *>(resultArray.ConstructedAt(clonesIdx));
       auto event = dynamic_cast<AtEvent *>(simEvent.ConstructedAt(clonesIdx));
@@ -208,6 +216,16 @@ AtMCResult AtMCFitter::DefineEvent()
    for (auto &[name, distro] : fParameters)
       result.fParameters[name] = distro->Sample();
    return result;
+}
+
+void AtMCFitter::SetNumThreads(int num)
+{
+   fNumThreads = num;
+   if (num > 1) {
+      LOG(warning) << "Make sure every class (PSA, Pulse, Clusterize, Simulation) is thread safe! Most are not, or are "
+                      "not gaurenteed to be.";
+      ROOT::EnableThreadSafety();
+   }
 }
 
 } // namespace MCFitter

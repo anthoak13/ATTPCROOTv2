@@ -27,6 +27,8 @@ using std::distance;
 using std::max_element;
 using std::min_element;
 
+// thread_local TClonesArray *AtPSA::fMCSimPointArray = nullptr;
+
 void AtPSA::Init()
 {
 

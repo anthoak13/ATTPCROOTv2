@@ -32,7 +32,7 @@ void AtClusterizeLine::FillTClonesArray(TClonesArray &array, std::vector<SimPoin
    }
 }
 
-std::vector<AtClusterize::SimPointPtr> AtClusterizeLine::processPoint(AtMCPoint &mcPoint, int pointID)
+std::vector<AtClusterize::SimPointPtr> AtClusterizeLine::processPoint(const AtMCPoint &mcPoint, int pointID)
 {
    if (mcPoint.GetVolName() != "drift_volume") {
       LOG(info) << "Skipping point " << pointID << ". Not in drift volume.";

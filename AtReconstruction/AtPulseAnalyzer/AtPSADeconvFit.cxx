@@ -48,23 +48,31 @@ AtPSADeconv::HitData AtPSADeconvFit::getZandQ(const AtPad::trace &charge)
       return {};
    }
 
+   TFitResultPtr resultPtr;
+
+   LOG(debug) << "Creating histogram to fit";
    // Create a historgram to fit and fit to range mean +- 4 sigma.
    auto hist = ContainerManip::CreateHistFromData("Qreco_fit", charge);
 
+   LOG(debug) << "Creating function to fit";
    // Add an addition +-2 for when we are close to the pad plane and diffusion is small
    auto fitRange = 3 * sigTB + 2;
-   TF1 gauss("fitGauss", "gaus(0)", zTB - fitRange, zTB + fitRange);
+   TF1 gauss("fitGauss", "gaus(0)", zTB - fitRange, zTB + fitRange, TF1::EAddToList::kNo);
    gauss.SetParameter(0, *maxTB); // Set initial height of gaussian
    gauss.SetParameter(1, zTB);    // Set initial position of gaussian
    gauss.SetParameter(2, sigTB);  // Set initial sigma of gaussian
 
+   LOG(debug) << "Fitting histogram";
    // Fit without graphics and saving everything in the result ptr
-   auto resultPtr = hist->Fit(&gauss, "SQNR");
+   // TODO: This is not thread safe, need to spawn own fitter to
+   resultPtr = hist->Fit(&gauss, "SQNR");
+
    if (resultPtr.Get() == nullptr) {
       LOG(info) << "Null fit for pad using mean and deviation of trace."
                 << "mean: " << zTB << " sig:" << sigTB << " max:" << *maxTB;
       return {};
    }
+   LOG(debug) << "Getting fit results";
 
    auto amp = resultPtr->GetParams()[0];
    auto z = resultPtr->GetParams()[1];
@@ -73,7 +81,6 @@ AtPSADeconv::HitData AtPSADeconvFit::getZandQ(const AtPad::trace &charge)
    auto Q = amp * sig * std::sqrt(2 * TMath::Pi());
    LOG(debug) << "Initial: " << zTB << " " << sigTB << " " << *maxTB;
    LOG(debug) << "Fit: " << z << " " << sig << " " << amp;
-   // LOG(info) << "Q: " << Q;
 
    /// TODO: Error in charge?
 

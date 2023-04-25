@@ -16,6 +16,8 @@ class TMemberInspector;
 class AtTestSimulation : public FairTask {
 protected:
    std::unique_ptr<AtSimpleSimulation> fSimulation{nullptr}; //!
+   TClonesArray fMCPoints{"AtMCPoint"};
+   TString fBranchName{"AtTpcPoint"};
 
 public:
    AtTestSimulation(std::unique_ptr<AtSimpleSimulation> sim) : fSimulation(std::move(sim)) {}
@@ -26,6 +28,8 @@ public:
    virtual void Finish() override {}
    AtSimpleSimulation *GetSimulation() { return fSimulation.get(); }
 
+protected:
+   void FillBranch();
    ClassDefOverride(AtTestSimulation, 1);
 };
 

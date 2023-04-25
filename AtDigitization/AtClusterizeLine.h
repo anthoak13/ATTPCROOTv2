@@ -23,7 +23,7 @@ public:
    virtual std::shared_ptr<AtClusterize> Clone() const override { return std::make_shared<AtClusterizeLine>(*this); }
 
 protected:
-   virtual std::vector<SimPointPtr> processPoint(AtMCPoint &mcPoint, int pointID) override;
+   virtual std::vector<SimPointPtr> processPoint(const AtMCPoint &mcPoint, int pointID) override;
    virtual std::string GetSavedClassName() const override { return "AtSimulatedLine"; }
 };
 

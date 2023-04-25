@@ -58,8 +58,8 @@ public:
    /** Destructor **/
    virtual ~AtMCPoint() = default;
    /** Copy constructor **/
-   AtMCPoint(const AtMCPoint &point) = delete;
-   AtMCPoint operator=(const AtMCPoint &point) = delete;
+   AtMCPoint(const AtMCPoint &point) = default;
+   AtMCPoint &operator=(const AtMCPoint &point) = default;
 
    virtual void Clear(Option_t *) override;
 

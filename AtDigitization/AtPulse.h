@@ -47,14 +47,14 @@ protected:
    bool fSaveCharge = true;
    bool fDoConvolution{true}; //< Whether we should set the ADC by doing a convolution of the charge with the response
 
-   std::vector<std::unique_ptr<TH1F>> fPadCharge; //!<
-   std::set<int> fPadsWithCharge;                 //!<
-
    std::unique_ptr<TF1> fGainFunc; //!<
    double fAvgGainDeviation{};
 
+   std::vector<std::unique_ptr<TH1F>> fPadCharge; //!<
+   std::set<int> fPadsWithCharge;                 //!<
+
 public:
-   AtPulse(AtMapPtr map, ResponseFunc response = nullptr) : fMap(map), fResponse(response) {}
+   AtPulse(AtMapPtr map, ResponseFunc response = nullptr);
    AtPulse(const AtPulse &);
 
    void SetParameters(const AtDigiPar *fPar);

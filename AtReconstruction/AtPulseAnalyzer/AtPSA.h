@@ -31,7 +31,7 @@ private:
    Int_t fThresholdlow{-1}; ///< threshold for Central pads
 
 protected:
-   TClonesArray *fMCSimPointArray{};
+   using HitVector = std::vector<std::unique_ptr<AtHit>>;
 
    Bool_t fUsingLowThreshold{false};
 
@@ -47,7 +47,8 @@ protected:
    Double_t fDriftVelocity{}; //< drift velocity of electron in cm/us
    Double_t fZk{};            //< Relative position of micromegas-cathode
 
-   using HitVector = std::vector<std::unique_ptr<AtHit>>;
+   // static thread_local TClonesArray *fMCSimPointArray;
+   TClonesArray *fMCSimPointArray{nullptr};
 
 public:
    AtPSA() = default;

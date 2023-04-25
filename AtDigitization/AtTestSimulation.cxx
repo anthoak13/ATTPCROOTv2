@@ -1,5 +1,6 @@
 #include "AtTestSimulation.h"
 
+#include "AtMCPoint.h"
 #include "AtSimpleSimulation.h"
 
 #include <FairTask.h> // for InitStatus, kSUCCESS
@@ -16,7 +17,13 @@ using namespace ROOT::Math;
 
 InitStatus AtTestSimulation::Init()
 {
-   fSimulation->RegisterBranch();
+   auto ioMan = FairRootManager::Instance();
+   if (ioMan == nullptr) {
+      LOG(fatal) << "The IO manager was not instatiated before attempting to simulate an event.";
+      return kFATAL;
+   }
+
+   ioMan->Register(fBranchName, "AtTPC", &fMCPoints, true);
 
    return kSUCCESS;
 }
@@ -36,5 +43,11 @@ void AtTestSimulation::Exec(Option_t *)
    PxPyPzEVector mom(momDir.X() * p, momDir.Y() * p, momDir.Z() * p, E);
    fSimulation->SimulateParticle(82, 208, pos, mom);
 }
-
+void AtTestSimulation::FillBranch()
+{
+   fMCPoints.Delete();
+   for (auto &&point : fSimulation->GetPointsArray()) {
+      new (fMCPoints[fMCPoints.GetEntries()]) AtMCPoint(std::move(point));
+   }
+}
 ClassImp(AtTestSimulation);

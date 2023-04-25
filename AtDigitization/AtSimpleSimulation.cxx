@@ -17,23 +17,18 @@
 #include <cmath>     // for sqrt
 #include <stdexcept> // for invalid_argument
 #include <utility>   // for pair
-/*
-AtSimpleSimulation::AtSimpleSimulation(AtSimpleSimulation &other)
-   : fMCPoints(other.fMCPoints), fTrackID(other.fTrackID), fDistStep(other.fDistStep)
-{
-   for (auto &[id, model] : other.fModels)
-      fModels[id] = (model) ? std::make_shared<AtTools::AtELossModel>(*model) : nullptr;
-   fSCModel = std::make_shared<AtSpaceChargeModel>(*other.fSCModel);
-}
-*/
-AtSimpleSimulation::AtSimpleSimulation(std::string geoFile) : fMCPoints("AtMCPoint")
+
+thread_local AtSimpleSimulation::MCPointVec AtSimpleSimulation::fMCPoints;
+thread_local int AtSimpleSimulation::fTrackID = 0;
+
+AtSimpleSimulation::AtSimpleSimulation(std::string geoFile)
 {
    TGeoManager *geo = TGeoManager::Import(geoFile.c_str());
 
    if (gGeoManager == nullptr)
       LOG(fatal) << "Failed to load geometry file " << geoFile << " " << geo;
 }
-AtSimpleSimulation::AtSimpleSimulation() : fMCPoints("AtMCPoint")
+AtSimpleSimulation::AtSimpleSimulation()
 {
    if (gGeoManager == nullptr)
       LOG(fatal) << "No geometry file loaded!";
@@ -54,7 +49,11 @@ bool AtSimpleSimulation::ParticleID::operator<(const ParticleID &other) const
 TGeoVolume *AtSimpleSimulation::GetVolume(const XYZPoint &point)
 {
    auto pointCm = point / 10.;
-   TGeoNode *node = gGeoManager->FindNode(pointCm.X(), pointCm.Y(), pointCm.Z());
+   TGeoNode *node = nullptr;
+   {
+      std::lock_guard<std::mutex> geoGuard(fGeoMutex);
+      node = gGeoManager->FindNode(pointCm.X(), pointCm.Y(), pointCm.Z());
+   }
    if (node == nullptr) {
       return nullptr;
    }
@@ -142,7 +141,7 @@ void AtSimpleSimulation::SimulateParticle(ModelPtr model, const XYZPoint &iniPos
 
 void AtSimpleSimulation::NewEvent()
 {
-   fMCPoints.Clear();
+   fMCPoints.clear();
    fTrackID = 0;
 }
 
@@ -151,9 +150,10 @@ void AtSimpleSimulation::NewEvent()
  */
 void AtSimpleSimulation::AddHit(double ELoss, const XYZPoint &pos, const PxPyPzEVector &mom, double length)
 {
-   LOG(debug) << "Adding a hit at element " << fMCPoints.GetEntriesFast() << " in TClonesArray.";
+   LOG(debug) << "Adding a hit at element " << fMCPoints.size() << " in TClonesArray.";
 
-   auto *mcPoint = dynamic_cast<AtMCPoint *>(fMCPoints.ConstructedAt(fMCPoints.GetEntriesFast(), "C"));
+   fMCPoints.emplace_back();
+   auto *mcPoint = &fMCPoints.back();
 
    mcPoint->SetTrackID(fTrackID);
    mcPoint->SetLength(length / 10.);      // Convert to cm
@@ -174,6 +174,7 @@ void AtSimpleSimulation::AddHit(double ELoss, const XYZPoint &pos, const PxPyPzE
    // mcPoint->Print(nullptr);
 }
 
+/*
 void AtSimpleSimulation::RegisterBranch(std::string branchName, bool perc)
 {
    auto ioMan = FairRootManager::Instance();
@@ -184,3 +185,4 @@ void AtSimpleSimulation::RegisterBranch(std::string branchName, bool perc)
 
    ioMan->Register(branchName.c_str(), "AtTPC", &fMCPoints, perc);
 }
+*/

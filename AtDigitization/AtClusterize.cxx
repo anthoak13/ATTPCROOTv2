@@ -16,6 +16,9 @@
 #include <algorithm> // for max
 #include <utility>   // for move
 
+thread_local AtClusterize::XYZPoint AtClusterize::fPrevPoint = {};
+thread_local int AtClusterize::fTrackID = 0;
+
 void AtClusterize::GetParameters(const AtDigiPar *fPar)
 {
    fEIonize = fPar->GetEIonize() / 1000000; // [MeV]
@@ -53,8 +56,19 @@ std::vector<AtClusterize::SimPointPtr> AtClusterize::ProcessEvent(const TClonesA
    }
    return ret;
 }
+std::vector<AtClusterize::SimPointPtr> AtClusterize::ProcessEvent(const std::vector<AtMCPoint> &fMCPointArray)
+{
+   std::vector<SimPointPtr> ret;
+   for (int i = 0; i < fMCPointArray.size(); ++i) {
+      auto *mcPoint = &fMCPointArray.at(i);
 
-std::vector<AtClusterize::SimPointPtr> AtClusterize::processPoint(AtMCPoint &mcPoint, int pointID)
+      for (auto &point : processPoint(*mcPoint, i))
+         ret.push_back(std::move(point));
+   }
+   return ret;
+}
+
+std::vector<AtClusterize::SimPointPtr> AtClusterize::processPoint(const AtMCPoint &mcPoint, int pointID)
 {
    if (mcPoint.GetVolName() != "drift_volume") {
       LOG(info) << "Skipping point " << pointID << ". Not in drift volume.";

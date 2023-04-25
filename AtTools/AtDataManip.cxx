@@ -48,7 +48,7 @@ double AtTools::GetDriftTB(double d, const AtDigiPar *fPar)
 std::unique_ptr<TF1> AtTools::GetHitFunction(const AtHit &hit, const AtDigiPar *fPar)
 {
    if (hit.GetPositionSigma().Z() == 0) {
-      LOG(error) << "Hits that are points (sig_z = 0) are not supported yet!";
+      LOG(debug) << "Hits that are points (sig_z = 0) are not supported yet!";
       return nullptr;
    }
 
@@ -74,7 +74,7 @@ std::unique_ptr<TF1> AtTools::GetHitFunction(const AtHit &hit, const AtDigiPar *
 std::unique_ptr<TF1> AtTools::GetHitFunctionTB(const AtHit &hit, const AtDigiPar *fPar)
 {
    if (hit.GetPositionSigma().Z() == 0) {
-      LOG(error) << "Hits that are points (sig_z = 0) are not supported yet!";
+      LOG(debug) << "Hits that are points (sig_z = 0) are not supported yet!";
       return nullptr;
    }
    if (fPar == nullptr)

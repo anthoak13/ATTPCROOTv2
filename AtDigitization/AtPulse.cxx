@@ -24,7 +24,12 @@
 #include <utility> // for move
 
 using XYPoint = ROOT::Math::XYPoint;
-
+AtPulse::AtPulse(AtMapPtr map, ResponseFunc response) : fMap(map), fResponse(response)
+{
+   // Make sure the pad plane is generated so we can just access it for reading info (ie multiple threads will not be
+   // trying to create the underlying TH2poly.
+   fMap->GeneratePadPlane();
+}
 AtPulse::AtPulse(const AtPulse &other)
    : fMap(other.fMap), fEventID(other.fEventID), fGain(other.fGain), fLowGainFactor(other.fLowGainFactor),
      fGETGain(other.fGETGain), fPeakingTime(other.fPeakingTime), fTBTime(other.fTBTime), fNumTbs(other.fNumTbs),
@@ -35,6 +40,7 @@ AtPulse::AtPulse(const AtPulse &other)
 
    // For reasons unknown, copying the historgam from other (calling copy constructor) causes a huge performance hit.
    // Recreating from scratch does not.
+
    fPadCharge.resize(fMap->GetNumPads());
    for (Int_t padS = 0; padS < fMap->GetNumPads(); padS++) {
       auto maxTime = fTBTime * fNumTbs; // maxTime in ns

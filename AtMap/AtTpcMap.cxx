@@ -75,7 +75,7 @@ void AtTpcMap::Dump()
 void AtTpcMap::GeneratePadPlane()
 {
    if (fPadPlane) {
-      LOG(error) << "Skipping generation of pad plane because it was already parsed!";
+      LOG(debug) << "Skipping generation of pad plane because it was already parsed!";
       return;
    }
 

@@ -372,7 +372,7 @@ void AtMCFission::SetMomMagnitude(std::array<XYZVector, 2> &moms, double pTrans)
    }
 }
 
-TClonesArray AtMCFission::SimulateEvent(AtMCResult &def, AtSimpleSimulation *sim)
+std::vector<AtMCPoint> AtMCFission::SimulateEvent(AtMCResult &def, AtSimpleSimulation *sim)
 {
    using namespace AtTools::Kinematics;
    sim->NewEvent();

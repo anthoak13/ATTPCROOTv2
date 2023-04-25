@@ -18,6 +18,7 @@ private:
    uint fNumIntegrationPoints = 1000;
    ushort fNumSigmaToIntegrateZ = 3;
 
+   // Data that is thread_local
    std::map<int, float> fXYintegrationMap; //! xyIntegrationMap[padNum] = % of e- in event here
 
 public:
