@@ -24,7 +24,7 @@
 #include <utility> // for move
 
 using XYPoint = ROOT::Math::XYPoint;
-AtPulse::AtPulse(AtMapPtr map, ResponseFunc response) : fMap(map), fResponse(response)
+AtPulse::AtPulse(AtMapPtr map, ResponseFunc response) : fMap(map), fResponse(response) // NOLINT
 {
    // Make sure the pad plane is generated so we can just access it for reading info (ie multiple threads will not be
    // trying to create the underlying TH2poly.

@@ -6,7 +6,8 @@
 #include "AtPatternY.h"
 
 #include <algorithm> // for max_element, nth_element, max
-#include <cmath>     // for exp, sqrt, isinf, log, M_PI
+#include <cassert>
+#include <cmath> // for exp, sqrt, isinf, log, M_PI
 using namespace SampleConsensus;
 
 int SampleConsensus::EvaluateChi2(AtPatterns::AtPattern *model, const std::vector<const AtHit *> &hitArray,

@@ -28,14 +28,18 @@
 #include <TClonesArray.h>    // for TClonesArray
 #include <TMath.h>           // for RadToDeg, C, DegToRad, Pi
 
+#include <Fit/FitConfig.h> // for FitConfig
 #include <Fit/FitResult.h> // for FitResult
 #include <Fit/Fitter.h>
 #include <algorithm> // for find_if
+#include <cassert>   // for assert
 #include <cmath>     // for sqrt, exp, sin, round
+#include <limits>    // for numeric_limits
 #include <map>       // for map, map<>::mapped_type
 #include <memory>    // for make_shared, __shared_ptr_access
 #include <string>    // for string
 #include <vector>    // for vector, allocator
+
 using namespace MCFitter;
 using namespace AtPatterns;
 using Polar3D = ROOT::Math::Polar3DVector;
@@ -285,7 +289,7 @@ double AtMCFission::ObjectiveCharge(const std::array<std::vector<double>, 2> &ex
 
    if (fFitAmp && !(exp.size() == 0 || exp.size() != sim.size())) {
       LOG(info) << exp.size() << " " << sim.size();
-      auto functor = ROOT::Math::Functor(std::bind(fObjCharge, exp, sim, std::placeholders::_1), 1);
+      auto functor = ROOT::Math::Functor(std::bind(fObjCharge, exp, sim, std::placeholders::_1), 1); // NOLINT
 
       std::vector<double> A = {fAmp};
       ROOT::Fit::Fitter fitter;

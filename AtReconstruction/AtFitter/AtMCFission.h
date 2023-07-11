@@ -13,9 +13,9 @@
 #include <Math/Vector4Dfwd.h> // for PxPyPzEVector
 #include <TClonesArray.h>     // for TClonesArray
 
-#include <array>  // for array
-#include <vector> // for vector
-
+#include <array>      // for array
+#include <functional> // for function
+#include <vector>     // for vector
 class AtFissionEvent;
 namespace MCFitter {
 struct Ion {

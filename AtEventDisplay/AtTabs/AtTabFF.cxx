@@ -3,10 +3,10 @@
 #include "AtContainerManip.h" // for GetPointerVector
 #include "AtE12014.h"
 #include "AtMCResult.h"
-#include "AtSampleConsensus.h"
 #include "AtViewerManager.h"
 #include "AtViewerManagerSubject.h" // for AtBranch, AtTreeEntry
 
+#include <FairLogger.h>      // for Logger, LOG
 #include <FairRootManager.h> // for FairRootManager
 
 #include <TCanvas.h>
@@ -15,6 +15,8 @@
 #include <THStack.h>      // for THStack
 #include <TObject.h>      // for TObject
 #include <TString.h>
+
+#include <ostream> // for endl
 namespace DataHandling {
 class AtSubject;
 }
