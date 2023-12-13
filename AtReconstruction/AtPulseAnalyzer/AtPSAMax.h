@@ -23,16 +23,23 @@ class AtPSAMax : public AtPSA {
 
 private:
    Bool_t fIsTimeCorr{false};
+   Int_t fSubtractWindow{0}; //If larger than 0, subtract this many TB around the peak.
+
 
 public:
+
    virtual HitVector AnalyzePad(AtPad *pad) override;
    std::unique_ptr<AtPSA> Clone() override { return std::make_unique<AtPSAMax>(*this); }
 
    void SetTimeCorrection(Bool_t value) { fIsTimeCorr = value; }
 
+protected:
+   std::unique_ptr<AtHit> extractHit(AtPad *pad);
+
 private:
    bool shouldSaveHit(double charge, double threshold, int tb);
    Double_t getTBCorr(std::array<Double_t, 512> &trace, int maxAdcIdx);
+
 
    ClassDefOverride(AtPSAMax, 1)
 };

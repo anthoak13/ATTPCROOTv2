@@ -19,6 +19,7 @@
 #pragma link C++ class AtPSAFull + ;
 #pragma link C++ class AtPSATBAvg + ;
 #pragma link C++ class AtPSAMax + ;
+#pragma link C++ class AtPSAMaxMulti + ;
 #pragma link C++ class AtPSASimple2 + ;
 #pragma link C++ class AtPSADeconv - !;
 #pragma link C++ class AtPSADeconvFit - !;

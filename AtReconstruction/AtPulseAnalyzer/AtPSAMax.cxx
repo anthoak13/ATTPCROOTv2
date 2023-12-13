@@ -20,13 +20,13 @@
 //#endif
 using XYZPoint = ROOT::Math::XYZPoint;
 
-AtPSAMax::HitVector AtPSAMax::AnalyzePad(AtPad *pad)
+std::unique_ptr<AtHit> AtPSAMax::extractHit(AtPad *pad)
 {
    XYZPoint pos(pad->GetPadCoord().X(), pad->GetPadCoord().Y(), 0);
 
    if (pos.X() < -9000 || pos.Y() < -9000) {
       LOG(debug) << "Skipping pad, position is invalid";
-      return {};
+      return nullptr;
    }
 
    if (!(pad->IsPedestalSubtracted())) {
@@ -38,7 +38,7 @@ AtPSAMax::HitVector AtPSAMax::AnalyzePad(AtPad *pad)
    Int_t maxAdcIdx = std::distance(floatADC.begin(), maxAdcIt);
 
    if (!shouldSaveHit(*maxAdcIt, getThreshold(pad->GetSizeID()), maxAdcIdx))
-      return {};
+      return nullptr;
 
    // Calculation of the mean value of the peak time by interpolating the pulse
    Double_t timemax = 0.5 * (floatADC[maxAdcIdx - 1] - floatADC[maxAdcIdx + 1]) /
@@ -58,6 +58,12 @@ AtPSAMax::HitVector AtPSAMax::AnalyzePad(AtPad *pad)
    hit->SetTimeStampCorrInter(timemax);
    hit->SetTraceIntegral(QHitTot);
 
+   return std::move(hit);
+}
+
+AtPSAMax::HitVector AtPSAMax::AnalyzePad(AtPad *pad)
+{
+   auto hit = extractHit(pad);
    HitVector ret;
    ret.push_back(std::move(hit));
    return ret;
