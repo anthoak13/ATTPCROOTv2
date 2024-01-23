@@ -81,9 +81,9 @@ AtTabEnergyLoss::AtTabEnergyLoss(DataHandling::AtBranch &fissionBranch)
    fVetoPads = {{0, 1, 1, 6},  {0, 1, 1, 7},  {0, 1, 1, 9},  {0, 1, 1, 10}, {0, 1, 1, 12}, {0, 1, 1, 39},
                 {0, 1, 1, 40}, {0, 1, 1, 41}, {0, 1, 1, 44}, {0, 1, 1, 43}, {0, 1, 1, 46}, {0, 1, 3, 13}};
 
-   std::ifstream file("/mnt/projects/hira/e12014/tpcSharedInfo/e12014_zap.csv");
+   std::ifstream file("/home/adam/fair_install/tpcSharedInfo/e12014_zap.csv");
    if (!file.is_open())
-      LOG(fatal) << "File not open";
+      LOG(fatal) << "Smartzap file not open";
 
    std::string header;
    std::getline(file, header);
