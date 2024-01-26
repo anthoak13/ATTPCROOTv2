@@ -1,11 +1,11 @@
 // Script to pull traces for a pad from a single event
-std::vector<int> goodPads = {8593, 8595, 7934, 6689, 9164};
-std::vector<int> badPads = {8590, 8373, 2378, 2124, 1319};
+//std::vector<int> goodPads = {8593, 8595, 7934, 6689, 9164};
+//std::vector<int> badPads = {8590, 8373, 2378, 2124, 1319};
 
 
 void getTraces(int eventNum = 0)
 {
-goodPads = badPads;
+//goodPads = badPads;
    TChain tpc_tree("cbmsim");
    tpc_tree.Add("Bi200Chi2.root");
 
@@ -37,25 +37,32 @@ goodPads = badPads;
    AtRawEvent *eventPtr = (AtRawEvent *)(event->At(0));
 
    std::vector<std::array<double, 512>> traces;
-   for (auto padID : goodPads) {
+   for (auto &pad : eventPtr->GetPads()) {
 
-      auto pad = eventPtr->GetPad(padID);
+      //auto pad = eventPtr->GetPad(padID);
+      auto padID = pad->GetPadNum();
       if (!pad) {
          std::cout << "Event had no pad " << padID << std::endl;
          std::cout << "Aborting!" << std::endl;
          return;
       }
+      
       std::cout << "Getting trace for pad " << padID << " at " << fAtMapPtr->GetPadRef(padID) << endl;
 
       auto &rawTrace = pad->GetRawADC();
       auto &trace = pad->GetADC();
+      auto aug = pad->GetAugment<AtPadArray>("Qreco");
+      if(!aug)
+      continue;
       auto &charge = pad->GetAugment<AtPadArray>("Qreco")->GetArray();
       traces.push_back(charge);
    }
 
+   std::cout << "Finished grabbing pads" << std::endl;
    // Write header
    traceFile << "TB";
-   for (auto padID : goodPads) {
+   for (auto &pad : eventPtr->GetPads()) {
+      auto padID = pad->GetPadNum();
       traceFile << ",Pad" << padID;
    }
    traceFile << std::endl;
