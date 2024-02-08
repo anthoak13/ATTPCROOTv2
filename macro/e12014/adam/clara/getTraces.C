@@ -17,12 +17,16 @@ void getTraces(int eventNum = 0)
    std::ofstream traceFile(oFileName);
    if (!traceFile.good())
       std::cout << "Failed to open file" << std::endl;
+   
+   std::ofstream mapFile("data/mapping.csv");
+   if (!mapFile.good())
+      std::cout << "Failed to open file" << std::endl;
 
    // Create pad plane and load map
-   TString mapFile = "e12014_pad_mapping.xml"; //"Lookup20150611.xml";
+   TString mapFileName = "e12014_pad_mapping.xml"; //"Lookup20150611.xml";
    // Set directories
    TString dir = gSystem->Getenv("VMCWORKDIR");
-   TString mapDir = dir + "/scripts/" + mapFile;
+   TString mapDir = dir + "/scripts/" + mapFileName;
 
    auto fAtMapPtr = new AtTpcMap();
    fAtMapPtr->ParseXMLMap(mapDir.Data());
@@ -78,6 +82,16 @@ void getTraces(int eventNum = 0)
       }
       traceFile << std::endl;
    }
+   
+   std::cout << "Found " << fAtMapPtr->GetNumPads() << " pads " << std::endl;
+   mapFile << "Pad,CoBo,Asad,Aget,Ch" << std::endl;
+   for(int i = 0; i < fAtMapPtr->GetNumPads(); ++i)
+   {
+      auto mapping  = fAtMapPtr->GetPadRef(i);
+      mapFile << i <<"," << mapping.cobo << "," << mapping.asad << "," << mapping.aget << "," << mapping.ch << std::endl;
+
+   }
+
 
       std::cout << "Done writing file" << std::endl;
    }
