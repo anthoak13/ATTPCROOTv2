@@ -216,7 +216,7 @@ InitStatus AtEventDrawTask::Init()
    DrawPID2();
 
    S800Ana s800Ana;
-   s800Ana = fEventManager->GetS800Ana(); // MTDCRanges must be set before calling AtEventDrawTask::Intit()
+   // s800Ana = fEventManager->GetS800Ana(); // MTDCRanges must be set before calling AtEventDrawTask::Intit()
    fMTDCXfRange = s800Ana.GetMTDCXfRange();
    fMTDCObjRange = s800Ana.GetMTDCObjRange();
    fTofObjCorr = s800Ana.GetTofObjCorr();

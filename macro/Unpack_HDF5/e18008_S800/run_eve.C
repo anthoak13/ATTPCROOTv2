@@ -8,7 +8,7 @@ void run_eve(TString InputDataPath = "/mnt/analysis/e18008/rootMerg/giraud/",
    TString geoFile = "ATTPC_v1.1_geomanager.root";
    TString mapFile = "Lookup20150611.xml";
 
-   TString InputDataFile = InputDataPath + "run_2278_0278_test15.root";
+   TString InputDataFile = InputDataPath + "run_2271_0271_test15.root";
    TString OutputDataFile = OutputDataPath;
    TString GeoDataPath = dir + "/geometry/" + geoFile;
    TString mapDir = dir + "/scripts/" + mapFile;

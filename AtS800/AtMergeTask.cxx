@@ -9,8 +9,15 @@
 #include <Math/ParamFunctor.h>
 #include <TClonesArray.h>
 #include <TF1.h>
+#include "TAxis.h"
+#include <TH1D.h>
+#include <TCanvas.h>
+#include <TPad.h>
 #include <TFile.h>
 #include <TGraph.h>
+#include <TObject.h>
+#include <TKey.h>
+#include <TList.h>
 #include <TObject.h>
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
@@ -48,7 +55,15 @@ AtMergeTask::~AtMergeTask()
    fS800TsFunc->Delete();
    fS800CalcBr->Delete();
    fRawEventArray->Delete();
+   if (fShowTSDiagnostic) {
+      diagFile->Close();
+      fATTPCTsGraph->Delete();
+      fATTPCandS800TsGraph->Delete();
+      fdiffTsGraph->Delete();
+   }
    delete fS800file;
+   delete diagFile;
+   delete diagCanvas;
 }
 
 void AtMergeTask::SetPersistence(Bool_t value)
@@ -106,6 +121,11 @@ void AtMergeTask::SetATTPCClock(Bool_t value)
 void AtMergeTask::SetATTPCClockFreq(Double_t value)
 {
    fATTPCClockFreq = value;
+}
+
+void AtMergeTask::ShowTSDiagnostic(Bool_t value)
+{
+   fShowTSDiagnostic = value;
 }
 
 Int_t AtMergeTask::GetS800TsSize()
@@ -171,7 +191,7 @@ InitStatus AtMergeTask::Init()
    ioMan->Register("s800cal", "S800", fS800CalcBr, fIsPersistence);
 
    vector<Double_t> S800_ts(fS800Ts.begin(), fS800Ts.end());
-   // auto c1 = new TCanvas("c1", "c1", 800, 800);
+
    // gROOT->SetBatch(kTRUE);//kTRUE not display the plots
    fS800TsGraph =                                            // NOLINT
       new TGraph(fTsEvtS800Size, &S800_ts[0], &fS800Evt[0]); // fTsEvtS800Size instead of 80 (just for the test file)
@@ -179,9 +199,27 @@ InitStatus AtMergeTask::Init()
    // than looping on all the events.
    fS800TsFunc = new TF1( // NOLINT
       "fS800TsFunc", [&](double *x, double *) { return fS800TsGraph->Eval(x[0]); }, 0, S800_ts.back(), 0);
-   // c1->cd();
-   // fS800TsGraph->Draw("AL");
-   // fS800TsFunc->Draw("same");
+
+   if (fShowTSDiagnostic){
+      plotNames.push_back("S800Ts");
+      plotNames.push_back("ATTPCTs");
+      plotNames.push_back("S800ATTPCTs");
+      plotNames.push_back("diffTs");
+      plotNames.push_back("distDiffTs");
+      diagFile = new TFile("TSDiagnostic.root", "RECREATE");
+      diagFile->cd();
+      diagCanvas = new TCanvas("diagCanvas", "TS diagnostic", 800, 800);
+      diagCanvas->Divide(2,2);
+      // TPad *pad1 = (TPad*)c1->cd(1);
+      // TPad *pad2 = (TPad*)c1->cd(2);
+      diagCanvas->cd(1);
+      diagnosticPlotStyle(1);
+      fS800TsGraph->Draw("AL");
+      // fS800TsFunc->Draw("same");
+      fS800TsGraph->Write();
+      fS800TsFunc->Write();
+      fS800file->cd();
+   }
 
    fS800Ana.SetPID1cut(fcutPID1File);
    fS800Ana.SetPID2cut(fcutPID2File);
@@ -229,8 +267,11 @@ void AtMergeTask::Exec(Option_t *opt)
    }
    int minj = 0, maxj = 0;
    Double_t S800EvtMatch = -1;
-   minj = (int)fS800TsFunc->Eval(AtTPCTs) - fEvtDelta; // define the AtTPC entries range where the matching timestamp
-                                                       // should be, to not loop over all the AtTPC entries.
+   // Define the AtTPC entries range where the matching timestamp
+   // Should be, to not loop over all the AtTPC entries.
+   // If AT-TPC is triggering on ext. trigger only then there shouldn't be a difference on the number of S800 and AT-TPC event.
+   // Allow a small event number delta.
+   minj = (int)fS800TsFunc->Eval(AtTPCTs) - fEvtDelta; 
    maxj = (int)fS800TsFunc->Eval(AtTPCTs) + fEvtDelta;
 
    std::cout << " TS AtTPC " << AtTPCTs << std::endl;
@@ -264,6 +305,70 @@ void AtMergeTask::Exec(Option_t *opt)
       }
    }
 
+   if (fShowTSDiagnostic) {
+      diagFile->cd();
+      Long64_t S800TsForPlot = 0;
+      if (S800EvtMatch > 0) {
+         S800TsForPlot = fS800Ts.at(S800EvtMatch);
+      }
+
+      // Plot evt number vs timestamp
+      if (fATTPCTsGraph == nullptr) {
+         fATTPCTsGraph = new TGraph(1);
+         fATTPCTsGraph->SetPoint(fATTPCTsGraph->GetN(), AtTPCTs, (Double_t)rawEvent->GetEventID());
+         diagCanvas->cd(1);
+         diagnosticPlotStyle(2);
+         fATTPCTsGraph->Draw("L same");
+      } else {
+         fATTPCTsGraph->SetPoint(fATTPCTsGraph->GetN(), AtTPCTs, (Double_t)rawEvent->GetEventID());
+         diagCanvas->Update();
+         fATTPCTsGraph->Write(plotNames.at(1), kOverwrite);
+      }
+
+      // Plot s800 timestamp vs AT-TPC timestamp
+      if (fATTPCandS800TsGraph == nullptr) {
+         fATTPCandS800TsGraph = new TGraph(1);
+         fATTPCandS800TsGraph->SetPoint(fATTPCandS800TsGraph->GetN(), S800TsForPlot, AtTPCTs);
+         diagCanvas->cd(2);
+         diagnosticPlotStyle(3);
+         fATTPCandS800TsGraph->Draw("AL");
+      } else {
+         fATTPCandS800TsGraph->SetPoint(fATTPCandS800TsGraph->GetN(), S800TsForPlot, AtTPCTs);
+         diagCanvas->Update();
+         fATTPCandS800TsGraph->Write(plotNames.at(2), kOverwrite);
+      }
+
+      // Plot event number vs timestamps difference
+      if (fdiffTsGraph == nullptr) {
+         fdiffTsGraph = new TGraph(1);
+         fdiffTsGraph->SetPoint(fdiffTsGraph->GetN(), (Double_t)rawEvent->GetEventID(), AtTPCTs - S800TsForPlot);
+         diagCanvas->cd(3);
+         diagnosticPlotStyle(4);
+         fdiffTsGraph->Draw("AL");
+      } else {
+         fdiffTsGraph->SetPoint(fdiffTsGraph->GetN(), (Double_t)rawEvent->GetEventID(), AtTPCTs - S800TsForPlot);
+         diagCanvas->Update();
+         fdiffTsGraph->Write(plotNames.at(3), kOverwrite);
+      }
+
+      // Plot timestamps difference in TH1
+      if (fdiffTsHist == nullptr) {
+         fdiffTsHist = new TH1D("defaultName", "defaultTitle", 4000, -2000, 2000);
+         // std::cout<<"Simon - TS diff "<<AtTPCTs - S800TsForPlot<<std::endl;
+         fdiffTsHist->Fill(AtTPCTs - S800TsForPlot);
+         diagCanvas->cd(4);
+         diagnosticPlotStyle(5);
+         fdiffTsHist->Draw();
+      } else {
+         fdiffTsHist->Fill(AtTPCTs - S800TsForPlot);
+         // std::cout<<"Simon - TS diff "<<AtTPCTs - S800TsForPlot<<std::endl;
+         diagCanvas->Update();
+         fdiffTsHist->Write(plotNames.at(4), kOverwrite);
+      }
+      fS800file->cd();
+   }
+
+
    if (S800EvtMatch < 0)
       LOG(warning) << cRED << "NO TS MATCHING !" << cNORMAL;
 
@@ -280,5 +385,67 @@ void AtMergeTask::Exec(Option_t *opt)
       isIn = fS800Ana.isInPID(fS800CalcBr);
       fS800CalcBr->SetIsInCut(isIn);
       rawEvent->SetIsExtGate(isIn);
+   }
+}
+
+
+void AtMergeTask::diagnosticPlotStyle(Int_t plotId){
+   switch (plotId)
+   {
+   case 1:
+      fS800TsGraph->SetName(plotNames.at(plotId-1));
+      fS800TsGraph->SetTitle("S800 & AT-TPC TS");
+      fS800TsGraph->GetXaxis()->SetTitle("Timestamp");
+      fS800TsGraph->GetYaxis()->SetTitle("Event number");
+      fS800TsGraph->GetXaxis()->CenterTitle(true);
+      fS800TsGraph->GetYaxis()->CenterTitle(true);
+      fS800TsGraph->GetXaxis()->SetMaxDigits(4);
+      fS800TsGraph->GetYaxis()->SetMaxDigits(4);
+      fS800TsGraph->SetLineColor(kBlue);
+      break;
+   case 2:
+      fATTPCTsGraph->SetName(plotNames.at(plotId-1));
+      fATTPCTsGraph->SetTitle("S800 & AT-TPC TS");
+      fATTPCTsGraph->GetXaxis()->SetTitle("Timestamp");
+      fATTPCTsGraph->GetYaxis()->SetTitle("Event number");
+      fATTPCTsGraph->GetXaxis()->CenterTitle(true);
+      fATTPCTsGraph->GetYaxis()->CenterTitle(true);
+      fATTPCTsGraph->GetXaxis()->SetMaxDigits(4);
+      fATTPCTsGraph->GetYaxis()->SetMaxDigits(4);
+      fATTPCTsGraph->SetLineColor(kRed);
+      break;
+   case 3:
+      fATTPCandS800TsGraph->SetName(plotNames.at(plotId-1));
+      fATTPCandS800TsGraph->SetTitle("Timestamps");
+      fATTPCandS800TsGraph->GetXaxis()->SetTitle("S800 TS");
+      fATTPCandS800TsGraph->GetYaxis()->SetTitle("AT-TPC TS");
+      fATTPCandS800TsGraph->GetXaxis()->CenterTitle(true);
+      fATTPCandS800TsGraph->GetYaxis()->CenterTitle(true);
+      fATTPCandS800TsGraph->GetXaxis()->SetMaxDigits(4);
+      fATTPCandS800TsGraph->GetYaxis()->SetMaxDigits(4);
+      break;
+   case 4:
+      fdiffTsGraph->SetName(plotNames.at(plotId-1));
+      fdiffTsGraph->SetTitle("Timestamps diff.");
+      fdiffTsGraph->GetXaxis()->SetTitle("Event number");
+      fdiffTsGraph->GetYaxis()->SetTitle("AT-TPC - S800 TS");
+      fdiffTsGraph->GetXaxis()->CenterTitle(true);
+      fdiffTsGraph->GetYaxis()->CenterTitle(true);
+      fdiffTsGraph->GetXaxis()->SetMaxDigits(4);
+      fdiffTsGraph->GetYaxis()->SetMaxDigits(4);
+      break;
+   case 5:
+      fdiffTsHist->SetName(plotNames.at(plotId-1));
+      fdiffTsHist->SetTitle("Timestamps diff.");
+      fdiffTsHist->GetXaxis()->SetTitle("AT-TPC - S800 TS");
+      fdiffTsHist->GetYaxis()->SetTitle("Events");
+      fdiffTsHist->GetXaxis()->CenterTitle(true);
+      fdiffTsHist->GetYaxis()->CenterTitle(true);
+      fdiffTsHist->GetXaxis()->SetMaxDigits(4);
+      fdiffTsHist->GetYaxis()->SetMaxDigits(4);
+      break;
+   default:
+      LOG(WARNING) << cRED << "AtMergeTask::diagnosticPlotStyle - unknown plotId" << cNORMAL;
+      break;
    }
 }

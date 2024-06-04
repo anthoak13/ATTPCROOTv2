@@ -1,5 +1,5 @@
-#ifndef TINVERSEMAP_H_
-#define TINVERSEMAP_H_
+#ifndef S800INVERSEMAP_H_
+#define S800INVERSEMAP_H_
 
 #include <Rtypes.h>
 #include <TNamed.h>
@@ -16,14 +16,14 @@ class TClass;
 class TMemberInspector;
 class TSpline3;
 
-class TInverseMap : public TNamed {
+class S800InverseMap : public TNamed {
 
 public:
-   TInverseMap(const char *filename);
-   // TInverseMap(std::vector<std::string> &fileList);
-   TInverseMap();
-   static TInverseMap *Get(const char *filename = "");
-   virtual ~TInverseMap();
+   S800InverseMap(const char *filename);
+   // S800InverseMap(std::vector<std::string> &fileList);
+   S800InverseMap();
+   static S800InverseMap *Get(const char *filename = "");
+   virtual ~S800InverseMap();
 
    virtual void Print(Option_t *opt = "") const; //{ ; }
    virtual void Clear(Option_t *opt = "") { ; }
@@ -52,11 +52,12 @@ public:
 
    int Size() { return fMap.size(); }
 
-   bool ReadMultiMapFile(std::vector<std::string> &str);
+   // bool ReadMultiMapFile(std::vector<std::string> &str);
+   bool ReadMultiMapFile(std::vector<TString> &str);
 
 private:
-   // TInverseMap(const char* filename);
-   static std::unique_ptr<TInverseMap> fInverseMap;
+   // S800InverseMap(const char* filename);
+   static std::unique_ptr<S800InverseMap> fInverseMap;
 
    bool ReadMapFile(const char *filename);
    // bool ReadMultiMapFile(std::vector<std::string> &str);
@@ -84,6 +85,6 @@ private:
    Int_t fsize{};
    std::string info;
 
-   ClassDef(TInverseMap, 0)
+   ClassDef(S800InverseMap, 0)
 };
 #endif

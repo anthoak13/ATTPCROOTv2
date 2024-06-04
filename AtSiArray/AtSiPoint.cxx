@@ -18,7 +18,7 @@ AtSiPoint::AtSiPoint(Int_t trackID, Int_t detID, TVector3 pos, TVector3 mom, Dou
 AtSiPoint::AtSiPoint(Int_t trackID, Int_t detID, TVector3 posIn, TVector3 posOut, TVector3 momIn, TVector3 momOut,
                      Double_t tof, Double_t length, Double_t eLoss, TString VolName, Int_t detCopyID, Double_t EIni,
                      Double_t AIni, Int_t A, Int_t Z)
-   : AtMCPoint(trackID, detID, posIn, posOut, tof, length, eLoss, VolName, detCopyID, EIni, AIni, A, Z)
+   : AtMCPoint(trackID, detID, posOut, momIn, momOut, tof, length, eLoss, VolName, detCopyID, EIni, AIni, A, Z)
 {
    SetPositionOut(posOut);
    SetMomentumOut(momOut);

@@ -1,5 +1,5 @@
 
-#include <TInverseMap.h>
+#include <S800InverseMap.h>
 #include <TSpline.h>
 
 #include <unistd.h>
@@ -14,18 +14,18 @@
 #include <sstream> // IWYU pragma: keep
 #include <utility>
 
-std::unique_ptr<TInverseMap> TInverseMap::fInverseMap = nullptr;
+std::unique_ptr<S800InverseMap> S800InverseMap::fInverseMap = nullptr;
 
-TInverseMap::TInverseMap(const char *filename) : TNamed("InverseMap", filename)
+S800InverseMap::S800InverseMap(const char *filename) : TNamed("InverseMap", filename)
 {
    ReadMapFile(filename);
 }
 
-TInverseMap::TInverseMap() : TNamed("InverseMap", "multiInvMap") {}
+S800InverseMap::S800InverseMap() : TNamed("InverseMap", "multiInvMap") {}
 
-TInverseMap::~TInverseMap() = default;
+S800InverseMap::~S800InverseMap() = default;
 
-TInverseMap *TInverseMap::Get(const char *filename)
+S800InverseMap *S800InverseMap::Get(const char *filename)
 {
    if (fInverseMap)
       return fInverseMap.get();
@@ -33,11 +33,11 @@ TInverseMap *TInverseMap::Get(const char *filename)
       printf("no inverse map loaded and file \"%s\" not found.\n", filename);
       return nullptr;
    }
-   fInverseMap = std::make_unique<TInverseMap>(filename);
+   fInverseMap = std::make_unique<S800InverseMap>(filename);
    return fInverseMap.get();
 }
 
-bool TInverseMap::ReadMapFile(const char *filename)
+bool S800InverseMap::ReadMapFile(const char *filename)
 {
    std::string mapfile = filename;
    /*if(mapfile.length()==0)
@@ -92,7 +92,8 @@ bool TInverseMap::ReadMapFile(const char *filename)
    return true;
 }
 
-bool TInverseMap::ReadMultiMapFile(std::vector<std::string> &mapfile_v)
+// bool S800InverseMap::ReadMultiMapFile(std::vector<std::string> &mapfile_v)
+bool S800InverseMap::ReadMultiMapFile(std::vector<TString> &mapfile_v)
 {
 
    std::cout << "mapfile size : " << mapfile_v.size() << std::endl;
@@ -100,10 +101,11 @@ bool TInverseMap::ReadMultiMapFile(std::vector<std::string> &mapfile_v)
    for (auto &i : mapfile_v) {
       bool isRead = false;
       fMap.clear();
-      isRead = ReadMapFile(i.c_str());
+      // isRead = ReadMapFile(i.c_str());
+      isRead = ReadMapFile(i.Data());
       fMap_v.push_back(fMap);
       // fMapDist_v.push_back(0.1*(1+i));//change that, find a way to know the distance pivot-target for each map.
-      std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " << i << std::endl;
+      // std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " << i << std::endl;
       if (!isRead)
          std::cout << "! Inv map file not read : " << i << std::endl;
    }
@@ -150,7 +152,7 @@ bool TInverseMap::ReadMultiMapFile(std::vector<std::string> &mapfile_v)
    return true;
 }
 
-void TInverseMap::Print(Option_t *opt) const
+void S800InverseMap::Print(Option_t *opt) const
 {
    printf("%s\n", info.c_str());
    printf("\tBrho = %.04f\t", fBrho);
@@ -194,7 +196,7 @@ void TInverseMap::Print(Option_t *opt) const
 //
 // We transform S800 angle into GRETINA.
 
-float TInverseMap::Ata(int order, double xfp, double afp, double yfp, double bfp) const
+float S800InverseMap::Ata(int order, double xfp, double afp, double yfp, double bfp) const
 {
    float input[6];
    input[0] = -xfp / 1000.0;
@@ -206,7 +208,7 @@ float TInverseMap::Ata(int order, double xfp, double afp, double yfp, double bfp
    return MapCalc(order, 0, input);
 }
 
-float TInverseMap::Bta(int order, double xfp, double afp, double yfp, double bfp) const
+float S800InverseMap::Bta(int order, double xfp, double afp, double yfp, double bfp) const
 {
    float input[6];
    input[0] = -xfp / 1000.0;
@@ -218,7 +220,7 @@ float TInverseMap::Bta(int order, double xfp, double afp, double yfp, double bfp
    return MapCalc(order, 2, input);
 }
 
-float TInverseMap::Yta(int order, double xfp, double afp, double yfp, double bfp) const
+float S800InverseMap::Yta(int order, double xfp, double afp, double yfp, double bfp) const
 {
    float input[6];
    input[0] = -xfp / 1000.0;
@@ -230,7 +232,7 @@ float TInverseMap::Yta(int order, double xfp, double afp, double yfp, double bfp
    return MapCalc(order, 1, input);
 }
 
-float TInverseMap::Dta(int order, double xfp, double afp, double yfp, double bfp) const
+float S800InverseMap::Dta(int order, double xfp, double afp, double yfp, double bfp) const
 {
    float input[6];
    input[0] = -xfp / 1000.0;
@@ -242,7 +244,7 @@ float TInverseMap::Dta(int order, double xfp, double afp, double yfp, double bfp
    return MapCalc(order, 3, input);
 }
 
-float TInverseMap::Ata(int order, double xfp, double afp, double yfp, double bfp, double z)
+float S800InverseMap::Ata(int order, double xfp, double afp, double yfp, double bfp, double z)
 {
    float input[6];
    input[0] = -xfp / 1000.0;
@@ -254,7 +256,7 @@ float TInverseMap::Ata(int order, double xfp, double afp, double yfp, double bfp
    return MapCalc_s(order, 0, input, z);
 }
 
-float TInverseMap::Bta(int order, double xfp, double afp, double yfp, double bfp, double z)
+float S800InverseMap::Bta(int order, double xfp, double afp, double yfp, double bfp, double z)
 {
    float input[6];
    input[0] = -xfp / 1000.0;
@@ -266,7 +268,7 @@ float TInverseMap::Bta(int order, double xfp, double afp, double yfp, double bfp
    return MapCalc_s(order, 2, input, z);
 }
 
-float TInverseMap::Yta(int order, double xfp, double afp, double yfp, double bfp, double z)
+float S800InverseMap::Yta(int order, double xfp, double afp, double yfp, double bfp, double z)
 {
    float input[6];
    input[0] = -xfp / 1000.0;
@@ -278,7 +280,7 @@ float TInverseMap::Yta(int order, double xfp, double afp, double yfp, double bfp
    return MapCalc_s(order, 1, input, z);
 }
 
-float TInverseMap::Dta(int order, double xfp, double afp, double yfp, double bfp, double z)
+float S800InverseMap::Dta(int order, double xfp, double afp, double yfp, double bfp, double z)
 {
    float input[6];
    input[0] = -xfp / 1000.0;
@@ -291,7 +293,7 @@ float TInverseMap::Dta(int order, double xfp, double afp, double yfp, double bfp
 }
 
 /*
-float TInverseMap::Ata(int order, const TS800 *s800) {
+float S800InverseMap::Ata(int order, const TS800 *s800) {
   float input[6];
   input[0]  = - s800->GetXFP() / 1000.0;
   input[1]  = - s800->GetAFP();
@@ -303,7 +305,7 @@ float TInverseMap::Ata(int order, const TS800 *s800) {
   return MapCalc(order,par,input);
 }
 
-float TInverseMap::Bta(int order, const TS800 *s800) {
+float S800InverseMap::Bta(int order, const TS800 *s800) {
   float input[6];
   input[0]  = - s800->GetXFP() / 1000.0;
   input[1]  = - s800->GetAFP();
@@ -315,7 +317,7 @@ float TInverseMap::Bta(int order, const TS800 *s800) {
   return MapCalc(order,par,input);
 }
 
-float TInverseMap::Yta(int order, const TS800 *s800) {
+float S800InverseMap::Yta(int order, const TS800 *s800) {
   float input[6];
   input[0]  = - s800->GetXFP() / 1000.0;
   input[1]  = - s800->GetAFP();
@@ -328,7 +330,7 @@ float TInverseMap::Yta(int order, const TS800 *s800) {
   return MapCalc(order,par,input)*1000;
 }
 
-float TInverseMap::Dta(int order, const TS800 *s800) {
+float S800InverseMap::Dta(int order, const TS800 *s800) {
   float input[6];
   input[0]  = - s800->GetXFP() / 1000.0;
   input[1]  = - s800->GetAFP();
@@ -340,7 +342,7 @@ float TInverseMap::Dta(int order, const TS800 *s800) {
   return MapCalc(order,par,input);
 }*/
 
-float TInverseMap::MapCalc(int order, int par, float *input) const
+float S800InverseMap::MapCalc(int order, int par, float *input) const
 {
    float cumul = 0.0;
    float multiplicator = 0.0;
@@ -358,7 +360,7 @@ float TInverseMap::MapCalc(int order, int par, float *input) const
    return cumul;
 }
 
-float TInverseMap::MapCalc_s(int order, int par, float *input, double z)
+float S800InverseMap::MapCalc_s(int order, int par, float *input, double z)
 {
    float cumul = 0.0;
    float multiplicator = 0.0;
