@@ -205,12 +205,13 @@ void AtMap::ParseMapList(TXMLNode *node)
              strcmp(node->GetNodeName(), "LookupSpecMATnoScint") == 0 ||
              strcmp(node->GetNodeName(), "LookupSpecMATnoScintHisto") == 0 ||
              strcmp(node->GetNodeName(), "LookupSpecMATnoScint3seg") == 0 ||
+             strcmp(node->GetNodeName(), "ANL2023") == 0 ||
              strcmp(node->GetNodeName(), "LookupProtoND") == 0) { // TODO Implement this as function parameter
 
             ParseAtTPCMap(node->GetChildren());
          } else
             std::cout << " AtTpcMap::ParseMapList - Node not found! Check node name" << std::endl;
-         // std::cout <<node->GetNodeName()<<std::endl;
+            // std::cout <<node->GetNodeName()<<std::endl;
       }
    }
    kIsParsed = true;

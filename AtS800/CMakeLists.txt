@@ -18,11 +18,9 @@ S800Ana.cxx
 S800Calc.cxx
 S800Event.cxx
 S800.cxx
-TInverseMap.cxx
-AtS800Task.cxx
+S800InverseMap.cxx
 S800Calibration.cxx
 S800Settings.cxx
-S800TSettings.cxx
 AtMergeTask.cxx
 
 lmfit/lmmin.cxx

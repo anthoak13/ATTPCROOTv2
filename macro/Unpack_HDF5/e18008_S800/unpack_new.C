@@ -34,7 +34,7 @@ void unpack_new(int runNumberS800 = 2272, int runNumberATTPC = 272)
   //Set the output file
   // TString outputFile = TString::Format("/mnt/analysis/e18008/rootMerg/run_2%03d_%04d.root", runNumberS800, runNumberATTPC);
   TString outputFile =
-     TString::Format("/mnt/analysis/e18008/rootMerg/giraud/run_%04d_%04d_test15.root", runNumberS800, runNumberATTPC);
+     TString::Format("/mnt/analysis/e18008/rootMerg/giraud/run_%04d_%04d_testnew.root", runNumberS800, runNumberATTPC);
   // TString outputFile = TString::Format("/projects/ceclub/giraud/attpc/ATTPCROOTv2/macro/Simulation/d2He/Analyis_d2He/merged_run0002_48Ca.root", runNumberS800, runNumberATTPC);
 
   std::cout << "Unpacking AT-TPC run " << runNumberATTPC << " from: " << inputFile << std::endl;
@@ -71,6 +71,7 @@ void unpack_new(int runNumberS800 = 2272, int runNumberATTPC = 272)
  fAtMapPtr->GeneratePadPlane();
 
  /**** Should not have to change code between this line and the above star comment ****/
+ /**** ({cobo, asad, aget, channel}, "name")  ****/
  fAtMapPtr->AddAuxPad({10, 0, 0, 34}, "mesh");
  fAtMapPtr->AddAuxPad({10, 0, 0, 0}, "trigger");
  fAtMapPtr->AddAuxPad({10, 0, 1, 34}, "obj_scint");
@@ -186,12 +187,14 @@ void unpack_new(int runNumberS800 = 2272, int runNumberATTPC = 272)
   MergeEvt->SetGlom(1500);
   MergeEvt->SetTsDelta(0); // 4186 run149, 0 for all
 
+  MergeEvt->ShowTSDiagnostic(kTRUE); //If want to draw the timestamp matching figures between s800 and attpc.
+
   //------------------------------------------------------------------------------
 
   run->AddTask(unpackTask);
   run->AddTask(MergeEvt);
   run->AddTask(reduceTask);
-  run->AddTask(filterTask);
+  //run->AddTask(filterTask);
   run->AddTask(psaTask);
   run->AddTask(ransacTask);
 
@@ -203,8 +206,8 @@ void unpack_new(int runNumberS800 = 2272, int runNumberATTPC = 272)
   std::cout << "Unpacking " << numEvents << " events. " << std::endl;
 
   //return;
-  run->Run(0, numEvents);
-  // run->Run(0,3000);
+//   run->Run(0, numEvents);
+  run->Run(0,100);
 
   // -----   Finish   -------------------------------------------------------
   timer.Stop();

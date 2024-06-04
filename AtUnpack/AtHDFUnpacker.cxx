@@ -38,6 +38,7 @@ void AtHDFUnpacker::Init()
 {
    auto numEvents = open(fInputFileName.c_str());
    auto uniqueEvents = GetNumEvents();
+   // std::cout<< "AtHDFUnpacker::Init - numEvents: "<< numEvents <<" uniqueEvents: "<<uniqueEvents<<std::endl;
    if (fEventID > uniqueEvents)
       LOG(fatal) << "Exceded valid range of event numbers. Looking for " << fEventID << " max event number is "
                  << uniqueEvents;

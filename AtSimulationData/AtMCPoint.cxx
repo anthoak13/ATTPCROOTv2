@@ -25,16 +25,17 @@ AtMCPoint::AtMCPoint(Int_t trackID, Int_t detID, TVector3 pos, TVector3 mom, Dou
 {
 }
 
-AtMCPoint::AtMCPoint(Int_t trackID, Int_t detID, TVector3 pos, TVector3 mom, Double_t tof, Double_t length,
+// -----   Standard constructor   ------------------------------------------
+AtMCPoint::AtMCPoint(Int_t trackID, Int_t detID, TVector3 pos, TVector3 momIn, TVector3 momOut, Double_t tof, Double_t length,
                      Double_t eLoss, TString VolName, Int_t detCopyID, Double_t EIni, Double_t AIni, Int_t A, Int_t Z)
-   : FairMCPoint(trackID, detID, pos, mom, tof, length, eLoss), fDetCopyID(detCopyID), fVolName(std::move(VolName)),
-     fEnergyIni(EIni), fAngleIni(AIni), fAiso(A), fZiso(Z)
+   : FairMCPoint(trackID, detID, pos, momIn, tof, length, eLoss), fDetCopyID(detCopyID), fVolName(std::move(VolName)),
+     fEnergyIni(EIni), fAngleIni(AIni), fAiso(A), fZiso(Z), fPxOut(momOut.Px()), fPyOut(momOut.Py()), fPzOut(momOut.Pz())
 {
 }
 
 AtMCPoint::AtMCPoint(Int_t trackID, Int_t detID, XYZPoint pos, XYZVector mom, Double_t tof, Double_t length,
                      Double_t eLoss)
-   : AtMCPoint(trackID, detID, TVector3(pos.X(), pos.Y(), pos.Z()), TVector3(mom.X(), mom.Y(), mom.Z()), 0, length,
+   : AtMCPoint(trackID, detID, TVector3(pos.X(), pos.Y(), pos.Z()), TVector3(mom.X(), mom.Y(), mom.Z()), tof, length,
                eLoss)
 {
 }

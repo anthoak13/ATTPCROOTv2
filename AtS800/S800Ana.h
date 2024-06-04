@@ -6,6 +6,8 @@
 
 #include <vector>
 
+#include "S800InverseMap.h"
+
 // AtTPCROOT classes
 
 class FairLogger;
@@ -38,6 +40,18 @@ private:
    Double_t fY1{0};
    Double_t fAfp;
    Double_t fBfp{0};
+   Double_t fAta;
+   Double_t fBta;
+   Double_t fYta;
+   Double_t fDta;
+   Double_t fThetaLab;
+   Double_t fPhi;
+
+   // Not used for now but could be.
+   // If these correction coefs are needed at some point should code alsos setter/getter functions.
+   Double_t fBtaCorr{1};
+
+   S800InverseMap fInvMap;
 
 public:
    S800Ana();
@@ -50,6 +64,7 @@ public:
    void SetTofObjCorr(std::vector<Double_t> vec);
    void SetMTDCObjRange(std::vector<Double_t> vec);
    void SetMTDCXfRange(std::vector<Double_t> vec);
+   void SetInverseMap(TString mapPath, Float_t zMin, Float_t zMax, Float_t zStep);
 
    std::vector<Double_t> GetParameters();
    std::vector<Double_t> GetTofObjCorr();
@@ -59,9 +74,11 @@ public:
    Double_t GetObjCorr_ToF();
    Double_t GetICSum_E();
    std::vector<Double_t> GetFpVariables();
+   std::vector<Double_t> GetReconstTargetVariables();
 
    Bool_t isInPID(S800Calc *s800calc);
    void Calc(S800Calc *s800calc);
+   std::vector<Double_t> CalcInverseMap(Float_t zta);
 
    // void InitStatus Init();
    // virtual void Exec(Option_t *opt);

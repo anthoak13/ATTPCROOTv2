@@ -53,12 +53,15 @@ void AtFilterSubtraction::InitEvent(AtRawEvent *event)
 bool AtFilterSubtraction::isValidPad(const AtPad &pad)
 {
    auto padRef = fMapping->GetPadRef(pad.GetPadNum());
+
+   std::cout<<"Simon - AtFilterSubtraction::isValidPad "<<padRef.ch<<" "<<pad.GetPadNum()<<std::endl;
    if (padRef.ch != 0)
       return false;
 
    for (int tb = 0; tb < 512; ++tb)
       if (pad.GetADC(tb) > fThreshold)
-         return false;
+         {std::cout<<"Simon - loop "<<pad.GetADC(tb)<<" "<<fThreshold<<std::endl;
+         return false;}
 
    return true;
 }

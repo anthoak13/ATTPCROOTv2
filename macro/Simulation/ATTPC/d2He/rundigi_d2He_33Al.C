@@ -1,6 +1,6 @@
-void rundigi_d2He(Int_t runNumber = 0, Double_t ExEje = 0)
+void rundigi_d2He_33Al(Int_t runNumber = 0, Double_t ExEje = 0)
 {
-   TString mcFile = Form("/mnt/analysis/e18008/rootAna/giraud/simulation/g4/attpcsim_d2He_run%d_Ex%d_testUpdates.root",
+   TString mcFile = Form("/mnt/analysis/e18008/rootAna/giraud/simulation/g4/attpcsim_d2He_run%d_Ex%d_33Al_decay.root",
                          runNumber, (Int_t)ExEje); // attpcsim_d2He_14O_07atm_100000.root
 
    TString scriptfile = "Lookup20150611.xml";
@@ -19,7 +19,7 @@ void rundigi_d2He(Int_t runNumber = 0, Double_t ExEje = 0)
    delete fileSim;
 
    TString outputFile = Form("/mnt/analysis/e18008/rootAna/giraud/simulation/digi/attpcdigi_d2He_" + str_nEvents +
-                                "_run%d_Ex%d_testUpdates.root",
+                                "_run%d_Ex%d_33Al_decay.root",
                              runNumber, (Int_t)ExEje);
 
    // -----   Timer   --------------------------------------------------------

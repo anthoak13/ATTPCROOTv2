@@ -129,7 +129,7 @@ XYZVector ClosestPoint2Lines(std::vector<Double_t> par1, std::vector<Double_t> p
    return meanpoint;
 }
 
-void ana_d2He(Int_t runNumber)
+void ana_d2He_comparison(Int_t runNumber)
 {
 
    SetERtable();
@@ -140,7 +140,7 @@ void ana_d2He(Int_t runNumber)
 
    // TString digiFileName = "/mnt/analysis/e18008/rootMerg/giraud/run_2271_0271_test15.root";
    TString digiFileName =
-      TString::Format("/mnt/analysis/e18008/rootMerg/giraud/run_2%03d_%04d_testnew.root", runNumber, runNumber);
+      TString::Format("/mnt/analysis/e18008/rootMerg/giraud/run_2%03d_%04d_test15.root", runNumber, runNumber);
    TFile *file = new TFile(digiFileName, "READ");
    TTree *tree = (TTree *)file->Get("cbmsim");
    Int_t nEvents = tree->GetEntries();
@@ -156,7 +156,7 @@ void ana_d2He(Int_t runNumber)
 
    TFile *outfile;
    // TString  outFileNameHead = "ana_d2He_test_271.root";
-   TString outFileNameHead = TString::Format("ana_d2He_test_%04d_14N_testnew.root", runNumber);
+   TString outFileNameHead = TString::Format("ana_d2He_test_%04d_14N_nbptsW_test.root", runNumber);
    outfile = TFile::Open(outFileNameHead, "recreate");
 
    S800Ana s800Ana;
@@ -190,9 +190,6 @@ void ana_d2He(Int_t runNumber)
    XYZVector beamDir(-0.00915252, -0.00221017, 0.9999557);
 
    //---- Set S800Ana -------------------------------------------------------------
-   TString mapPath = "/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/invMap/invmap_14N";
-   s800Ana.SetInverseMap(mapPath, -0.5, 1, 0.1);
-
    vector<TString> fcutPID1File;
    vector<TString> fcutPID2File;
    vector<TString> fcutPID3File;
@@ -293,6 +290,7 @@ void ana_d2He(Int_t runNumber)
       S800_ICSum_dE = s800Ana.GetICSum_E();
       std::vector<Double_t> S800_fpVar; //[0]=fX0 | [1]=fX1 | [2]=fY0 | [3]=fY1 | [4]=fAfp | [5]=fBfp
       S800_fpVar = s800Ana.GetFpVariables();
+
       //------------------------------------------------------------------------------
 
       AtPatternEvent *patternEvent = (AtPatternEvent *)patternArray->At(0);
@@ -328,6 +326,9 @@ void ana_d2He(Int_t runNumber)
             NTracksVtx = tv.at(ive).tracks.size();
             if (NTracksVtx != 2)
                continue; // don't analyze event with other than 2 tracks per vertex
+
+            std::cout<<"Simon ---- test "<<std::endl;
+            continue;
 
             theta1 = 0.;
             theta2 = 0.;
@@ -485,18 +486,6 @@ void ana_d2He(Int_t runNumber)
                 MaxZ1 > 975. || MaxZ2 > 975. || MaxZ1 < 25. || MaxZ2 < 25. || vertexMean.Z() < 25. ||
                 vertexMean.Z() > 975.)
                continue;
-
-
-            // S800 inverse map ---------------------
-            Double_t zta = 1.066-vertexMean.Z()/1000;
-            std::vector<Double_t> invMapVars;
-            invMapVars = s800Ana.CalcInverseMap(zta);
-
-            std::cout<<"invMap results, ata, bta, yta, dta, thetaLab, phi: "<<invMapVars.at(0)<<" "<<invMapVars.at(1)<<" "<<invMapVars.at(2)
-            <<" "<<invMapVars.at(3)<<" "<<invMapVars.at(4)<<" "<<invMapVars.at(5)<<" "<<std::endl;
-            //--- end S800 inverse map ---------------
-
-
 
             //==============================================================================
             // methods to get the proton eloss

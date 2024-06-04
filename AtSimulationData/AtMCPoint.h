@@ -35,6 +35,7 @@ protected:
    Double_t fAngleIni = 0;
    Int_t fAiso = 0;
    Int_t fZiso = 0;
+   Double32_t fPxOut, fPyOut, fPzOut;
 
 public:
    /** Default constructor **/
@@ -52,7 +53,7 @@ public:
    AtMCPoint(Int_t trackID, Int_t detID, TVector3 pos, TVector3 mom, Double_t tof, Double_t length, Double_t eLoss);
    AtMCPoint(Int_t trackID, Int_t detID, XYZPoint pos, XYZVector mom, Double_t tof, Double_t length, Double_t eLoss);
 
-   AtMCPoint(Int_t trackID, Int_t detID, TVector3 pos, TVector3 mom, Double_t tof, Double_t length, Double_t eLoss,
+   AtMCPoint(Int_t trackID, Int_t detID, TVector3 pos, TVector3 momIn, TVector3 momOut, Double_t tof, Double_t length, Double_t eLoss,
              TString VolName, Int_t detCopyID, Double_t EIni, Double_t AIni, Int_t A, Int_t Z);
 
    /** Destructor **/
@@ -70,6 +71,9 @@ public:
    Double_t GetAIni() const { return fAngleIni; }
    Int_t GetMassNum() const { return fAiso; }
    Int_t GetAtomicNum() const { return fZiso; }
+   Double_t GetPxOut() const { return fPxOut; }
+   Double_t GetPyOut() const { return fPyOut; }
+   Double_t GetPzOut() const { return fPzOut; }
 
    void SetDetCopyID(Int_t id) { fDetCopyID = id; };         // added by Marc
    void SetVolName(TString VolName) { fVolName = VolName; }; // added by Ari

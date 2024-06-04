@@ -11,6 +11,7 @@
 #include <TString.h>
 
 #include "S800Calc.h"
+#include "S800InverseMap.h"
 
 #include <algorithm>
 #include <cmath>
@@ -147,6 +148,17 @@ std::vector<Double_t> S800Ana::GetFpVariables()
    result.push_back(fBfp);
    return result;
 }
+std::vector<Double_t> S800Ana::GetReconstTargetVariables()
+{
+   std::vector<Double_t> result;
+   result.push_back(fAta);
+   result.push_back(fBta);
+   result.push_back(fYta);
+   result.push_back(fDta);
+   result.push_back(fThetaLab);
+   result.push_back(fPhi);
+   return result;
+}
 
 void S800Ana::Calc(S800Calc *s800calc)
 {
@@ -249,4 +261,63 @@ Bool_t S800Ana::isInPID(S800Calc *s800calc)
    }
    //----------- New 10/01 -------------------------------------
    return is;
+}
+
+// zMin, zMax, zStep in [m]
+// The naming of the map files is hardcoded here. Could let the user provide the file name format.
+void S800Ana::SetInverseMap(TString mapPath, Float_t zMin, Float_t zMax, Float_t zStep)
+{
+   std::vector<TString> mapList;
+   std::vector<Double_t> mapDist;
+
+   Int_t nbMap = (zMax - zMin) / zStep;
+
+   for (size_t iMap = 0; iMap <= nbMap; iMap++)
+   {
+      TString invMapFile;
+      Int_t idMap = zMin*10 + iMap;
+      if (idMap < 0)
+      {
+         invMapFile = mapPath + TString::Format("/invmap_-%02d.inv", abs(idMap)); 
+      }
+      else 
+      {
+         invMapFile =  mapPath + TString::Format("/invmap_%02d.inv", idMap); 
+      }
+      mapList.push_back(invMapFile);
+      mapDist.push_back(zMin + zStep*iMap);
+   }
+
+   fInvMap = S800InverseMap();
+   fInvMap.SetDistPivotTarget(mapDist);
+   fInvMap.ReadMultiMapFile(mapList);
+}
+
+std::vector<Double_t> S800Ana::CalcInverseMap(Float_t zta)
+{
+   std::vector<Double_t> result;
+   Int_t order = 5;
+
+   fAta = fInvMap.Ata(order, fX0, fAfp, fY0, fBfp, zta);
+   result.push_back(fAta);
+   fBta = fInvMap.Bta(order, fX0, fAfp, fY0, fBfp, zta) * fBtaCorr;
+   result.push_back(fBta);
+   fYta = fInvMap.Yta(order, fX0, fAfp, fY0, fBfp, zta) * 1000.;
+   result.push_back(fYta);
+   fDta = fInvMap.Dta(order, fX0, fAfp, fY0, fBfp, zta);
+   result.push_back(fDta);
+   fThetaLab= atan(sqrt(pow(tan(fAta), 2) + pow(tan(fBta), 2)));
+   result.push_back(fThetaLab);
+
+   fPhi= atan(tan(fBta)/tan(fAta));
+   if (fAta < 0)
+      fPhi = TMath::Pi() + fPhi;
+   else if (fBta < 0)
+      fPhi = TMath::Pi() + fPhi;
+   result.push_back(fPhi);
+
+   // std::cout<<"S800Ana::CalcInverseMap - ata, bta, yta, dta, thetaLab, phi: "<<fAta<<" "<<fBta<<" "<<fYta
+   // <<" "<<fDta<<" "<<fThetaLab<<" "<<fPhi<<" "<<std::endl;
+
+   return result;
 }

@@ -112,6 +112,12 @@ void AtTpc::getTrackParametersFromMC()
    gMC->TrackPosition(fPosIn);
    gMC->TrackMomentum(fMomIn);
    fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
+   TLorentzVector testmomout;
+   gMC->TrackMomentum(testmomout);
+   // if (fTrackID==1){
+   //    std::cout<<"Simon - AtTpc::getTrackParametersFromMC "<<fTrackID<<" "<<testmomout.X()<<" "<<testmomout.Y()<<" "<<testmomout.Z()<<" "<<std::endl;
+   // }
+
 }
 
 void AtTpc::getTrackParametersWhileExiting()
@@ -119,6 +125,24 @@ void AtTpc::getTrackParametersWhileExiting()
    fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
    gMC->TrackPosition(fPosOut);
    gMC->TrackMomentum(fMomOut);
+
+   // TVector3 momEje;
+   // momEje.SetXYZ(fMomOut.X(), fMomOut.Y(), fMomOut.Z());
+   // TLorentzVector ejec4v;
+   // // Double_t decay_frag_mass = 31.013146656*931.494 / 1000; // GeV/c^2
+   // Double_t decay_frag_mass = 32.020011026*931.494 / 1000; // GeV/c^2
+   // //Double_t decay_frag_mass = 31.999110139*931.494 / 1000; // GeV/c^2
+   // ejec4v.SetXYZM(momEje.X(), momEje.Y(), momEje.Z(), decay_frag_mass);
+   // Double_t gamma = ejec4v.Gamma();
+   // Double_t beta = ejec4v.Beta();
+   // Double_t brho = 3.1 * beta * gamma * 32. / 11.;
+
+   // if (fTrackID==1){
+   //    std::cout<<"Simon - AtTpc::getTrackParametersWhileExiting "<<fTrackID<<" "<<fMomOut.X()<<" "<<fMomOut.Y()<<" "<<fMomOut.Z()<<" "<<std::endl;
+   //    std::cout << " brho " << beta << " " << brho << std::endl;
+   // }
+
+
 
    // Correct fPosOut
    if (gMC->IsTrackExiting()) {
@@ -132,7 +156,8 @@ void AtTpc::getTrackParametersWhileExiting()
 void AtTpc::resetVertex()
 {
    AtVertexPropagator::Instance()->ResetVertex();
-   LOG(info) << cRED << " - AtTpc Warning : Beam punched through the AtTPC. Reseting Vertex! " << cNORMAL << std::endl;
+   
+   LOG(debug) << cRED << " - AtTpc Warning : Beam punched through the AtTPC. Reseting Vertex! " << cNORMAL << std::endl;
 }
 
 void AtTpc::correctPosOut()
@@ -238,7 +263,8 @@ void AtTpc::addHit()
    }
 
    AddHit(fTrackID, fVolumeID, fVolName, fDetCopyID, TVector3(fPosIn.X(), fPosIn.Y(), fPosIn.Z()),
-          TVector3(fMomIn.Px(), fMomIn.Py(), fMomIn.Pz()), fTime, fLength, fELoss, EIni, AIni, AZ.first, AZ.second);
+          TVector3(fMomIn.Px(), fMomIn.Py(), fMomIn.Pz()), TVector3(fMomOut.Px(), fMomOut.Py(), fMomOut.Pz()),
+          fTime, fLength, fELoss, EIni, AIni, AZ.first, AZ.second);
 }
 
 void AtTpc::EndOfEvent()
@@ -306,7 +332,7 @@ AtTpc::AddHit(Int_t trackID, Int_t detID, TVector3 pos, TVector3 mom, Double_t t
 }
 
 // -----   Private method AddHit   --------------------------------------------
-AtMCPoint *AtTpc::AddHit(Int_t trackID, Int_t detID, TString VolName, Int_t detCopyID, TVector3 pos, TVector3 mom,
+AtMCPoint *AtTpc::AddHit(Int_t trackID, Int_t detID, TString VolName, Int_t detCopyID, TVector3 pos, TVector3 momIn, TVector3 momOut,
                          Double_t time, Double_t length, Double_t eLoss, Double_t EIni, Double_t AIni, Int_t A, Int_t Z)
 {
    TClonesArray &clref = *fAtTpcPointCollection;
@@ -316,7 +342,7 @@ AtMCPoint *AtTpc::AddHit(Int_t trackID, Int_t detID, TString VolName, Int_t detC
                 << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
 
    return new (clref[size])
-      AtMCPoint(trackID, detID, pos, mom, time, length, eLoss, VolName, detCopyID, EIni, AIni, A, Z);
+      AtMCPoint(trackID, detID, pos, momIn, momOut, time, length, eLoss, VolName, detCopyID, EIni, AIni, A, Z);
 }
 
 std::pair<Int_t, Int_t> AtTpc::DecodePdG(Int_t PdG_Code)
