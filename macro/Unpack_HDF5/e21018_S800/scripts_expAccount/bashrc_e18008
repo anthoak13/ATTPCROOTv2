@@ -1,0 +1,61 @@
+#echo sourcing .bashrc
+
+if [ -f ~/.bash_functions ]; then
+  . ~/.bash_functions
+fi
+if [ -f ~/.bash_aliases ]; then
+  . ~/.bash_aliases
+fi
+
+alias ls='ls --color'
+alias lh='ls -ltrh'
+alias root="root -l"
+alias copy_data='. /user/e21018/scripts/copy_data_log.sh'
+alias unpack_S800='. /mnt/analysis/e21018/codes/s800root/files/auto_unpack.sh'
+alias set_terms='. /mnt/user/e21018/scripts/set_term_u6pc2.sh'
+alias dir_ATTPC="cd /mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800 && . ../../../env_fishtank.sh"
+
+#export PS1='\[[1m\]<\h:\W >\[[m\]'
+export PS1='\[[1;34m\]\u@\h\[[m\]\[[1;35m\]:\w\$ \[[m\]'
+export RSYNC_RSH='ssh'
+
+
+export PATH=$PATH:$HOME/bin/bin64:$HOME/bin
+export XAPPLRESDIR=/mnt/misc/sw/x86_64/Debian/8/tv/20030812/X11/app-defaults
+export TVPATH=/soft/x86_64/tv/lib/tv
+export BITSYSTEM=64
+
+export PATH=$PATH:/opt/bin
+export PATH=$PATH:/usr/opt/daq/current/bin:/usr/local/bin:/usr/sbin:$THEHOME/bin:/usr/bin/X11
+
+
+# add the current directory to the PATH
+
+PATH=${PATH}:.
+# set the umask for user,group, but not other writes
+umask 002
+export PATH
+
+
+export TCLLIBPATH_OK=x
+
+# source /usr/opt/nscldaq/11.3-016/daqsetup.bash -f
+
+
+
+# Some S800 SpecTcl directories
+export SPECTCLBINDIR=$HOME/s800spectcl
+export SPECTCLDEPLOY=$HOME/s800spectcl_deploy
+
+# Some S800DAQ directories
+export S800DAQBOX=spdaq50
+export S800DAQDIR=$HOME/s800daq
+export S800DEVELOPDIR=$HOME/s800develop
+export S800DAQDEVELOPDIR=$S800DEVELOPDIR/S800DAQ
+
+# S800 root code (unpacker) settings
+export PATH=$PATH:/mnt/analysis/e21018/codes/s800root/bin
+export S800TInstall=/mnt/analysis/e21018/codes/s800root
+export S800TEvtFilesPath=/mnt/analysis/e21018/evtS800/
+export S800TRootFilesPath=/mnt/analysis/e21018/rootS800/
+#End S800T settings
