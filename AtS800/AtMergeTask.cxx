@@ -274,7 +274,7 @@ void AtMergeTask::Exec(Option_t *opt)
    minj = (int)fS800TsFunc->Eval(AtTPCTs) - fEvtDelta; 
    maxj = (int)fS800TsFunc->Eval(AtTPCTs) + fEvtDelta;
 
-   std::cout << " TS AtTPC " << AtTPCTs << std::endl;
+   std::cout << "\nBefore matching, TS AtTPC: " << AtTPCTs << std::endl;
 
    for (int i = minj; i < maxj; i++) {
       if (i >= 0 && i < fTsEvtS800Size) {
@@ -292,9 +292,10 @@ void AtMergeTask::Exec(Option_t *opt)
                                                                // sync signal between S800 and At-TPC
                // if(isInGlom(fS800Ts.at(i),AtTPCTs) ){//special run180
                S800EvtMatch = (int)fS800Evt.at(i);
-               std::cout << " in glom " << minj << " " << maxj << " " << i << " " << fS800Ts.at(i) << " " << AtTPCTs
-                         << " " << S800EvtMatch << " " << fS800TsFunc->Eval(AtTPCTs) << " " << AtTPCTs - fS800Ts.at(i)
-                         << std::endl;
+               std::cout << "Matched S800 event "<<S800EvtMatch<<" with AtTPC event "<<i<<" within AtTPC event window [" 
+                         << minj << ", " << maxj<<"]" <<std::endl;
+               std::cout << "TS AtTPC: " << AtTPCTs << " TS S800: " << fS800Ts.at(i) 
+                         << " diff: " << AtTPCTs - fS800Ts.at(i)<<std::endl;
                fEvtMerged++;
                break;
             } else
