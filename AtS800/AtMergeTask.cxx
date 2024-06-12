@@ -309,7 +309,7 @@ void AtMergeTask::Exec(Option_t *opt)
    if (fShowTSDiagnostic) {
       diagFile->cd();
       Long64_t S800TsForPlot = 0;
-      if (S800EvtMatch => 0) {
+      if (S800EvtMatch >= 0) {
          S800TsForPlot = fS800Ts.at(S800EvtMatch);
       }
 
@@ -322,7 +322,7 @@ void AtMergeTask::Exec(Option_t *opt)
          fATTPCTsGraph->Draw("L same");
       } else {
          fATTPCTsGraph->SetPoint(fATTPCTsGraph->GetN(), AtTPCTs, (Double_t)rawEvent->GetEventID());
-         diagCanvas->Update();
+         // diagCanvas->Update();
          fATTPCTsGraph->Write(plotNames.at(1), kOverwrite);
       }
 
@@ -335,7 +335,7 @@ void AtMergeTask::Exec(Option_t *opt)
          fATTPCandS800TsGraph->Draw("AL");
       } else {
          fATTPCandS800TsGraph->SetPoint(fATTPCandS800TsGraph->GetN(), S800TsForPlot, AtTPCTs);
-         diagCanvas->Update();
+         // diagCanvas->Update();
          fATTPCandS800TsGraph->Write(plotNames.at(2), kOverwrite);
       }
 
@@ -348,7 +348,7 @@ void AtMergeTask::Exec(Option_t *opt)
          fdiffTsGraph->Draw("AL");
       } else {
          fdiffTsGraph->SetPoint(fdiffTsGraph->GetN(), (Double_t)rawEvent->GetEventID(), AtTPCTs - S800TsForPlot);
-         diagCanvas->Update();
+         // diagCanvas->Update();
          fdiffTsGraph->Write(plotNames.at(3), kOverwrite);
       }
 
@@ -363,7 +363,7 @@ void AtMergeTask::Exec(Option_t *opt)
       } else {
          fdiffTsHist->Fill(AtTPCTs - S800TsForPlot);
          // std::cout<<"Simon - TS diff "<<AtTPCTs - S800TsForPlot<<std::endl;
-         diagCanvas->Update();
+         // diagCanvas->Update();
          fdiffTsHist->Write(plotNames.at(4), kOverwrite);
       }
       fS800file->cd();
