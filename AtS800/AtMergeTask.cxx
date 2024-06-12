@@ -312,7 +312,7 @@ void AtMergeTask::Exec(Option_t *opt)
    if (fShowTSDiagnostic) {
       diagFile->cd();
       Long64_t S800TsForPlot = 0;
-      if (S800EvtMatch > 0) {
+      if (S800EvtMatch => 0) {
          S800TsForPlot = fS800Ts.at(S800EvtMatch);
       }
 
