@@ -15,7 +15,7 @@ public:
 
    E12014SC(int nsclRunNumber)
    {
-      TString fileName = TString::Format("/home/faculty/aanthony/fission/data/e12014/nscldaq/scalers/run%04d.csv", nsclRunNumber);
+      TString fileName = TString::Format("/mnt/analysis/e12014/home/scalers/run%04d.csv", nsclRunNumber);
       std::ifstream scalar(fileName.Data());
       if (!scalar.is_open())
          throw std::invalid_argument("Could not open file " + fileName);

@@ -7,7 +7,8 @@
 */
 #include "FairLogger.h"
 
-void run_eve(int runNum = 130, TString OutputDataFile = "./data/output.reco_display.root")
+void run_eve_cut(TString cut = "cut1", TString species = "Bi200", int pressure = 150, bool lise = false,
+                 TString OutputDataFile = "./data/output.reco_display.root")
 {
 
    auto verbSpec =
@@ -16,15 +17,17 @@ void run_eve(int runNum = 130, TString OutputDataFile = "./data/output.reco_disp
    // fair::Logger::SetVerbosity("user1");
    // fair::Logger::SetConsoleSeverity("debug");
 
-   TString inputDirectory = "/home/students/sgangestad/fission/data/e12014/unpacked/fissionevent/";
-   // TString inputDirectory = "./";
-   //  TString InputDataFile = "./data/output.root";
-   TString InputDataFile = TString::Format(inputDirectory + "/run_%04d.root", runNum);
-   std::cout << "Opening: " << InputDataFile << std::endl;
+   TString InputDataFile = TString::Format("/mnt/analysis/e12014/TPC/%dTorr_yFit/%s/%s/%sChi2.root", pressure,
+                                           cut.Data(), lise ? "LISE" : "SRIM", species.Data());
+   InputDataFile = "~/fission/data/e12014/unpacked/Bi200Chi2.root";
+   // InputDataFile = "/mnt/analysis/e12014/TPC/150Torr_nomod/pConserve/SRIM/Bi200Chi2.root";
+   // InputDataFile = "./Bi200NewObj.root";
+   // InputDataFile = "./Bi200NewFit.root";
 
    TString dir = getenv("VMCWORKDIR");
    TString geoFile = "ATTPC_v1.1_geomanager.root";
    TString mapFile = "e12014_pad_mapping.xml";
+   TString parFile = "ATTPC.e12014.par";
 
    TString InputDataPath = InputDataFile;
    TString OutputDataPath = OutputDataFile;
@@ -38,13 +41,15 @@ void run_eve(int runNum = 130, TString OutputDataFile = "./data/output.reco_disp
    fRun->SetSink(sink);
    fRun->SetGeomFile(GeoDataPath);
 
-   FairRuntimeDb *rtdb = fRun->GetRuntimeDb();
-   FairParRootFileIo *parIo1 = new FairParRootFileIo();
-   // parIo1->open("param.dummy.root");
-   rtdb->setFirstInput(parIo1);
+   FairParAsciiFileIo *parIo1 = new FairParAsciiFileIo();
+   parIo1->open(dir + "/parameters/" + parFile, "in");
+   fRun->GetRuntimeDb()->setFirstInput(parIo1);
+   fRun->GetRuntimeDb()->getContainer("AtDigiPar");
 
-   auto fMap = std::make_shared<AtTpcMap>();
+   E12014::CreateMap();
+   auto fMap = E12014::fMap;
    fMap->ParseXMLMap(mapDir.Data());
+
    auto eveMan = new AtViewerManager(fMap);
 
    auto tabMain = std::make_unique<AtTabFission>();
@@ -53,17 +58,18 @@ void run_eve(int runNum = 130, TString OutputDataFile = "./data/output.reco_disp
    auto tabPad = std::make_unique<AtTabPad>(2, 2);
    tabPad->DrawRawADC(0, 0);
    tabPad->DrawADC(0, 1);
-   tabPad->DrawAuxADC("IC", 1, 0);
+   tabPad->DrawArrayAug("Q", 1, 0);
    tabPad->DrawArrayAug("Qreco", 1, 1);
    tabPad->DrawHits(1, 1);
+   tabPad->DrawHits(1, 0);
 
    auto &fissionBranch = tabMain->GetFissionBranch();
    auto tabFF = std::make_unique<AtTabFF>(fissionBranch, false);
-   E12014::CreateMap();
 
    eveMan->AddTab(std::move(tabMain));
    eveMan->AddTab(std::move(tabPad));
    eveMan->AddTab(std::move(tabFF));
+   eveMan->AddTab(std::make_unique<AtTabEnergyLoss>(fissionBranch));
 
    eveMan->Init();
 
