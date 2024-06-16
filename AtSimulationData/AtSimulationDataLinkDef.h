@@ -16,5 +16,6 @@
 #pragma link C++ class AtMCTrack + ;
 #pragma link C++ class AtVertexPropagator + ;
 #pragma link C++ class AtMCPoint + ;
+#pragma link C++ class FakeTVirtualMC + ;
 
 #endif

@@ -8,6 +8,7 @@ set(DEPENDENCIES
   FairRoot::FairTools # FairLogger
   Boost::headers
   ROOT::Core
+  #ROOT::VMC
   )
 
 set(SRCS
@@ -15,6 +16,8 @@ set(SRCS
   AtMCTrack.cxx
   AtVertexPropagator.cxx
   AtMCPoint.cxx
+  FakeTVirtualMC.cxx
+  FakeTVirtualMCApplication.cxx
 )
 
 set(TEST_SRCS

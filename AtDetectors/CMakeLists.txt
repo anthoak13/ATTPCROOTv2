@@ -66,3 +66,12 @@ generate_target_and_root_library(${LIBRARY_NAME}
   SRCS ${SRCS}
   DEPS_PUBLIC ${DEPENDENCIES}
   )
+
+set(TEST_SRCS
+  AtTpc/AtTpcTest.cxx
+)
+
+attpcroot_generate_tests(${LIBRARY_NAME}Tests
+  SRCS ${TEST_SRCS}
+  DEPS ${LIBRARY_NAME}
+  )
