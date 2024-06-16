@@ -135,15 +135,22 @@ void AtTpc::resetVertex()
 
 void AtTpc::correctPosOut()
 {
+   if (gGeoManager == nullptr)
+      return;
+
    const Double_t *oldpos = nullptr;
    const Double_t *olddirection = nullptr;
    Double_t newpos[3];
    Double_t newdirection[3];
    Double_t safety = 0;
 
+   // TODO: None of this code is tested and I do not know what its purpose is.
+   LOG(info) << "Out Position: " << fPosOut.X() << " " << fPosOut.Y() << " " << fPosOut.Z();
    gGeoManager->FindNode(fPosOut.X(), fPosOut.Y(), fPosOut.Z());
    oldpos = gGeoManager->GetCurrentPoint();
+   LOG(info) << "Old position: " << oldpos[0] << " " << oldpos[1] << " " << oldpos[2];
    olddirection = gGeoManager->GetCurrentDirection();
+   LOG(info) << "Old direction: " << olddirection[0] << " " << olddirection[1] << " " << olddirection[2];
 
    for (Int_t i = 0; i < 3; i++) {
       newdirection[i] = -1 * olddirection[i];
@@ -156,6 +163,9 @@ void AtTpc::correctPosOut()
    for (Int_t i = 0; i < 3; i++) {
       newpos[i] = oldpos[i] - (3 * safety * olddirection[i]);
    }
+
+   LOG(info) << "Old position: " << oldpos[0] << " " << oldpos[1] << " " << oldpos[2];
+   LOG(info) << "New position: " << newpos[0] << " " << newpos[1] << " " << newpos[2];
 
    fPosOut.SetX(newpos[0]);
    fPosOut.SetY(newpos[1]);
@@ -172,6 +182,8 @@ bool AtTpc::reactionOccursHere()
 Bool_t AtTpc::ProcessHits(FairVolume *vol)
 {
    /** This method is called from the MC stepping */
+   if (vol == nullptr)
+      return false;
 
    auto *stack = dynamic_cast<AtStack *>(gMC->GetStack());
    fVolName = gMC->CurrentVolName();
