@@ -89,7 +89,6 @@ private:
    void trackEnteringVolume();
    void getTrackParametersFromMC();
    void getTrackParametersWhileExiting();
-   void correctPosOut();
    void resetVertex();
    void addHit();
    bool reactionOccursHere();

@@ -119,9 +119,7 @@ void AtTpc::getTrackParametersWhileExiting()
    gMC->TrackPosition(fPosOut);
    gMC->TrackMomentum(fMomOut);
 
-   // Correct fPosOut
    if (gMC->IsTrackExiting()) {
-      correctPosOut();
       if ((fVolName.Contains("drift_volume") || fVolName.Contains("cell")) && fTrackID == 0)
          resetVertex();
    }
@@ -131,45 +129,6 @@ void AtTpc::resetVertex()
 {
    AtVertexPropagator::Instance()->ResetVertex();
    LOG(info) << cRED << " - AtTpc Warning : Beam punched through the AtTPC. Reseting Vertex! " << cNORMAL << std::endl;
-}
-
-void AtTpc::correctPosOut()
-{
-   if (gGeoManager == nullptr)
-      return;
-
-   const Double_t *oldpos = nullptr;
-   const Double_t *olddirection = nullptr;
-   Double_t newpos[3];
-   Double_t newdirection[3];
-   Double_t safety = 0;
-
-   // TODO: None of this code is tested and I do not know what its purpose is.
-   LOG(info) << "Out Position: " << fPosOut.X() << " " << fPosOut.Y() << " " << fPosOut.Z();
-   gGeoManager->FindNode(fPosOut.X(), fPosOut.Y(), fPosOut.Z());
-   oldpos = gGeoManager->GetCurrentPoint();
-   LOG(info) << "Old position: " << oldpos[0] << " " << oldpos[1] << " " << oldpos[2];
-   olddirection = gGeoManager->GetCurrentDirection();
-   LOG(info) << "Old direction: " << olddirection[0] << " " << olddirection[1] << " " << olddirection[2];
-
-   for (Int_t i = 0; i < 3; i++) {
-      newdirection[i] = -1 * olddirection[i];
-   }
-
-   gGeoManager->SetCurrentDirection(newdirection);
-   safety = gGeoManager->GetSafeDistance(); // Get distance to boundry?
-   gGeoManager->SetCurrentDirection(-newdirection[0], -newdirection[1], -newdirection[2]);
-
-   for (Int_t i = 0; i < 3; i++) {
-      newpos[i] = oldpos[i] - (3 * safety * olddirection[i]);
-   }
-
-   LOG(info) << "Old position: " << oldpos[0] << " " << oldpos[1] << " " << oldpos[2];
-   LOG(info) << "New position: " << newpos[0] << " " << newpos[1] << " " << newpos[2];
-
-   fPosOut.SetX(newpos[0]);
-   fPosOut.SetY(newpos[1]);
-   fPosOut.SetZ(newpos[2]);
 }
 
 bool AtTpc::reactionOccursHere()
