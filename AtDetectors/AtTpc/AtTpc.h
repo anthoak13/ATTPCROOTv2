@@ -31,11 +31,8 @@ private:
    /** Track information to be stored until the track leaves the
    active volume.
    */
-   TLorentzVector fPos; //!  position at entrance
-   TLorentzVector fMom; //!  momentum at entrance
-
-   Int_t fTrackID;                 //!  track index
-   Int_t fVolumeID;                //!  volume id
+   Int_t fTrackID{-1};             //!  track index
+   Int_t fVolumeID{-1};            //!  volume id
    Int_t fDetCopyID{};             //!  Det volume id  // added by Marc
    Int_t fsector{};                //!  volume id
    TLorentzVector fPosIn, fPosOut; //!  position
@@ -60,9 +57,8 @@ private:
    TClonesArray *fAtTpcPointCollection; //!
 
 public:
-   /**      Name :  Detector Name
-    *       Active: kTRUE for active detectors (ProcessHits() will be called)
-    *               kFALSE for inactive detectors
+   /**      @param Name Detector Name
+    *       @param Active ProcessHits() will be called if true
     */
    AtTpc(const char *Name, Bool_t Active);
    AtTpc();
