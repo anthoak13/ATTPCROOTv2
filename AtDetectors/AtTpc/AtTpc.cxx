@@ -53,13 +53,6 @@ AtTpc::~AtTpc()
    }
 }
 
-void AtTpc::Initialize()
-{
-   FairDetector::Initialize();
-   FairRuntimeDb *rtdb = FairRun::Instance()->GetRuntimeDb();
-   rtdb->getContainer("AtTpcGeoPar");
-}
-
 void AtTpc::trackEnteringVolume()
 {
    auto AZ = DecodePdG(gMC->TrackPid());

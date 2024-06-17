@@ -34,22 +34,13 @@ private:
    Int_t fTrackID{-1};             //!  track index
    Int_t fVolumeID{-1};            //!  volume id
    Int_t fDetCopyID{};             //!  Det volume id  // added by Marc
-   Int_t fsector{};                //!  volume id
    TLorentzVector fPosIn, fPosOut; //!  position
    TLorentzVector fMomIn, fMomOut; //!  momentum
-   Double32_t fTime_in{};          //!  time when entering active volume
-   Double32_t fTime_out{};         //!  time when exiting active volume
-   Double32_t fTime;               //!  time
-   Double32_t fLength_in{};        //!  length when entering active volume
-   Double32_t fLength_out{};       //!  length when exiting active volume
-   Double32_t fLength;             //!  length
-   Double32_t fELoss;              //!  energy loss
-   Int_t fPosIndex;                //!
-   TClonesArray *fTraCollection{}; //!  The hit collection
-   Bool_t kGeoSaved{};             //!
-   TList *flGeoPar{};              //!
-   TString fVolName;
-   Double32_t fELossAcc;
+   Double32_t fTime{-1};           //!  time
+   Double32_t fLength{-1};         //!  length
+   Double32_t fELoss{-1};          //!  energy loss
+   TString fVolName{""};
+   Double32_t fELossAcc{-1};
    TLorentzVector InPos;
 
    /** container for data points */
@@ -65,7 +56,6 @@ public:
    virtual ~AtTpc();
 
    /** From FairDetector **/
-   virtual void Initialize() override;
    virtual Bool_t ProcessHits(FairVolume *v = 0) override;
    virtual void Register() override;
    virtual TClonesArray *GetCollection(Int_t iColl) const override;
@@ -94,10 +84,10 @@ private:
    bool reactionOccursHere();
    void startReactionEvent();
 
-   AtTpc(const AtTpc &);
-   AtTpc &operator=(const AtTpc &);
+   AtTpc(const AtTpc &) = delete;
+   AtTpc &operator=(const AtTpc &) = delete;
 
-   ClassDefOverride(AtTpc, 2)
+   ClassDefOverride(AtTpc, 3)
 };
 
 #endif // NEWDETECTOR_H
