@@ -60,8 +60,8 @@ void AtTpc::trackEnteringVolume()
 
    // Get information to print out
    auto AZ = DecodePdG(gMC->TrackPid());
-   gMC->TrackPosition(fPosIn);
-   gMC->TrackMomentum(fMomIn);
+   gMC->TrackPosition(fPos);
+   gMC->TrackMomentum(fMom);
    fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
    Int_t copyNo = 0;
 
@@ -77,8 +77,8 @@ void AtTpc::trackEnteringVolume()
    LOG(debug) << " Atomic Number : " << AZ.second;
    LOG(debug) << " Volume ID " << gMC->CurrentVolID(copyNo);
    LOG(debug) << " Track ID : " << fTrackID;
-   LOG(debug) << " Position : " << fPosIn.X() << " " << fPosIn.Y() << "  " << fPosIn.Z();
-   LOG(debug) << " Momentum : " << fMomIn.X() << " " << fMomIn.Y() << "  " << fMomIn.Z();
+   LOG(debug) << " Position : " << fPos.X() << " " << fPos.Y() << "  " << fPos.Z();
+   LOG(debug) << " Momentum : " << fMom.X() << " " << fMom.Y() << "  " << fMom.Z();
    LOG(debug) << " Total relativistic energy " << gMC->Etot();
    LOG(debug) << " Mass of the Beam particle (gATVP) : " << AtVertexPropagator::Instance()->GetBeamMass();
    LOG(debug) << " Mass of the Tracked particle (gMC) : " << gMC->TrackMass(); // NB: with electrons
@@ -96,16 +96,14 @@ void AtTpc::getTrackParametersFromMC()
    fELossAcc += fELoss;
    fTime = gMC->TrackTime() * 1.0e09;
    fLength = gMC->TrackLength();
-   gMC->TrackPosition(fPosIn);
-   gMC->TrackMomentum(fMomIn);
+   gMC->TrackPosition(fPos);
+   gMC->TrackMomentum(fMom);
    fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
 }
 
 void AtTpc::getTrackParametersWhileExiting()
 {
    fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
-   gMC->TrackPosition(fPosOut);
-   gMC->TrackMomentum(fMomOut);
 
    if (gMC->IsTrackExiting()) {
       if ((fVolName.Contains("drift_volume") || fVolName.Contains("cell")) && fTrackID == 0)
@@ -194,8 +192,8 @@ void AtTpc::addHit()
       AIni = AtVertexPropagator::Instance()->GetTrackAngle(fTrackID);
    }
 
-   AddHit(fTrackID, fVolumeID, fVolName, fDetCopyID, TVector3(fPosIn.X(), fPosIn.Y(), fPosIn.Z()),
-          TVector3(fMomIn.Px(), fMomIn.Py(), fMomIn.Pz()), fTime, fLength, fELoss, EIni, AIni, AZ.first, AZ.second);
+   AddHit(fTrackID, fVolumeID, fVolName, fDetCopyID, TVector3(fPos.X(), fPos.Y(), fPos.Z()),
+          TVector3(fMom.Px(), fMom.Py(), fMom.Pz()), fTime, fLength, fELoss, EIni, AIni, AZ.first, AZ.second);
 }
 
 void AtTpc::EndOfEvent()
