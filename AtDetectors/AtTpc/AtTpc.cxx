@@ -64,10 +64,6 @@ void AtTpc::trackEnteringVolume()
    gMC->TrackMomentum(fMomIn);
    fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
 
-   // Position of the first hit of the beam in the TPC volume ( For tracking purposes in the TPC)
-   if (fTrackID == 0 && (fVolName == "drift_volume" || fVolName == "cell"))
-      InPos = fPosIn;
-
    Int_t VolumeID = 0;
 
    if (fTrackID == 0)
@@ -178,8 +174,8 @@ void AtTpc::startReactionEvent()
    LOG(debug) << " Mass of the Beam particle (gAVTP)  : " << AtVertexPropagator::Instance()->GetBeamMass();
    LOG(debug) << " Total energy of the Beam particle before reaction : " << StopEnergy << cNORMAL; // Relativistic Mass
 
-   AtVertexPropagator::Instance()->SetVertex(StopPos.X(), StopPos.Y(), StopPos.Z(), InPos.X(), InPos.Y(), InPos.Z(),
-                                             StopMom.Px(), StopMom.Py(), StopMom.Pz(), StopEnergy);
+   AtVertexPropagator::Instance()->SetVertex(StopPos.X(), StopPos.Y(), StopPos.Z(), StopMom.Px(), StopMom.Py(),
+                                             StopMom.Pz(), StopEnergy);
 }
 
 void AtTpc::addHit()

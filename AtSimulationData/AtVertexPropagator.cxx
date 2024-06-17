@@ -22,9 +22,9 @@ AtVertexPropagator *AtVertexPropagator::Instance()
 }
 
 AtVertexPropagator::AtVertexPropagator()
-   : fVx(0.), fVy(0.), fVz(0.), fPx(0.), fPy(0.), fPz(0.), fE(0.), fBeamMass(0), fRndELoss(0), fBeamNomE(0), fInVx(0),
-     fInVy(0), fInVz(0), fRecoilE(0), fRecoilA(0), fScatterE(0), fScatterA(0), fBURes1E(0), fBURes1A(0), fBURes2E(0),
-     fBURes2A(0), fIsValidKine(false), fAiso(0), fZiso(0), fExEjectile(0), fExRecoil(0), fIsd2HeEvt(false)
+   : fVx(0.), fVy(0.), fVz(0.), fPx(0.), fPy(0.), fPz(0.), fE(0.), fBeamMass(0), fRndELoss(0), fBeamNomE(0),
+     fRecoilE(0), fRecoilA(0), fScatterE(0), fScatterA(0), fBURes1E(0), fBURes1A(0), fBURes2E(0), fBURes2A(0),
+     fIsValidKine(false), fAiso(0), fZiso(0), fExEjectile(0), fIsd2HeEvt(false)
 {
 
    fScatP(0) = 0.0;
@@ -38,15 +38,12 @@ AtVertexPropagator::AtVertexPropagator()
    fd2HeVtx(2) = 0.0;
 }
 
-void AtVertexPropagator::SetVertex(Double_t vx, Double_t vy, Double_t vz, Double_t invx, Double_t invy, Double_t invz,
-                                   Double_t px, Double_t py, Double_t pz, Double_t E)
+void AtVertexPropagator::SetVertex(Double_t vx, Double_t vy, Double_t vz, Double_t px, Double_t py, Double_t pz,
+                                   Double_t E)
 {
    fVx = vx;
    fVy = vy;
    fVz = vz;
-   fInVx = invx;
-   fInVy = invy;
-   fInVz = invz;
    fPx = px;
    fPy = py;
    fPz = pz;
@@ -69,9 +66,6 @@ void AtVertexPropagator::ResetVertex()
    fVx = 0.0;
    fVy = 0.0;
    fVz = 0.0;
-   fInVx = 0.0;
-   fInVy = 0.0;
-   fInVz = 0.0;
    fPx = 0.0;
    fPy = 0.0;
    fPz = 0.0;
@@ -170,18 +164,7 @@ Double_t AtVertexPropagator::GetVz()
 {
    return fVz;
 }
-Double_t AtVertexPropagator::GetInVx()
-{
-   return fInVx;
-}
-Double_t AtVertexPropagator::GetInVy()
-{
-   return fInVy;
-}
-Double_t AtVertexPropagator::GetInVz()
-{
-   return fInVz;
-}
+
 Double_t AtVertexPropagator::GetPx()
 {
    return fPx;

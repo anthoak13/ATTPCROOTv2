@@ -41,7 +41,6 @@ private:
    Double32_t fELoss{-1};          //!  energy loss
    TString fVolName{""};
    Double32_t fELossAcc{-1};
-   TLorentzVector InPos;
 
    /** container for data points */
 
