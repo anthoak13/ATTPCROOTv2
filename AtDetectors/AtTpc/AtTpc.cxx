@@ -55,16 +55,15 @@ AtTpc::~AtTpc()
 
 void AtTpc::trackEnteringVolume()
 {
-   auto AZ = DecodePdG(gMC->TrackPid());
-   fELoss = 0.;
+   // Reset accumulated energy loss for new track
    fELossAcc = 0.;
-   fTime = gMC->TrackTime() * 1.0e09;
-   fLength = gMC->TrackLength();
+
+   // Get information to print out
+   auto AZ = DecodePdG(gMC->TrackPid());
    gMC->TrackPosition(fPosIn);
    gMC->TrackMomentum(fMomIn);
    fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
-
-   Int_t VolumeID = 0;
+   Int_t copyNo = 0;
 
    if (fTrackID == 0)
       LOG(debug) << cGREEN << " AtTPC: Beam Event ";
@@ -76,12 +75,12 @@ void AtTpc::trackEnteringVolume()
    LOG(debug) << " PID PdG : " << gMC->TrackPid();
    LOG(debug) << " Atomic Mass : " << AZ.first;
    LOG(debug) << " Atomic Number : " << AZ.second;
-   LOG(debug) << " Volume ID " << gMC->CurrentVolID(VolumeID);
+   LOG(debug) << " Volume ID " << gMC->CurrentVolID(copyNo);
    LOG(debug) << " Track ID : " << fTrackID;
    LOG(debug) << " Position : " << fPosIn.X() << " " << fPosIn.Y() << "  " << fPosIn.Z();
    LOG(debug) << " Momentum : " << fMomIn.X() << " " << fMomIn.Y() << "  " << fMomIn.Z();
    LOG(debug) << " Total relativistic energy " << gMC->Etot();
-   LOG(debug) << " Mass of the Beam particle (gAVTP) : " << AtVertexPropagator::Instance()->GetBeamMass();
+   LOG(debug) << " Mass of the Beam particle (gATVP) : " << AtVertexPropagator::Instance()->GetBeamMass();
    LOG(debug) << " Mass of the Tracked particle (gMC) : " << gMC->TrackMass(); // NB: with electrons
    LOG(debug) << " Initial energy of the beam particle in this volume : "
               << ((gMC->Etot() - AtVertexPropagator::Instance()->GetBeamMass() * 0.93149401) *
