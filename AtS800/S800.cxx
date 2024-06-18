@@ -458,13 +458,14 @@ unsigned short *S800::DecodeS800NewMultiHitTDC(unsigned short *p)
    }
 
    if (raw[15] != 0) {
-      for (int i = 0; i < 13; i++) {
+      // for (int i = 0; i < 13; i++) {
+      for (int i = 0; i < 16; i++) {
          switch (i) {
-         case 0: // e1up
-            if (hits[0] >= 0) {
-               fMultiHitTOF.fE1Up.push_back((data[0][0] - raw[15]) * 0.0625);
-            }
-            break;
+         // case 0: // e1up
+         //    if (hits[0] >= 0) {
+         //       fMultiHitTOF.fE1Up.push_back((data[0][0] - raw[15]) * 0.0625);
+         //    }
+         //    break;
          case 1: // e1down
             if (hits[1] >= 0) {
                fMultiHitTOF.fE1Down.push_back((data[1][0] - raw[15]) * 0.0625);
@@ -503,6 +504,11 @@ unsigned short *S800::DecodeS800NewMultiHitTDC(unsigned short *p)
                for (int j = 0; j <= hits[12]; j++) {
                   fMultiHitTOF.fHodoscope.push_back((data[12][j] - raw[15]) * 0.0625);
                }
+            }
+            break;
+         case 15: // e1up
+            if (hits[15] >= 0) {
+               fMultiHitTOF.fE1Up.push_back((data[15][0] - raw[15]) * 0.0625);
             }
             break;
          default: break;
