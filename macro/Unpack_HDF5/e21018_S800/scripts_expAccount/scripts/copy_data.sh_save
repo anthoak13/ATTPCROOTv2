@@ -1,0 +1,69 @@
+#!/bin/bash
+
+runs=""
+re='^[0-9]+$'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+check="/mnt/analysis/e18008/evtS800/"
+#check="/mnt/analysis/e18007/giraud/59Co/test_run_cp/"
+#from=/user/e18008/offline/giraud/testFiles/evtFiles/
+from=/user/e18008/stagearea/experiment/
+#from=/global/data1y/gretina/e18007/
+#change "from" to the location where are the GRETINA raw data (also in search_copy.sh)
+
+dir=$(pwd)
+keep=true
+
+while $keep; do
+ssh -Yq e18008@fishtank 'bash -s' < /user/e18008/scripts/search_copy.sh
+
+runs=""
+
+unset -v latest
+for file in $from*; do
+  tmp_i=${file##*"/run"}
+  tmp_f=${tmp_i:(-4)}
+  #filesize=$(stat -c%s "$file")
+  #echo $filesize
+  #if [[ $tmp_f =~ $re && -f $file"/Global.dat" ]]; then
+  if [[ $tmp_f =~ $re ]]; then
+     runs="$runs $tmp_f"
+     [[ $file -nt $latest ]] && latest=$file
+  fi
+done
+last_run=${latest##*"/run"}
+echo -e "${NC}\nAll runs :"
+echo -e "${RED}$runs${NC}"
+echo -e " last run : $last_run --> check if still writing"
+echo -e " "
+
+
+echo -e 'Runs to be copied ? (ex : 0001 0002), or CTRL+C to exit'; read answer
+#runs_to_cp=$(printf "%04d " $answer)
+
+runs_to_cp=$answer
+
+runs_list=($runs)
+
+for i in $runs_to_cp; do
+    run_to_cp="run"$i
+    if [[ " $run_to_cp " =~ "run0000" ]]; then
+    	echo " ! ERROR "$run_to_cp" already copied"
+    elif [[ " $runs " =~ " $i " ]]; then
+    	echo -e $run_to_cp
+	ssh -Yq e18008@fishtank 'bash -s' < /user/e18008/scripts/mkRemoteDir.sh $run_to_cp
+	#scp -rq $(find $from$run_to_cp -type f ! -name "GlobalRaw.dat") e18008@fishtank:$check$run_to_cp
+	rsync -rah --progress $from$run_to_cp e18008@fishtank:$check
+        #scp -rq $from$run_to_cp e18007@fishtank:$check
+        echo -e "${GREEN} $run_to_cp copied${NC}"
+    else
+       echo " ! ERROR "$run_to_cp" not in "$from
+    fi
+done
+
+done;
+
+cd $dir
+

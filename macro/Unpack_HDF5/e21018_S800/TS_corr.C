@@ -15,7 +15,7 @@ bool reduceFunc(AtRawEvent *evt)
 }
 
 // Requires the TPC run number
-void unpack(int runNumberS800 = 8, int runNumberATTPC = 8)
+void TS_corr(int runNumberS800 = 8, int runNumberATTPC = 8)
 {
   //Load the library for unpacking and reconstruction
   gSystem->Load("libAtReconstruction.so");
@@ -157,14 +157,14 @@ void unpack(int runNumberS800 = 8, int runNumberATTPC = 8)
   MergeEvt->SetPersistence(kTRUE);
   MergeEvt->SetOptiEvtDelta(5);
   MergeEvt->SetGlom(2);
-  MergeEvt->SetTsDelta(1205);//before run 56: 805//run 56 and after: 1205
-  MergeEvt->SetPID1cut("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/32MgBeam.root"); // can have multiple gates for PID1
+  MergeEvt->SetTsDelta(1205);//805//run 56: 1205
+/*  MergeEvt->SetPID1cut("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/32MgBeam.root"); // can have multiple gates for PID1
   MergeEvt->SetPID1cut("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/33AlBeam.root"); // can have multiple gates for PID1
   MergeEvt->SetPID3cut("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/32NaCE.root"); // can have multiple gates for PID2
   MergeEvt->SetPID3cut("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/33MgCE.root"); // can have multiple gates for PID2
    MergeEvt->SetPID3cut("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/Na31DP.root"); // can have multiple gates for PID2
   MergeEvt->SetPID3cut("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/Mg32DP.root"); // can have multiple gates for
-
+*/
   MergeEvt->SetParameters(S800par);
   MergeEvt->SetTofObjCorr(S800MTDCObjCorr);
   MergeEvt->SetMTDCObjRange(S800MTDCObjRange);
@@ -178,22 +178,22 @@ void unpack(int runNumberS800 = 8, int runNumberATTPC = 8)
                                           // fluctuates that is why a glom of 1500 is defined
   //MergeEvt->SetGlom(1500);
   //MergeEvt->SetTsDelta(0); 
-  MergeEvt->ShowTSDiagnostic(kFALSE); //kTRUE If want to draw the timestamp matching figures between s800 and attpc.
+  MergeEvt->ShowTSDiagnostic(kTRUE); //kTRUE If want to draw the timestamp matching figures between s800 and attpc.
 
   //------------------------------------------------------------------------------
 
   run->AddTask(unpackTask);
   run->AddTask(MergeEvt);
-  run->AddTask(reduceTask);
+  //run->AddTask(reduceTask);
   //run->AddTask(filterTask);
-  run->AddTask(psaTask);
-  run->AddTask(ransacTask);
+  //run->AddTask(psaTask);
+  //run->AddTask(ransacTask);
 
   run -> Init();
 
   //Get the number of AT-TPC events
-  //auto numATTPCEvents = 5000;
-   auto numATTPCEvents = unpackTask->GetNumEvents();
+  auto numATTPCEvents = 5000;
+ // auto numATTPCEvents = unpackTask->GetNumEvents();
 
   //Get the number of S800 events
   auto numS800Events = MergeEvt->GetS800TsSize();

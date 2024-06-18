@@ -2,19 +2,28 @@
 //#include "AtPattern.h"
 
 
-static Double_t proton_mass = 1.0078250322 * 931.494 - 0.511;
-static Double_t proj_mass = 14.008596359 * 931.494 - 0.511*8.;
-static Double_t target_mass = 2.01410177812 * 931.494;
-static Double_t recoil_mass = 14.00307400443 * 931.494 - 0.511*7.;
-static Double_t he2_mass = 2.0 * proton_mass;
-static Double_t Ekin_proj = 105.16 * 14.008596359;//100.0
+//static Double_t proton_mass = 1.0078250322 * 931.494 - 0.511;
+//static Double_t proj_mass = 14.008596359 * 931.494 - 0.511*8.;
+//static Double_t target_mass = 2.01410177812 * 931.494;
+//static Double_t recoil_mass = 14.00307400443 * 931.494 - 0.511*7.;
+//static Double_t he2_mass = 2.0 * proton_mass;
+//static Double_t Ekin_proj = 105.16 * 14.008596359;//100.0
 // static Double_t decay_frag_mass = 14.00307400443*931.494/1000;//GeV/c^2
 //static Double_t decay_frag_mass = 12.*931.494/1000;//GeV/c^2
-static Double_t decay_frag_mass = 13.0033548352*931.494/1000;//GeV/c^2 13C
+//static Double_t decay_frag_mass = 13.0033548352*931.494/1000;//GeV/c^2 13C
 //static Double_t decay_frag_mass = 13.005738609*931.494/1000;//GeV/c^2 13N
 //static Double_t decay_frag_mass = 10.012936862*931.494/1000;//GeV/c^2
 
-static Int_t nbTracksPerVtx=2;
+static Double_t proton_mass = 1.0078250322 * 931.494 - 0.511;
+static Double_t proj_mass = 31.999110 * 931.494 - 0.511 * 8.; //32Mg
+static Double_t target_mass = 2.01410177812 * 931.494;
+static Double_t recoil_mass = 32.020010 * 931.494 - 0.511 * 7.; //32Na
+static Double_t he2_mass = 2.0 * proton_mass;
+static Double_t Ekin_proj = 86 * 31.999110; // 100.0
+static Double_t decay_frag_mass = 31.013147 * 931.494 / 1000; // GeV/c^2 31Na
+
+
+static Int_t nbTracksPerVtx=1;
 
 
 TSpline3 *splineEloss;
@@ -137,7 +146,7 @@ void ana_d2He_countTracks(Int_t runNumber)
   //ATd2HeAnalysis *d2heana = new ATd2HeAnalysis ();
 
   //TString digiFileName = "/mnt/analysis/e18008/rootMerg/giraud/run_2271_0271_test15.root";
-	TString digiFileName = TString::Format("/mnt/analysis/e18008/rootMerg/giraud/run_2%03d_%04d_test15.root",runNumber, runNumber);
+	TString digiFileName = TString::Format("/mnt/analysis/e21018/rootMerg/run_%04d_e21018.root",runNumber);
   TFile* file = new TFile(digiFileName,"READ");
   TTree* tree = (TTree*) file -> Get("cbmsim");
   Int_t nEvents = tree -> GetEntries();
@@ -153,7 +162,7 @@ void ana_d2He_countTracks(Int_t runNumber)
 
   TFile* outfile;
   //TString  outFileNameHead = "ana_d2He_test_271.root";
-	TString  outFileNameHead = TString::Format("ana_d2He_test_%04d_14N_nbTracks.root",runNumber);
+	TString  outFileNameHead = TString::Format("ana_d2He_%04d_32Mg_nbTracks.root",runNumber);
   outfile   = TFile::Open(outFileNameHead,"recreate");
 
 	S800Ana s800Ana;
@@ -180,22 +189,30 @@ void ana_d2He_countTracks(Int_t runNumber)
 
 	// fcutPID1File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/XfObjObj_run115.root");
 	// fcutPID2File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/ICSumObj_run115.root");
-	fcutPID1File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/XfObj14O.root");
-	fcutPID2File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/afpx.root");
+	//fcutPID1File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/XfObj14O.root");
+	//fcutPID2File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/afpx.root");
 	// fcutPID3File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/13N.root");
 	// fcutPID3File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/13C.root");
-	 fcutPID3File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/14N.root");
+	 //fcutPID3File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/14N.root");
 	 // fcutPID3File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/12C.root");
 	 // fcutPID3File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/10B.root");
+     fcutPID1File.push_back("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/32MgBeam.root");
+     fcutPID1File.push_back("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/33AlBeam.root");
+     fcutPID2File.push_back("/projects/ceclub/giraud/git/ATTPCROOTv2/macro/Unpack_HDF5/e18008_S800/rootPID/afpx.root");
+     fcutPID3File.push_back("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/32NaCE.root");
+     fcutPID3File.push_back("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/33MgCE.root");
+     fcutPID3File.push_back("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/Na31DP.root");
+     fcutPID3File.push_back("/mnt/analysis/e21018/codes/ATTPCROOTv2-1/macro/Unpack_HDF5/e21018_S800/rootPID/Mg32DP.root");
+
 	 std::vector<Double_t> S800MTDCObjCorr;
-	 S800MTDCObjCorr.push_back(70.);
-	 S800MTDCObjCorr.push_back(0.0085);
+	 S800MTDCObjCorr.push_back(105.);
+	 S800MTDCObjCorr.push_back(0.015);
 	 std::vector<Double_t> S800MTDCObjRange;
-	 S800MTDCObjRange.push_back(-120);
-	 S800MTDCObjRange.push_back(-20);
+	 S800MTDCObjRange.push_back(-300);
+	 S800MTDCObjRange.push_back(-100);
 	 std::vector<Double_t> S800MTDCXfRange;
-	 S800MTDCXfRange.push_back(160);
-	 S800MTDCXfRange.push_back(240);
+	 S800MTDCXfRange.push_back(100);
+	 S800MTDCXfRange.push_back(210);
 
 	s800Ana.SetPID1cut(fcutPID1File);
 	s800Ana.SetPID2cut(fcutPID2File);
@@ -272,7 +289,7 @@ void ana_d2He_countTracks(Int_t runNumber)
        }
 			 */
 
-       AtFindVertex findVtx(9);
+       AtFindVertex findVtx(15);
        findVtx.FindVertex(patternTrackCand,nbTracksPerVtx);
        std::vector<tracksFromVertex> tv;
        tv = findVtx.GetTracksVertex();
@@ -280,7 +297,9 @@ void ana_d2He_countTracks(Int_t runNumber)
 			 NTracksVtx = 0;//number of tracks for each vertex
 
        for (size_t ive = 0; ive < NVtxEvt; ive++) {
-        std::cout<<"ive "<<ive<<" "<<tv.at(ive).vertex.X()<<" "<<tv.at(ive).vertex.Y()<<" "<<tv.at(ive).vertex.Z()<<" "<<tv.at(ive).tracks.at(0).GetGeoQEnergy()<<" "<<tv.at(ive).tracks.at(1).GetGeoQEnergy()<<std::endl;
+        //std::cout<<"ive "<<ive<<" "<<tv.at(ive).vertex.X()<<" "<<tv.at(ive).vertex.Y()<<" "<<tv.at(ive).vertex.Z()<<" "<<tv.at(ive).tracks.at(0).GetGeoQEnergy()<<" "<<tv.at(ive).tracks.at(1).GetGeoQEnergy()<<std::endl;
+        std::cout<<"ive "<<ive<<" "<<tv.at(ive).vertex.X()<<" "<<tv.at(ive).vertex.Y()<<" "<<tv.at(ive).vertex.Z()<<" "<<std::endl;
+
 
 				NTracksVtx = tv.at(ive).tracks.size();
 				// if(NTracksVtx!=2) continue; //don't analyze event with other than 2 tracks per vertex

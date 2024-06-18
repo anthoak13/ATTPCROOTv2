@@ -1,14 +1,16 @@
-void run_eve(TString InputDataPath = "",
+//void run_eve(TString InputDataPath = "/mnt/analysis/e21018/rootMerg/tests_before_exp/",
+void run_eve(int runNumberATTPC = 8,
              TString OutputDataPath = "output.reco_display.root")///mnt/analysis/e18008/rootMerg/giraud/
 {
    FairLogger *fLogger = FairLogger::GetLogger();
    fLogger->SetLogToScreen(kTRUE);
    fLogger->SetLogVerbosityLevel("MEDIUM");
    TString dir = getenv("VMCWORKDIR");
-   TString geoFile = "ATTPC_He1bar.root";//ATTPC_v1.1_geomanager.root//ATTPC_He1bar.root
+   TString geoFile = "ATTPC_He1bar_geomanager.root";//ATTPC_v1.1_geomanager.root
    TString mapFile = "e21018_pads_map.xml";//e21018_pads_map.xml//Lookup20150611.xml
 
-   TString InputDataFile = InputDataPath + "run_0108_test_e22502.root";//run_0108_test_e22502.root//run_2271_0271_test15.root
+   TString InputDataPath = "/mnt/analysis/e21018/rootMerg/";
+   TString InputDataFile = InputDataPath + TString::Format("run_%04d_e21018.root",runNumberATTPC);//run_0108_test_e22502.root//run_2271_0271_test15.root
    TString OutputDataFile = OutputDataPath;
    TString GeoDataPath = dir + "/geometry/" + geoFile;
    TString mapDir = dir + "/scripts/" + mapFile;
@@ -36,18 +38,18 @@ void run_eve(TString InputDataPath = "",
    // eve->SetSaveTextData();
    // eve->SetRawEventBranch("AtRawEvent");//AtRawEventFiltered
    eve->SetEventBranch("AtEventH"); // AtEventFiltered
-   //eve->SetMinTracksPerVertex(2);
+   //eve->SetMinTracksPerVertex(1);
 
    // use the same parameters as in the unpack or analysis macro
    std::vector<Double_t> S800MTDCObjCorr;
-   S800MTDCObjCorr.push_back(70.);
-   S800MTDCObjCorr.push_back(0.0085);
+   S800MTDCObjCorr.push_back(105.);
+   S800MTDCObjCorr.push_back(0.015);
    std::vector<Double_t> S800MTDCObjRange;
-   S800MTDCObjRange.push_back(-120);
-   S800MTDCObjRange.push_back(-20);
+   S800MTDCObjRange.push_back(-300);
+   S800MTDCObjRange.push_back(-100);
    std::vector<Double_t> S800MTDCXfRange;
-   S800MTDCXfRange.push_back(160);
-   S800MTDCXfRange.push_back(240);
+   S800MTDCXfRange.push_back(100);
+   S800MTDCXfRange.push_back(210);
    eveMan->SetMTDCXfRange(S800MTDCXfRange);
    eveMan->SetMTDCObjRange(S800MTDCObjRange);
    eveMan->SetTofObjCorr(S800MTDCObjCorr);

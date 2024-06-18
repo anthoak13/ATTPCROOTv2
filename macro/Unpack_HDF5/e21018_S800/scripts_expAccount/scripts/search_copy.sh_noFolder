@@ -1,0 +1,25 @@
+#!/bin/bash
+
+runs_copied=""
+re='^[0-9]+$'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+#cols=$COLUMNS
+check="/mnt/analysis/e18008/evtS800/"
+#check="/mnt/analysis/e18007/giraud/test_run_cp/"
+from="/user/e18008/stagearea/test/"
+#from="/global/data1y/gretina/e18007/"
+#change "from" to the location where are the GRETINA raw data
+
+for file in $check/*; do
+  tmp_i=${file##*"/Run"}
+  tmp_f=${tmp_i:(-2)}
+  if [[ $tmp_f =~ $re ]]; then
+     runs_copied="$runs_copied $tmp_f"
+  fi
+done
+#printf '-%.0s' {1..${cols}}
+echo -e "${NC}Runs that are already copied :"
+echo -e "${GREEN}$runs_copied${NC}"
+
