@@ -446,7 +446,7 @@ void AtMergeTask::diagnosticPlotStyle(Int_t plotId){
       fdiffTsHist->GetYaxis()->SetMaxDigits(4);
       break;
    default:
-      LOG(WARNING) << cRED << "AtMergeTask::diagnosticPlotStyle - unknown plotId" << cNORMAL;
+      LOG(warning) << cRED << "AtMergeTask::diagnosticPlotStyle - unknown plotId" << cNORMAL;
       break;
    }
 }
