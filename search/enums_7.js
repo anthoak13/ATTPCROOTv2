@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['samplemethod_5553',['SampleMethod',['../group__AtHitSampling.html#ga2483e8129e93c221dd4d4961cef2411a',1,'RandomSample']]]
+  ['paddrawtype_7839',['PadDrawType',['../classAtTabPad.html#ad08cb948eb4fae3f0d3307f2d964dc2e',1,'AtTabPad']]],
+  ['patterntype_7840',['PatternType',['../group__AtPattern.html#ga83dfd22f92852e92938315c154952e5c',1,'AtPatterns']]]
 ];

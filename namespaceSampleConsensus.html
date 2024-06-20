@@ -88,7 +88,8 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da7624a3dbfe0b98ea33b3a64138bb694b">Estimators::kMLESAC</a>, 
 <a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da8dca95bf755b57c3953a9118be50b598">Estimators::kWRANSAC</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da5f920e13c1f197795174c39eefc08ce0">Estimators::kChi2</a>
+&#160;&#160;<a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da5f920e13c1f197795174c39eefc08ce0">Estimators::kChi2</a>, 
+<a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da067c066a4329950b25268f579ff7d4da">Estimators::kYRANSAC</a>
 <br />
  }</td></tr>
 <tr class="memdesc:ga3f41f25b8c1dd17e4e1785fba2380d5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Estimators for AtSampleConsensus.  <a href="group__SampleConsensus.html#ga3f41f25b8c1dd17e4e1785fba2380d5d">More...</a><br /></td></tr>
@@ -96,25 +97,28 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa7274d065e8130596e23e82f30e8d60d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#aa7274d065e8130596e23e82f30e8d60d">EvaluateRansac</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hitArray, double distanceThreshold)</td></tr>
-<tr class="memdesc:aa7274d065e8130596e23e82f30e8d60d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of RANSAC estimator.  <a href="namespaceSampleConsensus.html#aa7274d065e8130596e23e82f30e8d60d">More...</a><br /></td></tr>
-<tr class="separator:aa7274d065e8130596e23e82f30e8d60d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee65186f483072cc3686daf29c38fc6e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#aee65186f483072cc3686daf29c38fc6e">EvaluateChi2</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hitArray, double distanceThreshold)</td></tr>
-<tr class="memdesc:aee65186f483072cc3686daf29c38fc6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of estimator that minimizes chi2.  <a href="namespaceSampleConsensus.html#aee65186f483072cc3686daf29c38fc6e">More...</a><br /></td></tr>
-<tr class="separator:aee65186f483072cc3686daf29c38fc6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace0a45e9405af541decf6bb20d108201"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#ace0a45e9405af541decf6bb20d108201">EvaluateMlesac</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hitArray, double distanceThreshold)</td></tr>
-<tr class="memdesc:ace0a45e9405af541decf6bb20d108201"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of MLESAC estimator.  <a href="namespaceSampleConsensus.html#ace0a45e9405af541decf6bb20d108201">More...</a><br /></td></tr>
-<tr class="separator:ace0a45e9405af541decf6bb20d108201"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f654dcd41fda9eaf717d0e2b7d4ce39"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#a8f654dcd41fda9eaf717d0e2b7d4ce39">EvaluateLmeds</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hitArray, double distanceThreshold)</td></tr>
-<tr class="memdesc:a8f654dcd41fda9eaf717d0e2b7d4ce39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of LMedS estimator.  <a href="namespaceSampleConsensus.html#a8f654dcd41fda9eaf717d0e2b7d4ce39">More...</a><br /></td></tr>
-<tr class="separator:a8f654dcd41fda9eaf717d0e2b7d4ce39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6cd6e14ff7748c8f74ee92ba9cd7062"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#ae6cd6e14ff7748c8f74ee92ba9cd7062">EvaluateWeightedRansac</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hitArray, double distanceThreshold)</td></tr>
-<tr class="memdesc:ae6cd6e14ff7748c8f74ee92ba9cd7062"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of RANSAC estimator using charge weighting.  <a href="namespaceSampleConsensus.html#ae6cd6e14ff7748c8f74ee92ba9cd7062">More...</a><br /></td></tr>
-<tr class="separator:ae6cd6e14ff7748c8f74ee92ba9cd7062"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a5407ce81f481dc41b2f07894ca10d0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#a6a5407ce81f481dc41b2f07894ca10d0">EvaluateRansac</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;hitArray, double distanceThreshold)</td></tr>
+<tr class="memdesc:a6a5407ce81f481dc41b2f07894ca10d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of RANSAC estimator.  <a href="namespaceSampleConsensus.html#a6a5407ce81f481dc41b2f07894ca10d0">More...</a><br /></td></tr>
+<tr class="separator:a6a5407ce81f481dc41b2f07894ca10d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcc1f3a68d763e39f9959836472523d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#abcc1f3a68d763e39f9959836472523d9">EvaluateYRansac</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;hitArray, double distanceThreshold)</td></tr>
+<tr class="memdesc:abcc1f3a68d763e39f9959836472523d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of RANSAC estimator ignoring beam component of y.  <a href="namespaceSampleConsensus.html#abcc1f3a68d763e39f9959836472523d9">More...</a><br /></td></tr>
+<tr class="separator:abcc1f3a68d763e39f9959836472523d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7995370eb39ac4c4ac36194811d23594"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#a7995370eb39ac4c4ac36194811d23594">EvaluateChi2</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;hitArray, double distanceThreshold)</td></tr>
+<tr class="memdesc:a7995370eb39ac4c4ac36194811d23594"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of estimator that minimizes chi2.  <a href="namespaceSampleConsensus.html#a7995370eb39ac4c4ac36194811d23594">More...</a><br /></td></tr>
+<tr class="separator:a7995370eb39ac4c4ac36194811d23594"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a613bc644ab704638c1d8cc235577635e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#a613bc644ab704638c1d8cc235577635e">EvaluateMlesac</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;hitArray, double distanceThreshold)</td></tr>
+<tr class="memdesc:a613bc644ab704638c1d8cc235577635e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of MLESAC estimator.  <a href="namespaceSampleConsensus.html#a613bc644ab704638c1d8cc235577635e">More...</a><br /></td></tr>
+<tr class="separator:a613bc644ab704638c1d8cc235577635e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af96a8da04c543281501f488561797672"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#af96a8da04c543281501f488561797672">EvaluateLmeds</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;hitArray, double distanceThreshold)</td></tr>
+<tr class="memdesc:af96a8da04c543281501f488561797672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of LMedS estimator.  <a href="namespaceSampleConsensus.html#af96a8da04c543281501f488561797672">More...</a><br /></td></tr>
+<tr class="separator:af96a8da04c543281501f488561797672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1831121c84b80e45211cb1dd4423502d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSampleConsensus.html#a1831121c84b80e45211cb1dd4423502d">EvaluateWeightedRansac</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;hitArray, double distanceThreshold)</td></tr>
+<tr class="memdesc:a1831121c84b80e45211cb1dd4423502d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of RANSAC estimator using charge weighting.  <a href="namespaceSampleConsensus.html#a1831121c84b80e45211cb1dd4423502d">More...</a><br /></td></tr>
+<tr class="separator:a1831121c84b80e45211cb1dd4423502d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aee65186f483072cc3686daf29c38fc6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee65186f483072cc3686daf29c38fc6e">&#9670;&nbsp;</a></span>EvaluateChi2()</h2>
+<a id="a7995370eb39ac4c4ac36194811d23594"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7995370eb39ac4c4ac36194811d23594">&#9670;&nbsp;</a></span>EvaluateChi2()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -128,7 +132,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>hitArray</em>, </td>
         </tr>
         <tr>
@@ -148,12 +152,12 @@ Functions</h2></td></tr>
 <p>Implementation of estimator that minimizes chi2. </p>
 <p>Used to minimize avg(error^2) for all inliers. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00011">11</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00013">13</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
 
 </div>
 </div>
-<a id="a8f654dcd41fda9eaf717d0e2b7d4ce39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f654dcd41fda9eaf717d0e2b7d4ce39">&#9670;&nbsp;</a></span>EvaluateLmeds()</h2>
+<a id="af96a8da04c543281501f488561797672"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af96a8da04c543281501f488561797672">&#9670;&nbsp;</a></span>EvaluateLmeds()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,7 +171,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>hitArray</em>, </td>
         </tr>
         <tr>
@@ -186,12 +190,12 @@ Functions</h2></td></tr>
 
 <p>Implementation of LMedS estimator. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00103">103</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00126">126</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
 
 </div>
 </div>
-<a id="ace0a45e9405af541decf6bb20d108201"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace0a45e9405af541decf6bb20d108201">&#9670;&nbsp;</a></span>EvaluateMlesac()</h2>
+<a id="a613bc644ab704638c1d8cc235577635e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a613bc644ab704638c1d8cc235577635e">&#9670;&nbsp;</a></span>EvaluateMlesac()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -205,7 +209,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>hitArray</em>, </td>
         </tr>
         <tr>
@@ -224,12 +228,12 @@ Functions</h2></td></tr>
 
 <p>Implementation of MLESAC estimator. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00045">45</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00068">68</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
 
 </div>
 </div>
-<a id="aa7274d065e8130596e23e82f30e8d60d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7274d065e8130596e23e82f30e8d60d">&#9670;&nbsp;</a></span>EvaluateRansac()</h2>
+<a id="a6a5407ce81f481dc41b2f07894ca10d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a5407ce81f481dc41b2f07894ca10d0">&#9670;&nbsp;</a></span>EvaluateRansac()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -243,7 +247,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>hitArray</em>, </td>
         </tr>
         <tr>
@@ -263,12 +267,12 @@ Functions</h2></td></tr>
 <p>Implementation of RANSAC estimator. </p>
 <p>Maximizes the number of inliers. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00029">29</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00031">31</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
 
 </div>
 </div>
-<a id="ae6cd6e14ff7748c8f74ee92ba9cd7062"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6cd6e14ff7748c8f74ee92ba9cd7062">&#9670;&nbsp;</a></span>EvaluateWeightedRansac()</h2>
+<a id="a1831121c84b80e45211cb1dd4423502d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1831121c84b80e45211cb1dd4423502d">&#9670;&nbsp;</a></span>EvaluateWeightedRansac()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -282,7 +286,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>hitArray</em>, </td>
         </tr>
         <tr>
@@ -301,14 +305,53 @@ Functions</h2></td></tr>
 
 <p>Implementation of RANSAC estimator using charge weighting. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00119">119</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00142">142</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
+
+</div>
+</div>
+<a id="abcc1f3a68d763e39f9959836472523d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcc1f3a68d763e39f9959836472523d9">&#9670;&nbsp;</a></span>EvaluateYRansac()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SampleConsensus::EvaluateYRansac </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *&#160;</td>
+          <td class="paramname"><em>model</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hitArray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>distanceThreshold</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implementation of RANSAC estimator ignoring beam component of y. </p>
+<p>Maximizes the number of inliers on the non-beam rays of the Y pattern. </p>
+
+<p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8cxx_source.html#l00047">47</a> of file <a class="el" href="AtEstimatorMethods_8cxx_source.html">AtEstimatorMethods.cxx</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:03 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

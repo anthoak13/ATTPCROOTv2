@@ -68,6 +68,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
@@ -76,9 +77,10 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="AtPulseTask_8h_source.html">AtPulseTask.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtDigiPar_8h_source.html">AtDigiPar.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AtElectronicResponse_8h_source.html">AtElectronicResponse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtMCPoint_8h_source.html">AtMCPoint.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtMap_8h_source.html">AtMap.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="AtPad_8h_source.html">AtPad.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AtPulse_8h_source.html">AtPulse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtRawEvent_8h_source.html">AtRawEvent.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtSimulatedPoint_8h_source.html">AtSimulatedPoint.h</a>&quot;</code><br />
 <code>#include &lt;FairLogger.h&gt;</code><br />
@@ -87,80 +89,81 @@ $(function() {
 <code>#include &lt;FairRunAna.h&gt;</code><br />
 <code>#include &lt;FairRuntimeDb.h&gt;</code><br />
 <code>#include &lt;FairTask.h&gt;</code><br />
+<code>#include &lt;Math/Point2D.h&gt;</code><br />
+<code>#include &lt;Math/Point2Dfwd.h&gt;</code><br />
 <code>#include &lt;Math/Vector3D.h&gt;</code><br />
-<code>#include &lt;TAxis.h&gt;</code><br />
+<code>#include &lt;Math/Vector3Dfwd.h&gt;</code><br />
 <code>#include &lt;TClonesArray.h&gt;</code><br />
-<code>#include &lt;TF1.h&gt;</code><br />
-<code>#include &lt;TH1.h&gt;</code><br />
-<code>#include &lt;TH2Poly.h&gt;</code><br />
-<code>#include &lt;TMath.h&gt;</code><br />
 <code>#include &lt;TObject.h&gt;</code><br />
-<code>#include &lt;TRandom.h&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
-<code>#include &lt;cmath&gt;</code><br />
-<code>#include &lt;cstdio&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for AtPulseTask.cxx:</div>
 <div class="dyncontent">
 <div class="center"><img src="AtPulseTask_8cxx__incl.png" border="0" usemap="#_2github_2workspace_2AtDigitization_2AtPulseTask_8cxx" alt=""/></div>
 <map name="_2github_2workspace_2AtDigitization_2AtPulseTask_8cxx" id="_2github_2workspace_2AtDigitization_2AtPulseTask_8cxx">
-<area shape="rect" title=" " alt="" coords="2658,5,2866,47"/>
-<area shape="rect" href="AtPulseTask_8h.html" title=" " alt="" coords="2517,95,2623,121"/>
-<area shape="rect" title=" " alt="" coords="2438,169,2521,196"/>
-<area shape="rect" title=" " alt="" coords="2785,169,2896,196"/>
-<area shape="rect" title=" " alt="" coords="2920,169,2975,196"/>
-<area shape="rect" title=" " alt="" coords="2999,169,3056,196"/>
-<area shape="rect" href="AtDigiPar_8h.html" title=" " alt="" coords="376,95,463,121"/>
-<area shape="rect" href="AtMCPoint_8h.html" title=" " alt="" coords="660,95,755,121"/>
-<area shape="rect" href="AtMap_8h.html" title=" " alt="" coords="1260,95,1331,121"/>
-<area shape="rect" href="AtPad_8h.html" title=" " alt="" coords="2012,244,2080,271"/>
-<area shape="rect" title=" " alt="" coords="153,319,232,345"/>
-<area shape="rect" href="AtRawEvent_8h.html" title=" " alt="" coords="1907,95,2011,121"/>
-<area shape="rect" title=" " alt="" coords="1833,244,1885,271"/>
-<area shape="rect" title=" " alt="" coords="2206,169,2281,196"/>
-<area shape="rect" href="AtSimulatedPoint_8h.html" title=" " alt="" coords="86,169,219,196"/>
-<area shape="rect" title=" " alt="" coords="36,244,155,271"/>
-<area shape="rect" title=" " alt="" coords="2851,95,2945,121"/>
-<area shape="rect" title=" " alt="" coords="2969,95,3064,121"/>
-<area shape="rect" title=" " alt="" coords="3089,95,3219,121"/>
-<area shape="rect" title=" " alt="" coords="3243,95,3343,121"/>
-<area shape="rect" title=" " alt="" coords="3367,95,3485,121"/>
-<area shape="rect" title=" " alt="" coords="3509,95,3575,121"/>
-<area shape="rect" title=" " alt="" coords="3599,95,3682,121"/>
-<area shape="rect" title=" " alt="" coords="3706,95,3775,121"/>
-<area shape="rect" title=" " alt="" coords="3799,95,3887,121"/>
-<area shape="rect" title=" " alt="" coords="3911,95,3970,121"/>
-<area shape="rect" title=" " alt="" coords="3995,95,4052,121"/>
-<area shape="rect" title=" " alt="" coords="4077,95,4149,121"/>
-<area shape="rect" title=" " alt="" coords="1059,319,1131,345"/>
-<area shape="rect" title=" " alt="" coords="1313,244,1379,271"/>
-<area shape="rect" title=" " alt="" coords="2647,169,2709,196"/>
-<area shape="rect" title=" " alt="" coords="2084,169,2131,196"/>
-<area shape="rect" title=" " alt="" coords="2132,319,2200,345"/>
-<area shape="rect" title=" " alt="" coords="2355,169,2414,196"/>
-<area shape="rect" title=" " alt="" coords="243,169,382,196"/>
-<area shape="rect" title=" " alt="" coords="457,169,561,196"/>
-<area shape="rect" title=" " alt="" coords="745,169,819,196"/>
-<area shape="rect" title=" " alt="" coords="585,169,670,196"/>
-<area shape="rect" href="AtPadReference_8h.html" title=" " alt="" coords="996,169,1123,196"/>
-<area shape="rect" title=" " alt="" coords="979,244,1057,271"/>
-<area shape="rect" title=" " alt="" coords="895,244,955,271"/>
-<area shape="rect" title=" " alt="" coords="1671,319,1803,345"/>
-<area shape="rect" title=" " alt="" coords="1553,169,1635,196"/>
-<area shape="rect" title=" " alt="" coords="1147,169,1292,196"/>
-<area shape="rect" title=" " alt="" coords="1747,244,1801,271"/>
-<area shape="rect" title=" " alt="" coords="1316,169,1427,196"/>
-<area shape="rect" title=" " alt="" coords="1993,319,2104,345"/>
-<area shape="rect" title=" " alt="" coords="1918,319,1969,345"/>
-<area shape="rect" href="AtAuxPad_8h.html" title=" " alt="" coords="1969,169,2059,196"/>
-<area shape="rect" title=" " alt="" coords="1862,169,1945,196"/>
+<area shape="rect" title=" " alt="" coords="2923,5,3131,47"/>
+<area shape="rect" href="AtPulseTask_8h.html" title=" " alt="" coords="1411,169,1517,196"/>
+<area shape="rect" title=" " alt="" coords="1168,244,1251,271"/>
+<area shape="rect" title=" " alt="" coords="1275,244,1386,271"/>
+<area shape="rect" href="AtDigiPar_8h.html" title=" " alt="" coords="1173,95,1259,121"/>
+<area shape="rect" href="AtElectronicResponse_8h.html" title=" " alt="" coords="3147,169,3307,196"/>
+<area shape="rect" title=" " alt="" coords="3171,244,3229,271"/>
+<area shape="rect" href="AtMCPoint_8h.html" title=" " alt="" coords="458,169,553,196"/>
+<area shape="rect" title=" " alt="" coords="585,244,703,271"/>
+<area shape="rect" title=" " alt="" coords="727,244,867,271"/>
+<area shape="rect" href="AtMap_8h.html" title=" " alt="" coords="2025,95,2095,121"/>
+<area shape="rect" title=" " alt="" coords="2661,319,2739,345"/>
+<area shape="rect" title=" " alt="" coords="1542,169,1674,196"/>
+<area shape="rect" href="AtPulse_8h.html" title=" " alt="" coords="835,169,914,196"/>
+<area shape="rect" href="AtRawEvent_8h.html" title=" " alt="" coords="2725,95,2829,121"/>
+<area shape="rect" title=" " alt="" coords="3121,319,3173,345"/>
+<area shape="rect" title=" " alt="" coords="3381,244,3456,271"/>
+<area shape="rect" href="AtSimulatedPoint_8h.html" title=" " alt="" coords="1253,169,1387,196"/>
+<area shape="rect" title=" " alt="" coords="3635,95,3730,121"/>
+<area shape="rect" title=" " alt="" coords="3754,95,3849,121"/>
+<area shape="rect" title=" " alt="" coords="3873,95,4004,121"/>
+<area shape="rect" title=" " alt="" coords="4027,95,4127,121"/>
+<area shape="rect" title=" " alt="" coords="4151,95,4270,121"/>
+<area shape="rect" title=" " alt="" coords="4294,95,4405,121"/>
+<area shape="rect" title=" " alt="" coords="4429,95,4501,121"/>
+<area shape="rect" title=" " alt="" coords="2276,319,2348,345"/>
+<area shape="rect" title=" " alt="" coords="1664,244,1739,271"/>
+<area shape="rect" title=" " alt="" coords="2209,244,2274,271"/>
+<area shape="rect" title=" " alt="" coords="2106,244,2185,271"/>
+<area shape="rect" title=" " alt="" coords="2401,244,2447,271"/>
+<area shape="rect" title=" " alt="" coords="2510,319,2578,345"/>
+<area shape="rect" title=" " alt="" coords="1763,244,1845,271"/>
+<area shape="rect" title=" " alt="" coords="1040,169,1179,196"/>
+<area shape="rect" title=" " alt="" coords="3042,319,3097,345"/>
+<area shape="rect" title=" " alt="" coords="5,244,109,271"/>
+<area shape="rect" title=" " alt="" coords="450,244,561,271"/>
+<area shape="rect" title=" " alt="" coords="294,244,426,271"/>
+<area shape="rect" title=" " alt="" coords="133,244,219,271"/>
+<area shape="rect" href="AtPadReference_8h.html" title=" " alt="" coords="2123,169,2250,196"/>
+<area shape="rect" title=" " alt="" coords="2022,244,2082,271"/>
+<area shape="rect" title=" " alt="" coords="2696,244,2779,271"/>
+<area shape="rect" title=" " alt="" coords="1750,169,1895,196"/>
+<area shape="rect" title=" " alt="" coords="2377,169,2487,196"/>
+<area shape="rect" href="AtPadBase_8h.html" title=" " alt="" coords="2573,244,2672,271"/>
+<area shape="rect" title=" " alt="" coords="957,244,1011,271"/>
+<area shape="rect" title=" " alt="" coords="1035,244,1093,271"/>
+<area shape="rect" title=" " alt="" coords="892,244,932,271"/>
+<area shape="rect" href="AtBaseEvent_8h.html" title=" " alt="" coords="2963,169,3071,196"/>
+<area shape="rect" href="AtGenericTrace_8h.html" title=" " alt="" coords="2765,169,2888,196"/>
+<area shape="rect" href="AtAuxPad_8h.html" title=" " alt="" coords="2955,244,3045,271"/>
 </map>
 </div>
 </div>
 <p><a href="AtPulseTask_8cxx_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:aa22c237a573cf8be8b06fce090a73290"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtPulseTask_8cxx.html#aa22c237a573cf8be8b06fce090a73290">XYPoint</a> = ROOT::Math::XYPoint</td></tr>
+<tr class="separator:aa22c237a573cf8be8b06fce090a73290"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a40ad197d001c1a7d4a85656cb30141fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtPulseTask_8cxx.html#a40ad197d001c1a7d4a85656cb30141fc">ClassImp</a> (<a class="el" href="classAtPulseTask.html">AtPulseTask</a>)</td></tr>
@@ -177,6 +180,23 @@ Variables</h2></td></tr>
 <tr class="memitem:a88438739a7deae383946c1690d812074"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtPulseTask_8cxx.html#a88438739a7deae383946c1690d812074">cGREEN</a> = &quot;\033[1;32m&quot;</td></tr>
 <tr class="separator:a88438739a7deae383946c1690d812074"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="aa22c237a573cf8be8b06fce090a73290"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa22c237a573cf8be8b06fce090a73290">&#9670;&nbsp;</a></span>XYPoint</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="AtPatternCircle2D_8cxx.html#aa22c237a573cf8be8b06fce090a73290">XYPoint</a> =  ROOT::Math::XYPoint</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00036">36</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a40ad197d001c1a7d4a85656cb30141fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a40ad197d001c1a7d4a85656cb30141fc">&#9670;&nbsp;</a></span>ClassImp()</h2>
@@ -217,7 +237,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00036">36</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00033">33</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
 
 </div>
 </div>
@@ -241,7 +261,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00035">35</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00032">32</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
 
 </div>
 </div>
@@ -265,7 +285,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00033">33</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00030">30</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
 
 </div>
 </div>
@@ -289,14 +309,14 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00034">34</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPulseTask_8cxx_source.html#l00031">31</a> of file <a class="el" href="AtPulseTask_8cxx_source.html">AtPulseTask.cxx</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

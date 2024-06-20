@@ -83,12 +83,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adf465c99183fb0b6f58246d8e50e8550"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afefc85ef73306f0a34a5413647ffa8fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTools_1_1AtTrackTransformer.html#afefc85ef73306f0a34a5413647ffa8fd">~AtTrackTransformer</a> ()</td></tr>
 <tr class="separator:afefc85ef73306f0a34a5413647ffa8fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ef7c7f14fcdb17ddd704a22829190e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTools_1_1AtTrackTransformer.html#a5ef7c7f14fcdb17ddd704a22829190e8">ClusterizeSmooth3D</a> (<a class="el" href="classAtTrack.html">AtTrack</a> &amp;track, Float_t distance, Float_t radius)</td></tr>
-<tr class="separator:a5ef7c7f14fcdb17ddd704a22829190e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae88fbccdce8eea503e4a820e55e5fe53"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTools_1_1AtTrackTransformer.html#ae88fbccdce8eea503e4a820e55e5fe53">ClusterizeSmooth3D</a> (<a class="el" href="classAtTrack.html">AtTrack</a> &amp;track, Float_t radius, Float_t distance)</td></tr>
+<tr class="separator:ae88fbccdce8eea503e4a820e55e5fe53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4619b4348109cec5314b33dc411401f2"><td class="memItemLeft" align="right" valign="top">const std::tuple&lt; Double_t, Double_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTools_1_1AtTrackTransformer.html#a4619b4348109cec5314b33dc411401f2">GetPIDFromHits</a> (<a class="el" href="classAtTrack.html">AtTrack</a> &amp;track, Double_t theta)</td></tr>
+<tr class="separator:a4619b4348109cec5314b33dc411401f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="AtTrackTransformer_8h_source.html#l00021">21</a> of file <a class="el" href="AtTrackTransformer_8h_source.html">AtTrackTransformer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrackTransformer_8h_source.html#l00010">10</a> of file <a class="el" href="AtTrackTransformer_8h_source.html">AtTrackTransformer.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="adf465c99183fb0b6f58246d8e50e8550"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adf465c99183fb0b6f58246d8e50e8550">&#9670;&nbsp;</a></span>AtTrackTransformer()</h2>
@@ -141,8 +143,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5ef7c7f14fcdb17ddd704a22829190e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ef7c7f14fcdb17ddd704a22829190e8">&#9670;&nbsp;</a></span>ClusterizeSmooth3D()</h2>
+<a id="ae88fbccdce8eea503e4a820e55e5fe53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae88fbccdce8eea503e4a820e55e5fe53">&#9670;&nbsp;</a></span>ClusterizeSmooth3D()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,13 +159,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Float_t&#160;</td>
-          <td class="paramname"><em>distance</em>, </td>
+          <td class="paramname"><em>radius</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Float_t&#160;</td>
-          <td class="paramname"><em>radius</em>&#160;</td>
+          <td class="paramname"><em>distance</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -177,6 +179,36 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a4619b4348109cec5314b33dc411401f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4619b4348109cec5314b33dc411401f2">&#9670;&nbsp;</a></span>GetPIDFromHits()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::tuple&lt; Double_t, Double_t &gt; AtTools::AtTrackTransformer::GetPIDFromHits </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtTrack.html">AtTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>track</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Double_t&#160;</td>
+          <td class="paramname"><em>theta</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtTrackTransformer_8cxx_source.html#l00269">269</a> of file <a class="el" href="AtTrackTransformer_8cxx_source.html">AtTrackTransformer.cxx</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>/github/workspace/AtTools/<a class="el" href="AtTrackTransformer_8h_source.html">AtTrackTransformer.h</a></li>
 <li>/github/workspace/AtTools/<a class="el" href="AtTrackTransformer_8cxx_source.html">AtTrackTransformer.cxx</a></li>
@@ -184,7 +216,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:03 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

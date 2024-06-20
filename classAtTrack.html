@@ -66,6 +66,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
@@ -91,15 +92,17 @@ Collaboration diagram for AtTrack:</div>
 <div class="dyncontent">
 <div class="center"><img src="classAtTrack__coll__graph.png" border="0" usemap="#AtTrack_coll__map" alt="Collaboration graph"/></div>
 <map name="AtTrack_coll__map" id="AtTrack_coll__map">
-<area shape="rect" title=" " alt="" coords="1444,100,1512,127"/>
+<area shape="rect" title=" " alt="" coords="1448,100,1516,127"/>
 <area shape="rect" title=" " alt="" coords="285,83,353,109"/>
 <area shape="rect" href="classAtPatterns_1_1AtPattern.html" title="Describes a shape in 3D space." alt="" coords="555,21,700,48"/>
-<area shape="rect" href="classAtHit.html" title=" " alt="" coords="601,143,653,169"/>
-<area shape="rect" title=" " alt="" coords="923,14,1101,55"/>
+<area shape="rect" href="classAtHit.html" title="Point in space with charge." alt="" coords="601,133,653,160"/>
+<area shape="rect" title=" " alt="" coords="927,14,1105,55"/>
 <area shape="rect" title=" " alt="" coords="241,5,396,32"/>
-<area shape="rect" title=" " alt="" coords="1125,133,1300,160"/>
-<area shape="rect" href="classAtHitCluster.html" title=" " alt="" coords="805,133,899,160"/>
-<area shape="rect" title=" " alt="" coords="945,185,1079,212"/>
+<area shape="rect" title=" " alt="" coords="1147,184,1286,211"/>
+<area shape="rect" title="STL class." alt="" coords="767,184,903,211"/>
+<area shape="rect" title=" " alt="" coords="608,184,647,211"/>
+<area shape="rect" title=" " alt="" coords="1129,133,1304,160"/>
+<area shape="rect" href="classAtHitCluster.html" title=": Class representing a cluster of hits that arise from the same deposition of charge in space...." alt="" coords="788,133,881,160"/>
 <area shape="rect" title=" " alt="" coords="257,143,380,185"/>
 <area shape="rect" href="structAtHit_1_1MCSimPoint.html" title=" " alt="" coords="5,151,136,177"/>
 </map>
@@ -120,10 +123,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae6c898269dab4b21d995df67ab431c16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3dd1d49714b9b4f289aae670e7768d0d"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a3dd1d49714b9b4f289aae670e7768d0d">GetTrackID</a> () const</td></tr>
 <tr class="separator:a3dd1d49714b9b4f289aae670e7768d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d53b6c0b63cffd125343745fa181b78"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a1d53b6c0b63cffd125343745fa181b78">GetHitArray</a> ()</td></tr>
-<tr class="separator:a1d53b6c0b63cffd125343745fa181b78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5029a14da8c5e116653171fe42370fe2"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a5029a14da8c5e116653171fe42370fe2">GetHitArrayConst</a> () const</td></tr>
-<tr class="separator:a5029a14da8c5e116653171fe42370fe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4eea9b257c32338a67f0c9f85507bcef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtTrack.html#a8e13b39f22bdb855b8e4656eaddab1a2">HitVector</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a4eea9b257c32338a67f0c9f85507bcef">GetHitArray</a> ()</td></tr>
+<tr class="separator:a4eea9b257c32338a67f0c9f85507bcef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a178b3930216d142f3241216774f30666"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classAtTrack.html#a8e13b39f22bdb855b8e4656eaddab1a2">HitVector</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a178b3930216d142f3241216774f30666">GetHitArray</a> () const</td></tr>
+<tr class="separator:a178b3930216d142f3241216774f30666"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6290d9afd1da8171a181479ac8841c93"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a6290d9afd1da8171a181479ac8841c93">GetHitArrayObject</a> ()</td></tr>
+<tr class="separator:a6290d9afd1da8171a181479ac8841c93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed06e72e294b50201511077e1829312f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#aed06e72e294b50201511077e1829312f">GetPattern</a> () const</td></tr>
 <tr class="separator:aed06e72e294b50201511077e1829312f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a307bff27f1cb0b28ff47506b4f16e221"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a307bff27f1cb0b28ff47506b4f16e221">GetGeoTheta</a> () const</td></tr>
@@ -144,8 +149,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9e9e8111ceba8292c07a30e5bd773803"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1002a94d3f90dbfec4b0cd2bf5d0a0f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a1002a94d3f90dbfec4b0cd2bf5d0a0f8">AddHit</a> (const <a class="el" href="classAtHit.html">AtHit</a> &amp;hit)</td></tr>
 <tr class="separator:a1002a94d3f90dbfec4b0cd2bf5d0a0f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac18aec9eb2b6316c117499e406bc054"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#aac18aec9eb2b6316c117499e406bc054">AddHit</a> (<a class="el" href="classAtHit.html">AtHit</a> &amp;&amp;hit)</td></tr>
-<tr class="separator:aac18aec9eb2b6316c117499e406bc054"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0f3f976358eb3d623a3bf6d042b5646"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#ac0f3f976358eb3d623a3bf6d042b5646">AddHit</a> (<a class="el" href="classAtTrack.html#ae79f752e9be37a4d2df77296cd60307e">HitPtr</a> hit)</td></tr>
+<tr class="separator:ac0f3f976358eb3d623a3bf6d042b5646"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7604be3ec4631a3fc53319b44b60ef59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a7604be3ec4631a3fc53319b44b60ef59">SetPattern</a> (std::unique_ptr&lt; <a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> &gt; pat)</td></tr>
 <tr class="separator:a7604be3ec4631a3fc53319b44b60ef59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dbd0b79cf78a68728949c0a2781c31e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a8dbd0b79cf78a68728949c0a2781c31e">SetGeoTheta</a> (Double_t angle)</td></tr>
@@ -168,12 +173,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:accf774cc87703046adc6918b15bef95f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac081ab739171b4e98507ee1e419c7823"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#ac081ab739171b4e98507ee1e419c7823">GetLinearRange</a> ()</td></tr>
 <tr class="separator:ac081ab739171b4e98507ee1e419c7823"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d5857d439174a524588d2c4192c53eb"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a0d5857d439174a524588d2c4192c53eb">GetLinearRange</a> (<a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> vertex)</td></tr>
+<tr class="memitem:a0d5857d439174a524588d2c4192c53eb"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a0d5857d439174a524588d2c4192c53eb">GetLinearRange</a> (<a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a> vertex)</td></tr>
 <tr class="separator:a0d5857d439174a524588d2c4192c53eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a352add633582d3545e53db6932509f76"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a352add633582d3545e53db6932509f76">GetGeoQEnergy</a> ()</td></tr>
 <tr class="separator:a352add633582d3545e53db6932509f76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a147a7019b4c50e76e47c4c66474b936a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a147a7019b4c50e76e47c4c66474b936a">GetLastPoint</a> ()</td></tr>
-<tr class="separator:a147a7019b4c50e76e47c4c66474b936a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e934c31fe748e71a14077debf57ef75"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a1e934c31fe748e71a14077debf57ef75">GetLastPoint</a> ()</td></tr>
+<tr class="separator:a1e934c31fe748e71a14077debf57ef75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff442680f1de423144d7782d9ec21ee0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#aff442680f1de423144d7782d9ec21ee0">GetFirstPoint</a> ()</td></tr>
+<tr class="separator:aff442680f1de423144d7782d9ec21ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2dfe733c0b90f3594964427dd5f1998a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a2dfe733c0b90f3594964427dd5f1998a">SortHitArrayTime</a> ()</td></tr>
 <tr class="separator:a2dfe733c0b90f3594964427dd5f1998a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5525992c732ced99d4dcf800f6e374df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a5525992c732ced99d4dcf800f6e374df">SortClusterHitArrayZ</a> ()</td></tr>
@@ -181,8 +188,19 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a6bcfe24e1f81041c3c0b220be3985048"><td class="memItemLeft" align="right" valign="top">static Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a6bcfe24e1f81041c3c0b220be3985048">GetLinearRange</a> (const <a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> &amp;vertex, const <a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> &amp;maxPos)</td></tr>
+<tr class="memitem:a6bcfe24e1f81041c3c0b220be3985048"><td class="memItemLeft" align="right" valign="top">static Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a6bcfe24e1f81041c3c0b220be3985048">GetLinearRange</a> (const <a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a> &amp;vertex, const <a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a> &amp;maxPos)</td></tr>
 <tr class="separator:a6bcfe24e1f81041c3c0b220be3985048"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a5112adbba5047feda0e01d6ff374222c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a> = ROOT::Math::XYZPoint</td></tr>
+<tr class="separator:a5112adbba5047feda0e01d6ff374222c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae79f752e9be37a4d2df77296cd60307e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#ae79f752e9be37a4d2df77296cd60307e">HitPtr</a> = std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt;</td></tr>
+<tr class="separator:ae79f752e9be37a4d2df77296cd60307e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e13b39f22bdb855b8e4656eaddab1a2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a8e13b39f22bdb855b8e4656eaddab1a2">HitVector</a> = std::vector&lt; <a class="el" href="classAtTrack.html#ae79f752e9be37a4d2df77296cd60307e">HitPtr</a> &gt;</td></tr>
+<tr class="separator:a8e13b39f22bdb855b8e4656eaddab1a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00e7ee09bef2ad70eefa964d3a1f9fcd"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a00e7ee09bef2ad70eefa964d3a1f9fcd">PatternPtr</a> = std::unique_ptr&lt; <a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> &gt;</td></tr>
+<tr class="separator:a00e7ee09bef2ad70eefa964d3a1f9fcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -198,10 +216,10 @@ Static Protected Member Functions</h2></td></tr>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a3dc0550ffce879e013e2b53f8254dc9d"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a3dc0550ffce879e013e2b53f8254dc9d">fTrackID</a> {-1}</td></tr>
 <tr class="separator:a3dc0550ffce879e013e2b53f8254dc9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d489adb941f4085af7b5d5c8d3e9b9d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a0d489adb941f4085af7b5d5c8d3e9b9d">fHitArray</a></td></tr>
-<tr class="separator:a0d489adb941f4085af7b5d5c8d3e9b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7219164c21749b3ff41c4c5bdc1cbc9"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#ac7219164c21749b3ff41c4c5bdc1cbc9">fPattern</a> {nullptr}</td></tr>
-<tr class="separator:ac7219164c21749b3ff41c4c5bdc1cbc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa842e5d86439b345c908febdb3c5c7c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtTrack.html#a8e13b39f22bdb855b8e4656eaddab1a2">HitVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#aa842e5d86439b345c908febdb3c5c7c3">fHitArray</a></td></tr>
+<tr class="separator:aa842e5d86439b345c908febdb3c5c7c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a266df114504b6ae5eb646703deaab60a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtTrack.html#a00e7ee09bef2ad70eefa964d3a1f9fcd">PatternPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a266df114504b6ae5eb646703deaab60a">fPattern</a> {nullptr}</td></tr>
+<tr class="separator:a266df114504b6ae5eb646703deaab60a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa21c14c3f636968f70c325fdf49916b5"><td class="memItemLeft" align="right" valign="top">Bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#aa21c14c3f636968f70c325fdf49916b5">fIsMerged</a> {false}</td></tr>
 <tr class="separator:aa21c14c3f636968f70c325fdf49916b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77b3f12fa7f8e1bb3c87a370b457b95c"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtTrack.html#a77b3f12fa7f8e1bb3c87a370b457b95c">fVertexToZDist</a> {0}</td></tr>
@@ -227,8 +245,105 @@ Friends</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00026">26</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00025">25</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="ae79f752e9be37a4d2df77296cd60307e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae79f752e9be37a4d2df77296cd60307e">&#9670;&nbsp;</a></span>HitPtr</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classAtTrack.html#ae79f752e9be37a4d2df77296cd60307e">AtTrack::HitPtr</a> =  std::unique_ptr&lt;<a class="el" href="classAtHit.html">AtHit</a>&gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00029">29</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+
+</div>
+</div>
+<a id="a8e13b39f22bdb855b8e4656eaddab1a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e13b39f22bdb855b8e4656eaddab1a2">&#9670;&nbsp;</a></span>HitVector</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classAtTrack.html#a8e13b39f22bdb855b8e4656eaddab1a2">AtTrack::HitVector</a> =  std::vector&lt;<a class="el" href="classAtTrack.html#ae79f752e9be37a4d2df77296cd60307e">HitPtr</a>&gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00030">30</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+
+</div>
+</div>
+<a id="a00e7ee09bef2ad70eefa964d3a1f9fcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00e7ee09bef2ad70eefa964d3a1f9fcd">&#9670;&nbsp;</a></span>PatternPtr</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classAtTrack.html#a00e7ee09bef2ad70eefa964d3a1f9fcd">AtTrack::PatternPtr</a> =  std::unique_ptr&lt;<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a>&gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00031">31</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+
+</div>
+</div>
+<a id="a5112adbba5047feda0e01d6ff374222c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5112adbba5047feda0e01d6ff374222c">&#9670;&nbsp;</a></span>XYZPoint</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">AtTrack::XYZPoint</a> =  ROOT::Math::XYZPoint</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00028">28</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aadcd3ba4cb65a459719dfa4e62f8ab4e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aadcd3ba4cb65a459719dfa4e62f8ab4e">&#9670;&nbsp;</a></span>AtTrack() <span class="overload">[1/3]</span></h2>
 
@@ -270,7 +385,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00051">51</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00028">28</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -342,40 +457,12 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00059">59</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
-
-</div>
-</div>
-<a id="aac18aec9eb2b6316c117499e406bc054"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac18aec9eb2b6316c117499e406bc054">&#9670;&nbsp;</a></span>AddHit() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void AtTrack::AddHit </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classAtHit.html">AtHit</a> &amp;&amp;&#160;</td>
-          <td class="paramname"><em>hit</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00069">69</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00038">38</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
 <a id="a1002a94d3f90dbfec4b0cd2bf5d0a0f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1002a94d3f90dbfec4b0cd2bf5d0a0f8">&#9670;&nbsp;</a></span>AddHit() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1002a94d3f90dbfec4b0cd2bf5d0a0f8">&#9670;&nbsp;</a></span>AddHit() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -398,7 +485,35 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00068">68</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00097">97</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+
+</div>
+</div>
+<a id="ac0f3f976358eb3d623a3bf6d042b5646"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0f3f976358eb3d623a3bf6d042b5646">&#9670;&nbsp;</a></span>AddHit() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtTrack::AddHit </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtTrack.html#ae79f752e9be37a4d2df77296cd60307e">HitPtr</a>&#160;</td>
+          <td class="paramname"><em>hit</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00098">98</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -438,6 +553,25 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="aff442680f1de423144d7782d9ec21ee0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff442680f1de423144d7782d9ec21ee0">&#9670;&nbsp;</a></span>GetFirstPoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">AtTrack::XYZPoint</a> AtTrack::GetFirstPoint </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00057">57</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+
+</div>
+</div>
 <a id="a729200ce45312dfa88d915e92b2860e2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a729200ce45312dfa88d915e92b2860e2">&#9670;&nbsp;</a></span>GetGeoCenter()</h2>
 
@@ -461,7 +595,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00060">60</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00089">89</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -488,7 +622,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00058">58</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00087">87</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -507,7 +641,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00114">114</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00107">107</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -534,7 +668,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00059">59</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00088">88</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -561,12 +695,12 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00057">57</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00086">86</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
-<a id="a1d53b6c0b63cffd125343745fa181b78"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d53b6c0b63cffd125343745fa181b78">&#9670;&nbsp;</a></span>GetHitArray()</h2>
+<a id="a4eea9b257c32338a67f0c9f85507bcef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4eea9b257c32338a67f0c9f85507bcef">&#9670;&nbsp;</a></span>GetHitArray() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -575,7 +709,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classAtHit.html">AtHit</a>&gt;&amp; AtTrack::GetHitArray </td>
+          <td class="memname"><a class="el" href="classAtTrack.html#a8e13b39f22bdb855b8e4656eaddab1a2">HitVector</a>&amp; AtTrack::GetHitArray </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -588,12 +722,12 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00053">53</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00079">79</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
-<a id="a5029a14da8c5e116653171fe42370fe2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5029a14da8c5e116653171fe42370fe2">&#9670;&nbsp;</a></span>GetHitArrayConst()</h2>
+<a id="a178b3930216d142f3241216774f30666"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a178b3930216d142f3241216774f30666">&#9670;&nbsp;</a></span>GetHitArray() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -602,7 +736,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt;<a class="el" href="classAtHit.html">AtHit</a>&gt;&amp; AtTrack::GetHitArrayConst </td>
+          <td class="memname">const <a class="el" href="classAtTrack.html#a8e13b39f22bdb855b8e4656eaddab1a2">HitVector</a>&amp; AtTrack::GetHitArray </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -615,7 +749,34 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00054">54</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00080">80</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+
+</div>
+</div>
+<a id="a6290d9afd1da8171a181479ac8841c93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6290d9afd1da8171a181479ac8841c93">&#9670;&nbsp;</a></span>GetHitArrayObject()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classAtHit.html">AtHit</a>&gt; AtTrack::GetHitArrayObject </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00082">82</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -642,7 +803,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00061">61</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00090">90</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -669,18 +830,18 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00063">63</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00092">92</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
-<a id="a147a7019b4c50e76e47c4c66474b936a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a147a7019b4c50e76e47c4c66474b936a">&#9670;&nbsp;</a></span>GetLastPoint()</h2>
+<a id="a1e934c31fe748e71a14077debf57ef75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e934c31fe748e71a14077debf57ef75">&#9670;&nbsp;</a></span>GetLastPoint()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> AtTrack::GetLastPoint </td>
+          <td class="memname"><a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">AtTrack::XYZPoint</a> AtTrack::GetLastPoint </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -688,7 +849,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00064">64</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00043">43</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -707,7 +868,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00090">90</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00083">83</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -723,13 +884,13 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">Double_t AtTrack::GetLinearRange </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a> &amp;&#160;</td>
           <td class="paramname"><em>vertex</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a> &amp;&#160;</td>
           <td class="paramname"><em>maxPos</em>&#160;</td>
         </tr>
         <tr>
@@ -745,7 +906,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00109">109</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00102">102</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -758,14 +919,14 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">Double_t AtTrack::GetLinearRange </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classAtTrack.html#a5112adbba5047feda0e01d6ff374222c">XYZPoint</a>&#160;</td>
           <td class="paramname"><em>vertex</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00100">100</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00093">93</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -784,7 +945,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00078">78</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00071">71</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -811,7 +972,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00055">55</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00084">84</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -838,7 +999,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00052">52</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00078">78</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -865,7 +1026,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00064">64</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00093">93</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -887,7 +1048,7 @@ Friends</h2></td></tr>
 
 <p>Copy assignment using copy-swap idiom. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00045">45</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00022">22</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -914,7 +1075,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00082">82</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00111">111</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -942,7 +1103,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00075">75</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00104">104</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -970,7 +1131,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00073">73</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00102">102</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -998,7 +1159,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00074">74</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00103">103</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1026,7 +1187,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00072">72</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00101">101</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1054,7 +1215,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00078">78</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00107">107</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1082,7 +1243,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00070">70</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00099">99</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1110,7 +1271,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00067">67</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00096">96</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1138,7 +1299,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00079">79</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00108">108</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1157,7 +1318,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00131">131</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00124">124</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -1195,7 +1356,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00096">96</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00126">126</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1214,7 +1375,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00126">126</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00119">119</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
 
 </div>
 </div>
@@ -1253,7 +1414,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00101">101</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00131">131</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1294,7 +1455,7 @@ Friends</h2></td></tr>
 <p>ADL-findable swap for <a class="el" href="classAtTrack.html">AtTrack</a>. </p>
 <p>Implemented as a friend free function to enable ADL of swap. (<a href="https://en.cppreference.com/w/cpp/language/adl">https://en.cppreference.com/w/cpp/language/adl</a>) </p>
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8cxx_source.html#l00024">24</a> of file <a class="el" href="AtTrack_8cxx_source.html">AtTrack.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00060">60</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1319,7 +1480,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00040">40</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00044">44</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1343,7 +1504,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00038">38</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00042">42</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1367,7 +1528,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00039">39</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00043">43</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1391,12 +1552,12 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00037">37</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00041">41</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
-<a id="a0d489adb941f4085af7b5d5c8d3e9b9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d489adb941f4085af7b5d5c8d3e9b9d">&#9670;&nbsp;</a></span>fHitArray</h2>
+<a id="aa842e5d86439b345c908febdb3c5c7c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa842e5d86439b345c908febdb3c5c7c3">&#9670;&nbsp;</a></span>fHitArray</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1405,7 +1566,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classAtHit.html">AtHit</a>&gt; AtTrack::fHitArray</td>
+          <td class="memname"><a class="el" href="classAtTrack.html#a8e13b39f22bdb855b8e4656eaddab1a2">HitVector</a> AtTrack::fHitArray</td>
         </tr>
       </table>
   </td>
@@ -1415,7 +1576,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00031">31</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00035">35</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1439,7 +1600,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00041">41</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00045">45</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1463,12 +1624,12 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00033">33</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00037">37</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
-<a id="ac7219164c21749b3ff41c4c5bdc1cbc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7219164c21749b3ff41c4c5bdc1cbc9">&#9670;&nbsp;</a></span>fPattern</h2>
+<a id="a266df114504b6ae5eb646703deaab60a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a266df114504b6ae5eb646703deaab60a">&#9670;&nbsp;</a></span>fPattern</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1477,7 +1638,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a>&gt; AtTrack::fPattern {nullptr}</td>
+          <td class="memname"><a class="el" href="classAtTrack.html#a00e7ee09bef2ad70eefa964d3a1f9fcd">PatternPtr</a> AtTrack::fPattern {nullptr}</td>
         </tr>
       </table>
   </td>
@@ -1487,7 +1648,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00032">32</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00036">36</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1511,7 +1672,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00030">30</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00034">34</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1535,7 +1696,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00034">34</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtTrack_8h_source.html#l00038">38</a> of file <a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>.</p>
 
 </div>
 </div>
@@ -1546,7 +1707,7 @@ Friends</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:03 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

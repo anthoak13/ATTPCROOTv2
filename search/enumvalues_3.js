@@ -1,28 +1,4 @@
 var searchData=
 [
-  ['katapollo_5560',['kAtApollo',['../AtDetectorList_8h.html#a1806da1a0fbae8ab81f7330906f65680a4d51ba059a0c113f47f47ddebc3bd2c7',1,'AtDetectorList.h']]],
-  ['katsiarray_5561',['kAtSiArray',['../AtDetectorList_8h.html#a1806da1a0fbae8ab81f7330906f65680a9716ac6be6975dbe901d3e3edebf8182',1,'AtDetectorList.h']]],
-  ['kattpc_5562',['kAtTpc',['../AtDetectorList_8h.html#a1806da1a0fbae8ab81f7330906f65680a1c035cc9b5c2c71eacdf1d479216baf1',1,'AtDetectorList.h']]],
-  ['kbasic_5563',['kBasic',['../classGETDecoder2.html#a3ed1ba9c23cd87f946ecd982d819bcdda7bfb9e3e34a02c9863f6742c12e033ad',1,'GETDecoder2']]],
-  ['kchargeweighted_5564',['kChargeWeighted',['../group__AtHitSampling.html#gga2483e8129e93c221dd4d4961cef2411aaf305214d62cc60adbf7708e548e0fe45',1,'RandomSample']]],
-  ['kchi2_5565',['kChi2',['../group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da5f920e13c1f197795174c39eefc08ce0',1,'SampleConsensus']]],
-  ['kcircle2d_5566',['kCircle2D',['../group__AtPattern.html#gga83dfd22f92852e92938315c154952e5cac162690276b0c003fe31ea3969a63fae',1,'AtPatterns']]],
-  ['kcobo_5567',['kCobo',['../classGETDecoder2.html#a3ed1ba9c23cd87f946ecd982d819bcddadba440ca3daf7283253ffef4c5ceca2f',1,'GETDecoder2']]],
-  ['kgaussian_5568',['kGaussian',['../group__AtHitSampling.html#gga2483e8129e93c221dd4d4961cef2411aab933cd0242085c2dbf804dbf288ce7f0',1,'RandomSample']]],
-  ['kline_5569',['kLine',['../group__AtPattern.html#gga83dfd22f92852e92938315c154952e5caee669fa7b5a35d96a396d4ed648afb45',1,'AtPatterns']]],
-  ['klmeds_5570',['kLMedS',['../group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5daa0b526ae4e2054e8fb229a1744c527a9',1,'SampleConsensus']]],
-  ['klowgain_5571',['kLowGain',['../classAtMap.html#a60dda23eb1d67e0eae848a1ec117c2f0a3f51c5eeca3992eab774e31a9d5e9f9c',1,'AtMap']]],
-  ['kmergedid_5572',['kMergedID',['../classGETDecoder2.html#a3ed1ba9c23cd87f946ecd982d819bcdda2ff349bc9e345ff73e4bf64456b2494e',1,'GETDecoder2']]],
-  ['kmergedtime_5573',['kMergedTime',['../classGETDecoder2.html#a3ed1ba9c23cd87f946ecd982d819bcddae794cf1977f8c97feba612cd582d56b5',1,'GETDecoder2']]],
-  ['kmlesac_5574',['kMLESAC',['../group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da7624a3dbfe0b98ea33b3a64138bb694b',1,'SampleConsensus']]],
-  ['knone_5575',['kNone',['../classAtMap.html#a60dda23eb1d67e0eae848a1ec117c2f0a35c3ace1970663a16e5c65baa5941b13',1,'AtMap']]],
-  ['kransac_5576',['kRANSAC',['../group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5daebb961fd102cb47ca4be06d977086dcd',1,'SampleConsensus']]],
-  ['kstophere_5577',['kSTOPHERE',['../AtDetectorList_8h.html#a1806da1a0fbae8ab81f7330906f65680a7ad21b65706681a8d00e043e4ba4b643',1,'AtDetectorList.h']]],
-  ['ktotal_5578',['kTotal',['../classAtMap.html#a60dda23eb1d67e0eae848a1ec117c2f0ac5773fa6682ca4cde48ab9f265398de3',1,'AtMap']]],
-  ['kuniform_5579',['kUniform',['../group__AtHitSampling.html#gga2483e8129e93c221dd4d4961cef2411aa3ea9f7aca87fd7b64469a0d1119f0b50',1,'RandomSample']]],
-  ['kweightedgaussian_5580',['kWeightedGaussian',['../group__AtHitSampling.html#gga2483e8129e93c221dd4d4961cef2411aadff460d312ef7227d6e8fa577dd4a5c8',1,'RandomSample']]],
-  ['kweightedy_5581',['kWeightedY',['../group__AtHitSampling.html#gga2483e8129e93c221dd4d4961cef2411aa8b95372fd25f02ae19238de3593e671a',1,'RandomSample']]],
-  ['kwransac_5582',['kWRANSAC',['../group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da8dca95bf755b57c3953a9118be50b598',1,'SampleConsensus']]],
-  ['kxtalk_5583',['kXTalk',['../classAtMap.html#a60dda23eb1d67e0eae848a1ec117c2f0a34a27203c91c2857d7f158e1b5eb2689',1,'AtMap']]],
-  ['ky_5584',['kY',['../group__AtPattern.html#gga83dfd22f92852e92938315c154952e5ca39b629a97c6f6ac91423cf042154dd86',1,'AtPatterns']]]
+  ['first_5fderiv_7852',['first_deriv',['../classtk_1_1spline.html#a592e5cbe6ad482196774443b1e84f7dca6a24cabc51a05ee16e8ab225efb5c76f',1,'tk::spline']]]
 ];

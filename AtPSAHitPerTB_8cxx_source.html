@@ -73,136 +73,102 @@ $(function() {
 <div class="contents">
 <a href="AtPSAHitPerTB_8cxx.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="AtPSAHitPerTB_8h.html">AtPSAHitPerTB.h</a>&quot;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="AtEvent_8h.html">AtEvent.h</a>&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="AtHit_8h.html">AtHit.h</a>&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="AtPad_8h.html">AtPad.h</a>&quot;</span> <span class="comment">// for AtPad</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="AtRawEvent_8h.html">AtRawEvent.h</a>&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="AtHit_8h.html">AtHit.h</a>&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="AtPad_8h.html">AtPad.h</a>&quot;</span> <span class="comment">// for AtPad</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;FairLogger.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;FairLogger.h&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;Math/Point2D.h&gt;</span>    <span class="comment">// for PositionVector2D</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;Math/Point3D.h&gt;</span>    <span class="comment">// for PositionVector3D</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;Math/Point3Dfwd.h&gt;</span> <span class="comment">// for XYZPoint</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;array&gt;</span>    <span class="comment">// for array</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span> <span class="comment">// for basic_ostream::operator&lt;&lt;, operator&lt;&lt;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;map&gt;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span>  <span class="comment">// for allocator_traits&lt;&gt;::value_type</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span> <span class="comment">// for pair</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">#ifdef _OPENMP</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">#include &lt;omp.h&gt;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">#endif</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="AtPSAHitPerTB_8cxx.html#acdbe604dea12970b4e97a316f9046ae7">   25</a></span>&#160;<span class="keyword">using</span> <a class="code" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> = <a class="code" href="AtPSAHitPerTB_8cxx.html#acdbe604dea12970b4e97a316f9046ae7">ROOT::Math::XYZPoint</a>;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classAtPSAHitPerTB.html#a7098dbde3daf542d7ff718696f47b4b0">   27</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classAtPSAHitPerTB.html#a7098dbde3daf542d7ff718696f47b4b0">AtPSAHitPerTB::Analyze</a>(<a class="code" href="classAtRawEvent.html">AtRawEvent</a> *rawEvent, <a class="code" href="classAtEvent.html">AtEvent</a> *event)</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;{</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;   Int_t numPads = rawEvent-&gt;<a class="code" href="classAtRawEvent.html#ac18dff1b17635a8da7ba460e04dc4678">GetNumPads</a>();</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;   Double_t QEventTot = 0.0;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;   Double_t RhoVariance = 0.0;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;   std::map&lt;Int_t, Int_t&gt; PadMultiplicity;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;   Float_t mesh[512] = {0};</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;   Int_t iPad = 0;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;   <span class="comment">//#pragma omp parallel for ordered schedule(dynamic,1) private(iPad)</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;   <span class="keywordflow">for</span> (iPad = 0; iPad &lt; numPads; iPad++) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      <span class="keyword">const</span> <a class="code" href="classAtPad.html">AtPad</a> *pad = rawEvent-&gt;<a class="code" href="classAtRawEvent.html#af93bc0854bc2f0d99100f0799913d191">GetPads</a>().at(iPad).get();</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      Int_t PadNum = pad-&gt;<a class="code" href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">GetPadNum</a>();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;      Int_t PadHitNum = 0;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;      <span class="keyword">auto</span> pos = pad-&gt;<a class="code" href="classAtPad.html#acf3374a7a095e80adbc700395fa2ca55">GetPadCoord</a>();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      Double_t zPos = 0;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;      Double_t charge = 0;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      <span class="keywordflow">if</span> (!(pad-&gt;<a class="code" href="classAtPad.html#a209eb8e1eb9243078bef8fd6132c64ac">IsPedestalSubtracted</a>())) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;         LOG(ERROR) &lt;&lt; <span class="stringliteral">&quot;Pedestal should be subtracted to use this class!&quot;</span>;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;         <span class="comment">// return;</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;      }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      <span class="keyword">auto</span> adc = pad-&gt;<a class="code" href="classAtPad.html#a91c89e0b6f1f521b663ee7246965f1eb">GetADC</a>();</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      Double_t floatADC[512] = {0};</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      <span class="keywordflow">for</span> (Int_t iTb = 0; iTb &lt; <a class="code" href="classAtPSA.html#a08c22c98b73f030cff2a5abf0c42f191">fNumTbs</a>; iTb++) {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;         floatADC[iTb] = adc[iTb];</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;         <span class="keywordflow">if</span> (floatADC[iTb] &gt; <a class="code" href="classAtPSA.html#a3c35e30186756471a3728db7c995cf99">fThreshold</a>) {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            mesh[iTb] += floatADC[iTb];</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <span class="keywordflow">if</span> (iTb &gt; <a class="code" href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">fIniTB</a> &amp;&amp; iTb &lt; <a class="code" href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">fEndTB</a>)</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;               QEventTot +=</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                  floatADC[iTb]; <span class="comment">// This allows to constrain the calculation of the charge avoiding noisy timebuckets</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            zPos = <a class="code" href="classAtPSA.html#a0dd3cd6167d66c9e5d0c3c4d5922a77a">CalculateZGeo</a>(iTb);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            charge = adc[iTb];</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keyword">auto</span> &amp;hit = <span class="keyword">event</span>-&gt;AddHit(PadNum, <a class="code" href="AtPSAHitPerTB_8cxx.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a>(pos.X(), pos.Y(), zPos), charge);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            PadHitNum++;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            hit.SetTimeStamp(iTb);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            <span class="keywordflow">if</span> ((pos.X() &lt; -9000 || pos.Y() &lt; -9000) &amp;&amp; pad-&gt;<a class="code" href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">GetPadNum</a>() != -1)</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;               std::cout &lt;&lt; <span class="stringliteral">&quot; AtPSAProtoFull::Analysis Warning! Wrong Coordinates for Pad : &quot;</span> &lt;&lt; pad-&gt;<a class="code" href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">GetPadNum</a>()</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                         &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;         } <span class="comment">// if Threshold</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;      }    <span class="comment">// For iTb</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      PadMultiplicity.insert(std::pair&lt;Int_t, Int_t&gt;(PadNum, PadHitNum));</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;   } <span class="comment">// Pad loop</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;   <span class="keywordflow">for</span> (Int_t iTb = 0; iTb &lt; <a class="code" href="classAtPSA.html#a08c22c98b73f030cff2a5abf0c42f191">fNumTbs</a>; iTb++)</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      event-&gt;<a class="code" href="classAtEvent.html#abbbd0e9e363fe5f267b46a452a5ee78b">SetMeshSignal</a>(iTb, mesh[iTb]);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;   <span class="keyword">event</span>-&gt;SetMultiplicityMap(PadMultiplicity);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;   <span class="keyword">event</span>-&gt;SetEventCharge(QEventTot);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;}</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classAtPSAHitPerTB.html#ad868b303a665dbc7230fa2d1c2cff5e7">   88</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classAtPSAHitPerTB.html#ad868b303a665dbc7230fa2d1c2cff5e7">AtPSAHitPerTB::SetTBLimits</a>(std::pair&lt;Int_t, Int_t&gt; limits)</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;{</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;   <span class="keywordflow">if</span> (limits.first &gt;= limits.second) {</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;      std::cout &lt;&lt; <span class="stringliteral">&quot; Warning AtPSA::SetTBLimits -  Wrong Time Bucket limits. Setting default limits (0,512) ... &quot;</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;      <a class="code" href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">fIniTB</a> = 0;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;      <a class="code" href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">fEndTB</a> = 512;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;   } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;      <a class="code" href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">fIniTB</a> = limits.first;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;      <a class="code" href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">fEndTB</a> = limits.second;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;   }</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<a class="code" href="AtRunAna_8cxx.html#a7fc146d1ab78151dbc63ef9a6b2ccae2">ClassImp</a>(<a class="code" href="classAtPSAHitPerTB.html">AtPSAHitPerTB</a>)</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;Math/Point2D.h&gt;</span>    <span class="comment">// for PositionVector2D</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;Math/Point3D.h&gt;</span>    <span class="comment">// for PositionVector3D</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;Math/Point3Dfwd.h&gt;</span> <span class="comment">// for XYZPoint</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;array&gt;</span>    <span class="comment">// for array</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span> <span class="comment">// for basic_ostream::operator&lt;&lt;, operator&lt;&lt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span>   <span class="comment">// for allocator_traits&lt;&gt;::value_type</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span>  <span class="comment">// for pair</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">#ifdef _OPENMP</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">#include &lt;omp.h&gt;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">#endif</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="AtPSAHitPerTB_8cxx.html#acdbe604dea12970b4e97a316f9046ae7">   22</a></span>&#160;<span class="keyword">using</span> <a class="code" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> = <a class="code" href="AtPSAHitPerTB_8cxx.html#acdbe604dea12970b4e97a316f9046ae7">ROOT::Math::XYZPoint</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classAtPSAHitPerTB.html#af5ba5f65c45bf1df6f38a40bbb9ad6cd">   23</a></span>&#160;<a class="code" href="classAtPSA.html#a1f906a1dc6ceaab0d1497777bb5f4c69">AtPSAHitPerTB::HitVector</a> <a class="code" href="classAtPSAHitPerTB.html#af5ba5f65c45bf1df6f38a40bbb9ad6cd">AtPSAHitPerTB::AnalyzePad</a>(<a class="code" href="classAtPad.html">AtPad</a> *pad)</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;   <span class="keyword">auto</span> pos = pad-&gt;<a class="code" href="classAtPad.html#acf3374a7a095e80adbc700395fa2ca55">GetPadCoord</a>();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;   <span class="keywordflow">if</span> ((pos.X() &lt; -9000 || pos.Y() &lt; -9000) &amp;&amp; pad-&gt;<a class="code" href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">GetPadNum</a>() != -1)</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      LOG(error) &lt;&lt; <span class="stringliteral">&quot; AtPSAHitPErTB::Analysis Warning! Wrong Coordinates for Pad : &quot;</span> &lt;&lt; pad-&gt;<a class="code" href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">GetPadNum</a>() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;   <span class="keywordflow">if</span> (!(pad-&gt;<a class="code" href="classAtPad.html#a209eb8e1eb9243078bef8fd6132c64ac">IsPedestalSubtracted</a>())) {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      LOG(error) &lt;&lt; <span class="stringliteral">&quot;Pedestal should be subtracted to use this class!&quot;</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      <span class="comment">// return;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;   }</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;   <a class="code" href="classAtPSA.html#a1f906a1dc6ceaab0d1497777bb5f4c69">HitVector</a> hits;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;   <span class="keyword">auto</span> adc = pad-&gt;<a class="code" href="classAtPad.html#a91c89e0b6f1f521b663ee7246965f1eb">GetADC</a>();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;   <span class="keywordtype">double</span> traceIntegral = 0;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;   <span class="keywordflow">for</span> (Int_t iTb = 0; iTb &lt; <a class="code" href="classAtPSA.html#a08c22c98b73f030cff2a5abf0c42f191">fNumTbs</a>; iTb++) {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;      <span class="comment">// We are above threshold, so create a hit</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      <span class="keywordflow">if</span> (adc[iTb] &gt; <a class="code" href="classAtPSA.html#ae643b11bf2d7374f3a4c23c6dcc6d58d">getThreshold</a>(pad-&gt;<a class="code" href="classAtPad.html#a888100ff76d878d7faf960f403d3ca42">GetSizeID</a>())) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;         <span class="comment">// This allows to constrain the calculation of the charge avoiding noisy timebuckets</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;         <span class="keywordflow">if</span> (iTb &gt; <a class="code" href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">fIniTB</a> &amp;&amp; iTb &lt; <a class="code" href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">fEndTB</a>)</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            traceIntegral += adc[iTb];</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;         <span class="keyword">auto</span> hit = std::make_unique&lt;AtHit&gt;(pad-&gt;<a class="code" href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">GetPadNum</a>(), <a class="code" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a>(pos.X(), pos.Y(), <a class="code" href="classAtPSA.html#a0dd3cd6167d66c9e5d0c3c4d5922a77a">CalculateZGeo</a>(iTb)), adc[iTb]);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;         hit-&gt;SetTimeStamp(iTb);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;         hits.push_back(std::move(hit));</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;      } <span class="comment">// if Threshold</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;   }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;   <span class="comment">// Loop through all hits and add traceIntegral</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;   <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp;hit : hits)</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      hit-&gt;SetTraceIntegral(traceIntegral);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;   <span class="keywordflow">return</span> hits;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classAtPSAHitPerTB.html#ad868b303a665dbc7230fa2d1c2cff5e7">   59</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classAtPSAHitPerTB.html#ad868b303a665dbc7230fa2d1c2cff5e7">AtPSAHitPerTB::SetTBLimits</a>(std::pair&lt;Int_t, Int_t&gt; limits)</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;{</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;   <span class="keywordflow">if</span> (limits.first &gt;= limits.second) {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      std::cout &lt;&lt; <span class="stringliteral">&quot; Warning AtPSA::SetTBLimits -  Wrong Time Bucket limits. Setting default limits (0,512) ... &quot;</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      <a class="code" href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">fIniTB</a> = 0;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;      <a class="code" href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">fEndTB</a> = 512;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;   } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;      <a class="code" href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">fIniTB</a> = limits.first;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;      <a class="code" href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">fEndTB</a> = limits.second;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;   }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<a class="code" href="AtAnalysis_2AtFindVertex_8cxx.html#a73d4a3e8ca586bbc0a3ea214994b14f0">ClassImp</a>(<a class="code" href="classAtPSAHitPerTB.html">AtPSAHitPerTB</a>)</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aAtPad_8h_html"><div class="ttname"><a href="AtPad_8h.html">AtPad.h</a></div></div>
-<div class="ttc" id="aAtRawEvent_8h_html"><div class="ttname"><a href="AtRawEvent_8h.html">AtRawEvent.h</a></div></div>
-<div class="ttc" id="aAtEvent_8h_html"><div class="ttname"><a href="AtEvent_8h.html">AtEvent.h</a></div></div>
-<div class="ttc" id="aclassAtPSA_html_a0dd3cd6167d66c9e5d0c3c4d5922a77a"><div class="ttname"><a href="classAtPSA.html#a0dd3cd6167d66c9e5d0c3c4d5922a77a">AtPSA::CalculateZGeo</a></div><div class="ttdeci">Double_t CalculateZGeo(Double_t peakIdx)</div><div class="ttdef"><b>Definition:</b> <a href="AtPSA_8cxx_source.html#l00085">AtPSA.cxx:85</a></div></div>
-<div class="ttc" id="aclassAtPSAHitPerTB_html_a7098dbde3daf542d7ff718696f47b4b0"><div class="ttname"><a href="classAtPSAHitPerTB.html#a7098dbde3daf542d7ff718696f47b4b0">AtPSAHitPerTB::Analyze</a></div><div class="ttdeci">void Analyze(AtRawEvent *rawEvent, AtEvent *event) override</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8cxx_source.html#l00027">AtPSAHitPerTB.cxx:27</a></div></div>
-<div class="ttc" id="aclassAtPSAHitPerTB_html"><div class="ttname"><a href="classAtPSAHitPerTB.html">AtPSAHitPerTB</a></div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8h_source.html#l00017">AtPSAHitPerTB.h:17</a></div></div>
-<div class="ttc" id="aclassAtEvent_html_abbbd0e9e363fe5f267b46a452a5ee78b"><div class="ttname"><a href="classAtEvent.html#abbbd0e9e363fe5f267b46a452a5ee78b">AtEvent::SetMeshSignal</a></div><div class="ttdeci">void SetMeshSignal(const traceArray &amp;mesharray)</div><div class="ttdef"><b>Definition:</b> <a href="AtEvent_8cxx_source.html#l00051">AtEvent.cxx:51</a></div></div>
-<div class="ttc" id="aclassAtPSA_html_a08c22c98b73f030cff2a5abf0c42f191"><div class="ttname"><a href="classAtPSA.html#a08c22c98b73f030cff2a5abf0c42f191">AtPSA::fNumTbs</a></div><div class="ttdeci">Int_t fNumTbs</div><div class="ttdef"><b>Definition:</b> <a href="AtPSA_8h_source.html#l00032">AtPSA.h:32</a></div></div>
-<div class="ttc" id="aclassAtEvent_html"><div class="ttname"><a href="classAtEvent.html">AtEvent</a></div><div class="ttdef"><b>Definition:</b> <a href="AtEvent_8h_source.html#l00030">AtEvent.h:30</a></div></div>
-<div class="ttc" id="aclassAtRawEvent_html"><div class="ttname"><a href="classAtRawEvent.html">AtRawEvent</a></div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00036">AtRawEvent.h:36</a></div></div>
+<div class="ttc" id="aclassAtPSA_html_a0dd3cd6167d66c9e5d0c3c4d5922a77a"><div class="ttname"><a href="classAtPSA.html#a0dd3cd6167d66c9e5d0c3c4d5922a77a">AtPSA::CalculateZGeo</a></div><div class="ttdeci">Double_t CalculateZGeo(Double_t peakIdx)</div><div class="ttdef"><b>Definition:</b> <a href="AtPSA_8cxx_source.html#l00090">AtPSA.cxx:90</a></div></div>
+<div class="ttc" id="aAtAnalysis_2AtFindVertex_8cxx_html_a73d4a3e8ca586bbc0a3ea214994b14f0"><div class="ttname"><a href="AtAnalysis_2AtFindVertex_8cxx.html#a73d4a3e8ca586bbc0a3ea214994b14f0">ClassImp</a></div><div class="ttdeci">ClassImp(AtFindVertex)</div></div>
+<div class="ttc" id="aclassAtPSAHitPerTB_html"><div class="ttname"><a href="classAtPSAHitPerTB.html">AtPSAHitPerTB</a></div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8h_source.html#l00016">AtPSAHitPerTB.h:16</a></div></div>
+<div class="ttc" id="aclassAtPad_html_a888100ff76d878d7faf960f403d3ca42"><div class="ttname"><a href="classAtPad.html#a888100ff76d878d7faf960f403d3ca42">AtPad::GetSizeID</a></div><div class="ttdeci">Int_t GetSizeID() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00098">AtPad.h:98</a></div></div>
+<div class="ttc" id="aclassAtPSA_html_a1f906a1dc6ceaab0d1497777bb5f4c69"><div class="ttname"><a href="classAtPSA.html#a1f906a1dc6ceaab0d1497777bb5f4c69">AtPSA::HitVector</a></div><div class="ttdeci">std::vector&lt; std::unique_ptr&lt; AtHit &gt; &gt; HitVector</div><div class="ttdef"><b>Definition:</b> <a href="AtPSA_8h_source.html#l00050">AtPSA.h:50</a></div></div>
+<div class="ttc" id="aclassAtPSA_html_a08c22c98b73f030cff2a5abf0c42f191"><div class="ttname"><a href="classAtPSA.html#a08c22c98b73f030cff2a5abf0c42f191">AtPSA::fNumTbs</a></div><div class="ttdeci">Int_t fNumTbs</div><div class="ttdef"><b>Definition:</b> <a href="AtPSA_8h_source.html#l00044">AtPSA.h:44</a></div></div>
 <div class="ttc" id="aAtPatternCircle2D_8h_html_acdbe604dea12970b4e97a316f9046ae7"><div class="ttname"><a href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a></div><div class="ttdeci">ROOT::Math::XYZPoint XYZPoint</div><div class="ttdef"><b>Definition:</b> <a href="AtPatternCircle2D_8h_source.html#l00018">AtPatternCircle2D.h:18</a></div></div>
-<div class="ttc" id="aclassAtPad_html_acf3374a7a095e80adbc700395fa2ca55"><div class="ttname"><a href="classAtPad.html#acf3374a7a095e80adbc700395fa2ca55">AtPad::GetPadCoord</a></div><div class="ttdeci">XYPoint GetPadCoord() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00072">AtPad.h:72</a></div></div>
-<div class="ttc" id="aclassAtRawEvent_html_af93bc0854bc2f0d99100f0799913d191"><div class="ttname"><a href="classAtRawEvent.html#af93bc0854bc2f0d99100f0799913d191">AtRawEvent::GetPads</a></div><div class="ttdeci">const PadVector &amp; GetPads() const</div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00121">AtRawEvent.h:121</a></div></div>
-<div class="ttc" id="aclassAtPSA_html_a3c35e30186756471a3728db7c995cf99"><div class="ttname"><a href="classAtPSA.html#a3c35e30186756471a3728db7c995cf99">AtPSA::fThreshold</a></div><div class="ttdeci">Int_t fThreshold</div><div class="ttdoc">threshold of ADC value</div><div class="ttdef"><b>Definition:</b> <a href="AtPSA_8h_source.html#l00022">AtPSA.h:22</a></div></div>
+<div class="ttc" id="aclassAtPSAHitPerTB_html_af5ba5f65c45bf1df6f38a40bbb9ad6cd"><div class="ttname"><a href="classAtPSAHitPerTB.html#af5ba5f65c45bf1df6f38a40bbb9ad6cd">AtPSAHitPerTB::AnalyzePad</a></div><div class="ttdeci">virtual HitVector AnalyzePad(AtPad *pad) override</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8cxx_source.html#l00023">AtPSAHitPerTB.cxx:23</a></div></div>
+<div class="ttc" id="aclassAtPad_html_acf3374a7a095e80adbc700395fa2ca55"><div class="ttname"><a href="classAtPad.html#acf3374a7a095e80adbc700395fa2ca55">AtPad::GetPadCoord</a></div><div class="ttdeci">XYPoint GetPadCoord() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00107">AtPad.h:107</a></div></div>
+<div class="ttc" id="aclassAtPSA_html_ae643b11bf2d7374f3a4c23c6dcc6d58d"><div class="ttname"><a href="classAtPSA.html#ae643b11bf2d7374f3a4c23c6dcc6d58d">AtPSA::getThreshold</a></div><div class="ttdeci">Double_t getThreshold(int padSize=-1)</div><div class="ttdef"><b>Definition:</b> <a href="AtPSA_8cxx_source.html#l00179">AtPSA.cxx:179</a></div></div>
 <div class="ttc" id="aAtHit_8h_html"><div class="ttname"><a href="AtHit_8h.html">AtHit.h</a></div></div>
-<div class="ttc" id="aAtPSAHitPerTB_8cxx_html_acdbe604dea12970b4e97a316f9046ae7"><div class="ttname"><a href="AtPSAHitPerTB_8cxx.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a></div><div class="ttdeci">ROOT::Math::XYZPoint XYZPoint</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8cxx_source.html#l00025">AtPSAHitPerTB.cxx:25</a></div></div>
+<div class="ttc" id="aAtPSAHitPerTB_8cxx_html_acdbe604dea12970b4e97a316f9046ae7"><div class="ttname"><a href="AtPSAHitPerTB_8cxx.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a></div><div class="ttdeci">ROOT::Math::XYZPoint XYZPoint</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8cxx_source.html#l00022">AtPSAHitPerTB.cxx:22</a></div></div>
 <div class="ttc" id="aAtPSAHitPerTB_8h_html"><div class="ttname"><a href="AtPSAHitPerTB_8h.html">AtPSAHitPerTB.h</a></div></div>
-<div class="ttc" id="aAtRunAna_8cxx_html_a7fc146d1ab78151dbc63ef9a6b2ccae2"><div class="ttname"><a href="AtRunAna_8cxx.html#a7fc146d1ab78151dbc63ef9a6b2ccae2">ClassImp</a></div><div class="ttdeci">ClassImp(AtRunAna)</div></div>
-<div class="ttc" id="aclassAtPad_html_a9d0444a41880359d9571e65e88bf2282"><div class="ttname"><a href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">AtPad::GetPadNum</a></div><div class="ttdeci">Int_t GetPadNum() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00061">AtPad.h:61</a></div></div>
-<div class="ttc" id="aclassAtPad_html_a91c89e0b6f1f521b663ee7246965f1eb"><div class="ttname"><a href="classAtPad.html#a91c89e0b6f1f521b663ee7246965f1eb">AtPad::GetADC</a></div><div class="ttdeci">const trace &amp; GetADC() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8cxx_source.html#l00027">AtPad.cxx:27</a></div></div>
-<div class="ttc" id="aclassAtPad_html_a209eb8e1eb9243078bef8fd6132c64ac"><div class="ttname"><a href="classAtPad.html#a209eb8e1eb9243078bef8fd6132c64ac">AtPad::IsPedestalSubtracted</a></div><div class="ttdeci">Bool_t IsPedestalSubtracted() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00059">AtPad.h:59</a></div></div>
-<div class="ttc" id="aclassAtRawEvent_html_ac18dff1b17635a8da7ba460e04dc4678"><div class="ttname"><a href="classAtRawEvent.html#ac18dff1b17635a8da7ba460e04dc4678">AtRawEvent::GetNumPads</a></div><div class="ttdeci">Int_t GetNumPads() const</div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00114">AtRawEvent.h:114</a></div></div>
-<div class="ttc" id="aclassAtPSAHitPerTB_html_ad620254513f1ff669468141ef368467e"><div class="ttname"><a href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">AtPSAHitPerTB::fEndTB</a></div><div class="ttdeci">Int_t fEndTB</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8h_source.html#l00020">AtPSAHitPerTB.h:20</a></div></div>
-<div class="ttc" id="aclassAtPad_html"><div class="ttname"><a href="classAtPad.html">AtPad</a></div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00025">AtPad.h:25</a></div></div>
-<div class="ttc" id="aclassAtPSAHitPerTB_html_ad868b303a665dbc7230fa2d1c2cff5e7"><div class="ttname"><a href="classAtPSAHitPerTB.html#ad868b303a665dbc7230fa2d1c2cff5e7">AtPSAHitPerTB::SetTBLimits</a></div><div class="ttdeci">void SetTBLimits(std::pair&lt; Int_t, Int_t &gt; limits)</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8cxx_source.html#l00088">AtPSAHitPerTB.cxx:88</a></div></div>
-<div class="ttc" id="aclassAtPSAHitPerTB_html_a555d9212c25844d0489e49bee8b84aa8"><div class="ttname"><a href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">AtPSAHitPerTB::fIniTB</a></div><div class="ttdeci">Int_t fIniTB</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8h_source.html#l00019">AtPSAHitPerTB.h:19</a></div></div>
+<div class="ttc" id="aclassAtPad_html_a9d0444a41880359d9571e65e88bf2282"><div class="ttname"><a href="classAtPad.html#a9d0444a41880359d9571e65e88bf2282">AtPad::GetPadNum</a></div><div class="ttdeci">Int_t GetPadNum() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00096">AtPad.h:96</a></div></div>
+<div class="ttc" id="aclassAtPad_html_a91c89e0b6f1f521b663ee7246965f1eb"><div class="ttname"><a href="classAtPad.html#a91c89e0b6f1f521b663ee7246965f1eb">AtPad::GetADC</a></div><div class="ttdeci">const trace &amp; GetADC() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8cxx_source.html#l00097">AtPad.cxx:97</a></div></div>
+<div class="ttc" id="aclassAtPad_html_a209eb8e1eb9243078bef8fd6132c64ac"><div class="ttname"><a href="classAtPad.html#a209eb8e1eb9243078bef8fd6132c64ac">AtPad::IsPedestalSubtracted</a></div><div class="ttdeci">Bool_t IsPedestalSubtracted() const</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00094">AtPad.h:94</a></div></div>
+<div class="ttc" id="aclassAtPSAHitPerTB_html_ad620254513f1ff669468141ef368467e"><div class="ttname"><a href="classAtPSAHitPerTB.html#ad620254513f1ff669468141ef368467e">AtPSAHitPerTB::fEndTB</a></div><div class="ttdeci">Int_t fEndTB</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8h_source.html#l00019">AtPSAHitPerTB.h:19</a></div></div>
+<div class="ttc" id="aclassAtPad_html"><div class="ttname"><a href="classAtPad.html">AtPad</a></div><div class="ttdoc">Container class for AtPadBase objects.</div><div class="ttdef"><b>Definition:</b> <a href="AtPad_8h_source.html#l00038">AtPad.h:38</a></div></div>
+<div class="ttc" id="aclassAtPSAHitPerTB_html_ad868b303a665dbc7230fa2d1c2cff5e7"><div class="ttname"><a href="classAtPSAHitPerTB.html#ad868b303a665dbc7230fa2d1c2cff5e7">AtPSAHitPerTB::SetTBLimits</a></div><div class="ttdeci">void SetTBLimits(std::pair&lt; Int_t, Int_t &gt; limits)</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8cxx_source.html#l00059">AtPSAHitPerTB.cxx:59</a></div></div>
+<div class="ttc" id="aclassAtPSAHitPerTB_html_a555d9212c25844d0489e49bee8b84aa8"><div class="ttname"><a href="classAtPSAHitPerTB.html#a555d9212c25844d0489e49bee8b84aa8">AtPSAHitPerTB::fIniTB</a></div><div class="ttdeci">Int_t fIniTB</div><div class="ttdef"><b>Definition:</b> <a href="AtPSAHitPerTB_8h_source.html#l00018">AtPSAHitPerTB.h:18</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

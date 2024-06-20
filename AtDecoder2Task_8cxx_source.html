@@ -243,9 +243,9 @@ $(function() {
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
 <div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="classAtDecoder2Task.html#abe27f7c73748834bb53537aaab5ad703">  171</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classAtDecoder2Task.html#abe27f7c73748834bb53537aaab5ad703">AtDecoder2Task::Exec</a>(Option_t *opt)</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;{</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;   <span class="comment">//#ifdef TASKTIMER</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;   <span class="comment">//  STDebugLogger::Instance() -&gt; TimerStart(&quot;DecoderTask&quot;);</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;   <span class="comment">//#endif</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;   <span class="comment">// #ifdef TASKTIMER</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;   <span class="comment">//   STDebugLogger::Instance() -&gt; TimerStart(&quot;DecoderTask&quot;);</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;   <span class="comment">// #endif</span></div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;   fRawEventArray-&gt;Delete();</div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;   <span class="keywordflow">if</span> (fRawEvent == <span class="keyword">nullptr</span>)</div>
@@ -258,9 +258,9 @@ $(function() {
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;   <span class="keyword">new</span> ((*fRawEventArray)[0]) <a class="code" href="classAtRawEvent.html">AtRawEvent</a>(*fRawEvent);</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;   fRawEvent = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;   <span class="comment">//#ifdef TASKTIMER</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;   <span class="comment">//  STDebugLogger::Instance() -&gt; TimerStop(&quot;DecoderTask&quot;);</span></div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;   <span class="comment">//#endif</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;   <span class="comment">// #ifdef TASKTIMER</span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;   <span class="comment">//   STDebugLogger::Instance() -&gt; TimerStop(&quot;DecoderTask&quot;);</span></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;   <span class="comment">// #endif</span></div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;}</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
 <div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="classAtDecoder2Task.html#a440da7ad3d53170d36ba9515fb237758">  193</a></span>&#160;Int_t <a class="code" href="classAtDecoder2Task.html#a440da7ad3d53170d36ba9515fb237758">AtDecoder2Task::ReadEvent</a>(Int_t eventID)</div>
@@ -299,7 +299,7 @@ $(function() {
 <div class="ttc" id="aclassAtCore2_html_a6f0e4ab94d62d85601bcf3bd5dadc3cd"><div class="ttname"><a href="classAtCore2.html#a6f0e4ab94d62d85601bcf3bd5dadc3cd">AtCore2::SetNumCobo</a></div><div class="ttdeci">void SetNumCobo(Int_t numCobo)</div><div class="ttdef"><b>Definition:</b> <a href="AtCore2_8cxx_source.html#l00531">AtCore2.cxx:531</a></div></div>
 <div class="ttc" id="aclassAtCore2_html_ad72161bd9eb07cc29199259da328b51c"><div class="ttname"><a href="classAtCore2.html#ad72161bd9eb07cc29199259da328b51c">AtCore2::SetData</a></div><div class="ttdeci">Bool_t SetData(Int_t value)</div><div class="ttdef"><b>Definition:</b> <a href="AtCore2_8cxx_source.html#l00099">AtCore2.cxx:99</a></div></div>
 <div class="ttc" id="aAtDecoder2Task_8cxx_html_a589c19906f4a04433cbba459fd2e2d71"><div class="ttname"><a href="AtDecoder2Task_8cxx.html#a589c19906f4a04433cbba459fd2e2d71">cNORMAL</a></div><div class="ttdeci">constexpr auto cNORMAL</div><div class="ttdef"><b>Definition:</b> <a href="AtDecoder2Task_8cxx_source.html#l00012">AtDecoder2Task.cxx:12</a></div></div>
-<div class="ttc" id="aclassAtRawEvent_html"><div class="ttname"><a href="classAtRawEvent.html">AtRawEvent</a></div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00036">AtRawEvent.h:36</a></div></div>
+<div class="ttc" id="aclassAtRawEvent_html"><div class="ttname"><a href="classAtRawEvent.html">AtRawEvent</a></div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00034">AtRawEvent.h:34</a></div></div>
 <div class="ttc" id="aAtDecoder2Task_8cxx_html_a7f7e9b91b8dae8ed8d3e4968dea1848e"><div class="ttname"><a href="AtDecoder2Task_8cxx.html#a7f7e9b91b8dae8ed8d3e4968dea1848e">cRED</a></div><div class="ttdeci">constexpr auto cRED</div><div class="ttdef"><b>Definition:</b> <a href="AtDecoder2Task_8cxx_source.html#l00010">AtDecoder2Task.cxx:10</a></div></div>
 <div class="ttc" id="aclassAtCore2_html_a172dd9b2433c06539b2eeb55aa223881"><div class="ttname"><a href="classAtCore2.html#a172dd9b2433c06539b2eeb55aa223881">AtCore2::SetFPNPedestal</a></div><div class="ttdeci">void SetFPNPedestal(Double_t sigmaThreshold=5)</div><div class="ttdef"><b>Definition:</b> <a href="AtCore2_8cxx_source.html#l00158">AtCore2.cxx:158</a></div></div>
 <div class="ttc" id="aclassAtDecoder2Task_html_abe27f7c73748834bb53537aaab5ad703"><div class="ttname"><a href="classAtDecoder2Task.html#abe27f7c73748834bb53537aaab5ad703">AtDecoder2Task::Exec</a></div><div class="ttdeci">virtual void Exec(Option_t *opt)</div><div class="ttdoc">Running the task. This will be called when Run() method invoked from FairRun.</div><div class="ttdef"><b>Definition:</b> <a href="AtDecoder2Task_8cxx_source.html#l00171">AtDecoder2Task.cxx:171</a></div></div>
@@ -312,7 +312,7 @@ $(function() {
 <div class="ttc" id="aAtDecoder2Task_8cxx_html_a92070ed71660dccb106b6539dfb7f3ee"><div class="ttname"><a href="AtDecoder2Task_8cxx.html#a92070ed71660dccb106b6539dfb7f3ee">cYELLOW</a></div><div class="ttdeci">constexpr auto cYELLOW</div><div class="ttdef"><b>Definition:</b> <a href="AtDecoder2Task_8cxx_source.html#l00011">AtDecoder2Task.cxx:11</a></div></div>
 <div class="ttc" id="aclassAtCore2_html_a3d71d2edbc92f97ddbd6f615fbc9974f"><div class="ttname"><a href="classAtCore2.html#a3d71d2edbc92f97ddbd6f615fbc9974f">AtCore2::SetUseSeparatedData</a></div><div class="ttdeci">void SetUseSeparatedData(Bool_t value=kTRUE)</div><div class="ttdef"><b>Definition:</b> <a href="AtCore2_8cxx_source.html#l00388">AtCore2.cxx:388</a></div></div>
 <div class="ttc" id="aclassAtDecoder2Task_html_ad352bf74974052017b15bc57019ffff6"><div class="ttname"><a href="classAtDecoder2Task.html#ad352bf74974052017b15bc57019ffff6">AtDecoder2Task::SetPTFMask</a></div><div class="ttdeci">void SetPTFMask(Int_t mask)</div><div class="ttdef"><b>Definition:</b> <a href="AtDecoder2Task_8cxx_source.html#l00099">AtDecoder2Task.cxx:99</a></div></div>
-<div class="ttc" id="aclassAtRawEvent_html_ac18dff1b17635a8da7ba460e04dc4678"><div class="ttname"><a href="classAtRawEvent.html#ac18dff1b17635a8da7ba460e04dc4678">AtRawEvent::GetNumPads</a></div><div class="ttdeci">Int_t GetNumPads() const</div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00114">AtRawEvent.h:114</a></div></div>
+<div class="ttc" id="aclassAtRawEvent_html_ac18dff1b17635a8da7ba460e04dc4678"><div class="ttname"><a href="classAtRawEvent.html#ac18dff1b17635a8da7ba460e04dc4678">AtRawEvent::GetNumPads</a></div><div class="ttdeci">Int_t GetNumPads() const</div><div class="ttdef"><b>Definition:</b> <a href="AtRawEvent_8h_source.html#l00122">AtRawEvent.h:122</a></div></div>
 <div class="ttc" id="aclassAtDecoder2Task_html_a7a27c55f54335d9f7b7d0a630cb88768"><div class="ttname"><a href="classAtDecoder2Task.html#a7a27c55f54335d9f7b7d0a630cb88768">AtDecoder2Task::SetNumCobo</a></div><div class="ttdeci">void SetNumCobo(Int_t numCobo)</div><div class="ttdef"><b>Definition:</b> <a href="AtDecoder2Task_8cxx_source.html#l00095">AtDecoder2Task.cxx:95</a></div></div>
 <div class="ttc" id="aclassAtDecoder2Task_html_a0b160009cd711c5e4cbc3c5c6645e787"><div class="ttname"><a href="classAtDecoder2Task.html#a0b160009cd711c5e4cbc3c5c6645e787">AtDecoder2Task::SetEventID</a></div><div class="ttdeci">void SetEventID(Long64_t eventid=-1)</div><div class="ttdoc">Setting event id for STSource.</div><div class="ttdef"><b>Definition:</b> <a href="AtDecoder2Task_8cxx_source.html#l00086">AtDecoder2Task.cxx:86</a></div></div>
 <div class="ttc" id="aAtDecoder2Task_8h_html"><div class="ttname"><a href="AtDecoder2Task_8h.html">AtDecoder2Task.h</a></div></div>
@@ -329,7 +329,7 @@ $(function() {
 <div class="ttc" id="aclassAtDecoder2Task_html_ae54d17c158f9028d8f34bc48e5020894"><div class="ttname"><a href="classAtDecoder2Task.html#ae54d17c158f9028d8f34bc48e5020894">AtDecoder2Task::FinishEvent</a></div><div class="ttdeci">virtual void FinishEvent()</div><div class="ttdoc">Finishing the event.</div><div class="ttdef"><b>Definition:</b> <a href="AtDecoder2Task_8cxx_source.html#l00208">AtDecoder2Task.cxx:208</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

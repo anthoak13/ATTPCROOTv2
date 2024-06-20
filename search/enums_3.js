@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['inhibittype_5548',['InhibitType',['../classAtMap.html#a60dda23eb1d67e0eae848a1ec117c2f0',1,'AtMap']]]
+  ['hclust_5ffast_5fmethods_7833',['hclust_fast_methods',['../trackfinder_2fastcluster_8h.html#a4205a14ad66b3320d2e94c61d74913dd',1,'hclust_fast_methods():&#160;fastcluster.h'],['../triplclust_2src_2hclust_2fastcluster_8h.html#a4205a14ad66b3320d2e94c61d74913dd',1,'hclust_fast_methods():&#160;fastcluster.h']]]
 ];

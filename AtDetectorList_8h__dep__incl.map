@@ -1,8 +1,11 @@
 <map id="/github/workspace/AtSimulationData/AtDetectorList.h" name="/github/workspace/AtSimulationData/AtDetectorList.h">
-<area shape="rect" id="node1" title=" " alt="" coords="271,5,478,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="619,5,826,47"/>
 <area shape="rect" id="node2" href="$AtApollo_8cxx.html" title=" " alt="" coords="5,184,187,225"/>
-<area shape="rect" id="node3" href="$AtSiArray_8cxx.html" title=" " alt="" coords="211,184,397,225"/>
-<area shape="rect" id="node4" href="$AtStack_8h.html" title=" " alt="" coords="342,95,549,136"/>
-<area shape="rect" id="node6" href="$AtTpc_8cxx.html" title=" " alt="" coords="653,184,819,225"/>
-<area shape="rect" id="node5" href="$AtStack_8cxx.html" title=" " alt="" coords="422,184,629,225"/>
+<area shape="rect" id="node3" href="$AtDeGAi_8cxx.html" title=" " alt="" coords="211,184,394,225"/>
+<area shape="rect" id="node4" href="$AtPxCT_8cxx.html" title=" " alt="" coords="418,184,595,225"/>
+<area shape="rect" id="node5" href="$AtSeGA_8cxx.html" title=" " alt="" coords="850,184,1030,225"/>
+<area shape="rect" id="node6" href="$AtSiArray_8cxx.html" title=" " alt="" coords="1055,184,1241,225"/>
+<area shape="rect" id="node7" href="$AtStack_8h.html" title=" " alt="" coords="619,95,826,136"/>
+<area shape="rect" id="node9" href="$AtTpc_8cxx.html" title=" " alt="" coords="1266,184,1433,225"/>
+<area shape="rect" id="node8" href="$AtStack_8cxx.html" title=" " alt="" coords="619,184,826,225"/>
 </map>

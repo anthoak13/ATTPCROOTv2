@@ -109,7 +109,7 @@ $(function() {
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classAtApolloDigitizer.html#acefbef8fa9efa745ff986c78c4b4e860">   37</a></span>&#160;<a class="code" href="classAtApolloDigitizer.html#acefbef8fa9efa745ff986c78c4b4e860">AtApolloDigitizer::~AtApolloDigitizer</a>()</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;{</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;   LOG(INFO) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer: Delete instance&quot;</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;   LOG(info) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer: Delete instance&quot;</span>;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;   <span class="keywordflow">if</span> (fApolloPointDataCA) {</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;      fApolloPointDataCA-&gt;Delete();</div>
@@ -123,7 +123,7 @@ $(function() {
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;   FairRuntimeDb *rtdb = FairRuntimeDb::instance();</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;   <span class="keywordflow">if</span> (!rtdb) {</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      LOG(ERROR) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer:: FairRuntimeDb not opened!&quot;</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      LOG(error) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer:: FairRuntimeDb not opened!&quot;</span>;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;   }</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
@@ -131,7 +131,7 @@ $(function() {
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classAtApolloDigitizer.html#a40dbd32fb4d2ee3054a8c6ff872ce71e">   59</a></span>&#160;InitStatus <a class="code" href="classAtApolloDigitizer.html#a40dbd32fb4d2ee3054a8c6ff872ce71e">AtApolloDigitizer::Init</a>()</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;{</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;   LOG(INFO) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer::Init &quot;</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;   LOG(info) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer::Init &quot;</span>;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;   FairRootManager *rootManager = FairRootManager::Instance();</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;   <span class="keywordflow">if</span> (!rootManager) {</div>
@@ -243,7 +243,7 @@ $(function() {
 <div class="line"><a name="l00170"></a><span class="lineno"><a class="line" href="classAtApolloDigitizer.html#abae98b716d90146578517a102500527c">  170</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classAtApolloDigitizer.html#abae98b716d90146578517a102500527c">AtApolloDigitizer::Reset</a>()</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;{</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;   <span class="comment">// Clear the CA structure</span></div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;   LOG(DEBUG) &lt;&lt; <span class="stringliteral">&quot;Clearing ApolloCrystalCalData Structure&quot;</span>;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;   LOG(debug) &lt;&lt; <span class="stringliteral">&quot;Clearing ApolloCrystalCalData Structure&quot;</span>;</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;   fApolloCryCalDataCA.Clear();</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;   <a class="code" href="classAtApolloDigitizer.html#aed5bfb89447851a1d33712d0792c236e">ResetParameters</a>();</div>
@@ -254,7 +254,7 @@ $(function() {
 <div class="line"><a name="l00181"></a><span class="lineno"><a class="line" href="classAtApolloDigitizer.html#a6a3e7f4f8ffe4779a5588864dd83fcc4">  181</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classAtApolloDigitizer.html#a6a3e7f4f8ffe4779a5588864dd83fcc4">AtApolloDigitizer::SetDetectionThreshold</a>(Double_t thresholdEne)</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;{</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;   fThreshold = thresholdEne;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;   LOG(INFO) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer::SetDetectionThreshold to &quot;</span> &lt;&lt; fThreshold &lt;&lt; <span class="stringliteral">&quot; GeV.&quot;</span>;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;   LOG(info) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer::SetDetectionThreshold to &quot;</span> &lt;&lt; fThreshold &lt;&lt; <span class="stringliteral">&quot; GeV.&quot;</span>;</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;}</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
 <div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="classAtApolloDigitizer.html#a82d4af31f1b47eba7fdc656bc7f3fece">  187</a></span>&#160;<a class="code" href="classAtApolloCrystalCalData.html">AtApolloCrystalCalData</a> *<a class="code" href="classAtApolloDigitizer.html#a82d4af31f1b47eba7fdc656bc7f3fece">AtApolloDigitizer::AddCrystalCal</a>(Int_t ident, Double_t energy, ULong64_t time)</div>
@@ -262,7 +262,7 @@ $(function() {
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;   TClonesArray &amp;clref = fApolloCryCalDataCA;</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;   Int_t size = clref.GetEntriesFast();</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;   <span class="keywordflow">if</span> (fVerbose &gt; 1)</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;      LOG(INFO) &lt;&lt; <span class="stringliteral">&quot;-I- AtApolloDigitizer: Adding CrystalCalData &quot;</span></div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;      LOG(info) &lt;&lt; <span class="stringliteral">&quot;-I- AtApolloDigitizer: Adding CrystalCalData &quot;</span></div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                &lt;&lt; <span class="stringliteral">&quot; with unique identifier &quot;</span> &lt;&lt; ident &lt;&lt; <span class="stringliteral">&quot; entering with &quot;</span> &lt;&lt; energy * 1e06 &lt;&lt; <span class="stringliteral">&quot; keV &quot;</span></div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                &lt;&lt; <span class="stringliteral">&quot; Time=&quot;</span> &lt;&lt; time;</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
@@ -273,7 +273,7 @@ $(function() {
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;{</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;   fResolutionCsI = crystalResCsI;</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;   fResolutionLaBr = crystalResLaBr;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;   LOG(INFO) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer::SetExpEnergyRes to &quot;</span> &lt;&lt; fResolutionCsI &lt;&lt; <span class="stringliteral">&quot;% @ 1 MeV for CsI and &quot;</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;   LOG(info) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer::SetExpEnergyRes to &quot;</span> &lt;&lt; fResolutionCsI &lt;&lt; <span class="stringliteral">&quot;% @ 1 MeV for CsI and &quot;</span></div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;             &lt;&lt; fResolutionLaBr &lt;&lt; <span class="stringliteral">&quot;% @ 1 MeV for LaBr.&quot;</span>;</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;}</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
@@ -289,7 +289,7 @@ $(function() {
 <div class="line"><a name="l00216"></a><span class="lineno"><a class="line" href="classAtApolloDigitizer.html#ae06ce949434bda02cb82071456149277">  216</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classAtApolloDigitizer.html#ae06ce949434bda02cb82071456149277">AtApolloDigitizer::SetNonUniformity</a>(Double_t nonU)</div>
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;{</div>
 <div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;   fNonUniformity = nonU;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;   LOG(INFO) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer::SetNonUniformity to &quot;</span> &lt;&lt; fNonUniformity &lt;&lt; <span class="stringliteral">&quot; %&quot;</span>;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;   LOG(info) &lt;&lt; <span class="stringliteral">&quot;AtApolloDigitizer::SetNonUniformity to &quot;</span> &lt;&lt; fNonUniformity &lt;&lt; <span class="stringliteral">&quot; %&quot;</span>;</div>
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;}</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;Double_t AtApolloDigitizer::ExpResSmearingCsI(Double_t inputEnergy)</div>
@@ -364,7 +364,7 @@ $(function() {
 <div class="ttc" id="aclassAtApolloDigitizer_html_a4d5d7d5822586eee3be6b4291c99ef44"><div class="ttname"><a href="classAtApolloDigitizer.html#a4d5d7d5822586eee3be6b4291c99ef44">AtApolloDigitizer::AtApolloDigitizer</a></div><div class="ttdeci">AtApolloDigitizer()</div><div class="ttdef"><b>Definition:</b> <a href="AtApolloDigitizer_8cxx_source.html#l00032">AtApolloDigitizer.cxx:32</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:00 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:55:59 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

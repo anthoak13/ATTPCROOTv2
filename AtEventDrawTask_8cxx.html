@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ATTPCROOT: /github/workspace/AtEventDisplay/AtEventDrawTask.cxx File Reference</title>
+<title>ATTPCROOT: /github/workspace/AtEventDisplay/Deprecated/AtEventDrawTask.cxx File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_93d25abbc6f0ef98b9f9d466bdcb18a2.html">AtEventDisplay</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_93d25abbc6f0ef98b9f9d466bdcb18a2.html">AtEventDisplay</a></li><li class="navelem"><a class="el" href="dir_ade193244e8182e28566ee49794683fa.html">Deprecated</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -76,8 +76,10 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="AtEventDrawTask_8h_source.html">AtEventDrawTask.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtAuxPad_8h_source.html">AtAuxPad.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AtBaseEvent_8h_source.html">AtBaseEvent.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtEvent_8h_source.html">AtEvent.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtEventManager_8h_source.html">AtEventManager.h</a>&quot;</code><br />
+<code>#include &quot;AtFindVertex.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtHit_8h_source.html">AtHit.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtMap_8h_source.html">AtMap.h</a>&quot;</code><br />
@@ -96,6 +98,7 @@ $(function() {
 <code>#include &lt;TClonesArray.h&gt;</code><br />
 <code>#include &lt;TColor.h&gt;</code><br />
 <code>#include &lt;TEveBoxSet.h&gt;</code><br />
+<code>#include &lt;TEveElement.h&gt;</code><br />
 <code>#include &lt;TEveLine.h&gt;</code><br />
 <code>#include &lt;TEveManager.h&gt;</code><br />
 <code>#include &lt;TEvePointSet.h&gt;</code><br />
@@ -118,6 +121,8 @@ $(function() {
 <code>#include &lt;TStyle.h&gt;</code><br />
 <code>#include &lt;TVirtualPad.h&gt;</code><br />
 <code>#include &lt;TVirtualX.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="S800Ana_8h_source.html">S800Ana.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="S800Calc_8h_source.html">S800Calc.h</a>&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;array&gt;</code><br />
 <code>#include &lt;cstdio&gt;</code><br />
@@ -188,7 +193,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00068">68</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00074">74</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
 
 </div>
 </div>
@@ -212,7 +217,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00067">67</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00073">73</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
 
 </div>
 </div>
@@ -236,7 +241,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00066">66</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00072">72</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
 
 </div>
 </div>
@@ -263,7 +268,7 @@ Variables</h2></td></tr>
 <p>Event display task. </p>
 <dl class="section author"><dt>Author</dt><dd>JungWoo Lee (Korea Univ.) Adapted for AtTPCROOT by Yassid Ayyad (NSCL) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00064">64</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00070">70</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
 
 </div>
 </div>
@@ -287,14 +292,14 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00065">65</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtEventDrawTask_8cxx_source.html#l00071">71</a> of file <a class="el" href="AtEventDrawTask_8cxx_source.html">AtEventDrawTask.cxx</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

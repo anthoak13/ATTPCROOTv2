@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['eframetype_5545',['EFrameType',['../classGETDecoder2.html#a3ed1ba9c23cd87f946ecd982d819bcdd',1,'GETDecoder2']]],
-  ['estimators_5546',['Estimators',['../group__SampleConsensus.html#ga3f41f25b8c1dd17e4e1785fba2380d5d',1,'SampleConsensus']]]
+  ['detectorid_7829',['DetectorId',['../AtDetectorList_8h.html#a1806da1a0fbae8ab81f7330906f65680',1,'AtDetectorList.h']]]
 ];

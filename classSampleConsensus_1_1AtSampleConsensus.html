@@ -87,9 +87,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4d3d8370dda8fa316aa533b8f6ed3e60"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampleConsensus_1_1AtSampleConsensus.html#a4d3d8370dda8fa316aa533b8f6ed3e60">AtSampleConsensus</a> (<a class="el" href="group__SampleConsensus.html#ga3f41f25b8c1dd17e4e1785fba2380d5d">Estimators</a> estimator, <a class="el" href="group__AtPattern.html#ga83dfd22f92852e92938315c154952e5c">PatternType</a> patternType, <a class="el" href="group__AtHitSampling.html#ga2483e8129e93c221dd4d4961cef2411a">SampleMethod</a> sampleMethod)</td></tr>
 <tr class="separator:a4d3d8370dda8fa316aa533b8f6ed3e60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac97c159b0653ad6a7d718436277b274b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtPatternEvent.html">AtPatternEvent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampleConsensus_1_1AtSampleConsensus.html#ac97c159b0653ad6a7d718436277b274b">Solve</a> (<a class="el" href="classAtEvent.html">AtEvent</a> *event)</td></tr>
+<tr class="memdesc:ac97c159b0653ad6a7d718436277b274b"><td class="mdescLeft">&#160;</td><td class="mdescRight">See Solve(const std::vector&lt;const AtHit *&gt; &amp;hitArray)  <a href="classSampleConsensus_1_1AtSampleConsensus.html#ac97c159b0653ad6a7d718436277b274b">More...</a><br /></td></tr>
 <tr class="separator:ac97c159b0653ad6a7d718436277b274b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6509d5d361dac2013545d6f833839605"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtPatternEvent.html">AtPatternEvent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampleConsensus_1_1AtSampleConsensus.html#a6509d5d361dac2013545d6f833839605">Solve</a> (const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hitArray)</td></tr>
-<tr class="separator:a6509d5d361dac2013545d6f833839605"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3ad4df7747c45b1cc7a69767c9bb27a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtPatternEvent.html">AtPatternEvent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampleConsensus_1_1AtSampleConsensus.html#ac3ad4df7747c45b1cc7a69767c9bb27a">Solve</a> (const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hitArray, <a class="el" href="classAtBaseEvent.html">AtBaseEvent</a> *event=nullptr)</td></tr>
+<tr class="memdesc:ac3ad4df7747c45b1cc7a69767c9bb27a"><td class="mdescLeft">&#160;</td><td class="mdescRight">See Solve(const std::vector&lt;const AtHit *&gt; &amp;hitArray)  <a href="classSampleConsensus_1_1AtSampleConsensus.html#ac3ad4df7747c45b1cc7a69767c9bb27a">More...</a><br /></td></tr>
+<tr class="separator:ac3ad4df7747c45b1cc7a69767c9bb27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d0340024529877788b76b7a07506abc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtPatternEvent.html">AtPatternEvent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampleConsensus_1_1AtSampleConsensus.html#a1d0340024529877788b76b7a07506abc">Solve</a> (const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;hitArray, <a class="el" href="classAtBaseEvent.html">AtBaseEvent</a> *event=nullptr)</td></tr>
+<tr class="separator:a1d0340024529877788b76b7a07506abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39a2de713e8da652307704deab0ad489"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampleConsensus_1_1AtSampleConsensus.html#a39a2de713e8da652307704deab0ad489">SetRandomSample</a> (AtSamplePtr mode)</td></tr>
 <tr class="separator:a39a2de713e8da652307704deab0ad489"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff64bbc3853ed162868b290c33c00c28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSampleConsensus_1_1AtSampleConsensus.html#aff64bbc3853ed162868b290c33c00c28">SetPatternType</a> (<a class="el" href="group__AtPattern.html#ga83dfd22f92852e92938315c154952e5c">PatternType</a> type)</td></tr>
@@ -109,9 +113,9 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Perform a sample consensus on a cloud of AtHits. </p>
-<p>Construct a sample consensus using an estimator, pattern type, and method for randomly sampling <a class="el" href="classAtHit.html">AtHit</a> cloud. </p>
+<p>Construct a sample consensus using an estimator, pattern type, and method for randomly sampling <a class="el" href="classAtHit.html" title="Point in space with charge.">AtHit</a> cloud. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00045">45</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00046">46</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2ff1654d2dfd021b7b15e11b4d911e4b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2ff1654d2dfd021b7b15e11b4d911e4b">&#9670;&nbsp;</a></span>AtSampleConsensus() <span class="overload">[1/2]</span></h2>
@@ -193,7 +197,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00084">84</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00088">88</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 
 </div>
 </div>
@@ -221,7 +225,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00083">83</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00087">87</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 
 </div>
 </div>
@@ -249,7 +253,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00079">79</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00083">83</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 
 </div>
 </div>
@@ -277,7 +281,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00085">85</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00089">89</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 
 </div>
 </div>
@@ -305,7 +309,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00082">82</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00086">86</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 
 </div>
 </div>
@@ -333,7 +337,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00081">81</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00085">85</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 
 </div>
 </div>
@@ -361,7 +365,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00078">78</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00082">82</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 
 </div>
 </div>
@@ -389,12 +393,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00077">77</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8h_source.html#l00081">81</a> of file <a class="el" href="AtSampleConsensus_8h_source.html">AtSampleConsensus.h</a>.</p>
 
 </div>
 </div>
 <a id="ac97c159b0653ad6a7d718436277b274b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac97c159b0653ad6a7d718436277b274b">&#9670;&nbsp;</a></span>Solve() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac97c159b0653ad6a7d718436277b274b">&#9670;&nbsp;</a></span>Solve() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -409,12 +413,14 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8cxx_source.html#l00059">59</a> of file <a class="el" href="AtSampleConsensus_8cxx_source.html">AtSampleConsensus.cxx</a>.</p>
+<p>See Solve(const std::vector&lt;const AtHit *&gt; &amp;hitArray) </p>
+
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8cxx_source.html#l00060">60</a> of file <a class="el" href="AtSampleConsensus_8cxx_source.html">AtSampleConsensus.cxx</a>.</p>
 
 </div>
 </div>
-<a id="a6509d5d361dac2013545d6f833839605"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6509d5d361dac2013545d6f833839605">&#9670;&nbsp;</a></span>Solve() <span class="overload">[2/2]</span></h2>
+<a id="ac3ad4df7747c45b1cc7a69767c9bb27a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3ad4df7747c45b1cc7a69767c9bb27a">&#9670;&nbsp;</a></span>Solve() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -423,13 +429,55 @@ Public Member Functions</h2></td></tr>
           <td class="memname"><a class="el" href="classAtPatternEvent.html">AtPatternEvent</a> AtSampleConsensus::Solve </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>hitArray</em></td><td>)</td>
+          <td class="paramname"><em>hitArray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classAtBaseEvent.html">AtBaseEvent</a> *&#160;</td>
+          <td class="paramname"><em>event</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>See Solve(const std::vector&lt;const AtHit *&gt; &amp;hitArray) </p>
+
 <p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8cxx_source.html#l00066">66</a> of file <a class="el" href="AtSampleConsensus_8cxx_source.html">AtSampleConsensus.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a1d0340024529877788b76b7a07506abc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d0340024529877788b76b7a07506abc">&#9670;&nbsp;</a></span>Solve() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtPatternEvent.html">AtPatternEvent</a> AtSampleConsensus::Solve </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hitArray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classAtBaseEvent.html">AtBaseEvent</a> *&#160;</td>
+          <td class="paramname"><em>event</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtSampleConsensus_8cxx_source.html#l00072">72</a> of file <a class="el" href="AtSampleConsensus_8cxx_source.html">AtSampleConsensus.cxx</a>.</p>
 
 </div>
 </div>
@@ -440,7 +488,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:03 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

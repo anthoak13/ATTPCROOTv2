@@ -65,6 +65,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classAtHitCluster-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -72,15 +73,19 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>: Class representing a cluster of hits that arise from the same deposition of charge in space. Or at least, that is the assumtion that underlies the math in the class.  
+ <a href="classAtHitCluster.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for AtHitCluster:</div>
 <div class="dyncontent">
 <div class="center"><img src="classAtHitCluster__inherit__graph.png" border="0" usemap="#AtHitCluster_inherit__map" alt="Inheritance graph"/></div>
 <map name="AtHitCluster_inherit__map" id="AtHitCluster_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,155,99,181"/>
-<area shape="rect" href="classAtHit.html" title=" " alt="" coords="26,80,78,107"/>
-<area shape="rect" title=" " alt="" coords="18,5,86,32"/>
+<area shape="rect" title=": Class representing a cluster of hits that arise from the same deposition of charge in space...." alt="" coords="16,155,109,181"/>
+<area shape="rect" href="classAtHitClusterFull.html" title=": Class representing a cluster of hits that arise from the same deposition of charge in space...." alt="" coords="5,229,120,256"/>
+<area shape="rect" href="classAtHit.html" title="Point in space with charge." alt="" coords="37,80,89,107"/>
+<area shape="rect" title=" " alt="" coords="29,5,97,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -88,8 +93,8 @@ Collaboration diagram for AtHitCluster:</div>
 <div class="dyncontent">
 <div class="center"><img src="classAtHitCluster__coll__graph.png" border="0" usemap="#AtHitCluster_coll__map" alt="Collaboration graph"/></div>
 <map name="AtHitCluster_coll__map" id="AtHitCluster_coll__map">
-<area shape="rect" title=" " alt="" coords="14,275,107,301"/>
-<area shape="rect" href="classAtHit.html" title=" " alt="" coords="35,199,87,225"/>
+<area shape="rect" title=": Class representing a cluster of hits that arise from the same deposition of charge in space...." alt="" coords="14,275,107,301"/>
+<area shape="rect" href="classAtHit.html" title="Point in space with charge." alt="" coords="35,199,87,225"/>
 <area shape="rect" title=" " alt="" coords="5,102,73,129"/>
 <area shape="rect" title=" " alt="" coords="98,95,221,136"/>
 <area shape="rect" href="structAtHit_1_1MCSimPoint.html" title=" " alt="" coords="94,5,225,32"/>
@@ -104,20 +109,34 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4f2e105075e55e1a9db122c1876a94cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52b61aa4b65e74febfe3ea58d40b3d04"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a52b61aa4b65e74febfe3ea58d40b3d04">~AtHitCluster</a> ()=default</td></tr>
 <tr class="separator:a52b61aa4b65e74febfe3ea58d40b3d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43be587ecbf03f6dd28957592fb7f8b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a43be587ecbf03f6dd28957592fb7f8b1">SetCovMatrix</a> (const TMatrixD &amp;matrix)</td></tr>
-<tr class="separator:a43be587ecbf03f6dd28957592fb7f8b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1553459b49c5d49d1c64b60a6a8bd06"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#ac1553459b49c5d49d1c64b60a6a8bd06">Clone</a> () override</td></tr>
+<tr class="separator:ac1553459b49c5d49d1c64b60a6a8bd06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac045a4eedc152556cabb9ad69b5c0837"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#ac045a4eedc152556cabb9ad69b5c0837">SetCovMatrix</a> (TMatrixDSym matrix)</td></tr>
+<tr class="separator:ac045a4eedc152556cabb9ad69b5c0837"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a861050ca4f93c5c8410eb197bf0d62ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a861050ca4f93c5c8410eb197bf0d62ef">SetCovMatrix</a> (int i, int j, double val)</td></tr>
+<tr class="memdesc:a861050ca4f93c5c8410eb197bf0d62ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the cov[i,j] = cov[j,i] = val.  <a href="classAtHitCluster.html#a861050ca4f93c5c8410eb197bf0d62ef">More...</a><br /></td></tr>
+<tr class="separator:a861050ca4f93c5c8410eb197bf0d62ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabf48f213202070de3811913c52f4b7c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#aabf48f213202070de3811913c52f4b7c">SetPositionVariance</a> (const <a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a> &amp;vec) override</td></tr>
+<tr class="separator:aabf48f213202070de3811913c52f4b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33be736ac62ca5c721757fb664fce77e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a33be736ac62ca5c721757fb664fce77e">SetLength</a> (Double_t length)</td></tr>
 <tr class="separator:a33be736ac62ca5c721757fb664fce77e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16e1c33670541865ff0d6f0029b522f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a16e1c33670541865ff0d6f0029b522f4">SetClusterID</a> (Int_t id)</td></tr>
 <tr class="separator:a16e1c33670541865ff0d6f0029b522f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40233c7f76823d0c918a96099220b345"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a40233c7f76823d0c918a96099220b345">AddHit</a> (const <a class="el" href="classAtHit.html">AtHit</a> &amp;hit)</td></tr>
+<tr class="memdesc:a40233c7f76823d0c918a96099220b345"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add hit to cluster.  <a href="classAtHitCluster.html#a40233c7f76823d0c918a96099220b345">More...</a><br /></td></tr>
+<tr class="separator:a40233c7f76823d0c918a96099220b345"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d7484d24464af1c1aed4986f1ca659c"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a1d7484d24464af1c1aed4986f1ca659c">GetLength</a> () const</td></tr>
 <tr class="separator:a1d7484d24464af1c1aed4986f1ca659c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34204d669a98623c3ccb08c35a3aa2c8"><td class="memItemLeft" align="right" valign="top">const TMatrixD &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a34204d669a98623c3ccb08c35a3aa2c8">GetCovMatrix</a> () const</td></tr>
-<tr class="separator:a34204d669a98623c3ccb08c35a3aa2c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a038d04563bbae7aaae07b8ccef4f3ff4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a4db9b529d80338beffad347d91447c15">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a038d04563bbae7aaae07b8ccef4f3ff4">GetPositionCharge</a> () const</td></tr>
+<tr class="separator:a038d04563bbae7aaae07b8ccef4f3ff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3c86a5387de5cc9d4da8c9dd4b5985d"><td class="memItemLeft" align="right" valign="top">const TMatrixDSym &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#ad3c86a5387de5cc9d4da8c9dd4b5985d">GetCovMatrix</a> () const</td></tr>
+<tr class="separator:ad3c86a5387de5cc9d4da8c9dd4b5985d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7976e33d1e30a492f967009f15e0b419"><td class="memItemLeft" align="right" valign="top">const TMatrixDSym &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a7976e33d1e30a492f967009f15e0b419">GetCovNumerator</a> () const</td></tr>
+<tr class="separator:a7976e33d1e30a492f967009f15e0b419"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ea3068dccf28d977bdc502b5e28564c"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a8ea3068dccf28d977bdc502b5e28564c">GetClusterID</a> () const</td></tr>
 <tr class="separator:a8ea3068dccf28d977bdc502b5e28564c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6528a068912a40aa89224ff1a4edfb6e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a6528a068912a40aa89224ff1a4edfb6e">ClassDef</a> (<a class="el" href="classAtHitCluster.html">AtHitCluster</a>, 3)</td></tr>
-<tr class="separator:a6528a068912a40aa89224ff1a4edfb6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8e20082d129166fe7c42bcc12161b6e"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#ac8e20082d129166fe7c42bcc12161b6e">GetClusterSize</a> () const</td></tr>
+<tr class="separator:ac8e20082d129166fe7c42bcc12161b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classAtHit"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classAtHit')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classAtHit.html">AtHit</a></td></tr>
 <tr class="memitem:a6d013c67bdfcf0a730a3ad0d0d9ed696 inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a6d013c67bdfcf0a730a3ad0d0d9ed696">AtHit</a> (Int_t hitID=-1)</td></tr>
 <tr class="separator:a6d013c67bdfcf0a730a3ad0d0d9ed696 inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,14 +154,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0da3283d2987dfe1cf9078a5868feee3 inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b20faab0c1894c3470639a507a90bef inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a5b20faab0c1894c3470639a507a90bef">~AtHit</a> ()=default</td></tr>
 <tr class="separator:a5b20faab0c1894c3470639a507a90bef inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6a966c6d6a079fd72b4af5647eb9451 inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">H5::CompType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#ac6a966c6d6a079fd72b4af5647eb9451">GetHDF5Type</a> ()</td></tr>
+<tr class="memdesc:ac6a966c6d6a079fd72b4af5647eb9451 inherit pub_methods_classAtHit"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the type specification of a hit.  <a href="classAtHit.html#ac6a966c6d6a079fd72b4af5647eb9451">More...</a><br /></td></tr>
+<tr class="separator:ac6a966c6d6a079fd72b4af5647eb9451 inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa11a9cb00337b128f3a9c395e3333fb3 inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#aa11a9cb00337b128f3a9c395e3333fb3">SetCharge</a> (Double_t charge)</td></tr>
 <tr class="separator:aa11a9cb00337b128f3a9c395e3333fb3 inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03f7a49fac4586b259e2342c2a3bc8bd inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a03f7a49fac4586b259e2342c2a3bc8bd">SetChargeVariance</a> (Double_t chargeVar)</td></tr>
 <tr class="separator:a03f7a49fac4586b259e2342c2a3bc8bd inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6888771079351d10f0aec135f2571beb inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a6888771079351d10f0aec135f2571beb">SetPosition</a> (const <a class="el" href="classAtHit.html#a4db9b529d80338beffad347d91447c15">XYZPoint</a> &amp;pos)</td></tr>
 <tr class="separator:a6888771079351d10f0aec135f2571beb inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2558fe6ff0a5795fc68cd9b9f831fa4e inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a2558fe6ff0a5795fc68cd9b9f831fa4e">SetPositionVariance</a> (const <a class="el" href="classAtHit.html#a4db9b529d80338beffad347d91447c15">XYZPoint</a> &amp;vec)</td></tr>
-<tr class="separator:a2558fe6ff0a5795fc68cd9b9f831fa4e inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb8370867a7636d1a3b2dd876f60aa1c inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#aeb8370867a7636d1a3b2dd876f60aa1c">SetHitID</a> (Int_t hitID)</td></tr>
 <tr class="separator:aeb8370867a7636d1a3b2dd876f60aa1c inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae64ac372a442a8b12ce12a01f05a3dc4 inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#ae64ac372a442a8b12ce12a01f05a3dc4">SetPadNum</a> (Int_t padNum)</td></tr>
@@ -186,15 +206,50 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a361ddde68662ba50ea7ae45f5df92607 inherit pub_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a361ddde68662ba50ea7ae45f5df92607">ClassDef</a> (<a class="el" href="classAtHit.html">AtHit</a>, 5)</td></tr>
 <tr class="separator:a361ddde68662ba50ea7ae45f5df92607 inherit pub_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:ab7d25c9537137ed76f55a57fb1301a75"><td class="memTemplParams" colspan="2">template&lt;class A , class B &gt; </td></tr>
+<tr class="memitem:ab7d25c9537137ed76f55a57fb1301a75"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#ab7d25c9537137ed76f55a57fb1301a75">ElementMult</a> (const A &amp;a, const B &amp;b)</td></tr>
+<tr class="separator:ab7d25c9537137ed76f55a57fb1301a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60bc6e1e8d292c6c622d4ee1e0959ece"><td class="memTemplParams" colspan="2">template&lt;class A , class B &gt; </td></tr>
+<tr class="memitem:a60bc6e1e8d292c6c622d4ee1e0959ece"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a60bc6e1e8d292c6c622d4ee1e0959ece">ElementDiv</a> (const A &amp;a, const B &amp;b)</td></tr>
+<tr class="separator:a60bc6e1e8d292c6c622d4ee1e0959ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a321ee3693e3c3ebe32324bff8ffb6cca"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a321ee3693e3c3ebe32324bff8ffb6cca"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a321ee3693e3c3ebe32324bff8ffb6cca">ElementInvert</a> (const T &amp;b)</td></tr>
+<tr class="separator:a321ee3693e3c3ebe32324bff8ffb6cca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9db7b12db87b804ffc35377897e41984"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a9db7b12db87b804ffc35377897e41984">updateWeightsAndCharge</a> (const <a class="el" href="classAtHit.html">AtHit</a> &amp;hit)</td></tr>
+<tr class="separator:a9db7b12db87b804ffc35377897e41984"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c8824392b028ac4de64800ef901d708"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a5c8824392b028ac4de64800ef901d708">updatePosition</a> (const <a class="el" href="classAtHit.html">AtHit</a> &amp;hit)</td></tr>
+<tr class="separator:a5c8824392b028ac4de64800ef901d708"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05871a63f3c79590cc20db78a0335923"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a05871a63f3c79590cc20db78a0335923">updateCovariance</a> (const <a class="el" href="classAtHit.html">AtHit</a> &amp;hit)</td></tr>
+<tr class="separator:a05871a63f3c79590cc20db78a0335923"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a791b0eb317583c6acf20102455a31c39"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a791b0eb317583c6acf20102455a31c39">ClassDefOverride</a> (<a class="el" href="classAtHitCluster.html">AtHitCluster</a>, 4)</td></tr>
+<tr class="separator:a791b0eb317583c6acf20102455a31c39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a61d90a06c7fdeb48a747adec6c5ab11a"><td class="memItemLeft" align="right" valign="top">TMatrixD&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a61d90a06c7fdeb48a747adec6c5ab11a">fCovMatrix</a></td></tr>
-<tr class="memdesc:a61d90a06c7fdeb48a747adec6c5ab11a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCluster.html">Cluster</a> covariance matrix.  <a href="classAtHitCluster.html#a61d90a06c7fdeb48a747adec6c5ab11a">More...</a><br /></td></tr>
-<tr class="separator:a61d90a06c7fdeb48a747adec6c5ab11a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa07f44686202b355709a63121c077a23"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#aa07f44686202b355709a63121c077a23">fLength</a> = -999</td></tr>
-<tr class="separator:aa07f44686202b355709a63121c077a23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99318fcbdec6ea640b3ef214df353097"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a99318fcbdec6ea640b3ef214df353097">fClusterID</a> = -1</td></tr>
+<tr class="memitem:a99318fcbdec6ea640b3ef214df353097"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a99318fcbdec6ea640b3ef214df353097">fClusterID</a> {-1}</td></tr>
 <tr class="separator:a99318fcbdec6ea640b3ef214df353097"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61908bbbf621fb56b7131e92a6a86279"><td class="memItemLeft" align="right" valign="top">TMatrixDSym&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a61908bbbf621fb56b7131e92a6a86279">fCovMatrix</a> {3}</td></tr>
+<tr class="separator:a61908bbbf621fb56b7131e92a6a86279"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e60a59540bc36d297da8af08343e0cb"><td class="memItemLeft" align="right" valign="top">TMatrixDSym&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a5e60a59540bc36d297da8af08343e0cb">fCovNumerator</a> {3}</td></tr>
+<tr class="separator:a5e60a59540bc36d297da8af08343e0cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6a62549cfa0f95f443de70dcec7729c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#aa6a62549cfa0f95f443de70dcec7729c">fTotalWeight</a> {0, 0, 0}</td></tr>
+<tr class="separator:aa6a62549cfa0f95f443de70dcec7729c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a2c544b7e0ead07893764c4fe3e65a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a4a2c544b7e0ead07893764c4fe3e65a7">fTotalWeight2</a> {0, 0, 0}</td></tr>
+<tr class="separator:a4a2c544b7e0ead07893764c4fe3e65a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad695a8cea57d096a3ca8ebc88a17ece2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#ad695a8cea57d096a3ca8ebc88a17ece2">fWeight</a> {0, 0, 0}</td></tr>
+<tr class="separator:ad695a8cea57d096a3ca8ebc88a17ece2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53b3762cc054a00506d85e905a405e7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a4db9b529d80338beffad347d91447c15">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a53b3762cc054a00506d85e905a405e7c">fPositionCharge</a> {0, 0, 0}</td></tr>
+<tr class="separator:a53b3762cc054a00506d85e905a405e7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30fe574400b0e191befaf5afacb8946a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a4db9b529d80338beffad347d91447c15">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a30fe574400b0e191befaf5afacb8946a">fPositionChargeOld</a> {0, 0, 0}</td></tr>
+<tr class="separator:a30fe574400b0e191befaf5afacb8946a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2e94c20c626c6e78998b54472309e4e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#ae2e94c20c626c6e78998b54472309e4e">fPositionOld</a> {0, 0, 0}</td></tr>
+<tr class="separator:ae2e94c20c626c6e78998b54472309e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa07f44686202b355709a63121c077a23"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#aa07f44686202b355709a63121c077a23">fLength</a> {-999}</td></tr>
+<tr class="separator:aa07f44686202b355709a63121c077a23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86d7f603fe91dd489b91f73613b94f46"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHitCluster.html#a86d7f603fe91dd489b91f73613b94f46">fClusterSize</a> {0}</td></tr>
+<tr class="separator:a86d7f603fe91dd489b91f73613b94f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classAtHit"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classAtHit')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classAtHit.html">AtHit</a></td></tr>
 <tr class="memitem:ab4e4d4b5a7b5fef7e5bda6b1821940c6 inherit pro_attribs_classAtHit"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#ab4e4d4b5a7b5fef7e5bda6b1821940c6">fCharge</a></td></tr>
 <tr class="separator:ab4e4d4b5a7b5fef7e5bda6b1821940c6 inherit pro_attribs_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -231,12 +286,20 @@ Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_static_methods_classAtHit"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classAtHit')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classAtHit.html">AtHit</a></td></tr>
 <tr class="memitem:a4d1d377080cd0110d2480299f0506ab1 inherit pub_static_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">static Bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a4d1d377080cd0110d2480299f0506ab1">SortHit</a> (const <a class="el" href="classAtHit.html">AtHit</a> &amp;lhs, const <a class="el" href="classAtHit.html">AtHit</a> &amp;rhs)</td></tr>
 <tr class="separator:a4d1d377080cd0110d2480299f0506ab1 inherit pub_static_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a596068a2d2751fee813e7f8102e5d9d4 inherit pub_static_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">static Bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a596068a2d2751fee813e7f8102e5d9d4">SortHit</a> (const std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;lhs, const std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;rhs)</td></tr>
+<tr class="separator:a596068a2d2751fee813e7f8102e5d9d4 inherit pub_static_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ac5036bf27cc87daa7e01f1f869d638 inherit pub_static_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">static Bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#a6ac5036bf27cc87daa7e01f1f869d638">SortHitTimePtr</a> (const std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;lhs, const std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;rhs)</td></tr>
+<tr class="separator:a6ac5036bf27cc87daa7e01f1f869d638 inherit pub_static_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa33f3bfdd521ff9d78971d1bfda987a inherit pub_static_methods_classAtHit"><td class="memItemLeft" align="right" valign="top">static Bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtHit.html#afa33f3bfdd521ff9d78971d1bfda987a">SortHitTime</a> (const <a class="el" href="classAtHit.html">AtHit</a> &amp;lhs, const <a class="el" href="classAtHit.html">AtHit</a> &amp;rhs)</td></tr>
 <tr class="separator:afa33f3bfdd521ff9d78971d1bfda987a inherit pub_static_methods_classAtHit"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00014">14</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<div class="textblock"><p>: Class representing a cluster of hits that arise from the same deposition of charge in space. Or at least, that is the assumtion that underlies the math in the class. </p>
+<p>Will update the position, charge, variance, and covariance as additional hits are added to the cluster. The variance is calcualted using both frequency weights (the charge) and reliability weights (the inverse of the position variance of the hit). The covariance is calculated just using the frequency weights (charge) w.r.t. the charge-weighted estimator for the true mean (not the frequency and reliability estimator of the mean). Eventually, I will sit down and work out a recursive expression for the covariance using the best estimate of the mean instead of just their charge weighted.</p>
+<p>The covariance and matrix can also be manually set like the old version of the class.</p>
+<p>Three positions are stored in the cluster: fPositionFull is the position using the full information(charge and hit position variance). fPositionCharge is the position from just charge weighting. fPosition is the position without any weighting applied. </p>
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00037">37</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7c6347da0b0d905cd4d54a3301122011"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7c6347da0b0d905cd4d54a3301122011">&#9670;&nbsp;</a></span>AtHitCluster() <span class="overload">[1/2]</span></h2>
@@ -253,7 +316,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00007">7</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00022">22</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
 
 </div>
 </div>
@@ -309,14 +372,51 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6528a068912a40aa89224ff1a4edfb6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6528a068912a40aa89224ff1a4edfb6e">&#9670;&nbsp;</a></span>ClassDef()</h2>
+<a id="a40233c7f76823d0c918a96099220b345"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40233c7f76823d0c918a96099220b345">&#9670;&nbsp;</a></span>AddHit()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">AtHitCluster::ClassDef </td>
+          <td class="memname">void AtHitCluster::AddHit </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td>
+          <td class="paramname"><em>hit</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Add hit to cluster. </p>
+<p>Adds a hit, updating the clusters position and charge. As well as the covariance matrix. The variance is updated using the charge-weighted variance of the passed hit. The off diagonal elements of the covariance matrix are updated according to the "standard" textbook definition of the covariance matrix <img class="formulaInl" alt="$ COV_{x,y} = \frac{\Sigma_i^N (x_i - \hat{x})(y_i - \hat{y})}{N-1}$" src="form_0.png"/>.</p>
+<p>The on diagonal elements of the covariance matrix (i.e. the variance) are updated assuming both a charge weighting, and a "reliablility" weighting from the variance in the position of the hits used to construct the hit cluster. </p>
+
+<p>Reimplemented in <a class="el" href="classAtHitClusterFull.html#af153b6af8b8bce8fbcb369cb9c680c3b">AtHitClusterFull</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00052">52</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a791b0eb317583c6acf20102455a31c39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a791b0eb317583c6acf20102455a31c39">&#9670;&nbsp;</a></span>ClassDefOverride()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">AtHitCluster::ClassDefOverride </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classAtHitCluster.html">AtHitCluster</a>&#160;</td>
           <td class="paramname">, </td>
@@ -324,7 +424,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">3&#160;</td>
+          <td class="paramtype">4&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -333,7 +433,153 @@ Additional Inherited Members</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac1553459b49c5d49d1c64b60a6a8bd06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1553459b49c5d49d1c64b60a6a8bd06">&#9670;&nbsp;</a></span>Clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; AtHitCluster::Clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classAtHit.html#afd13c3f92151e8226236e361e59308cf">AtHit</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classAtHitClusterFull.html#a46974679e30ab73c39594f2ab393640a">AtHitClusterFull</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00017">17</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a60bc6e1e8d292c6c622d4ee1e0959ece"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60bc6e1e8d292c6c622d4ee1e0959ece">&#9670;&nbsp;</a></span>ElementDiv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class A , class B &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a> AtHitCluster::ElementDiv </td>
+          <td>(</td>
+          <td class="paramtype">const A &amp;&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const B &amp;&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00088">88</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="a321ee3693e3c3ebe32324bff8ffb6cca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a321ee3693e3c3ebe32324bff8ffb6cca">&#9670;&nbsp;</a></span>ElementInvert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T AtHitCluster::ElementInvert </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>b</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00093">93</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="ab7d25c9537137ed76f55a57fb1301a75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7d25c9537137ed76f55a57fb1301a75">&#9670;&nbsp;</a></span>ElementMult()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class A , class B &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a> AtHitCluster::ElementMult </td>
+          <td>(</td>
+          <td class="paramtype">const A &amp;&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const B &amp;&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00083">83</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
@@ -360,12 +606,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00032">32</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00078">78</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
-<a id="a34204d669a98623c3ccb08c35a3aa2c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34204d669a98623c3ccb08c35a3aa2c8">&#9670;&nbsp;</a></span>GetCovMatrix()</h2>
+<a id="ac8e20082d129166fe7c42bcc12161b6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8e20082d129166fe7c42bcc12161b6e">&#9670;&nbsp;</a></span>GetClusterSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -374,7 +620,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const TMatrixD&amp; AtHitCluster::GetCovMatrix </td>
+          <td class="memname">Int_t AtHitCluster::GetClusterSize </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -387,7 +633,61 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00031">31</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00079">79</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="ad3c86a5387de5cc9d4da8c9dd4b5985d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3c86a5387de5cc9d4da8c9dd4b5985d">&#9670;&nbsp;</a></span>GetCovMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const TMatrixDSym&amp; AtHitCluster::GetCovMatrix </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00075">75</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="a7976e33d1e30a492f967009f15e0b419"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7976e33d1e30a492f967009f15e0b419">&#9670;&nbsp;</a></span>GetCovNumerator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const TMatrixDSym&amp; AtHitCluster::GetCovNumerator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00076">76</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
@@ -414,7 +714,34 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00030">30</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00072">72</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="a038d04563bbae7aaae07b8ccef4f3ff4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a038d04563bbae7aaae07b8ccef4f3ff4">&#9670;&nbsp;</a></span>GetPositionCharge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a4db9b529d80338beffad347d91447c15">XYZPoint</a> AtHitCluster::GetPositionCharge </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00073">73</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
@@ -442,12 +769,50 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00028">28</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00069">69</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
-<a id="a43be587ecbf03f6dd28957592fb7f8b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a43be587ecbf03f6dd28957592fb7f8b1">&#9670;&nbsp;</a></span>SetCovMatrix()</h2>
+<a id="a861050ca4f93c5c8410eb197bf0d62ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a861050ca4f93c5c8410eb197bf0d62ef">&#9670;&nbsp;</a></span>SetCovMatrix() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtHitCluster::SetCovMatrix </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the cov[i,j] = cov[j,i] = val. </p>
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00032">32</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
+
+</div>
+</div>
+<a id="ac045a4eedc152556cabb9ad69b5c0837"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac045a4eedc152556cabb9ad69b5c0837">&#9670;&nbsp;</a></span>SetCovMatrix() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -458,7 +823,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void AtHitCluster::SetCovMatrix </td>
           <td>(</td>
-          <td class="paramtype">const TMatrixD &amp;&#160;</td>
+          <td class="paramtype">TMatrixDSym&#160;</td>
           <td class="paramname"><em>matrix</em></td><td>)</td>
           <td></td>
         </tr>
@@ -470,7 +835,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00026">26</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00065">65</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
@@ -498,7 +863,136 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00027">27</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00068">68</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="aabf48f213202070de3811913c52f4b7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabf48f213202070de3811913c52f4b7c">&#9670;&nbsp;</a></span>SetPositionVariance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtHitCluster::SetPositionVariance </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a> &amp;&#160;</td>
+          <td class="paramname"><em>vec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classAtHit.html#a45d1381489b8489dc943c959a8d5e695">AtHit</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00149">149</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a05871a63f3c79590cc20db78a0335923"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05871a63f3c79590cc20db78a0335923">&#9670;&nbsp;</a></span>updateCovariance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtHitCluster::updateCovariance </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td>
+          <td class="paramname"><em>hit</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Updates the off diagonal covariance numerator according to eqn 15 and the off diagonal variance according to eqn 24. Updates the diagonal elements of the covariance according to eqns 20 and 24 </p>
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00066">66</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a5c8824392b028ac4de64800ef901d708"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c8824392b028ac4de64800ef901d708">&#9670;&nbsp;</a></span>updatePosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtHitCluster::updatePosition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td>
+          <td class="paramname"><em>hit</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Update the position based on eqn 21.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">hit</td><td>Hit to update the position with </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00113">113</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a9db7b12db87b804ffc35377897e41984"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9db7b12db87b804ffc35377897e41984">&#9670;&nbsp;</a></span>updateWeightsAndCharge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtHitCluster::updateWeightsAndCharge </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classAtHit.html">AtHit</a> &amp;&#160;</td>
+          <td class="paramname"><em>hit</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">hit</td><td>Hit to add to the wights </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>weight of hit (1/var *q) </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8cxx_source.html#l00129">129</a> of file <a class="el" href="AtHitCluster_8cxx_source.html">AtHitCluster.cxx</a>.</p>
 
 </div>
 </div>
@@ -513,7 +1007,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Int_t AtHitCluster::fClusterID = -1</td>
+          <td class="memname">Int_t AtHitCluster::fClusterID {-1}</td>
         </tr>
       </table>
   </td>
@@ -523,12 +1017,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00019">19</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00039">39</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
-<a id="a61d90a06c7fdeb48a747adec6c5ab11a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61d90a06c7fdeb48a747adec6c5ab11a">&#9670;&nbsp;</a></span>fCovMatrix</h2>
+<a id="a86d7f603fe91dd489b91f73613b94f46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86d7f603fe91dd489b91f73613b94f46">&#9670;&nbsp;</a></span>fClusterSize</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -537,7 +1031,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">TMatrixD AtHitCluster::fCovMatrix</td>
+          <td class="memname">Int_t AtHitCluster::fClusterSize {0}</td>
         </tr>
       </table>
   </td>
@@ -547,9 +1041,55 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="classCluster.html">Cluster</a> covariance matrix. </p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00057">57</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00016">16</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+</div>
+</div>
+<a id="a61908bbbf621fb56b7131e92a6a86279"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61908bbbf621fb56b7131e92a6a86279">&#9670;&nbsp;</a></span>fCovMatrix</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TMatrixDSym AtHitCluster::fCovMatrix {3}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00042">42</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="a5e60a59540bc36d297da8af08343e0cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e60a59540bc36d297da8af08343e0cb">&#9670;&nbsp;</a></span>fCovNumerator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TMatrixDSym AtHitCluster::fCovNumerator {3}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00045">45</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
@@ -563,7 +1103,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Double_t AtHitCluster::fLength = -999</td>
+          <td class="memname">Double_t AtHitCluster::fLength {-999}</td>
         </tr>
       </table>
   </td>
@@ -573,7 +1113,151 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00018">18</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00056">56</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="a53b3762cc054a00506d85e905a405e7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53b3762cc054a00506d85e905a405e7c">&#9670;&nbsp;</a></span>fPositionCharge</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a4db9b529d80338beffad347d91447c15">XYZPoint</a> AtHitCluster::fPositionCharge {0, 0, 0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00052">52</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="a30fe574400b0e191befaf5afacb8946a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30fe574400b0e191befaf5afacb8946a">&#9670;&nbsp;</a></span>fPositionChargeOld</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a4db9b529d80338beffad347d91447c15">XYZPoint</a> AtHitCluster::fPositionChargeOld {0, 0, 0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00053">53</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="ae2e94c20c626c6e78998b54472309e4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2e94c20c626c6e78998b54472309e4e">&#9670;&nbsp;</a></span>fPositionOld</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a> AtHitCluster::fPositionOld {0, 0, 0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00054">54</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="aa6a62549cfa0f95f443de70dcec7729c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6a62549cfa0f95f443de70dcec7729c">&#9670;&nbsp;</a></span>fTotalWeight</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a> AtHitCluster::fTotalWeight {0, 0, 0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00048">48</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="a4a2c544b7e0ead07893764c4fe3e65a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a2c544b7e0ead07893764c4fe3e65a7">&#9670;&nbsp;</a></span>fTotalWeight2</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a> AtHitCluster::fTotalWeight2 {0, 0, 0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00049">49</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
+
+</div>
+</div>
+<a id="ad695a8cea57d096a3ca8ebc88a17ece2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad695a8cea57d096a3ca8ebc88a17ece2">&#9670;&nbsp;</a></span>fWeight</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtHit.html#a9138cc2b8e4051edf6362cb0d9cc0e61">XYZVector</a> AtHitCluster::fWeight {0, 0, 0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtHitCluster_8h_source.html#l00050">50</a> of file <a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>.</p>
 
 </div>
 </div>
@@ -584,7 +1268,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

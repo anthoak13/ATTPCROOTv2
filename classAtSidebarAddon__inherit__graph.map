@@ -1,0 +1,12 @@
+<map id="AtSidebarAddon" name="AtSidebarAddon">
+<area shape="rect" id="node1" title=" " alt="" coords="175,229,291,256"/>
+<area shape="rect" id="node5" href="$classAtSidebarInfoMacro.html" title=" " alt="" coords="5,304,143,331"/>
+<area shape="rect" id="node6" href="$classAtSidebarIntMacro.html" title=" " alt="" coords="167,304,298,331"/>
+<area shape="rect" id="node7" href="$classAtSidebarPSA.html" title=" " alt="" coords="322,304,429,331"/>
+<area shape="rect" id="node2" href="$classAtVerticalSidebarFrame.html" title=" " alt="" coords="153,155,313,181"/>
+<area shape="rect" id="node3" href="$classAtSidebarFrame.html" title=" " alt="" coords="175,80,291,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="163,5,302,32"/>
+<area shape="rect" id="node8" href="$classAtSidebarPSADeconv.html" title=" " alt="" coords="213,379,364,405"/>
+<area shape="rect" id="node10" href="$classAtSidebarPSATBAvg.html" title=" " alt="" coords="389,379,535,405"/>
+<area shape="rect" id="node9" href="$classAtSidebarPSAIterDeconv.html" title=" " alt="" coords="204,453,373,480"/>
+</map>

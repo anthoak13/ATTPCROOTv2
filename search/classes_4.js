@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['edge_2917',['edge',['../structmst_1_1edge.html',1,'mst::edge'],['../structEdge.html',1,'Edge']]]
+  ['e12014_4143',['E12014',['../classE12014.html',1,'']]],
+  ['edge_4144',['edge',['../structmst_1_1edge.html',1,'mst::edge'],['../structEdge.html',1,'Edge']]],
+  ['efieldcorr_4145',['EFieldCorr',['../structEFieldCorr.html',1,'']]],
+  ['efieldmapref_4146',['EFieldMapRef',['../structEFieldMapRef.html',1,'']]]
 ];

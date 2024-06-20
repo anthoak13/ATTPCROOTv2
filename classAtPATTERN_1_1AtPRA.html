@@ -97,23 +97,25 @@ Collaboration diagram for AtPATTERN::AtPRA:</div>
 <div class="dyncontent">
 <div class="center"><img src="classAtPATTERN_1_1AtPRA__coll__graph.png" border="0" usemap="#AtPATTERN_1_1AtPRA_coll__map" alt="Collaboration graph"/></div>
 <map name="AtPATTERN_1_1AtPRA_coll__map" id="AtPATTERN_1_1AtPRA_coll__map">
-<area shape="rect" title="Find patterns in hit clouds." alt="" coords="2060,137,2203,164"/>
-<area shape="rect" title=" " alt="" coords="285,139,353,165"/>
-<area shape="rect" href="classAtTrack.html" title=" " alt="" coords="1505,167,1573,193"/>
-<area shape="rect" href="classAtPatterns_1_1AtPattern.html" title="Describes a shape in 3D space." alt="" coords="555,101,700,128"/>
-<area shape="rect" href="classAtHit.html" title=" " alt="" coords="601,231,653,257"/>
-<area shape="rect" title=" " alt="" coords="1739,101,1901,142"/>
-<area shape="rect" href="classAtTools_1_1AtTrackTransformer.html" title=" " alt="" coords="1444,108,1633,135"/>
-<area shape="rect" title=" " alt="" coords="1745,167,1895,193"/>
-<area shape="rect" title=" " alt="" coords="923,94,1101,135"/>
-<area shape="rect" title=" " alt="" coords="241,5,396,32"/>
-<area shape="rect" title=" " alt="" coords="1125,213,1300,240"/>
-<area shape="rect" href="classAtHitCluster.html" title=" " alt="" coords="805,213,899,240"/>
-<area shape="rect" title=" " alt="" coords="945,264,1079,291"/>
-<area shape="rect" title=" " alt="" coords="257,223,380,265"/>
-<area shape="rect" href="structAtHit_1_1MCSimPoint.html" title=" " alt="" coords="5,231,136,257"/>
-<area shape="rect" href="classAtDigiPar.html" title=" " alt="" coords="1781,217,1859,244"/>
-<area shape="rect" title=" " alt="" coords="1474,217,1603,244"/>
+<area shape="rect" title="Find patterns in hit clouds." alt="" coords="2064,80,2207,107"/>
+<area shape="rect" title=" " alt="" coords="285,60,353,87"/>
+<area shape="rect" href="classAtTrack.html" title=" " alt="" coords="1509,109,1577,136"/>
+<area shape="rect" href="classAtPatterns_1_1AtPattern.html" title="Describes a shape in 3D space." alt="" coords="555,144,700,171"/>
+<area shape="rect" href="classAtHit.html" title="Point in space with charge." alt="" coords="601,203,653,229"/>
+<area shape="rect" title=" " alt="" coords="1743,43,1905,85"/>
+<area shape="rect" href="classAtTools_1_1AtTrackTransformer.html" title=" " alt="" coords="1448,51,1637,77"/>
+<area shape="rect" title=" " alt="" coords="1749,109,1899,136"/>
+<area shape="rect" title=" " alt="" coords="927,138,1105,179"/>
+<area shape="rect" title=" " alt="" coords="241,144,396,171"/>
+<area shape="rect" title=" " alt="" coords="1147,93,1286,120"/>
+<area shape="rect" title="STL class." alt="" coords="767,93,903,120"/>
+<area shape="rect" title=" " alt="" coords="608,93,647,120"/>
+<area shape="rect" title=" " alt="" coords="1129,207,1304,233"/>
+<area shape="rect" href="classAtHitCluster.html" title=": Class representing a cluster of hits that arise from the same deposition of charge in space...." alt="" coords="788,205,881,232"/>
+<area shape="rect" title=" " alt="" coords="257,195,380,237"/>
+<area shape="rect" href="structAtHit_1_1MCSimPoint.html" title=" " alt="" coords="5,203,136,229"/>
+<area shape="rect" href="classAtDigiPar.html" title=" " alt="" coords="1785,160,1863,187"/>
+<area shape="rect" title=" " alt="" coords="1478,160,1607,187"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -145,8 +147,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a58844460d193013ef9abe2456c6723a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade06519dcf325ae5513c2a981cf0cc2e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPATTERN_1_1AtPRA.html#ade06519dcf325ae5513c2a981cf0cc2e">PruneTrack</a> (<a class="el" href="classAtTrack.html">AtTrack</a> &amp;track)</td></tr>
 <tr class="separator:ade06519dcf325ae5513c2a981cf0cc2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafe5292b09419947f1fed4b9f10a87b2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPATTERN_1_1AtPRA.html#aafe5292b09419947f1fed4b9f10a87b2">kNN</a> (const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hits, <a class="el" href="classAtHit.html">AtHit</a> &amp;hit, int k)</td></tr>
-<tr class="separator:aafe5292b09419947f1fed4b9f10a87b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18ea70210a626774f23454aa5f67f474"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPATTERN_1_1AtPRA.html#a18ea70210a626774f23454aa5f67f474">kNN</a> (const std::vector&lt; std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt;&gt; &amp;hits, <a class="el" href="classAtHit.html">AtHit</a> &amp;hit, int k)</td></tr>
+<tr class="separator:a18ea70210a626774f23454aa5f67f474"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -388,8 +390,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="aafe5292b09419947f1fed4b9f10a87b2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafe5292b09419947f1fed4b9f10a87b2">&#9670;&nbsp;</a></span>kNN()</h2>
+<a id="a18ea70210a626774f23454aa5f67f474"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18ea70210a626774f23454aa5f67f474">&#9670;&nbsp;</a></span>kNN()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -397,7 +399,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">bool AtPATTERN::AtPRA::kNN </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt;&gt; &amp;&#160;</td>
           <td class="paramname"><em>hits</em>, </td>
         </tr>
         <tr>
@@ -420,7 +422,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPRA_8cxx_source.html#l00235">235</a> of file <a class="el" href="AtPRA_8cxx_source.html">AtPRA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPRA_8cxx_source.html#l00233">233</a> of file <a class="el" href="AtPRA_8cxx_source.html">AtPRA.cxx</a>.</p>
 
 </div>
 </div>
@@ -440,7 +442,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPRA_8cxx_source.html#l00210">210</a> of file <a class="el" href="AtPRA_8cxx_source.html">AtPRA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPRA_8cxx_source.html#l00208">208</a> of file <a class="el" href="AtPRA_8cxx_source.html">AtPRA.cxx</a>.</p>
 
 </div>
 </div>
@@ -722,7 +724,7 @@ template&lt;typename T &gt; </div>
 <p>Set initial parameters for HC. </p>
 <p>In track, sets GeoTheta, GeoPhi, GeoCenter, GeoRadius. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtPRA_8cxx_source.html#l00042">42</a> of file <a class="el" href="AtPRA_8cxx_source.html">AtPRA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPRA_8cxx_source.html#l00035">35</a> of file <a class="el" href="AtPRA_8cxx_source.html">AtPRA.cxx</a>.</p>
 
 </div>
 </div>
@@ -1024,7 +1026,7 @@ template&lt;typename T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:03 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

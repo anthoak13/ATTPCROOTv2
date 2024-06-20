@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['hitptr_5510',['hitPtr',['../AtEvent_8h.html#a01a97ddc0dfe2a67c55b58c050dce1f0',1,'AtEvent.h']]],
-  ['hitvector_5511',['hitVector',['../AtEvent_8h.html#a7d4eefd40266a92db433dbf1d558d9bb',1,'AtEvent.h']]]
+  ['getdecoder2ptr_7771',['GETDecoder2Ptr',['../classAtGRAWUnpacker.html#ab5a6103f59bee3f264690eae052d6c72',1,'AtGRAWUnpacker']]]
 ];

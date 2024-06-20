@@ -70,7 +70,9 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="classAtPSAHitPerTB.html">AtPSAHitPerTB</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classAtPSAHitPerTB.html#a7098dbde3daf542d7ff718696f47b4b0">Analyze</a>(AtRawEvent *rawEvent, AtEvent *event) override</td><td class="entry"><a class="el" href="classAtPSAHitPerTB.html">AtPSAHitPerTB</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#ad364b82bec120c284042007c041fb209">Analyze</a>(AtRawEvent &amp;rawEvent)</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classAtPSA.html#a723a7a8574944d00be3165998693dbb5">Analyze</a>(AtRawEvent *rawEvent, AtEvent *event)</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classAtPSAHitPerTB.html#af5ba5f65c45bf1df6f38a40bbb9ad6cd">AnalyzePad</a>(AtPad *pad) override</td><td class="entry"><a class="el" href="classAtPSAHitPerTB.html">AtPSAHitPerTB</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
   <tr><td class="entry"><a class="el" href="classAtPSA.html#a9b42eba815919e14a311f4d38c664140">AtPSA</a>()=default</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#a6d5b873d6afb6a68bfa16c074e674cf5">CalculateZ</a>(Double_t peakIdx)</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr><td class="entry"><a class="el" href="classAtPSA.html#a0dd3cd6167d66c9e5d0c3c4d5922a77a">CalculateZGeo</a>(Double_t peakIdx)</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
@@ -85,11 +87,15 @@ $(function() {
   <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#a08c22c98b73f030cff2a5abf0c42f191">fNumTbs</a></td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr><td class="entry"><a class="el" href="classAtPSA.html#aa8f973cdedaefd527babce5f8927a881">fTB0</a></td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#ae573deb55aceb4361b2915f6242e01d9">fTBTime</a></td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classAtPSA.html#a3c35e30186756471a3728db7c995cf99">fThreshold</a></td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#a824db6c57af51dbdbc89ae3ec4de6c0f">fThresholdlow</a></td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr><td class="entry"><a class="el" href="classAtPSA.html#aba6bd2a5b704ace5b36ec178b3fe07dc">fUsingLowThreshold</a></td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#a21052de9b84f813ebfa806385d5a84bf">fZk</a></td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classAtPSA.html#a373c282fd639827cad58d3c8d09c3b86">Init</a>()</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classAtPSA.html#ae643b11bf2d7374f3a4c23c6dcc6d58d">getThreshold</a>(int padSize=-1)</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#a1957c5791a3af3a3f56d38cf248cb724">GetThreshold</a>()</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classAtPSA.html#ad99765f0c356e613e06761a13f566433">GetThresholdLow</a>()</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#a3cbeb35831678588cb03fd7e248f2196">getXYhitVariance</a>() const</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classAtPSA.html#af179b1a06af1df7139f8090b3e50b9bd">getZhitVariance</a>(double zLoc, double zLocVar) const</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#a1f906a1dc6ceaab0d1497777bb5f4c69">HitVector</a> typedef</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classAtPSA.html#a373c282fd639827cad58d3c8d09c3b86">Init</a>()</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#ae59da85262bddd79f231129baa7a73f3">SetSimulatedEvent</a>(TClonesArray *MCSimPointArray)</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classAtPSAHitPerTB.html#ad868b303a665dbc7230fa2d1c2cff5e7">SetTBLimits</a>(std::pair&lt; Int_t, Int_t &gt; limits)</td><td class="entry"><a class="el" href="classAtPSAHitPerTB.html">AtPSAHitPerTB</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classAtPSA.html#acda8807b7b43a698802f72c475f1bf3e">SetThreshold</a>(Int_t threshold)</td><td class="entry"><a class="el" href="classAtPSA.html">AtPSA</a></td><td class="entry"></td></tr>
@@ -99,7 +105,7 @@ $(function() {
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

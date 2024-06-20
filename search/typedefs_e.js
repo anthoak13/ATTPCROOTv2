@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['t_5ffloat_5527',['t_float',['../trackfinder_2fastcluster__dm_8cxx.html#af8bbd7351ff68614b4975ea4403fc0eb',1,'t_float():&#160;fastcluster_dm.cxx'],['../triplclust_2src_2hclust_2fastcluster__dm_8cxx.html#af8bbd7351ff68614b4975ea4403fc0eb',1,'t_float():&#160;fastcluster_dm.cxx']]],
-  ['t_5findex_5528',['t_index',['../trackfinder_2fastcluster__dm_8cxx.html#acb005afe096d241feb6ef2a4ca12d187',1,'t_index():&#160;fastcluster_dm.cxx'],['../triplclust_2src_2hclust_2fastcluster__dm_8cxx.html#acb005afe096d241feb6ef2a4ca12d187',1,'t_index():&#160;fastcluster_dm.cxx']]],
-  ['tevelinevec_5529',['TEveLineVec',['../classAtPatterns_1_1AtPattern.html#a5bfa1d5dc50d29ee316d394653e78c9d',1,'AtPatterns::AtPattern']]],
-  ['trace_5530',['trace',['../classAtPad.html#a0e52aacfe76a3940c018c481476263e6',1,'AtPad::trace()'],['../AtCalibration_8h.html#af1bbdd97e9ce2dc1f59c00b470437c80',1,'trace():&#160;AtCalibration.h']]],
-  ['tracearray_5531',['traceArray',['../AtEvent_8h.html#ab1f096ee04369041d59df237725f2952',1,'AtEvent.h']]],
-  ['tracetrans_5532',['TraceTrans',['../classAtPadFFT.html#a079a035bdab27ca21fb559f45bfe01d8',1,'AtPadFFT']]]
+  ['rawtrace_7794',['rawTrace',['../classAtGenericTrace.html#ae5b32937af6ffff2dd2719a31215bd29',1,'AtGenericTrace::rawTrace()'],['../classAtPad.html#a3a47cd6b350a2693f2f6fc34c6fc0603',1,'AtPad::rawTrace()']]],
+  ['reducedresponse_7795',['ReducedResponse',['../classElectronicResponse_1_1AtReducedTimeResponse.html#a4f2bf95ad855a3967d4e84824330911e',1,'ElectronicResponse::AtReducedTimeResponse']]],
+  ['responsefunc_7796',['ResponseFunc',['../classAtPulse.html#aa3e8098dd1b11d8ab98a47a8624b6ebf',1,'AtPulse::ResponseFunc()'],['../classAtPulseTask.html#a36cdefaf239dc3582ea130d95a00fd14',1,'AtPulseTask::ResponseFunc()'],['../classAtPSADeconv.html#a5742d57522a8353cc6519ad5f6a072ee',1,'AtPSADeconv::ResponseFunc()']]],
+  ['responsefunctiontype_7797',['ResponseFunctionType',['../classAtPulse.html#a62a430ebdf7f89bae50bbc5c240eefb0',1,'AtPulse::ResponseFunctionType()'],['../classAtPulseTask.html#a3392a6d76220da9286148c4d85c1562b',1,'AtPulseTask::ResponseFunctionType()']]],
+  ['rzppoint_7798',['RZPPoint',['../AtLineChargeModel_8cxx.html#afc776cac104d2cdc1eaa1e02caf7b7fa',1,'AtLineChargeModel.cxx']]]
 ];

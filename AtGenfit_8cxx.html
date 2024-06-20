@@ -68,17 +68,19 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">AtGenfit.cxx File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AtFittedTrack_8h_source.html">AtFittedTrack.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtHitCluster_8h_source.html">AtHitCluster.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtSpacePointMeasurement_8h_source.html">AtSpacePointMeasurement.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AtTrack_8h_source.html">AtTrack.h</a>&quot;</code><br />
 <code>#include &lt;Math/Point3D.h&gt;</code><br />
+<code>#include &lt;Math/Point3Dfwd.h&gt;</code><br />
 <code>#include &lt;RKTrackRep.h&gt;</code><br />
 <code>#include &lt;TClonesArray.h&gt;</code><br />
 <code>#include &lt;TDatabasePDG.h&gt;</code><br />
@@ -118,77 +120,88 @@ Include dependency graph for AtGenfit.cxx:</div>
 <div class="dyncontent">
 <div class="center"><img src="AtGenfit_8cxx__incl.png" border="0" usemap="#_2github_2workspace_2AtReconstruction_2AtFitter_2AtGenfit_8cxx" alt=""/></div>
 <map name="_2github_2workspace_2AtReconstruction_2AtFitter_2AtGenfit_8cxx" id="_2github_2workspace_2AtReconstruction_2AtFitter_2AtGenfit_8cxx">
-<area shape="rect" title=" " alt="" coords="2746,5,2978,47"/>
-<area shape="rect" href="AtGenfit_8h.html" title=" " alt="" coords="569,169,648,196"/>
-<area shape="rect" title=" " alt="" coords="1300,319,1379,345"/>
-<area shape="rect" title=" " alt="" coords="237,319,287,345"/>
-<area shape="rect" title=" " alt="" coords="747,244,817,271"/>
-<area shape="rect" title=" " alt="" coords="1559,319,1611,345"/>
-<area shape="rect" href="AtHitCluster_8h.html" title=" " alt="" coords="1000,169,1103,196"/>
-<area shape="rect" title=" " alt="" coords="1635,319,1745,345"/>
-<area shape="rect" title=" " alt="" coords="1770,319,1845,345"/>
-<area shape="rect" title=" " alt="" coords="841,244,947,271"/>
-<area shape="rect" title=" " alt="" coords="970,244,1053,271"/>
-<area shape="rect" href="AtSpacePointMeasurement_8h.html" title=" " alt="" coords="144,95,335,121"/>
-<area shape="rect" href="AtTrack_8h.html" title=" " alt="" coords="1381,95,1460,121"/>
-<area shape="rect" title=" " alt="" coords="1686,169,1758,196"/>
-<area shape="rect" title=" " alt="" coords="1934,95,2041,121"/>
-<area shape="rect" title=" " alt="" coords="2065,95,2176,121"/>
-<area shape="rect" title=" " alt="" coords="2201,95,2323,121"/>
-<area shape="rect" title=" " alt="" coords="2347,95,2462,121"/>
-<area shape="rect" title=" " alt="" coords="2487,95,2597,121"/>
-<area shape="rect" title=" " alt="" coords="2621,95,2783,121"/>
-<area shape="rect" title=" " alt="" coords="2807,95,2917,121"/>
-<area shape="rect" title=" " alt="" coords="2941,95,3049,121"/>
-<area shape="rect" title=" " alt="" coords="3074,95,3205,121"/>
-<area shape="rect" title=" " alt="" coords="3229,95,3338,121"/>
-<area shape="rect" title=" " alt="" coords="3362,95,3453,121"/>
-<area shape="rect" title=" " alt="" coords="3477,95,3554,121"/>
-<area shape="rect" title=" " alt="" coords="3578,95,3663,121"/>
-<area shape="rect" title=" " alt="" coords="3688,95,3783,121"/>
-<area shape="rect" title=" " alt="" coords="3807,95,3936,121"/>
-<area shape="rect" title=" " alt="" coords="3960,95,4095,121"/>
-<area shape="rect" title=" " alt="" coords="4119,95,4229,121"/>
-<area shape="rect" title=" " alt="" coords="4253,95,4348,121"/>
-<area shape="rect" title=" " alt="" coords="4373,95,4461,121"/>
-<area shape="rect" title=" " alt="" coords="4485,95,4596,121"/>
-<area shape="rect" title=" " alt="" coords="4621,95,4706,121"/>
-<area shape="rect" title=" " alt="" coords="4731,95,4889,121"/>
-<area shape="rect" title=" " alt="" coords="4913,95,5032,121"/>
-<area shape="rect" title=" " alt="" coords="5057,95,5227,121"/>
-<area shape="rect" title=" " alt="" coords="5251,95,5406,121"/>
-<area shape="rect" title=" " alt="" coords="5430,95,5593,121"/>
-<area shape="rect" href="AtFitter_8h.html" title=" " alt="" coords="497,244,571,271"/>
-<area shape="rect" title=" " alt="" coords="1054,319,1126,345"/>
-<area shape="rect" title=" " alt="" coords="773,319,841,345"/>
-<area shape="rect" title=" " alt="" coords="1213,319,1271,345"/>
-<area shape="rect" title=" " alt="" coords="356,244,421,271"/>
-<area shape="rect" title=" " alt="" coords="277,244,332,271"/>
-<area shape="rect" href="AtHit_8h.html" title=" " alt="" coords="1492,244,1555,271"/>
-<area shape="rect" title=" " alt="" coords="1403,319,1535,345"/>
-<area shape="rect" title=" " alt="" coords="26,169,202,196"/>
-<area shape="rect" href="AtPattern_8h.html" title=" " alt="" coords="1381,244,1468,271"/>
+<area shape="rect" title=" " alt="" coords="2863,5,3095,47"/>
+<area shape="rect" href="AtGenfit_8h.html" title=" " alt="" coords="1194,95,1273,121"/>
+<area shape="rect" title=" " alt="" coords="1383,244,1462,271"/>
+<area shape="rect" title=" " alt="" coords="720,244,771,271"/>
+<area shape="rect" title=" " alt="" coords="175,244,281,271"/>
+<area shape="rect" title=" " alt="" coords="459,244,541,271"/>
+<area shape="rect" title=" " alt="" coords="2483,169,2552,196"/>
+<area shape="rect" title=" " alt="" coords="59,169,189,196"/>
+<area shape="rect" title=" " alt="" coords="213,169,307,196"/>
+<area shape="rect" title=" " alt="" coords="332,169,420,196"/>
+<area shape="rect" title=" " alt="" coords="445,169,555,196"/>
+<area shape="rect" title=" " alt="" coords="580,169,665,196"/>
+<area shape="rect" title=" " alt="" coords="1495,169,1654,196"/>
+<area shape="rect" title=" " alt="" coords="1678,169,1797,196"/>
+<area shape="rect" title=" " alt="" coords="1821,169,1992,196"/>
+<area shape="rect" title=" " alt="" coords="2016,169,2171,196"/>
+<area shape="rect" title=" " alt="" coords="2195,169,2357,196"/>
+<area shape="rect" title=" " alt="" coords="3303,244,3355,271"/>
+<area shape="rect" href="AtFittedTrack_8h.html" title=" " alt="" coords="2729,95,2839,121"/>
+<area shape="rect" title=" " alt="" coords="2729,169,2839,196"/>
+<area shape="rect" title=" " alt="" coords="2863,169,2995,196"/>
+<area shape="rect" title=" " alt="" coords="3020,169,3095,196"/>
+<area shape="rect" title=" " alt="" coords="3119,169,3191,196"/>
+<area shape="rect" href="AtHitCluster_8h.html" title=" " alt="" coords="3367,169,3470,196"/>
+<area shape="rect" title=" " alt="" coords="3389,244,3520,271"/>
+<area shape="rect" title=" " alt="" coords="3549,244,3659,271"/>
+<area shape="rect" href="AtSpacePointMeasurement_8h.html" title=" " alt="" coords="2441,95,2631,121"/>
+<area shape="rect" href="AtTrack_8h.html" title=" " alt="" coords="3017,95,3095,121"/>
+<area shape="rect" title=" " alt="" coords="3373,95,3480,121"/>
+<area shape="rect" title=" " alt="" coords="3505,95,3615,121"/>
+<area shape="rect" title=" " alt="" coords="3640,95,3763,121"/>
+<area shape="rect" title=" " alt="" coords="3787,95,3901,121"/>
+<area shape="rect" title=" " alt="" coords="3926,95,4037,121"/>
+<area shape="rect" title=" " alt="" coords="4061,95,4222,121"/>
+<area shape="rect" title=" " alt="" coords="4246,95,4357,121"/>
+<area shape="rect" title=" " alt="" coords="4381,95,4489,121"/>
+<area shape="rect" title=" " alt="" coords="4513,95,4604,121"/>
+<area shape="rect" title=" " alt="" coords="4628,95,4705,121"/>
+<area shape="rect" title=" " alt="" coords="4729,95,4815,121"/>
+<area shape="rect" title=" " alt="" coords="4839,95,4934,121"/>
+<area shape="rect" title=" " alt="" coords="4958,95,5093,121"/>
+<area shape="rect" title=" " alt="" coords="5117,95,5227,121"/>
+<area shape="rect" href="AtFitter_8h.html" title=" " alt="" coords="876,169,951,196"/>
+<area shape="rect" title=" " alt="" coords="1889,244,1961,271"/>
+<area shape="rect" href="AtFormat_8h.html" title=" " alt="" coords="886,244,973,271"/>
+<area shape="rect" href="AtKinematics_8h.html" title=" " alt="" coords="690,169,801,196"/>
+<area shape="rect" href="AtParsers_8h.html" title=" " alt="" coords="975,169,1065,196"/>
+<area shape="rect" title=" " alt="" coords="1090,169,1155,196"/>
+<area shape="rect" title=" " alt="" coords="1180,169,1287,196"/>
+<area shape="rect" title=" " alt="" coords="1311,169,1369,196"/>
 </map>
 </div>
 </div>
 <p><a href="AtGenfit_8cxx_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:acdbe604dea12970b4e97a316f9046ae7"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtGenfit_8cxx.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> = ROOT::Math::XYZPoint</td></tr>
+<tr class="separator:acdbe604dea12970b4e97a316f9046ae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a11c456ecc47bf8be95c1923734c15b36"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtGenfit_8cxx.html#a11c456ecc47bf8be95c1923734c15b36">ClassImp</a> (<a class="el" href="classAtFITTER_1_1AtGenfit.html">AtFITTER::AtGenfit</a>)</td></tr>
 <tr class="separator:a11c456ecc47bf8be95c1923734c15b36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a7f7e9b91b8dae8ed8d3e4968dea1848e"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtGenfit_8cxx.html#a7f7e9b91b8dae8ed8d3e4968dea1848e">cRED</a> = &quot;\033[1;31m&quot;</td></tr>
-<tr class="separator:a7f7e9b91b8dae8ed8d3e4968dea1848e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92070ed71660dccb106b6539dfb7f3ee"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtGenfit_8cxx.html#a92070ed71660dccb106b6539dfb7f3ee">cYELLOW</a> = &quot;\033[1;33m&quot;</td></tr>
-<tr class="separator:a92070ed71660dccb106b6539dfb7f3ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a589c19906f4a04433cbba459fd2e2d71"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtGenfit_8cxx.html#a589c19906f4a04433cbba459fd2e2d71">cNORMAL</a> = &quot;\033[0m&quot;</td></tr>
-<tr class="separator:a589c19906f4a04433cbba459fd2e2d71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88438739a7deae383946c1690d812074"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AtGenfit_8cxx.html#a88438739a7deae383946c1690d812074">cGREEN</a> = &quot;\033[1;32m&quot;</td></tr>
-<tr class="separator:a88438739a7deae383946c1690d812074"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="acdbe604dea12970b4e97a316f9046ae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdbe604dea12970b4e97a316f9046ae7">&#9670;&nbsp;</a></span>XYZPoint</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="AtPatternCircle2D_8h.html#acdbe604dea12970b4e97a316f9046ae7">XYZPoint</a> =  ROOT::Math::XYZPoint</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00047">47</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a11c456ecc47bf8be95c1923734c15b36"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a11c456ecc47bf8be95c1923734c15b36">&#9670;&nbsp;</a></span>ClassImp()</h2>
@@ -208,107 +221,10 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a88438739a7deae383946c1690d812074"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88438739a7deae383946c1690d812074">&#9670;&nbsp;</a></span>cGREEN</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr auto cGREEN = &quot;\033[1;32m&quot;</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00048">48</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a589c19906f4a04433cbba459fd2e2d71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a589c19906f4a04433cbba459fd2e2d71">&#9670;&nbsp;</a></span>cNORMAL</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr auto cNORMAL = &quot;\033[0m&quot;</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00047">47</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a7f7e9b91b8dae8ed8d3e4968dea1848e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f7e9b91b8dae8ed8d3e4968dea1848e">&#9670;&nbsp;</a></span>cRED</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr auto cRED = &quot;\033[1;31m&quot;</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00045">45</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a92070ed71660dccb106b6539dfb7f3ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92070ed71660dccb106b6539dfb7f3ee">&#9670;&nbsp;</a></span>cYELLOW</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr auto cYELLOW = &quot;\033[1;33m&quot;</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00046">46</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

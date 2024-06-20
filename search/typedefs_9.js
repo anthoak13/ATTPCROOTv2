@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lmcurve_5fdata_5fstruct_5515',['lmcurve_data_struct',['../lmcurve_8cxx.html#aa1f0be3908489644f3ce33580f1dd61b',1,'lmcurve.cxx']]]
+  ['kdnodevector_7777',['KdNodeVector',['../namespaceKdtree.html#ac48cee560bc90ecc3442b0c2f4ff757c',1,'Kdtree']]]
 ];

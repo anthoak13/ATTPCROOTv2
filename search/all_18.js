@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['z_2605',['Z',['../structAtHit_1_1MCSimPoint.html#af1c8d9c991954ca6ba8423ae02de1f36',1,'AtHit::MCSimPoint::Z()'],['../structPoint.html#a9a666531e0e99adff132be93d2407d0c',1,'Point::z()'],['../structPoint.html#a05ba3b1dfcb19430582ae953cbbfbded',1,'Point::z()']]],
-  ['z_5f_2606',['Z_',['../trackfinder_2fastcluster__dm_8cxx.html#a68b1efabcf3358dd3c22c63ca721652d',1,'Z_():&#160;fastcluster_dm.cxx'],['../triplclust_2src_2hclust_2fastcluster__dm_8cxx.html#a68b1efabcf3358dd3c22c63ca721652d',1,'Z_():&#160;fastcluster_dm.cxx']]]
+  ['y_3655',['y',['../structAtHit__t.html#a7fc44599715a36899923393d857080e6',1,'AtHit_t::y()'],['../structPoint.html#a6101960c8d2d4e8ea1d32c9234bbeb8d',1,'Point::y()'],['../structPoint.html#afa38be143ae800e6ad69ce8ed4df62d8',1,'Point::y()'],['../lmcurve_8cxx.html#ac41520b3fdae6af3fa0d9dbbf3211471',1,'y():&#160;lmcurve.cxx']]],
+  ['yoffset_3656',['YOffset',['../classS800Settings.html#add58493ce351b767f43926f2003d3af1',1,'S800Settings']]],
+  ['yslope_3657',['YSlope',['../classS800Settings.html#a3223fbb44bd9058317d8bb1df9f0ccfd',1,'S800Settings']]],
+  ['yta_3658',['Yta',['../classTInverseMap.html#adef631170d0566fceece6a024cd96107',1,'TInverseMap::Yta(int degree, double xfp, double afp, double yfp, double bfp) const'],['../classTInverseMap.html#ae472563d5bdd5ccff7b16248b90bcc9c',1,'TInverseMap::Yta(int degree, double xfp, double afp, double yfp, double bfp, double z)']]]
 ];

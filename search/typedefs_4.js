@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['fileptr_5507',['filePtr',['../AtFilterCalibrate_8h.html#ac51559a070730d0fb780f1d215a9bd0f',1,'AtFilterCalibrate.h']]],
-  ['freqranges_5508',['FreqRanges',['../classAtFilterFFT.html#ab0d65f118e2818087c3515ab4ca7eca2',1,'AtFilterFFT']]]
+  ['edistortionmap_7767',['eDistortionMap',['../AtEDistortionModel_8h.html#a210a407d016d8b55c91b4a16b7d099fb',1,'AtEDistortionModel.h']]],
+  ['efieldptr_7768',['EFieldPtr',['../classAtRadialChargeModel.html#a85b1739f15fc7e5d8c1d0bf6af9454f9',1,'AtRadialChargeModel']]]
 ];

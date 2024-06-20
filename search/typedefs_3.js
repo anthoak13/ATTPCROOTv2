@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['efieldptr_5506',['EFieldPtr',['../classAtRadialChargeModel.html#a8dbf75572065c496cc7d318416b5b111',1,'AtRadialChargeModel']]]
+  ['doublevector_7766',['DoubleVector',['../namespaceKdtree.html#a57dc58519798b10585137bc88cf9eb5a',1,'Kdtree']]]
 ];

@@ -68,7 +68,9 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classAtFITTER_1_1AtGenfit-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -102,14 +104,29 @@ Collaboration diagram for AtFITTER::AtGenfit:</div>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ac3d8b0642868e734204ee6a1f287ed88"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88">Exp</a> { <br />
+&#160;&#160;<a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88ad737f660a8b2e452ac59493a53fc4cf1">e20020</a>, 
+<a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88af1e32ca4861df4fb7688fc7db8c1eee1">e20009</a>, 
+<a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88a8b211d58020fe0db969ccbe06ba94b95">a1954</a>, 
+<a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88abb348e4a433e4d528a7c288531ddc66d">a1975</a>, 
+<br />
+&#160;&#160;<a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88a71cbfae3b07c4047f8d311c0c67cb327">a1954b</a>
+<br />
+ }</td></tr>
+<tr class="separator:ac3d8b0642868e734204ee6a1f287ed88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a05158dc224c75753f03698b45f18060f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#a05158dc224c75753f03698b45f18060f">AtGenfit</a> (Float_t magfield, Float_t minbrho, Float_t maxbrho, std::string eLossFile, Float_t gasMediumDensity, Int_t pdg=2212, Int_t minit=5, Int_t maxit=20)</td></tr>
-<tr class="separator:a05158dc224c75753f03698b45f18060f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2cdc4b88b0d01d6b6a7daee5ad954a9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#af2cdc4b88b0d01d6b6a7daee5ad954a9">AtGenfit</a> (Float_t magfield, Float_t minbrho, Float_t maxbrho, std::string eLossFile, Float_t gasMediumDensity, Int_t pdg=2212, Int_t minit=5, Int_t maxit=20, Bool_t noMatEffects=kFALSE)</td></tr>
+<tr class="separator:af2cdc4b88b0d01d6b6a7daee5ad954a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7a3bbcd97fc8101dd0d7d8dfb7350fb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#ae7a3bbcd97fc8101dd0d7d8dfb7350fb">~AtGenfit</a> ()</td></tr>
 <tr class="separator:ae7a3bbcd97fc8101dd0d7d8dfb7350fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7299ab7b913ee59ff64b5d48aea534f1"><td class="memItemLeft" align="right" valign="top">genfit::Track *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#a7299ab7b913ee59ff64b5d48aea534f1">FitTracks</a> (<a class="el" href="classAtTrack.html">AtTrack</a> *track) override</td></tr>
-<tr class="separator:a7299ab7b913ee59ff64b5d48aea534f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf60b478ca8e92b11ce64d138e4e434f"><td class="memItemLeft" align="right" valign="top">genfit::Track *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#aaf60b478ca8e92b11ce64d138e4e434f">FitTracks</a> (<a class="el" href="classAtTrack.html">AtTrack</a> *track)</td></tr>
+<tr class="separator:aaf60b478ca8e92b11ce64d138e4e434f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbdf471e49cfd044a75a043c02f7425d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classAtFittedTrack.html">AtFittedTrack</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#abbdf471e49cfd044a75a043c02f7425d">ProcessTracks</a> (std::vector&lt; <a class="el" href="classAtTrack.html">AtTrack</a> &gt; &amp;tracks) override</td></tr>
+<tr class="separator:abbdf471e49cfd044a75a043c02f7425d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac0e48d596d19d520d3759a97ed12a31"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#aac0e48d596d19d520d3759a97ed12a31">Init</a> () override</td></tr>
 <tr class="separator:aac0e48d596d19d520d3759a97ed12a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8ce5f0b71950838a2ece82d278f8c7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#aa8ce5f0b71950838a2ece82d278f8c7f">SetMinIterations</a> (Int_t minit)</td></tr>
@@ -142,6 +159,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a12bd8586fac3be1adbacf79731e579db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3527270d275a93a7435cf5c353af8fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#ab3527270d275a93a7435cf5c353af8fb">SetIonName</a> (std::string ionName)</td></tr>
 <tr class="separator:ab3527270d275a93a7435cf5c353af8fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79c05e67756fce8431d4276f26e5c95b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#a79c05e67756fce8431d4276f26e5c95b">EnableMerging</a> (Bool_t merging)</td></tr>
+<tr class="separator:a79c05e67756fce8431d4276f26e5c95b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f79f57bf204525987ecc9b9196e2a9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#a8f79f57bf204525987ecc9b9196e2a9f">EnableSingleVertexTrack</a> (Bool_t singletrack)</td></tr>
+<tr class="separator:a8f79f57bf204525987ecc9b9196e2a9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93b5123a1edc9fec8dea3eefc4066b5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#a93b5123a1edc9fec8dea3eefc4066b5a">EnableReclustering</a> (Bool_t reclustering, Double_t clusterRadius, Double_t clusterSize)</td></tr>
+<tr class="separator:a93b5123a1edc9fec8dea3eefc4066b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cb1063bb68f41070d5e0b5d079520a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#a0cb1063bb68f41070d5e0b5d079520a3">SetExpNum</a> (<a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88">Exp</a> exp)</td></tr>
+<tr class="separator:a0cb1063bb68f41070d5e0b5d079520a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb4f26efa0b3c3bf4ca3c4da53b49e1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#afb4f26efa0b3c3bf4ca3c4da53b49e1f">SetFitDirection</a> (Int_t direction)</td></tr>
+<tr class="separator:afb4f26efa0b3c3bf4ca3c4da53b49e1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a121258310c927470c9c2e21895e90eb1"><td class="memItemLeft" align="right" valign="top">TClonesArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#a121258310c927470c9c2e21895e90eb1">GetGenfitTrackArray</a> ()</td></tr>
 <tr class="separator:a121258310c927470c9c2e21895e90eb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc2ae3ca8ab688a47268eaad1a761a9f"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#acc2ae3ca8ab688a47268eaad1a761a9f">GetPDGCode</a> ()</td></tr>
@@ -157,6 +184,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a276b1d765fd13a4059b3a4ae8b9617a4 inherit pub_methods_classAtFITTER_1_1AtFitter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa00b30ce9b1faeef0d3299fbe2e0054e inherit pub_methods_classAtFITTER_1_1AtFitter"><td class="memItemLeft" align="right" valign="top">Bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtFitter.html#aa00b30ce9b1faeef0d3299fbe2e0054e">MergeTracks</a> (std::vector&lt; <a class="el" href="classAtTrack.html">AtTrack</a> * &gt; *trackCandSource, std::vector&lt; <a class="el" href="classAtTrack.html">AtTrack</a> &gt; *trackDest, Bool_t enableSingleVertexTrack, Double_t clusterRadius, Double_t clusterDistance)</td></tr>
 <tr class="separator:aa00b30ce9b1faeef0d3299fbe2e0054e inherit pub_methods_classAtFITTER_1_1AtFitter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a060b5ef4c8f087a6df9fc134b96d27a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88">Exp</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtFITTER_1_1AtGenfit.html#a060b5ef4c8f087a6df9fc134b96d27a9">fExpNum</a> {<a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88abb348e4a433e4d528a7c288531ddc66d">a1975</a>}</td></tr>
+<tr class="separator:a060b5ef4c8f087a6df9fc134b96d27a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -188,10 +220,34 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00034">34</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a05158dc224c75753f03698b45f18060f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05158dc224c75753f03698b45f18060f">&#9670;&nbsp;</a></span>AtGenfit()</h2>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00058">58</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="ac3d8b0642868e734204ee6a1f287ed88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3d8b0642868e734204ee6a1f287ed88">&#9670;&nbsp;</a></span>Exp</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88">AtFITTER::AtGenfit::Exp</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac3d8b0642868e734204ee6a1f287ed88ad737f660a8b2e452ac59493a53fc4cf1"></a>e20020&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac3d8b0642868e734204ee6a1f287ed88af1e32ca4861df4fb7688fc7db8c1eee1"></a>e20009&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac3d8b0642868e734204ee6a1f287ed88a8b211d58020fe0db969ccbe06ba94b95"></a>a1954&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac3d8b0642868e734204ee6a1f287ed88abb348e4a433e4d528a7c288531ddc66d"></a>a1975&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac3d8b0642868e734204ee6a1f287ed88a71cbfae3b07c4047f8d311c0c67cb327"></a>a1954b&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00106">106</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="af2cdc4b88b0d01d6b6a7daee5ad954a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2cdc4b88b0d01d6b6a7daee5ad954a9">&#9670;&nbsp;</a></span>AtGenfit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -242,7 +298,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Int_t&#160;</td>
-          <td class="paramname"><em>maxit</em> = <code>20</code>&#160;</td>
+          <td class="paramname"><em>maxit</em> = <code>20</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Bool_t&#160;</td>
+          <td class="paramname"><em>noMatEffects</em> = <code>kFALSE</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -252,7 +314,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00050">50</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00049">49</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
 
 </div>
 </div>
@@ -271,7 +333,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00125">125</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00128">128</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
 
 </div>
 </div>
@@ -312,14 +374,111 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a7299ab7b913ee59ff64b5d48aea534f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7299ab7b913ee59ff64b5d48aea534f1">&#9670;&nbsp;</a></span>FitTracks()</h2>
+<a id="a79c05e67756fce8431d4276f26e5c95b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79c05e67756fce8431d4276f26e5c95b">&#9670;&nbsp;</a></span>EnableMerging()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtFITTER::AtGenfit::EnableMerging </td>
+          <td>(</td>
+          <td class="paramtype">Bool_t&#160;</td>
+          <td class="paramname"><em>merging</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00128">128</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+
+</div>
+</div>
+<a id="a93b5123a1edc9fec8dea3eefc4066b5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93b5123a1edc9fec8dea3eefc4066b5a">&#9670;&nbsp;</a></span>EnableReclustering()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtFITTER::AtGenfit::EnableReclustering </td>
+          <td>(</td>
+          <td class="paramtype">Bool_t&#160;</td>
+          <td class="paramname"><em>reclustering</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Double_t&#160;</td>
+          <td class="paramname"><em>clusterRadius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Double_t&#160;</td>
+          <td class="paramname"><em>clusterSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00130">130</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+
+</div>
+</div>
+<a id="a8f79f57bf204525987ecc9b9196e2a9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f79f57bf204525987ecc9b9196e2a9f">&#9670;&nbsp;</a></span>EnableSingleVertexTrack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtFITTER::AtGenfit::EnableSingleVertexTrack </td>
+          <td>(</td>
+          <td class="paramtype">Bool_t&#160;</td>
+          <td class="paramname"><em>singletrack</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00129">129</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+
+</div>
+</div>
+<a id="aaf60b478ca8e92b11ce64d138e4e434f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf60b478ca8e92b11ce64d138e4e434f">&#9670;&nbsp;</a></span>FitTracks()</h2>
+
+<div class="memitem">
+<div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">genfit::Track * AtFITTER::AtGenfit::FitTracks </td>
@@ -329,17 +488,10 @@ Additional Inherited Members</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 <p>Angles from track are used to construct the direction of the initial momentum of the track. Radius from track is used to construct the magnitude of the initial momentum of the track. </p>
 
-<p>Implements <a class="el" href="classAtFITTER_1_1AtFitter.html#a51b5475029b32731b592270d81ef304a">AtFITTER::AtFitter</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00154">154</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00723">723</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
 
 </div>
 </div>
@@ -358,7 +510,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00145">145</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00159">159</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
 
 </div>
 </div>
@@ -385,7 +537,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00088">88</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00142">142</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -412,7 +564,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00087">87</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00141">141</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -441,7 +593,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classAtFITTER_1_1AtFitter.html#a0436744fb20662aff1349332ef5f06b9">AtFITTER::AtFitter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00135">135</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00138">138</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
 
 </div>
 </div>
@@ -469,7 +621,37 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00091">91</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00145">145</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+
+</div>
+</div>
+<a id="abbdf471e49cfd044a75a043c02f7425d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbdf471e49cfd044a75a043c02f7425d">&#9670;&nbsp;</a></span>ProcessTracks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classAtFittedTrack.html">AtFittedTrack</a> &gt; &gt; AtFITTER::AtGenfit::ProcessTracks </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classAtTrack.html">AtTrack</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>tracks</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classAtFITTER_1_1AtFitter.html#a1b5fc18df58245f922bf8b54fe872c36">AtFITTER::AtFitter</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8cxx_source.html#l00164">164</a> of file <a class="el" href="AtGenfit_8cxx_source.html">AtGenfit.cxx</a>.</p>
 
 </div>
 </div>
@@ -497,7 +679,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00083">83</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00126">126</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -525,7 +707,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00077">77</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00120">120</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -553,7 +735,63 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00080">80</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00123">123</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+
+</div>
+</div>
+<a id="a0cb1063bb68f41070d5e0b5d079520a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cb1063bb68f41070d5e0b5d079520a3">&#9670;&nbsp;</a></span>SetExpNum()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtFITTER::AtGenfit::SetExpNum </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88">Exp</a>&#160;</td>
+          <td class="paramname"><em>exp</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00137">137</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+
+</div>
+</div>
+<a id="afb4f26efa0b3c3bf4ca3c4da53b49e1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb4f26efa0b3c3bf4ca3c4da53b49e1f">&#9670;&nbsp;</a></span>SetFitDirection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtFITTER::AtGenfit::SetFitDirection </td>
+          <td>(</td>
+          <td class="paramtype">Int_t&#160;</td>
+          <td class="paramname"><em>direction</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00138">138</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -581,7 +819,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00082">82</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00125">125</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -609,7 +847,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00084">84</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00127">127</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -637,7 +875,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00074">74</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00117">117</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -665,7 +903,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00076">76</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00119">119</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -693,7 +931,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00073">73</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00116">116</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -721,7 +959,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00071">71</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00114">114</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -749,7 +987,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00072">72</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00115">115</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -777,7 +1015,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00070">70</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00113">113</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -805,7 +1043,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00078">78</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00121">121</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -833,7 +1071,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00075">75</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00118">118</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -861,7 +1099,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00081">81</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00124">124</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -889,7 +1127,24 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00079">79</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00122">122</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a060b5ef4c8f087a6df9fc134b96d27a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a060b5ef4c8f087a6df9fc134b96d27a9">&#9670;&nbsp;</a></span>fExpNum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88">Exp</a> AtFITTER::AtGenfit::fExpNum {<a class="el" href="classAtFITTER_1_1AtGenfit.html#ac3d8b0642868e734204ee6a1f287ed88abb348e4a433e4d528a7c288531ddc66d">a1975</a>}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtGenfit_8h_source.html#l00107">107</a> of file <a class="el" href="AtGenfit_8h_source.html">AtGenfit.h</a>.</p>
 
 </div>
 </div>
@@ -900,7 +1155,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:03 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

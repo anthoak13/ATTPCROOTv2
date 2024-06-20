@@ -65,6 +65,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classAtPSA-members.html">List of all members</a>  </div>
@@ -79,13 +80,17 @@ Inheritance diagram for AtPSA:</div>
 <div class="dyncontent">
 <div class="center"><img src="classAtPSA__inherit__graph.png" border="0" usemap="#AtPSA_inherit__map" alt="Inheritance graph"/></div>
 <map name="AtPSA_inherit__map" id="AtPSA_inherit__map">
-<area shape="rect" title=" " alt="" coords="326,5,389,32"/>
-<area shape="rect" href="classAtPSAFull.html" title=" " alt="" coords="5,80,88,107"/>
-<area shape="rect" href="classAtPSAHitPerTB.html" title=" " alt="" coords="113,80,229,107"/>
-<area shape="rect" href="classAtPSAMax.html" title="Simple max finding PSA method." alt="" coords="253,80,339,107"/>
-<area shape="rect" href="classAtPSASimple2.html" title=" " alt="" coords="364,80,473,107"/>
-<area shape="rect" href="classAtPSASpectrum.html" title="PSA method using TSpectrum." alt="" coords="498,80,617,107"/>
-<area shape="rect" href="classAtPSATBAvg.html" title="Simple max finding PSA method." alt="" coords="641,80,743,107"/>
+<area shape="rect" title=" " alt="" coords="5,183,68,209"/>
+<area shape="rect" href="classAtPSAComposite.html" title="Uses different PSA methods in/out of beam region." alt="" coords="116,5,240,32"/>
+<area shape="rect" href="classAtPSADeconv.html" title="Abstract base class for getting current through deconvolution." alt="" coords="125,56,231,83"/>
+<area shape="rect" href="classAtPSAFull.html" title=" " alt="" coords="137,107,219,133"/>
+<area shape="rect" href="classAtPSAHitPerTB.html" title=" " alt="" coords="120,157,236,184"/>
+<area shape="rect" href="classAtPSAMax.html" title="Simple max finding PSA method." alt="" coords="135,208,221,235"/>
+<area shape="rect" href="classAtPSASimple2.html" title=" " alt="" coords="123,259,233,285"/>
+<area shape="rect" href="classAtPSASpectrum.html" title="PSA method using TSpectrum." alt="" coords="119,309,237,336"/>
+<area shape="rect" href="classAtPSATBAvg.html" title="Constructs a hit from averaged TBs." alt="" coords="127,360,229,387"/>
+<area shape="rect" href="classAtPSADeconvFit.html" title=" " alt="" coords="290,31,411,57"/>
+<area shape="rect" href="classAtPSAIterDeconv.html" title="Modifies AtPSADeconv to make iterative corrections to the output current." alt="" coords="288,81,413,108"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -95,18 +100,31 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9b42eba815919e14a311f4d38c664140"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61e26a02dda5e6ec885c7a8801815589"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a61e26a02dda5e6ec885c7a8801815589">~AtPSA</a> ()=default</td></tr>
 <tr class="separator:a61e26a02dda5e6ec885c7a8801815589"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a373c282fd639827cad58d3c8d09c3b86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a373c282fd639827cad58d3c8d09c3b86">Init</a> ()</td></tr>
+<tr class="memitem:a373c282fd639827cad58d3c8d09c3b86"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a373c282fd639827cad58d3c8d09c3b86">Init</a> ()</td></tr>
 <tr class="separator:a373c282fd639827cad58d3c8d09c3b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acda8807b7b43a698802f72c475f1bf3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#acda8807b7b43a698802f72c475f1bf3e">SetThreshold</a> (Int_t threshold)</td></tr>
 <tr class="separator:acda8807b7b43a698802f72c475f1bf3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b794ea5c2dedb9f82b3c7e8383dc3ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a1b794ea5c2dedb9f82b3c7e8383dc3ef">SetThresholdLow</a> (Int_t thresholdlow)</td></tr>
 <tr class="separator:a1b794ea5c2dedb9f82b3c7e8383dc3ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1957c5791a3af3a3f56d38cf248cb724"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a1957c5791a3af3a3f56d38cf248cb724">GetThreshold</a> ()</td></tr>
+<tr class="separator:a1957c5791a3af3a3f56d38cf248cb724"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad99765f0c356e613e06761a13f566433"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#ad99765f0c356e613e06761a13f566433">GetThresholdLow</a> ()</td></tr>
+<tr class="separator:ad99765f0c356e613e06761a13f566433"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae59da85262bddd79f231129baa7a73f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#ae59da85262bddd79f231129baa7a73f3">SetSimulatedEvent</a> (TClonesArray *MCSimPointArray)</td></tr>
 <tr class="separator:ae59da85262bddd79f231129baa7a73f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f45315d50131ea00aebacee012a8981"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a4f45315d50131ea00aebacee012a8981">Analyze</a> (<a class="el" href="classAtRawEvent.html">AtRawEvent</a> *rawEvent, <a class="el" href="classAtEvent.html">AtEvent</a> *event)=0</td></tr>
-<tr class="separator:a4f45315d50131ea00aebacee012a8981"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad364b82bec120c284042007c041fb209"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtEvent.html">AtEvent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#ad364b82bec120c284042007c041fb209">Analyze</a> (<a class="el" href="classAtRawEvent.html">AtRawEvent</a> &amp;rawEvent)</td></tr>
+<tr class="separator:ad364b82bec120c284042007c041fb209"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a723a7a8574944d00be3165998693dbb5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a723a7a8574944d00be3165998693dbb5">Analyze</a> (<a class="el" href="classAtRawEvent.html">AtRawEvent</a> *rawEvent, <a class="el" href="classAtEvent.html">AtEvent</a> *event)</td></tr>
+<tr class="separator:a723a7a8574944d00be3165998693dbb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad29c6155f688cfd4f71749ab1182bed9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classAtPSA.html#a1f906a1dc6ceaab0d1497777bb5f4c69">HitVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#ad29c6155f688cfd4f71749ab1182bed9">AnalyzePad</a> (<a class="el" href="classAtPad.html">AtPad</a> *pad)=0</td></tr>
+<tr class="separator:ad29c6155f688cfd4f71749ab1182bed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93a9f8ef473fa959b36def403d19bb21"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classAtPSA.html">AtPSA</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a93a9f8ef473fa959b36def403d19bb21">Clone</a> ()=0</td></tr>
 <tr class="separator:a93a9f8ef473fa959b36def403d19bb21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a1f906a1dc6ceaab0d1497777bb5f4c69"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a1f906a1dc6ceaab0d1497777bb5f4c69">HitVector</a> = std::vector&lt; std::unique_ptr&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &gt;</td></tr>
+<tr class="separator:a1f906a1dc6ceaab0d1497777bb5f4c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -117,17 +135,17 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a6d5b873d6afb6a68bfa16c074e674cf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0dd3cd6167d66c9e5d0c3c4d5922a77a"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a0dd3cd6167d66c9e5d0c3c4d5922a77a">CalculateZGeo</a> (Double_t peakIdx)</td></tr>
 <tr class="separator:a0dd3cd6167d66c9e5d0c3c4d5922a77a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae643b11bf2d7374f3a4c23c6dcc6d58d"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#ae643b11bf2d7374f3a4c23c6dcc6d58d">getThreshold</a> (int padSize=-1)</td></tr>
+<tr class="separator:ae643b11bf2d7374f3a4c23c6dcc6d58d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af179b1a06af1df7139f8090b3e50b9bd"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#af179b1a06af1df7139f8090b3e50b9bd">getZhitVariance</a> (double zLoc, double zLocVar) const</td></tr>
+<tr class="separator:af179b1a06af1df7139f8090b3e50b9bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cbeb35831678588cb03fd7e248f2196"><td class="memItemLeft" align="right" valign="top">virtual std::pair&lt; double, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a3cbeb35831678588cb03fd7e248f2196">getXYhitVariance</a> () const</td></tr>
+<tr class="separator:a3cbeb35831678588cb03fd7e248f2196"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a9876bf43bbc48219a8328884d43f3dfb"><td class="memItemLeft" align="right" valign="top">TClonesArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a9876bf43bbc48219a8328884d43f3dfb">fMCSimPointArray</a> {}</td></tr>
 <tr class="separator:a9876bf43bbc48219a8328884d43f3dfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c35e30186756471a3728db7c995cf99"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a3c35e30186756471a3728db7c995cf99">fThreshold</a> {-1}</td></tr>
-<tr class="memdesc:a3c35e30186756471a3728db7c995cf99"><td class="mdescLeft">&#160;</td><td class="mdescRight">threshold of ADC value  <a href="classAtPSA.html#a3c35e30186756471a3728db7c995cf99">More...</a><br /></td></tr>
-<tr class="separator:a3c35e30186756471a3728db7c995cf99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a824db6c57af51dbdbc89ae3ec4de6c0f"><td class="memItemLeft" align="right" valign="top">Int_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a824db6c57af51dbdbc89ae3ec4de6c0f">fThresholdlow</a> {-1}</td></tr>
-<tr class="memdesc:a824db6c57af51dbdbc89ae3ec4de6c0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">threshold for Central pads  <a href="classAtPSA.html#a824db6c57af51dbdbc89ae3ec4de6c0f">More...</a><br /></td></tr>
-<tr class="separator:a824db6c57af51dbdbc89ae3ec4de6c0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba6bd2a5b704ace5b36ec178b3fe07dc"><td class="memItemLeft" align="right" valign="top">Bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#aba6bd2a5b704ace5b36ec178b3fe07dc">fUsingLowThreshold</a> {false}</td></tr>
 <tr class="separator:aba6bd2a5b704ace5b36ec178b3fe07dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5943a142eed1f38dbd99ca960d6c578e"><td class="memItemLeft" align="right" valign="top">Double_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPSA.html#a5943a142eed1f38dbd99ca960d6c578e">fBField</a> {}</td></tr>
@@ -149,8 +167,33 @@ Protected Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00018">18</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00027">27</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a1f906a1dc6ceaab0d1497777bb5f4c69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f906a1dc6ceaab0d1497777bb5f4c69">&#9670;&nbsp;</a></span>HitVector</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classAtPSA.html#a1f906a1dc6ceaab0d1497777bb5f4c69">AtPSA::HitVector</a> =  std::vector&lt;std::unique_ptr&lt;<a class="el" href="classAtHit.html">AtHit</a>&gt; &gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00050">50</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9b42eba815919e14a311f4d38c664140"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9b42eba815919e14a311f4d38c664140">&#9670;&nbsp;</a></span>AtPSA()</h2>
 
@@ -202,8 +245,28 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4f45315d50131ea00aebacee012a8981"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f45315d50131ea00aebacee012a8981">&#9670;&nbsp;</a></span>Analyze()</h2>
+<a id="ad364b82bec120c284042007c041fb209"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad364b82bec120c284042007c041fb209">&#9670;&nbsp;</a></span>Analyze() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtEvent.html">AtEvent</a> AtPSA::Analyze </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtRawEvent.html">AtRawEvent</a> &amp;&#160;</td>
+          <td class="paramname"><em>rawEvent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00116">116</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a723a7a8574944d00be3165998693dbb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a723a7a8574944d00be3165998693dbb5">&#9670;&nbsp;</a></span>Analyze() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -212,7 +275,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void AtPSA::Analyze </td>
+          <td class="memname">void AtPSA::Analyze </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classAtRawEvent.html">AtRawEvent</a> *&#160;</td>
           <td class="paramname"><em>rawEvent</em>, </td>
@@ -231,12 +294,43 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Analyzes every pad in event, and add the hits to <a class="el" href="classAtEvent.html">AtEvent</a>. Called by AtPSATask. </p>
+
+<p>Reimplemented in <a class="el" href="classAtPSASimple2.html#a4ea82a17332cde17639238fedd5f1241">AtPSASimple2</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00127">127</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+
+</div>
+</div>
+<a id="ad29c6155f688cfd4f71749ab1182bed9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad29c6155f688cfd4f71749ab1182bed9">&#9670;&nbsp;</a></span>AnalyzePad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classAtPSA.html#a1f906a1dc6ceaab0d1497777bb5f4c69">HitVector</a> AtPSA::AnalyzePad </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtPad.html">AtPad</a> *&#160;</td>
+          <td class="paramname"><em>pad</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classAtPSASimple2.html#a4ea82a17332cde17639238fedd5f1241">AtPSASimple2</a>, <a class="el" href="classAtPSASpectrum.html#aaef5efd116d733a9d5672fcdc08ee8fe">AtPSASpectrum</a>, <a class="el" href="classAtPSAMax.html#a4eb7b565228427aaed58b501468ece3b">AtPSAMax</a>, <a class="el" href="classAtPSATBAvg.html#a6c79445d320a1aba9d285bc724120cc2">AtPSATBAvg</a>, <a class="el" href="classAtPSAHitPerTB.html#a7098dbde3daf542d7ff718696f47b4b0">AtPSAHitPerTB</a>, and <a class="el" href="classAtPSAFull.html#ae501148c3d529e6fa3fbf5181c79804b">AtPSAFull</a>.</p>
+<p>Implemented in <a class="el" href="classAtPSADeconv.html#a984953b7736136c305081f22a4eb272a">AtPSADeconv</a>, <a class="el" href="classAtPSASimple2.html#a79bbac604f39b222b6a65f5202400a5d">AtPSASimple2</a>, <a class="el" href="classAtPSASpectrum.html#aa7e2ab096a67da17e78b58ed454fd065">AtPSASpectrum</a>, <a class="el" href="classAtPSATBAvg.html#af7d33ab1bfd677dc3a9f4215804176a7">AtPSATBAvg</a>, <a class="el" href="classAtPSAMax.html#a0794f5eb2b5e22cb1ee5fe48d4677536">AtPSAMax</a>, <a class="el" href="classAtPSAHitPerTB.html#af5ba5f65c45bf1df6f38a40bbb9ad6cd">AtPSAHitPerTB</a>, <a class="el" href="classAtPSAIterDeconv.html#a852ece1f6a63b9773a757bd9b9c3e5dd">AtPSAIterDeconv</a>, <a class="el" href="classAtPSAFull.html#a9c0a18fbea63fbc5d89d0e78874aa010">AtPSAFull</a>, and <a class="el" href="classAtPSAComposite.html#a6843fe1aeaa280b8ddd27e312462cb4f">AtPSAComposite</a>.</p>
 
 </div>
 </div>
@@ -266,7 +360,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Calculate z position in mm using the peak index. </p>
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00079">79</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00085">85</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
 
 </div>
 </div>
@@ -294,7 +388,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00085">85</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00090">90</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
 
 </div>
 </div>
@@ -321,7 +415,166 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classAtPSASimple2.html#a347eb5d054f84c75487d1dd7e854668c">AtPSASimple2</a>, <a class="el" href="classAtPSASpectrum.html#af2a5fcdd24d4b14718af2a10959291c6">AtPSASpectrum</a>, <a class="el" href="classAtPSAMax.html#a6cb3f528a494d57669a81e010b60d676">AtPSAMax</a>, <a class="el" href="classAtPSATBAvg.html#a6e1a0aa555cb9962e0a287c0d7d57230">AtPSATBAvg</a>, <a class="el" href="classAtPSAHitPerTB.html#a440747766f86ff7a7eb11549c716a3dc">AtPSAHitPerTB</a>, and <a class="el" href="classAtPSAFull.html#aea2ed8c6a4a31c96b220ff78796d988b">AtPSAFull</a>.</p>
+<p>Implemented in <a class="el" href="classAtPSADeconv.html#a3722cf4a8c5e56ebc6d7210a8f412c5e">AtPSADeconv</a>, <a class="el" href="classAtPSASimple2.html#a347eb5d054f84c75487d1dd7e854668c">AtPSASimple2</a>, <a class="el" href="classAtPSASpectrum.html#af2a5fcdd24d4b14718af2a10959291c6">AtPSASpectrum</a>, <a class="el" href="classAtPSATBAvg.html#a6e1a0aa555cb9962e0a287c0d7d57230">AtPSATBAvg</a>, <a class="el" href="classAtPSAMax.html#a6cb3f528a494d57669a81e010b60d676">AtPSAMax</a>, <a class="el" href="classAtPSAComposite.html#a45acf86da2c60ff3e23b88e884709cd8">AtPSAComposite</a>, <a class="el" href="classAtPSAHitPerTB.html#a440747766f86ff7a7eb11549c716a3dc">AtPSAHitPerTB</a>, <a class="el" href="classAtPSAFull.html#aea2ed8c6a4a31c96b220ff78796d988b">AtPSAFull</a>, and <a class="el" href="classAtPSADeconvFit.html#ae58475e5cd4f96a90315eba0f439bca2">AtPSADeconvFit</a>.</p>
+
+</div>
+</div>
+<a id="a1957c5791a3af3a3f56d38cf248cb724"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1957c5791a3af3a3f56d38cf248cb724">&#9670;&nbsp;</a></span>GetThreshold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AtPSA::GetThreshold </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00060">60</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+
+</div>
+</div>
+<a id="ae643b11bf2d7374f3a4c23c6dcc6d58d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae643b11bf2d7374f3a4c23c6dcc6d58d">&#9670;&nbsp;</a></span>getThreshold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Double_t AtPSA::getThreshold </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>padSize</em> = <code>-1</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00179">179</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+
+</div>
+</div>
+<a id="ad99765f0c356e613e06761a13f566433"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad99765f0c356e613e06761a13f566433">&#9670;&nbsp;</a></span>GetThresholdLow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AtPSA::GetThresholdLow </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00061">61</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+
+</div>
+</div>
+<a id="a3cbeb35831678588cb03fd7e248f2196"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cbeb35831678588cb03fd7e248f2196">&#9670;&nbsp;</a></span>getXYhitVariance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; double, double &gt; AtPSA::getXYhitVariance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00200">200</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+
+</div>
+</div>
+<a id="af179b1a06af1df7139f8090b3e50b9bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af179b1a06af1df7139f8090b3e50b9bd">&#9670;&nbsp;</a></span>getZhitVariance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double AtPSA::getZhitVariance </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>zLoc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>zLocVar</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a vector populated with the variance of the hit according the the diffusion coefficients in the parameter file.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">zLoc</td><td>Location of hit in TB </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">zLocVar</td><td>Variance of hit in TB^2 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>variance of hit location in mm^2 </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Implement the function so it doesn't return all zeros... </dd></dl>
+
+<p>Reimplemented in <a class="el" href="classAtPSADeconv.html#a3633088fcb8182ee758c49634f6789a9">AtPSADeconv</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00195">195</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
 
 </div>
 </div>
@@ -330,6 +583,9 @@ Protected Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void AtPSA::Init </td>
@@ -338,9 +594,16 @@ Protected Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00024">24</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+<p>Reimplemented in <a class="el" href="classAtPSAComposite.html#adb3d9e617171fb07281563b3aa47112d">AtPSAComposite</a>, and <a class="el" href="classAtPSADeconvFit.html#a50788665e687b3737d3a92f799f9ac75">AtPSADeconvFit</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00030">30</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
 
 </div>
 </div>
@@ -360,7 +623,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00061">61</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00067">67</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
 
 </div>
 </div>
@@ -380,7 +643,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00066">66</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00072">72</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
 
 </div>
 </div>
@@ -400,7 +663,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00073">73</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00079">79</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
 
 </div>
 </div>
@@ -438,7 +701,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00092">92</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8cxx_source.html#l00095">95</a> of file <a class="el" href="AtPSA_8cxx_source.html">AtPSA.cxx</a>.</p>
 
 </div>
 </div>
@@ -463,7 +726,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00027">27</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00039">39</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -487,7 +750,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00035">35</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00047">47</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -511,7 +774,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00028">28</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00040">40</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -535,7 +798,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00034">34</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00046">46</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -559,7 +822,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00020">20</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00034">34</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -583,7 +846,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00032">32</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00044">44</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -607,7 +870,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00029">29</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00041">41</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -631,59 +894,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00033">33</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
-
-</div>
-</div>
-<a id="a3c35e30186756471a3728db7c995cf99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c35e30186756471a3728db7c995cf99">&#9670;&nbsp;</a></span>fThreshold</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">Int_t AtPSA::fThreshold {-1}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>threshold of ADC value </p>
-
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00022">22</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
-
-</div>
-</div>
-<a id="a824db6c57af51dbdbc89ae3ec4de6c0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a824db6c57af51dbdbc89ae3ec4de6c0f">&#9670;&nbsp;</a></span>fThresholdlow</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">Int_t AtPSA::fThresholdlow {-1}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>threshold for Central pads </p>
-
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00023">23</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00045">45</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -707,7 +918,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00024">24</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00036">36</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -731,7 +942,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00036">36</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPSA_8h_source.html#l00048">48</a> of file <a class="el" href="AtPSA_8h_source.html">AtPSA.h</a>.</p>
 
 </div>
 </div>
@@ -742,7 +953,7 @@ Protected Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

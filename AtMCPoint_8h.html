@@ -74,6 +74,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;FairMCPoint.h&gt;</code><br />
+<code>#include &lt;Math/Point3D.h&gt;</code><br />
+<code>#include &lt;Math/Point3Dfwd.h&gt;</code><br />
+<code>#include &lt;Math/Vector3D.h&gt;</code><br />
+<code>#include &lt;Math/Vector3Dfwd.h&gt;</code><br />
 <code>#include &lt;Rtypes.h&gt;</code><br />
 <code>#include &lt;TString.h&gt;</code><br />
 <code>#include &lt;TVector3.h&gt;</code><br />
@@ -82,11 +86,15 @@ Include dependency graph for AtMCPoint.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="AtMCPoint_8h__incl.png" border="0" usemap="#_2github_2workspace_2AtSimulationData_2AtMCPoint_8h" alt=""/></div>
 <map name="_2github_2workspace_2AtSimulationData_2AtMCPoint_8h" id="_2github_2workspace_2AtSimulationData_2AtMCPoint_8h">
-<area shape="rect" title=" " alt="" coords="114,5,321,47"/>
+<area shape="rect" title=" " alt="" coords="457,5,663,47"/>
 <area shape="rect" title=" " alt="" coords="5,95,109,121"/>
-<area shape="rect" title=" " alt="" coords="133,95,205,121"/>
-<area shape="rect" title=" " alt="" coords="229,95,304,121"/>
-<area shape="rect" title=" " alt="" coords="328,95,413,121"/>
+<area shape="rect" title=" " alt="" coords="134,95,245,121"/>
+<area shape="rect" title=" " alt="" coords="269,95,401,121"/>
+<area shape="rect" title=" " alt="" coords="425,95,543,121"/>
+<area shape="rect" title=" " alt="" coords="567,95,707,121"/>
+<area shape="rect" title=" " alt="" coords="732,95,804,121"/>
+<area shape="rect" title=" " alt="" coords="828,95,903,121"/>
+<area shape="rect" title=" " alt="" coords="927,95,1012,121"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -94,18 +102,30 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="AtMCPoint_8h__dep__incl.png" border="0" usemap="#_2github_2workspace_2AtSimulationData_2AtMCPoint_8hdep" alt=""/></div>
 <map name="_2github_2workspace_2AtSimulationData_2AtMCPoint_8hdep" id="_2github_2workspace_2AtSimulationData_2AtMCPoint_8hdep">
-<area shape="rect" title=" " alt="" coords="934,5,1141,47"/>
-<area shape="rect" href="AtClusterizeLineTask_8cxx.html" title=" " alt="" coords="5,95,213,136"/>
-<area shape="rect" href="AtClusterizeTask_8cxx.html" title=" " alt="" coords="237,95,445,136"/>
-<area shape="rect" href="AtPulseLineTask_8cxx.html" title=" " alt="" coords="469,95,677,136"/>
-<area shape="rect" href="AtPulseTask_8cxx.html" title=" " alt="" coords="701,95,909,136"/>
-<area shape="rect" href="AtSpaceChargeTask_8cxx.html" title=" " alt="" coords="933,95,1141,136"/>
-<area shape="rect" href="AtPSA_8cxx.html" title=" " alt="" coords="1165,95,1397,136"/>
-<area shape="rect" href="AtSiPoint_8h.html" title=" " alt="" coords="1421,95,1608,136"/>
-<area shape="rect" href="AtMCPoint_8cxx.html" title=" " alt="" coords="1633,95,1839,136"/>
-<area shape="rect" href="AtTpc_8cxx.html" title=" " alt="" coords="1863,95,2030,136"/>
-<area shape="rect" href="AtSiArray_8cxx.html" title=" " alt="" coords="1316,184,1503,225"/>
-<area shape="rect" href="AtSiPoint_8cxx.html" title=" " alt="" coords="1527,184,1713,225"/>
+<area shape="rect" title=" " alt="" coords="1631,5,1837,47"/>
+<area shape="rect" href="AtDeGAi_8cxx.html" title=" " alt="" coords="5,95,188,136"/>
+<area shape="rect" href="AtDeGAiDigitizer_8cxx.html" title=" " alt="" coords="212,95,395,136"/>
+<area shape="rect" href="AtClusterize_8cxx.html" title=" " alt="" coords="419,95,627,136"/>
+<area shape="rect" href="AtClusterizeLine_8cxx.html" title=" " alt="" coords="651,95,859,136"/>
+<area shape="rect" href="AtPulseLineTask_8cxx.html" title=" " alt="" coords="883,95,1091,136"/>
+<area shape="rect" href="AtPulseTask_8cxx.html" title=" " alt="" coords="1115,95,1323,136"/>
+<area shape="rect" href="AtSimpleSimulation_8h.html" title=" " alt="" coords="1398,95,1606,136"/>
+<area shape="rect" href="AtSimpleSimulation_8cxx.html" title=" " alt="" coords="1095,184,1303,225"/>
+<area shape="rect" href="AtSpaceChargeTask_8cxx.html" title=" " alt="" coords="1630,95,1838,136"/>
+<area shape="rect" href="AtPxCT_8cxx.html" title=" " alt="" coords="1863,95,2040,136"/>
+<area shape="rect" href="AtPxCTDigitizer_8cxx.html" title=" " alt="" coords="2064,95,2241,136"/>
+<area shape="rect" href="AtPSA_8cxx.html" title=" " alt="" coords="2266,95,2498,136"/>
+<area shape="rect" href="AtSeGA_8cxx.html" title=" " alt="" coords="2523,95,2703,136"/>
+<area shape="rect" href="AtSeGADigitizer_8cxx.html" title=" " alt="" coords="2727,95,2907,136"/>
+<area shape="rect" href="AtSiPoint_8h.html" title=" " alt="" coords="2931,95,3118,136"/>
+<area shape="rect" href="AtMCPoint_8cxx.html" title=" " alt="" coords="3143,95,3349,136"/>
+<area shape="rect" href="AtTpc_8cxx.html" title=" " alt="" coords="3373,95,3540,136"/>
+<area shape="rect" href="AtTestSimulation_8h.html" title=" " alt="" coords="1327,184,1535,225"/>
+<area shape="rect" href="AtTestSimulation_8cxx.html" title=" " alt="" coords="1398,273,1606,315"/>
+<area shape="rect" href="AtMCFission_8cxx.html" title=" " alt="" coords="1610,184,1842,225"/>
+<area shape="rect" href="AtMCFitter_8cxx.html" title=" " alt="" coords="1866,184,2098,225"/>
+<area shape="rect" href="AtSiArray_8cxx.html" title=" " alt="" coords="2826,184,3013,225"/>
+<area shape="rect" href="AtSiPoint_8cxx.html" title=" " alt="" coords="3037,184,3223,225"/>
 </map>
 </div>
 </div>
@@ -119,7 +139,7 @@ Classes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:01 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

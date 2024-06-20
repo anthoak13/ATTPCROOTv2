@@ -66,6 +66,8 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-types">Protected Types</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classAtSpaceChargeModel-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">AtSpaceChargeModel Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -78,44 +80,51 @@ Inheritance diagram for AtSpaceChargeModel:</div>
 <div class="dyncontent">
 <div class="center"><img src="classAtSpaceChargeModel__inherit__graph.png" border="0" usemap="#AtSpaceChargeModel_inherit__map" alt="Inheritance graph"/></div>
 <map name="AtSpaceChargeModel_inherit__map" id="AtSpaceChargeModel_inherit__map">
-<area shape="rect" title=" " alt="" coords="82,80,230,107"/>
-<area shape="rect" href="classAtLineChargeModel.html" title=" " alt="" coords="5,155,141,181"/>
-<area shape="rect" href="classAtRadialChargeModel.html" title="Space charge model from arbitrary radial E&#45;field,." alt="" coords="165,155,312,181"/>
-<area shape="rect" title=" " alt="" coords="122,5,190,32"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
-<div class="dynheader">
-Collaboration diagram for AtSpaceChargeModel:</div>
-<div class="dyncontent">
-<div class="center"><img src="classAtSpaceChargeModel__coll__graph.png" border="0" usemap="#AtSpaceChargeModel_coll__map" alt="Collaboration graph"/></div>
-<map name="AtSpaceChargeModel_coll__map" id="AtSpaceChargeModel_coll__map">
-<area shape="rect" title=" " alt="" coords="5,80,153,107"/>
-<area shape="rect" title=" " alt="" coords="45,5,113,32"/>
+<area shape="rect" title=" " alt="" coords="157,5,305,32"/>
+<area shape="rect" href="classAtEDistortionModel.html" title="To parse individual LUT." alt="" coords="5,80,139,107"/>
+<area shape="rect" href="classAtLineChargeModel.html" title=" " alt="" coords="163,80,299,107"/>
+<area shape="rect" href="classAtRadialChargeModel.html" title="Space charge model from arbitrary radial E&#45;field,." alt="" coords="323,80,469,107"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a5625006fa87ef9f28719870a0cf16711"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#a5625006fa87ef9f28719870a0cf16711">~AtSpaceChargeModel</a> ()=default</td></tr>
+<tr class="separator:a5625006fa87ef9f28719870a0cf16711"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6fb1dabf2232aba6b06c3e8bf0cbca8"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#ae6fb1dabf2232aba6b06c3e8bf0cbca8">CorrectSpaceCharge</a> (const <a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> &amp;position)=0</td></tr>
 <tr class="memdesc:ae6fb1dabf2232aba6b06c3e8bf0cbca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Using model correct for space charge.  <a href="classAtSpaceChargeModel.html#ae6fb1dabf2232aba6b06c3e8bf0cbca8">More...</a><br /></td></tr>
 <tr class="separator:ae6fb1dabf2232aba6b06c3e8bf0cbca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecfaf3ed12ad3fc22e0dd546c56b756c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#aecfaf3ed12ad3fc22e0dd546c56b756c">ApplySpaceCharge</a> (const <a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> &amp;position)=0</td></tr>
 <tr class="memdesc:aecfaf3ed12ad3fc22e0dd546c56b756c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Using model add space charge effect.  <a href="classAtSpaceChargeModel.html#aecfaf3ed12ad3fc22e0dd546c56b756c">More...</a><br /></td></tr>
 <tr class="separator:aecfaf3ed12ad3fc22e0dd546c56b756c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a992ca6e4464046cd2f48acc7e6d53ff5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#a992ca6e4464046cd2f48acc7e6d53ff5">LoadParameters</a> (<a class="el" href="classAtDigiPar.html">AtDigiPar</a> *par)=0</td></tr>
-<tr class="memdesc:a992ca6e4464046cd2f48acc7e6d53ff5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load common parameters from <a class="el" href="classAtDigiPar.html">AtDigiPar</a>.  <a href="classAtSpaceChargeModel.html#a992ca6e4464046cd2f48acc7e6d53ff5">More...</a><br /></td></tr>
-<tr class="separator:a992ca6e4464046cd2f48acc7e6d53ff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c329da5eba9db3ce220aa06166fa1b5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#a5c329da5eba9db3ce220aa06166fa1b5">ClassDef</a> (<a class="el" href="classAtSpaceChargeModel.html">AtSpaceChargeModel</a>, 2)</td></tr>
-<tr class="separator:a5c329da5eba9db3ce220aa06166fa1b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a815e17b012357376e9a357a15bd148cc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#a815e17b012357376e9a357a15bd148cc">LoadParameters</a> (const <a class="el" href="classAtDigiPar.html">AtDigiPar</a> *par)=0</td></tr>
+<tr class="memdesc:a815e17b012357376e9a357a15bd148cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load common parameters from <a class="el" href="classAtDigiPar.html">AtDigiPar</a>.  <a href="classAtSpaceChargeModel.html#a815e17b012357376e9a357a15bd148cc">More...</a><br /></td></tr>
+<tr class="separator:a815e17b012357376e9a357a15bd148cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48339f39c85a567fbfa87e9c50bb7404"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#a48339f39c85a567fbfa87e9c50bb7404">SetBeamLocation</a> (<a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> window, <a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> padPlane)</td></tr>
+<tr class="separator:a48339f39c85a567fbfa87e9c50bb7404"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
 Protected Types</h2></td></tr>
 <tr class="memitem:ae91f4dc9a66e4ab895e84cd1fbc6c7b5"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> = ROOT::Math::XYZPoint</td></tr>
 <tr class="separator:ae91f4dc9a66e4ab895e84cd1fbc6c7b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a61da6ae3150ef27eb4f18511c613e96c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#a61da6ae3150ef27eb4f18511c613e96c">OffsetForBeam</a> (<a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> point)</td></tr>
+<tr class="separator:a61da6ae3150ef27eb4f18511c613e96c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecf5ff55e39f686ba8222aefe9c0cea1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#aecf5ff55e39f686ba8222aefe9c0cea1">UndoOffsetForBeam</a> (<a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> point)</td></tr>
+<tr class="separator:aecf5ff55e39f686ba8222aefe9c0cea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a67d93d4dd63d865aaa13eff6805bf974"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#a67d93d4dd63d865aaa13eff6805bf974">fWindow</a> {0, 0, 0}</td></tr>
+<tr class="separator:a67d93d4dd63d865aaa13eff6805bf974"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70a8ad92d94ac94e038c9b1f0f0ce6d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtSpaceChargeModel.html#a70a8ad92d94ac94e038c9b1f0f0ce6d0">fPadPlane</a> {0, 0, 1000}</td></tr>
+<tr class="separator:a70a8ad92d94ac94e038c9b1f0f0ce6d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8h_source.html#l00015">15</a> of file <a class="el" href="AtSpaceChargeModel_8h_source.html">AtSpaceChargeModel.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8h_source.html#l00009">9</a> of file <a class="el" href="AtSpaceChargeModel_8h_source.html">AtSpaceChargeModel.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="ae91f4dc9a66e4ab895e84cd1fbc6c7b5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">&#9670;&nbsp;</a></span>XYZPoint</h2>
@@ -137,7 +146,33 @@ Protected Types</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8h_source.html#l00017">17</a> of file <a class="el" href="AtSpaceChargeModel_8h_source.html">AtSpaceChargeModel.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8h_source.html#l00011">11</a> of file <a class="el" href="AtSpaceChargeModel_8h_source.html">AtSpaceChargeModel.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a5625006fa87ef9f28719870a0cf16711"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5625006fa87ef9f28719870a0cf16711">&#9670;&nbsp;</a></span>~AtSpaceChargeModel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual AtSpaceChargeModel::~AtSpaceChargeModel </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -175,35 +210,7 @@ Protected Types</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Position charge hits the pad plane [mm]. </dd></dl>
 
-<p>Implemented in <a class="el" href="classAtRadialChargeModel.html#a48c24f1733d88f868fe677f4e18d1031">AtRadialChargeModel</a>, and <a class="el" href="classAtLineChargeModel.html#a634876ac23337565a37362f634d67105">AtLineChargeModel</a>.</p>
-
-</div>
-</div>
-<a id="a5c329da5eba9db3ce220aa06166fa1b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c329da5eba9db3ce220aa06166fa1b5">&#9670;&nbsp;</a></span>ClassDef()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">AtSpaceChargeModel::ClassDef </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classAtSpaceChargeModel.html">AtSpaceChargeModel</a>&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">2&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p>Implemented in <a class="el" href="classAtEDistortionModel.html#a9a950df186adac86ca46b60df27be5b1">AtEDistortionModel</a>, <a class="el" href="classAtRadialChargeModel.html#a48c24f1733d88f868fe677f4e18d1031">AtRadialChargeModel</a>, and <a class="el" href="classAtLineChargeModel.html#a634876ac23337565a37362f634d67105">AtLineChargeModel</a>.</p>
 
 </div>
 </div>
@@ -240,12 +247,12 @@ Protected Types</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Position charge was deposited in the detector [mm]. </dd></dl>
 
-<p>Implemented in <a class="el" href="classAtRadialChargeModel.html#aaf5002268854707f5ca6861323ea5346">AtRadialChargeModel</a>, and <a class="el" href="classAtLineChargeModel.html#ad097a0c2fd334014336cc4de0499388e">AtLineChargeModel</a>.</p>
+<p>Implemented in <a class="el" href="classAtEDistortionModel.html#a011817b75f479b61c6e3695af5598ecb">AtEDistortionModel</a>, <a class="el" href="classAtRadialChargeModel.html#aaf5002268854707f5ca6861323ea5346">AtRadialChargeModel</a>, and <a class="el" href="classAtLineChargeModel.html#ad097a0c2fd334014336cc4de0499388e">AtLineChargeModel</a>.</p>
 
 </div>
 </div>
-<a id="a992ca6e4464046cd2f48acc7e6d53ff5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a992ca6e4464046cd2f48acc7e6d53ff5">&#9670;&nbsp;</a></span>LoadParameters()</h2>
+<a id="a815e17b012357376e9a357a15bd148cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a815e17b012357376e9a357a15bd148cc">&#9670;&nbsp;</a></span>LoadParameters()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -256,7 +263,7 @@ Protected Types</h2></td></tr>
         <tr>
           <td class="memname">virtual void AtSpaceChargeModel::LoadParameters </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classAtDigiPar.html">AtDigiPar</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="classAtDigiPar.html">AtDigiPar</a> *&#160;</td>
           <td class="paramname"><em>par</em></td><td>)</td>
           <td></td>
         </tr>
@@ -271,17 +278,161 @@ Protected Types</h2></td></tr>
 <p>Load common parameters from <a class="el" href="classAtDigiPar.html">AtDigiPar</a>. </p>
 <p>Will load any parameters used by the model from the parameter file attached to the run. </p>
 
-<p>Implemented in <a class="el" href="classAtRadialChargeModel.html#a916caf932eb7b3c230596b2cce1caf01">AtRadialChargeModel</a>, and <a class="el" href="classAtLineChargeModel.html#ae743fed8dd4d86aad5a211e171ef89ae">AtLineChargeModel</a>.</p>
+<p>Implemented in <a class="el" href="classAtEDistortionModel.html#a1f1065e80e2822831cd1a24f834aabcb">AtEDistortionModel</a>, <a class="el" href="classAtRadialChargeModel.html#aac2864fd8d40241ad1e95e8e3be80b59">AtRadialChargeModel</a>, and <a class="el" href="classAtLineChargeModel.html#aafd8aa1040c3f2a57fa984cfbdc550ad">AtLineChargeModel</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a id="a61da6ae3150ef27eb4f18511c613e96c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61da6ae3150ef27eb4f18511c613e96c">&#9670;&nbsp;</a></span>OffsetForBeam()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> AtSpaceChargeModel::OffsetForBeam </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8cxx_source.html#l00008">8</a> of file <a class="el" href="AtSpaceChargeModel_8cxx_source.html">AtSpaceChargeModel.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a48339f39c85a567fbfa87e9c50bb7404"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48339f39c85a567fbfa87e9c50bb7404">&#9670;&nbsp;</a></span>SetBeamLocation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AtSpaceChargeModel::SetBeamLocation </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td>
+          <td class="paramname"><em>padPlane</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8h_source.html#l00044">44</a> of file <a class="el" href="AtSpaceChargeModel_8h_source.html">AtSpaceChargeModel.h</a>.</p>
+
+</div>
+</div>
+<a id="aecf5ff55e39f686ba8222aefe9c0cea1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecf5ff55e39f686ba8222aefe9c0cea1">&#9670;&nbsp;</a></span>UndoOffsetForBeam()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> AtSpaceChargeModel::UndoOffsetForBeam </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a>&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8cxx_source.html#l00014">14</a> of file <a class="el" href="AtSpaceChargeModel_8cxx_source.html">AtSpaceChargeModel.cxx</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a70a8ad92d94ac94e038c9b1f0f0ce6d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70a8ad92d94ac94e038c9b1f0f0ce6d0">&#9670;&nbsp;</a></span>fPadPlane</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> AtSpaceChargeModel::fPadPlane {0, 0, 1000}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8h_source.html#l00014">14</a> of file <a class="el" href="AtSpaceChargeModel_8h_source.html">AtSpaceChargeModel.h</a>.</p>
+
+</div>
+</div>
+<a id="a67d93d4dd63d865aaa13eff6805bf974"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67d93d4dd63d865aaa13eff6805bf974">&#9670;&nbsp;</a></span>fWindow</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAtSpaceChargeModel.html#ae91f4dc9a66e4ab895e84cd1fbc6c7b5">XYZPoint</a> AtSpaceChargeModel::fWindow {0, 0, 0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="AtSpaceChargeModel_8h_source.html#l00013">13</a> of file <a class="el" href="AtSpaceChargeModel_8h_source.html">AtSpaceChargeModel.h</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>/github/workspace/AtTools/<a class="el" href="AtSpaceChargeModel_8h_source.html">AtSpaceChargeModel.h</a></li>
+<li>/github/workspace/AtTools/<a class="el" href="AtSpaceChargeModel_8cxx_source.html">AtSpaceChargeModel.cxx</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:03 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

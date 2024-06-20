@@ -83,8 +83,14 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatterns_1_1AtPatternCircle2D.html">AtPatterns::AtPatternCircle2D</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Describes a circle track projected to the XY plane.  <a href="classAtPatterns_1_1AtPatternCircle2D.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatterns_1_1AtPatternFission.html">AtPatterns::AtPatternFission</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Describes a fission event.  <a href="classAtPatterns_1_1AtPatternFission.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatterns_1_1AtPatternLine.html">AtPatterns::AtPatternLine</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Describes a linear track.  <a href="classAtPatterns_1_1AtPatternLine.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatterns_1_1AtPatternRay.html">AtPatterns::AtPatternRay</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Describes a linear track with an end point.  <a href="classAtPatterns_1_1AtPatternRay.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAtPatterns_1_1AtPatternY.html">AtPatterns::AtPatternY</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Describes a Y track.  <a href="classAtPatterns_1_1AtPatternY.html#details">More...</a><br /></td></tr>
@@ -92,9 +98,14 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ga83dfd22f92852e92938315c154952e5c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__AtPattern.html#ga83dfd22f92852e92938315c154952e5c">AtPatterns::PatternType</a> { <a class="el" href="group__AtPattern.html#gga83dfd22f92852e92938315c154952e5caee669fa7b5a35d96a396d4ed648afb45">AtPatterns::PatternType::kLine</a>, 
+<tr class="memitem:ga83dfd22f92852e92938315c154952e5c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__AtPattern.html#ga83dfd22f92852e92938315c154952e5c">AtPatterns::PatternType</a> { <br />
+&#160;&#160;<a class="el" href="group__AtPattern.html#gga83dfd22f92852e92938315c154952e5caee669fa7b5a35d96a396d4ed648afb45">AtPatterns::PatternType::kLine</a>, 
+<a class="el" href="group__AtPattern.html#gga83dfd22f92852e92938315c154952e5ca402ce3b50e5a874b0debf6f436409d52">AtPatterns::PatternType::kRay</a>, 
 <a class="el" href="group__AtPattern.html#gga83dfd22f92852e92938315c154952e5cac162690276b0c003fe31ea3969a63fae">AtPatterns::PatternType::kCircle2D</a>, 
-<a class="el" href="group__AtPattern.html#gga83dfd22f92852e92938315c154952e5ca39b629a97c6f6ac91423cf042154dd86">AtPatterns::PatternType::kY</a>
+<a class="el" href="group__AtPattern.html#gga83dfd22f92852e92938315c154952e5ca39b629a97c6f6ac91423cf042154dd86">AtPatterns::PatternType::kY</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__AtPattern.html#gga83dfd22f92852e92938315c154952e5cab45521668bdbfec77efa6bf5e940c627">AtPatterns::PatternType::kFission</a>
+<br />
  }</td></tr>
 <tr class="memdesc:ga83dfd22f92852e92938315c154952e5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Supported patterns.  <a href="group__AtPattern.html#ga83dfd22f92852e92938315c154952e5c">More...</a><br /></td></tr>
 <tr class="separator:ga83dfd22f92852e92938315c154952e5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,8 +144,10 @@ Functions</h2></td></tr>
 <p>Can be created with the static factory <a class="el" href="group__AtPattern.html#gaa6d8e49bb5966811e1c6947de4c025ef" title="Factory for AtPattern.">AtPatterns::CreatePattern(PatternType type)</a> </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga83dfd22f92852e92938315c154952e5caee669fa7b5a35d96a396d4ed648afb45"></a>kLine&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="gga83dfd22f92852e92938315c154952e5ca402ce3b50e5a874b0debf6f436409d52"></a>kRay&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="gga83dfd22f92852e92938315c154952e5cac162690276b0c003fe31ea3969a63fae"></a>kCircle2D&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="gga83dfd22f92852e92938315c154952e5ca39b629a97c6f6ac91423cf042154dd86"></a>kY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="gga83dfd22f92852e92938315c154952e5cab45521668bdbfec77efa6bf5e940c627"></a>kFission&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="AtPatternTypes_8h_source.html#l00014">14</a> of file <a class="el" href="AtPatternTypes_8h_source.html">AtPatternTypes.h</a>.</p>
@@ -161,14 +174,14 @@ Functions</h2></td></tr>
 <p>Factory for <a class="el" href="classAtPatterns_1_1AtPattern.html" title="Describes a shape in 3D space.">AtPattern</a>. </p>
 <p>Factory method for creating instances of <a class="el" href="classAtPatterns_1_1AtPattern.html" title="Describes a shape in 3D space.">AtPattern</a> based on type </p>
 
-<p class="definition">Definition at line <a class="el" href="AtPatternTypes_8cxx_source.html#l00009">9</a> of file <a class="el" href="AtPatternTypes_8cxx_source.html">AtPatternTypes.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtPatternTypes_8cxx_source.html#l00011">11</a> of file <a class="el" href="AtPatternTypes_8cxx_source.html">AtPatternTypes.cxx</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>

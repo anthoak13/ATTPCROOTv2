@@ -89,7 +89,8 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da7624a3dbfe0b98ea33b3a64138bb694b">SampleConsensus::Estimators::kMLESAC</a>, 
 <a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da8dca95bf755b57c3953a9118be50b598">SampleConsensus::Estimators::kWRANSAC</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da5f920e13c1f197795174c39eefc08ce0">SampleConsensus::Estimators::kChi2</a>
+&#160;&#160;<a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da5f920e13c1f197795174c39eefc08ce0">SampleConsensus::Estimators::kChi2</a>, 
+<a class="el" href="group__SampleConsensus.html#gga3f41f25b8c1dd17e4e1785fba2380d5da067c066a4329950b25268f579ff7d4da">SampleConsensus::Estimators::kYRANSAC</a>
 <br />
  }</td></tr>
 <tr class="memdesc:ga3f41f25b8c1dd17e4e1785fba2380d5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Estimators for AtSampleConsensus.  <a href="group__SampleConsensus.html#ga3f41f25b8c1dd17e4e1785fba2380d5d">More...</a><br /></td></tr>
@@ -97,9 +98,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga36773778b9464b7613bda87198be0c1f"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SampleConsensus.html#ga36773778b9464b7613bda87198be0c1f">SampleConsensus::AtEstimator::EvaluateModel</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;hits, double distThresh, <a class="el" href="group__SampleConsensus.html#ga3f41f25b8c1dd17e4e1785fba2380d5d">Estimators</a> estimator)</td></tr>
-<tr class="memdesc:ga36773778b9464b7613bda87198be0c1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate how well model describes hits.  <a href="group__SampleConsensus.html#ga36773778b9464b7613bda87198be0c1f">More...</a><br /></td></tr>
-<tr class="separator:ga36773778b9464b7613bda87198be0c1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga46397d6bbb731dca84058890af25f8e2"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SampleConsensus.html#ga46397d6bbb731dca84058890af25f8e2">SampleConsensus::AtEstimator::EvaluateModel</a> (<a class="el" href="classAtPatterns_1_1AtPattern.html">AtPatterns::AtPattern</a> *model, const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;hits, double distThresh, <a class="el" href="group__SampleConsensus.html#ga3f41f25b8c1dd17e4e1785fba2380d5d">Estimators</a> estimator)</td></tr>
+<tr class="memdesc:ga46397d6bbb731dca84058890af25f8e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate how well model describes hits.  <a href="group__SampleConsensus.html#ga46397d6bbb731dca84058890af25f8e2">More...</a><br /></td></tr>
+<tr class="separator:ga46397d6bbb731dca84058890af25f8e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Group of classes and functions for sample consensus estimators. </p>
@@ -133,6 +134,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="gga3f41f25b8c1dd17e4e1785fba2380d5da7624a3dbfe0b98ea33b3a64138bb694b"></a>kMLESAC&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="gga3f41f25b8c1dd17e4e1785fba2380d5da8dca95bf755b57c3953a9118be50b598"></a>kWRANSAC&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="gga3f41f25b8c1dd17e4e1785fba2380d5da5f920e13c1f197795174c39eefc08ce0"></a>kChi2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="gga3f41f25b8c1dd17e4e1785fba2380d5da067c066a4329950b25268f579ff7d4da"></a>kYRANSAC&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="AtEstimatorMethods_8h_source.html#l00017">17</a> of file <a class="el" href="AtEstimatorMethods_8h_source.html">AtEstimatorMethods.h</a>.</p>
@@ -140,8 +142,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga36773778b9464b7613bda87198be0c1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga36773778b9464b7613bda87198be0c1f">&#9670;&nbsp;</a></span>EvaluateModel()</h2>
+<a id="ga46397d6bbb731dca84058890af25f8e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga46397d6bbb731dca84058890af25f8e2">&#9670;&nbsp;</a></span>EvaluateModel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -158,7 +160,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classAtHit.html">AtHit</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="classAtHit.html">AtHit</a> * &gt; &amp;&#160;</td>
           <td class="paramname"><em>hits</em>, </td>
         </tr>
         <tr>
@@ -198,14 +200,14 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of points consistent with model in hits </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AtSampleEstimator_8cxx_source.html#l00019">19</a> of file <a class="el" href="AtSampleEstimator_8cxx_source.html">AtSampleEstimator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AtSampleEstimator_8cxx_source.html#l00022">22</a> of file <a class="el" href="AtSampleEstimator_8cxx_source.html">AtSampleEstimator.cxx</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 22 2022 14:53:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jun 20 2024 21:56:02 for ATTPCROOT by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>
