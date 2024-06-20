@@ -4,19 +4,17 @@
 
 #include <Math/Point3D.h>
 #include <Math/Point3Dfwd.h>
-#include <Rtypes.h>
-#include <TObject.h>
-
-class TBuffer;
-class TClass;
-class TMemberInspector;
 class AtDigiPar;
 
-class AtSpaceChargeModel : public TObject {
+class AtSpaceChargeModel {
 protected:
    using XYZPoint = ROOT::Math::XYZPoint;
 
+   XYZPoint fWindow{0, 0, 0};      //<Beam location at window in mm
+   XYZPoint fPadPlane{0, 0, 1000}; //<Beam location at pad plane in mm
+
 public:
+   virtual ~AtSpaceChargeModel() = default;
    /**
     * @brief Using model correct for space charge.
     *
@@ -41,9 +39,17 @@ public:
     * Will load any parameters used by the model from the parameter file attached
     * to the run.
     */
-   virtual void LoadParameters(AtDigiPar *par) = 0;
+   virtual void LoadParameters(const AtDigiPar *par) = 0;
 
-   ClassDef(AtSpaceChargeModel, 2);
+   void SetBeamLocation(XYZPoint window, XYZPoint padPlane)
+   {
+      fWindow = window;
+      fPadPlane = padPlane;
+   }
+
+protected:
+   XYZPoint OffsetForBeam(XYZPoint point);
+   XYZPoint UndoOffsetForBeam(XYZPoint point);
 };
 
-#endif //#ifndef ATSPACECHARGEMODEL_H
+#endif // #ifndef ATSPACECHARGEMODEL_H

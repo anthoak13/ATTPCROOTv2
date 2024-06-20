@@ -1,24 +1,20 @@
 #include "AtAuxFilterTask.h"
 
+#include "AtAuxPad.h"
+#include "AtFilter.h"
+#include "AtRawEvent.h"
+
 #include <FairLogger.h>
 #include <FairRootManager.h>
 #include <FairTask.h>
 
+#include <TClonesArray.h>
+#include <TObject.h> // for TObject
 #include <TString.h>
 
 #include <algorithm>
 #include <ostream>
 #include <utility>
-
-// Root Classes
-#include "AtFilter.h"
-#include "AtRawEvent.h"
-// AtTPCRoot Classes
-#include "AtAuxPad.h"
-#include "AtPad.h"
-
-#include <TClonesArray.h>
-#include <TObject.h> // for TObject
 
 AtAuxFilterTask::AtAuxFilterTask(AtFilter *filter) : fFilter(filter), fInputEventBranchName("AtRawEvent") {}
 
@@ -39,14 +35,14 @@ InitStatus AtAuxFilterTask::Init()
    FairRootManager *ioManager = FairRootManager::Instance();
 
    if (ioManager == nullptr) {
-      LOG(ERROR) << "Cannot find RootManager!" << std::endl;
+      LOG(error) << "Cannot find RootManager!" << std::endl;
       return kERROR;
    }
 
    // Get the old data from the io manager
    fInputEventArray = dynamic_cast<TClonesArray *>(ioManager->GetObject(fInputEventBranchName));
    if (fInputEventArray == nullptr) {
-      LOG(ERROR) << "AtAuxFilterTask: Cannot find AtRawEvent array " << fInputEventBranchName;
+      LOG(error) << "AtAuxFilterTask: Cannot find AtRawEvent array " << fInputEventBranchName;
       return kERROR;
    }
 

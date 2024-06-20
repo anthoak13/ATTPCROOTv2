@@ -5,8 +5,11 @@
 
 #include <Rtypes.h>       // for Int_t, Double_t, Bool_t, THashConsistencyH...
 #include <TClonesArray.h> // for TClonesArray
+#include <TString.h>
 
-#include <stddef.h> // for size_t
+#include <cstddef> // for size_t
+#include <utility>
+
 class AtDigiPar;
 class TBuffer;
 class TClass;
@@ -22,6 +25,9 @@ class AtPRA;
  */
 class AtPRAtask : public FairTask {
 private:
+   TString fInputBranchName;
+   TString fOutputBranchName;
+
    TClonesArray *fEventHArray{};
    TClonesArray fPatternEventArray;
 
@@ -53,8 +59,8 @@ private:
    Double_t fkNNDist;      //<! Distance threshold for outlier rejection in kNN
 
    // Clustering parameters
-   Double_t fClusterRadius{5.5};
-   Double_t fClusterDistance{10.0};
+   Double_t fClusterRadius{10.0};
+   Double_t fClusterDistance{5.5};
 
 public:
    AtPRAtask();
@@ -64,6 +70,9 @@ public:
    virtual void Exec(Option_t *option);
    virtual void SetParContainers();
    virtual void Finish();
+
+   void SetInputBranch(TString branchName) { fInputBranchName = std::move(branchName); }
+   void SetOutputBranch(TString branchName) { fOutputBranchName = std::move(branchName); }
 
    void SetPersistence(Bool_t value = kTRUE);
    void SetPRAlgorithm(Int_t value = 0);

@@ -55,11 +55,6 @@ void Config()
    // stack->SetMinPoints(0);
    geant4->SetStack(stack);
 
-   if (FairRunSim::Instance()->IsExtDecayer()) {
-      TVirtualMCDecayer *decayer = TPythia6Decayer::Instance();
-      geant4->SetExternalDecayer(decayer);
-   }
-
    /// Customise Geant4 setting
    /// (verbose level, global range cut, ..)
 

@@ -1,12 +1,13 @@
 #include "AtLinkDAQTask.h"
 
-#include "AtRawEvent.h"
+#include "AtBaseEvent.h"
 #include "AtRunAna.h"
 
 #include <FairLogger.h>
 #include <FairRootFileSink.h>
 #include <FairRootManager.h>
 #include <FairRunAna.h>
+#include <FairSink.h> // for FairSink
 #include <FairTask.h>
 
 #include <TChain.h>
@@ -56,20 +57,20 @@ InitStatus AtLinkDAQTask::Init()
    // Register the input and output branches with the IO manager
    FairRootManager *ioMan = FairRootManager::Instance();
    if (ioMan == nullptr) {
-      LOG(ERROR) << "Cannot find RootManager!";
-      return kERROR;
+      LOG(fatal) << "Cannot find RootManager!";
+      return kFATAL;
    }
 
    fInputEventArray = dynamic_cast<TClonesArray *>(ioMan->GetObject(fInputBranchName));
    if (fInputEventArray == nullptr) {
-      LOG(ERROR) << "Cannot find AtRawEvent array in branch " << fInputBranchName << "!";
-      return kERROR;
+      LOG(fatal) << "Cannot find AtRawEvent array in branch " << fInputBranchName << "!";
+      return kFATAL;
    }
 
    // Set the branch addresses for the HiRAEVT detectors
    if (evtTree == nullptr) {
-      LOG(error) << "HiRAEVT tree was never initialized!";
-      return kERROR;
+      LOG(fatal) << "HiRAEVT tree was never initialized!";
+      return kFATAL;
    }
    std::cout << "EVT address: " << evtTree.get() << std::endl;
    evtTree->SetBranchAddress(fEvtTimestampName, &fEvtTS);
@@ -82,6 +83,7 @@ InitStatus AtLinkDAQTask::Init()
    }
    fEvtOutputFile->cd();
    fEvtOutputTree = evtTree->CloneTree(0);
+   LOG(info) << "Initialized output EVT tree in " << fEvtOutputFileName;
 
    return kSUCCESS;
 }
@@ -90,7 +92,7 @@ void AtLinkDAQTask::DoFirstEvent()
 {
    evtTree->GetEntry(0);
    fEvtTimestamp = fEvtTS->GetTimestamp();
-   fTpcTimestamp = fRawEvent->GetTimestamps();
+   fTpcTimestamp = fEvent->GetTimestamps();
 
    LOG(info) << "Initial timestamps: " << fTpcTimestamp.at(fTpcTimestampIndex) << " " << fEvtTimestamp;
    kFirstEvent = false;
@@ -100,7 +102,7 @@ void AtLinkDAQTask::DoFirstEvent()
 
    // Get the number of timestamps in the the AtRawEvent
    // And create the graphs to plot
-   auto numTimestamps = fRawEvent->GetTimestamps().size();
+   auto numTimestamps = fEvent->GetTimestamps().size();
    for (int i = 0; i < numTimestamps; ++i) {
       fGrDataRatio.emplace_back();
       fGrDataAbs.emplace_back();
@@ -117,7 +119,7 @@ bool AtLinkDAQTask::UpdateTimestamps()
    fOldEvtTimestamp = fEvtTimestamp;
    fOldTpcTimestamp = fTpcTimestamp;
    fEvtTimestamp = fEvtTS->GetTimestamp();
-   fTpcTimestamp = fRawEvent->GetTimestamps();
+   fTpcTimestamp = fEvent->GetTimestamps();
    if (fTpcTimestamp.size() < fTpcTimestampIndex)
       return false;
 
@@ -180,7 +182,7 @@ void AtLinkDAQTask::Exec(Option_t *opt)
    // first event then set the old timestamp and continue without filling
    if (fInputEventArray->GetEntriesFast() == 0)
       return;
-   fRawEvent = dynamic_cast<AtRawEvent *>(fInputEventArray->At(0));
+   fEvent = dynamic_cast<AtBaseEvent *>(fInputEventArray->At(0));
 
    if (kFirstEvent) {
       DoFirstEvent();
@@ -340,5 +342,7 @@ void AtLinkDAQTask::Finish()
 
 Double_t AtLinkDAQTask::GetScaledInterval(ULong64_t intervalEvt, ULong64_t fIntercalTPC)
 {
+   if (kUseRatio)
+      return TMath::Abs(static_cast<double>(fIntercalTPC) / static_cast<double>(intervalEvt)) / fSearchMean;
    return TMath::Abs(static_cast<double>(intervalEvt) - static_cast<double>(fIntercalTPC)) / fSearchMean;
 }

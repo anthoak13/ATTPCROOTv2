@@ -1,5 +1,5 @@
 #include "AtSpaceChargeCorrectionTask.h"
-
+// IWYU pragma: no_include <ext/alloc_traits.h>
 #include "AtEvent.h"
 #include "AtHit.h"
 #include "AtSpaceChargeModel.h"
@@ -18,6 +18,7 @@
 #include <utility>
 #include <vector>
 
+class AtDigiPar;
 using XYZPoint = ROOT::Math::XYZPoint;
 
 ClassImp(AtSpaceChargeCorrectionTask);
@@ -44,11 +45,11 @@ InitStatus AtSpaceChargeCorrectionTask::Init()
 
    FairRun *run = FairRun::Instance();
    if (!run)
-      LOG(FATAL) << "No analysis run!";
+      LOG(fatal) << "No analysis run!";
 
    FairRuntimeDb *db = run->GetRuntimeDb(); // NOLINT
    if (!db)
-      LOG(FATAL) << "No runtime database!";
+      LOG(fatal) << "No runtime database!";
 
    auto fPar = (AtDigiPar *)db->getContainer("AtDigiPar"); // NOLINT
    fSCModel->LoadParameters(fPar);
@@ -66,13 +67,14 @@ void AtSpaceChargeCorrectionTask::Exec(Option_t *opt)
 
    auto inputEvent = dynamic_cast<AtEvent *>(fInputEventArray->At(0));
    auto outputEvent = dynamic_cast<AtEvent *>(fOutputEventArray.ConstructedAt(0));
-   outputEvent->CopyFrom(*inputEvent);
+   *outputEvent = *inputEvent;
+   outputEvent->ClearHits();
 
-   for (auto &inHit : inputEvent->GetHitArray()) {
+   for (auto &inHit : inputEvent->GetHits()) {
       XYZPoint newPosition;
-      newPosition = fSCModel->CorrectSpaceCharge(inHit.GetPosition());
-      auto &newHit = outputEvent->AddHit(inHit);
+      newPosition = fSCModel->CorrectSpaceCharge(inHit->GetPosition());
+      auto &newHit = outputEvent->AddHit(inHit->Clone());
       newHit.SetPosition(newPosition);
-      LOG(debug) << inHit.GetPosition() << " " << outputEvent->GetHitArray().back().GetPosition();
+      LOG(debug) << inHit->GetPosition() << " " << outputEvent->GetHits().back()->GetPosition();
    }
 }

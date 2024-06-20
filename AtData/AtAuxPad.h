@@ -20,6 +20,7 @@
 class TBuffer;
 class TClass;
 class TMemberInspector;
+class AtPadBase;
 
 class AtAuxPad : public AtPad {
 protected:
@@ -29,7 +30,9 @@ public:
    AtAuxPad(std::string fAuxName = "noname");
    AtAuxPad(const AtAuxPad &obj) = default;
    virtual ~AtAuxPad() = default;
-   virtual std::unique_ptr<AtPad> Clone() override;
+
+   virtual std::unique_ptr<AtPad> ClonePad() const override;
+   virtual std::unique_ptr<AtPadBase> Clone() const override;
 
    void SetAuxName(std::string val) { fAuxName = std::move(val); }
    std::string GetAuxName() const { return fAuxName; }

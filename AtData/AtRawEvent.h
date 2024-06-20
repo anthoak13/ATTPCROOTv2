@@ -10,17 +10,19 @@
 #ifndef AtRAWEVENT_H
 #define AtRAWEVENT_H
 
-#include "AtAuxPad.h"
+#include "AtBaseEvent.h"
+#include "AtGenericTrace.h" // IWYU pragma: keep
+#include "AtPadReference.h" // IWYU pragma: keep
 
 #include <Rtypes.h>
-#include <TNamed.h>
 
-#include <algorithm>
 #include <cstddef>
+#include <functional> // for hash
 #include <map>
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <unordered_map> // for unordered_map
 #include <utility>
 #include <vector>
 
@@ -29,19 +31,17 @@ class TBuffer;
 class TClass;
 class TMemberInspector;
 
-using AuxPadMap = std::map<std::string, AtAuxPad>;
-using AtPadPtr = std::unique_ptr<AtPad>;
-using PadVector = std::vector<AtPadPtr>;
-
-class AtRawEvent : public TNamed {
+class AtRawEvent : public AtBaseEvent {
 private:
-   ULong_t fEventID = -1;
-   PadVector fPadList;
-   AuxPadMap fAuxPadMap;
-   std::vector<ULong64_t> fTimestamp;
+   using AtPadPtr = std::unique_ptr<AtPad>;
+   using FpnMap = std::unordered_map<AtPadReference, AtPad>;
+   using PadVector = std::vector<AtPadPtr>;
+   using AtGenTracePtr = std::unique_ptr<AtGenericTrace>;
+   using GenTraceVector = std::vector<AtGenTracePtr>;
 
-   Bool_t fIsGood = true;
-   Bool_t fIsInGate = false;
+   PadVector fPadList;
+   FpnMap fFpnMap;
+   GenTraceVector fGTraceList;
 
    std::multimap<Int_t, std::size_t> fSimMCPointMap; //<! Monte Carlo Point - Hit map for kinematics
 
@@ -49,14 +49,24 @@ private:
    friend class AtFilterFFT;
 
 public:
-   AtRawEvent();
+   AtRawEvent() : AtBaseEvent("AtRawEvent"){};
    AtRawEvent(AtRawEvent &&obj) = default;
-   AtRawEvent &operator=(AtRawEvent &&obj) = default;
    AtRawEvent(const AtRawEvent &object);
-   ~AtRawEvent() = default;
+   AtRawEvent(const AtBaseEvent &object) : AtBaseEvent(object) { SetName("AtRawEvent"); }
+   AtRawEvent &operator=(AtRawEvent object);
+   virtual ~AtRawEvent() = default;
+
+   friend void swap(AtRawEvent &first, AtRawEvent &second)
+   {
+      using std::swap;
+      swap(dynamic_cast<AtBaseEvent &>(first), dynamic_cast<AtBaseEvent &>(second));
+      swap(first.fPadList, second.fPadList);
+      swap(first.fFpnMap, second.fFpnMap);
+      swap(first.fSimMCPointMap, second.fSimMCPointMap);
+   };
 
    /// Copy everything but the data (pads, aux pads, and MCPointMap) to this event
-   void CopyAllButData(const AtRawEvent *event);
+   // void CopyAllButData(const AtRawEvent *event);
 
    void Clear(Option_t *opt = nullptr) override;
 
@@ -89,40 +99,44 @@ public:
       fPadList.push_back(std::move(ptr));
       return fPadList.back().get();
    }
-   /**
-    * @brief Add new auxilary pad (AtAuxPad) to event
-    * @param Name of new auxiliary pad
-    * @return Returns a pointer to the newly added pad, or existing pad if auxName is already used,
-    * bool returned is true if insert occurred.
-    */
-   std::pair<AtAuxPad *, bool> AddAuxPad(std::string auxName);
-   AtPad *GetPad(Int_t padNum);
-   AtPad *GetAuxPad(std::string auxPad);
+
+   AtPad *AddFPN(const AtPadReference &ref);
 
    void RemovePad(Int_t padNum);
    void SetSimMCPointMap(std::multimap<Int_t, std::size_t> map) { fSimMCPointMap = std::move(map); }
 
-   // setters
-   void SetEventID(ULong_t evtid) { fEventID = evtid; }
-   void SetIsGood(Bool_t value) { fIsGood = value; }
-   void SetTimestamp(ULong64_t timestamp, int index = 0);
-   void SetNumberOfTimestamps(int numTS) { fTimestamp.resize(numTS, 0); }
-   void SetIsExtGate(Bool_t value) { fIsInGate = value; }
+   template <typename... Ts>
+   AtGenericTrace *AddGenericTrace(Ts &&...params)
+   {
+      fGTraceList.push_back(std::make_unique<AtGenericTrace>(std::forward<Ts>(params)...));
+      return fGTraceList.back().get();
+   }
+
+   AtGenericTrace *AddGenericTrace(std::unique_ptr<AtGenericTrace> ptr)
+   {
+      fGTraceList.push_back(std::move(ptr));
+      return fGTraceList.back().get();
+   }
 
    // getters
-   ULong_t GetEventID() const { return fEventID; }
    Int_t GetNumPads() const { return fPadList.size(); }
    Int_t GetNumAuxPads() const { return fAuxPadMap.size(); }
-   ULong64_t GetTimestamp(int index = 0) const { return index < fTimestamp.size() ? fTimestamp.at(index) : 0; }
-   const std::vector<ULong64_t> &GetTimestamps() const { return fTimestamp; }
-   Bool_t IsGood() const { return fIsGood; }
-   Bool_t GetIsExtGate() const { return fIsInGate; }
-
+   AtPad *GetPad(Int_t padNum) { return const_cast<AtPad *>(const_cast<const AtRawEvent *>(this)->GetPad(padNum)); }
+   const AtPad *GetPad(Int_t padNum) const;
+   AtPad *GetFpn(const AtPadReference &ref)
+   {
+      return const_cast<AtPad *>(const_cast<const AtRawEvent *>(this)->GetFpn(ref));
+   }
+   const AtPad *GetFpn(const AtPadReference &ref) const;
    const PadVector &GetPads() const { return fPadList; }
-   const AuxPadMap &GetAuxPads() const { return fAuxPadMap; }
+   PadVector &GetPads() { return const_cast<PadVector &>(const_cast<const AtRawEvent *>(this)->GetPads()); }
+
+   const GenTraceVector &GetGenTraces() const { return fGTraceList; }
+
+   const FpnMap &GetFpnPads() const { return fFpnMap; }
    std::multimap<Int_t, std::size_t> &GetSimMCPointMap() { return fSimMCPointMap; }
 
-   ClassDefOverride(AtRawEvent, 5);
+   ClassDefOverride(AtRawEvent, 7);
 };
 
 #endif

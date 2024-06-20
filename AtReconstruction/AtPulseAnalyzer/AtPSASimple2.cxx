@@ -23,9 +23,9 @@
 #include <utility> // for pair
 #include <vector>  // for vector
 
-//#ifdef _OPENMP
-//#include <omp.h>
-//#endif
+// #ifdef _OPENMP
+// #include <omp.h>
+// #endif
 using XYZPoint = ROOT::Math::XYZPoint;
 ClassImp(AtPSASimple2);
 
@@ -44,17 +44,12 @@ void AtPSASimple2::Analyze(AtRawEvent *rawEvent, AtEvent *event)
    auto mcPointsMap = rawEvent->GetSimMCPointMap();
    LOG(debug) << "MC Simulated points Map size " << mcPointsMap.size();
 
-   //#pragma omp parallel for ordered schedule(dynamic,1) private(iPad)
+   // #pragma omp parallel for ordered schedule(dynamic,1) private(iPad)
    for (const auto &pad : rawEvent->GetPads()) {
 
       LOG(debug) << "Running PSA on pad " << pad->GetPadNum();
       Int_t PadNum = pad->GetPadNum();
-      Int_t pSizeID = pad->GetSizeID();
-      Double_t gthreshold = -1;
-      if (pSizeID == 0)
-         gthreshold = fThresholdlow; // threshold for central pads
-      else
-         gthreshold = fThreshold; // threshold for big pads (or all other not small)
+      Double_t gthreshold = getThreshold(pad->GetSizeID());
 
       Double_t QHitTot = 0.0;
       XYZPoint HitPos;
@@ -76,7 +71,7 @@ void AtPSASimple2::Analyze(AtRawEvent *rawEvent, AtEvent *event)
       }
 
       if (!(pad->IsPedestalSubtracted())) {
-         LOG(ERROR) << "Pedestal should be subtracted to use this class!";
+         LOG(error) << "Pedestal should be subtracted to use this class!";
       }
 
       auto adc = pad->GetADC();
@@ -246,7 +241,7 @@ void AtPSASimple2::Analyze(AtRawEvent *rawEvent, AtEvent *event)
          // if(fValidThreshold && fValidBuff)
          // PadMultiplicity.insert(std::pair<Int_t,Int_t>(PadNum,PadHitNum));
 
-         //#pragma omp ordered
+         // #pragma omp ordered
          PadMultiplicity.insert(std::pair<Int_t, Int_t>(pad->GetPadNum(), 1));
 
       } // if Valid Num Peaks

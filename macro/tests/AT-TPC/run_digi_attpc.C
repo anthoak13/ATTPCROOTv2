@@ -38,24 +38,27 @@ void run_digi_attpc()
    auto mapping = std::make_shared<AtTpcMap>();
    mapping->ParseXMLMap(mapParFile.Data());
    mapping->GeneratePadPlane();
-   mapping->ParseInhibitMap("./data/inhibit.txt", AtMap::InhibitType::kTotal);
+   // mapping->ParseInhibitMap("./data/inhibit.txt", AtMap::InhibitType::kTotal);
 
    // __ AT digi tasks___________________________________
-   AtClusterizeLineTask *clusterizer = new AtClusterizeLineTask();
+   // AtClusterizeTask *clusterizer = new AtClusterizeTask(std::make_shared<AtClusterize>());
+   AtClusterizeTask *clusterizer = new AtClusterizeTask(std::make_shared<AtClusterizeLine>());
    clusterizer->SetPersistence(kFALSE);
 
-   // AtPulseTask *pulse = new AtPulseTask();
-   AtPulseLineTask *pulse = new AtPulseLineTask();
-   pulse->SetPersistence(kTRUE);
-   pulse->SetMap(mapping);
-   pulse->SetSaveMCInfo();
+   // AtPulseLineTask *pulse = new AtPulseLineTask();
+
+   // AtPulseTask *pulse = new AtPulseTask(std::make_shared<AtPulse>(mapping));
+   auto pulse = std::make_shared<AtPulseLine>(mapping);
+   pulse->SetSaveCharge(true);
+   AtPulseTask *pulseTask = new AtPulseTask(pulse);
+   pulseTask->SetPersistence(kTRUE);
 
    AtDataReductionTask *reduceTask = new AtDataReductionTask();
    reduceTask->SetInputBranch("AtRawEvent");
-   reduceTask->SetReductionFunction(&reduceFunc);
+   reduceTask->SetReductionFunction<AtRawEvent>(&reduceFunc);
 
    auto psa = std::make_unique<AtPSAMax>();
-   psa->SetThreshold(0);
+   psa->SetThreshold(25);
 
    // Create PSA task
    AtPSAtask *psaTask = new AtPSAtask(std::move(psa));
@@ -68,7 +71,7 @@ void run_digi_attpc()
    ransacTask->SetMinHitsLine(10);
 
    fRun->AddTask(clusterizer);
-   fRun->AddTask(pulse);
+   fRun->AddTask(pulseTask);
    fRun->AddTask(reduceTask);
    fRun->AddTask(psaTask);
    fRun->AddTask(ransacTask);
@@ -78,7 +81,7 @@ void run_digi_attpc()
 
    timer.Start();
    // fRun->Run(0, 20001);
-   fRun->Run(0, 50);
+   fRun->Run(0, 10);
    timer.Stop();
 
    std::cout << std::endl << std::endl;

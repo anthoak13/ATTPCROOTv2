@@ -38,7 +38,7 @@ class HTTimestamp;
 // ROOT classes
 class TClonesArray;
 // ATTPCROOT classes
-class AtRawEvent;
+class AtBaseEvent;
 class TFile;
 
 class AtLinkDAQTask : public FairTask {
@@ -47,7 +47,7 @@ private:
    // Info for AT-TPC Tree
    TClonesArray *fInputEventArray{};       // AtRawEvent
    TString fInputBranchName{"AtRawEvent"}; // Name if AtRawEvent branch
-   AtRawEvent *fRawEvent{nullptr};
+   AtBaseEvent *fEvent{nullptr};
 
    // Info for HiRAEVT Tree input
    std::unique_ptr<TChain> evtTree{nullptr};
@@ -83,6 +83,8 @@ private:
    Bool_t kFillEvt{};
    Bool_t kCorruptedTimestamp{};
 
+   Bool_t kUseRatio{false};
+
    // diagnostic graphs to write in HiRAEVT output file
    std::vector<std::vector<double>> fGrDataRatio;
    std::vector<std::vector<double>> fGrDataAbs;
@@ -106,11 +108,16 @@ public:
    void SetTpcTimestampIndex(Int_t index) { fTpcTimestampIndex = index; }
    void SetEvtOutputFile(TString fileName) { fEvtOutputFileName = fileName; }
    void SetPersistance(Bool_t val) { kPersistent = val; }
+   void SetInputBranch(TString name) { fInputBranchName = name; }
 
    void SetSearchMean(Double_t mean) { fSearchMean = mean; }
    void SetSearchRadius(Double_t radius) { fSearchRadius = radius; }
    void SetCorruptedSearchRadius(Double_t radius) { fCorruptedSearchRadius = radius; }
 
+   void SetUseRatio(Bool_t val) { kUseRatio = val; }
+
+   const TChain *GetInChain() { return evtTree.get(); }
+   TFile *GetOutFile() { return fEvtOutputFile; }
    virtual InitStatus Init() override;
    virtual void Exec(Option_t *opt) override;
    virtual void Finish() override; // called at end of run
@@ -120,4 +127,4 @@ public:
          fEvtOutputTree->Fill();
    } // Called at the end of an event
 };
-#endif //#define ATLINKDAQTASK_H
+#endif // #define ATLINKDAQTASK_H

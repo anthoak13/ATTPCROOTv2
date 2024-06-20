@@ -1,5 +1,7 @@
 #include "AtTrigger.h"
 
+// IWYU pragma: no_include <ext/alloc_traits.h>
+
 #include "AtEvent.h"
 #include "AtPad.h"
 #include "AtRawEvent.h"
@@ -108,7 +110,7 @@ Bool_t AtTrigger::ImplementTrigger(AtRawEvent *rawEvent, AtEvent *event)
 
    // Loop over the NUMBER of SIGNALS in the EVENT
    for (Int_t iHit = 0; iHit < numHits; iHit++) {
-      fHit = fEvent->GetHitArray().at(iHit);
+      fHit = *fEvent->GetHits().at(iHit);
       Int_t PadNumHit = fHit.GetPadNum();
 
       fPad = fRawEvent->GetPad(PadNumHit);

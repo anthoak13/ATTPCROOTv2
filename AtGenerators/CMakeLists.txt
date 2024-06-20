@@ -10,6 +10,8 @@ set(SRCS
 #Pythia8Generator.cxx
 AtTPCIonDecay.cxx
 AtTPCIonGenerator.cxx
+AtTPCIonGeneratorS800.cxx
+AtTPCIonGeneratorGaussian.cxx
 AtTPCIonPhaseSpace.cxx
 
 AtTPC2Body.cxx
@@ -23,6 +25,7 @@ AtTPCXSReader.cxx
 AtTPCXSManager.cxx
 AtTPCGammaDummyGenerator.cxx
 AtTPC20MgDecay.cxx
+AtTPC20MgDecay_pag.cxx
 
 )
 

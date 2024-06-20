@@ -2,10 +2,12 @@
 
 #include <FairLogger.h>
 
+#include <Math/Point2D.h>
 #include <Rtypes.h>
 #include <TCanvas.h>
 #include <TDOMParser.h>
 #include <TH2Poly.h>
+#include <TObject.h> // for TObject
 #include <TStyle.h>
 #include <TXMLDocument.h>
 #include <TXMLNode.h>
@@ -33,11 +35,56 @@ std::ostream &operator<<(std::ostream &os, const AtMap::InhibitType &t)
    case InhibitType::kTotal: os << "kTotal"; break;
    case InhibitType::kLowGain: os << "kLowGain"; break;
    case InhibitType::kXTalk: os << "kXTalk"; break;
+   case InhibitType::kBadPad: os << "kBadPad"; break;
    }
    return os;
 }
 
-AtMap::AtMap() : AtPadCoord(boost::extents[10240][3][2]), fPadPlane(new TH2Poly()) {}
+AtMap::AtMap() : AtPadCoord(boost::extents[10240][3][2]), fPadPlane(nullptr) {}
+
+AtPadReference AtMap::GetNearestFPN(int padNum) const
+{
+   return GetNearestFPN(GetPadRef(padNum));
+}
+
+AtPadReference AtMap::GetNearestFPN(const AtPadReference &ref) const
+{
+   auto fpn = ref;
+   if (ref.ch < 17)
+      fpn.ch = 11;
+   else if (ref.ch < 34)
+      fpn.ch = 22;
+   else if (ref.ch < 51)
+      fpn.ch = 45;
+   else
+      fpn.ch = 56;
+
+   return fpn;
+}
+
+bool AtMap::IsFPNchannel(const AtPadReference &ref) const
+{
+   return ref.ch == 11 || ref.ch == 22 || ref.ch == 45 || ref.ch == 56;
+}
+
+TH2Poly *AtMap::GetPadPlane()
+{
+   if (fPadPlane == nullptr)
+      GeneratePadPlane();
+
+   return dynamic_cast<TH2Poly *>(fPadPlane->Clone());
+}
+
+Int_t AtMap::GetPadNum(ROOT::Math::XYPoint point)
+{
+   if (fPadPlane == nullptr)
+      GeneratePadPlane();
+   auto binNum = fPadPlane->FindBin(point.X(), point.Y());
+   if (binNum < 0)
+      return -1;
+   else
+      return BinToPad(binNum);
+}
 
 Int_t AtMap::GetPadNum(const AtPadReference &PadRef) const
 {
@@ -79,22 +126,23 @@ Bool_t AtMap::ParseInhibitMap(TString inimap, AtMap::InhibitType type)
 
    while (!fIni.eof()) {
       fIni >> pad;
-      inhibitPad(pad, type);
+      InhibitPad(pad, type);
    }
 
    LOG(info) << cYELLOW << fIniPads.size() << " pads in inhibition list." << cNORMAL;
    return true;
 }
 
-void AtMap::inhibitPad(Int_t padNum, AtMap::InhibitType type)
+void AtMap::InhibitPad(AtPadReference padRef, AtMap::InhibitType type)
 {
-   auto pad = fIniPads.find(padNum);
+   auto pad = fIniPads.find(padRef);
    if (pad == fIniPads.end() || pad->second < type)
-      fIniPads[padNum] = type;
+      fIniPads[padRef] = type;
 }
-AtMap::InhibitType AtMap::IsInhibited(Int_t PadNum)
+
+AtMap::InhibitType AtMap::IsInhibited(AtPadReference padRef)
 {
-   auto pad = fIniPads.find(PadNum);
+   auto pad = fIniPads.find(padRef);
    if (pad == fIniPads.end())
       return InhibitType::kNone;
    else
@@ -147,7 +195,7 @@ void AtMap::ParseMapList(TXMLNode *node)
       if (node->GetNodeType() == TXMLNode::kXMLElementNode) { // Element node
          if (strcmp(node->GetNodeName(), "e17504_fission") == 0 || strcmp(node->GetNodeName(), "Lookup20150611") == 0 ||
              strcmp(node->GetNodeName(), "e18505") == 0 || strcmp(node->GetNodeName(), "LookupProto20150331") == 0 ||
-             strcmp(node->GetNodeName(), "LookupProto10Be") == 0 ||
+             strcmp(node->GetNodeName(), "LookupProto10Be") == 0 || "ANL2023.xml" ||
              strcmp(node->GetNodeName(), "LookupProto20181201v2") == 0 ||
              strcmp(node->GetNodeName(), "LookupProtoX17") == 0 ||
              strcmp(node->GetNodeName(), "e12014_pad_mapping") == 0 ||
@@ -155,6 +203,8 @@ void AtMap::ParseMapList(TXMLNode *node)
              strcmp(node->GetNodeName(), "LookupGADGET08232021") == 0 ||
              strcmp(node->GetNodeName(), "Lookup20141208") == 0 ||
              strcmp(node->GetNodeName(), "LookupSpecMATnoScint") == 0 ||
+             strcmp(node->GetNodeName(), "LookupSpecMATnoScintHisto") == 0 ||
+             strcmp(node->GetNodeName(), "LookupSpecMATnoScint3seg") == 0 ||
              strcmp(node->GetNodeName(), "LookupProtoND") == 0) { // TODO Implement this as function parameter
 
             ParseAtTPCMap(node->GetChildren());
@@ -163,7 +213,6 @@ void AtMap::ParseMapList(TXMLNode *node)
          // std::cout <<node->GetNodeName()<<std::endl;
       }
    }
-
    kIsParsed = true;
 }
 
@@ -181,7 +230,7 @@ Bool_t AtMap::ParseXMLMap(Char_t const *xmlfile)
    ParseMapList(node->GetChildren());
    // itrEnd = pmap.end();
 
-   LOG(INFO) << "Pad map has an average load of " << fPadMap.load_factor() << " and a max load of "
+   LOG(info) << "Pad map has an average load of " << fPadMap.load_factor() << " and a max load of "
              << fPadMap.max_load_factor() << " with buckets " << fPadMap.bucket_count() << " for " << fPadMap.size()
              << " pads.";
 

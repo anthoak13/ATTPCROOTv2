@@ -20,7 +20,7 @@ void rundigi_sim(
    FairRunAna *fRun = new FairRunAna();
    FairFileSource *source = new FairFileSource(mcFile);
    fRun->SetSource(source);
-   fRun->SetOutputFile("output_digi.root");
+   fRun->SetOutputFile("./data/diff_digi.root");
 
    TString parameterFile = "GADGET.sim.par";
    TString digiParFile = dir + "/parameters/" + parameterFile;
@@ -53,6 +53,8 @@ void rundigi_sim(
    AtPRAtask *praTask = new AtPRAtask();
    praTask->SetPersistence(kTRUE);
 
+   auto *wHDF = new AtHDF5WriteTask("./data/diff_digi.h5", "AtEventH");
+   wHDF->SetUseEventNum(true);
    /*ATTriggerTask *trigTask = new ATTriggerTask();
      trigTask  ->  SetAtMap(mapParFile);
      trigTask  ->  SetPersistence(kTRUE);*/
@@ -60,6 +62,7 @@ void rundigi_sim(
    fRun->AddTask(clusterizer);
    fRun->AddTask(pulse);
    fRun->AddTask(psaTask);
+   fRun->AddTask(wHDF);
    // fRun -> AddTask(praTask);
    // fRun -> AddTask(trigTask);
 

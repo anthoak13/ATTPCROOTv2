@@ -161,30 +161,6 @@ std::vector<double> TrianglesGenerator()
    return allCoordinates;
 } // End TrianglesGenerator()
 
-// TH2Poly *SpecMATHistoGenerator()
-TH2Poly *AtSpecMATMap::GetPadPlane()
-{
-   // TH2Poly *SpecMAThisto = new TH2Poly();
-   std::vector<double> arrayAllCoordinates = TrianglesGenerator();
-   double x[3];
-   double y[3];
-   int arrayAllCoordinatesSize = arrayAllCoordinates.size();
-   for (int i2 = 0; i2 < arrayAllCoordinatesSize / 8; i2++) {
-      x[0] = arrayAllCoordinates[8 * i2];
-      y[0] = arrayAllCoordinates[8 * i2 + 1];
-      x[1] = arrayAllCoordinates[8 * i2 + 2];
-      y[1] = arrayAllCoordinates[8 * i2 + 3];
-      x[2] = arrayAllCoordinates[8 * i2 + 4];
-      y[2] = arrayAllCoordinates[8 * i2 + 5];
-      fPadPlane->AddBin(3, x, y);
-   }
-
-   if (kGUIMode)
-      drawPadPlane();
-
-   return fPadPlane;
-} // SpecMATHistoGenerator()
-
 void AtSpecMATMap::SpecMATPadPlane()
 {
 
@@ -246,6 +222,10 @@ void AtSpecMATMap::SpecMATPadPlane()
 
 void AtSpecMATMap::GeneratePadPlane()
 {
+   if (fPadPlane) {
+      LOG(error) << "Skipping generation of pad plane, it is already parsed!";
+      return;
+   }
 
    std::cout << " SpecMAT Map : Generating the map geometry of SpecMAT " << std::endl;
 
@@ -265,6 +245,25 @@ void AtSpecMATMap::GeneratePadPlane()
 
    std::cout << " A total of  " << fNumberPads << " pads were generated  " << std::endl;
    kIsParsed = true;
+
+   fPadPlane = new TH2Poly(); // NOLINT
+   std::vector<double> arrayAllCoordinates = TrianglesGenerator();
+   double x[3];
+   double y[3];
+   int arrayAllCoordinatesSize = arrayAllCoordinates.size();
+   for (int i2 = 0; i2 < arrayAllCoordinatesSize / 8; i2++) {
+      if (i2 != 0 && i2 != arrayAllCoordinatesSize * 1 / (6 * 8) && i2 != arrayAllCoordinatesSize * 2 / (6 * 8) &&
+          i2 != arrayAllCoordinatesSize * 3 / (6 * 8) && i2 != arrayAllCoordinatesSize * 4 / (6 * 8) &&
+          i2 != arrayAllCoordinatesSize * 5 / (6 * 8)) {
+         x[0] = arrayAllCoordinates[8 * i2];
+         y[0] = arrayAllCoordinates[8 * i2 + 1];
+         x[1] = arrayAllCoordinates[8 * i2 + 2];
+         y[1] = arrayAllCoordinates[8 * i2 + 3];
+         x[2] = arrayAllCoordinates[8 * i2 + 4];
+         y[2] = arrayAllCoordinates[8 * i2 + 5];
+         fPadPlane->AddBin(3, x, y);
+      }
+   }
 }
 
 XYPoint AtSpecMATMap::CalcPadCenter(Int_t PadRef)
@@ -279,8 +278,30 @@ XYPoint AtSpecMATMap::CalcPadCenter(Int_t PadRef)
       return {-9999, -9999};
    }
 
-   auto x = AtPadCoord[PadRef][3][0];
-   auto y = AtPadCoord[PadRef][3][1];
+   double x = -9999;
+   double y = -9999;
+
+   if (PadRef < 529) {
+      x = AtPadCoord[PadRef][3][0];
+      y = AtPadCoord[PadRef][3][1];
+   } else if (PadRef >= 529 && PadRef < 529 * 2 - 1) {
+      x = AtPadCoord[PadRef + 1][3][0];
+      y = AtPadCoord[PadRef + 1][3][1];
+   } else if (PadRef >= 529 * 2 - 1 && PadRef < 529 * 3 - 2) {
+      x = AtPadCoord[PadRef + 2][3][0];
+      y = AtPadCoord[PadRef + 2][3][1];
+   } else if (PadRef >= 529 * 3 - 2 && PadRef < 529 * 4 - 3) {
+      x = AtPadCoord[PadRef + 3][3][0];
+      y = AtPadCoord[PadRef + 3][3][1];
+   } else if (PadRef >= 529 * 4 - 3 && PadRef < 529 * 5 - 4) {
+      x = AtPadCoord[PadRef + 4][3][0];
+      y = AtPadCoord[PadRef + 4][3][1];
+   } else if (PadRef >= 529 * 5 - 4 && PadRef < 529 * 6 - 5) {
+      x = AtPadCoord[PadRef + 5][3][0];
+      y = AtPadCoord[PadRef + 5][3][1];
+   }
+   // auto x = AtPadCoord[PadRef][3][0];
+   // auto y = AtPadCoord[PadRef][3][1];
    return {x, y};
 }
 

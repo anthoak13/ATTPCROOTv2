@@ -49,9 +49,9 @@ AtTPC2Body::AtTPC2Body(const char *name, std::vector<Int_t> *z, std::vector<Int_
    fIon.reserve(fMult);
 
    char buffer[30];
-   auto *kProton = new TParticle();
+   auto *kProton = new TParticle(); // NOLINT but probably a problem
    kProton->SetPdgCode(2212);
-   auto *kNeutron = new TParticle();
+   auto *kNeutron = new TParticle(); // NOLINT but probably a problem
    kNeutron->SetPdgCode(2112);
 
    for (Int_t i = 0; i < fMult; i++) {
@@ -68,21 +68,21 @@ AtTPC2Body::AtTPC2Body(const char *name, std::vector<Int_t> *z, std::vector<Int_
 
       if (a->at(i) != 1) {
 
-         IonBuff = new FairIon(buffer, z->at(i), a->at(i), q->at(i), 0.0, mass->at(i));
-         ParticleBuff = new FairParticle("dummyPart", 1, 1, 1.0, 0, 0.0, 0.0);
+         IonBuff = new FairIon(buffer, z->at(i), a->at(i), q->at(i), 0.0, mass->at(i)); // NOLINT but probably a problem
+         ParticleBuff = new FairParticle("dummyPart", 1, 1, 1.0, 0, 0.0, 0.0);          // NOLINT but probably a problem
          fPType.emplace_back("Ion");
          std::cout << " Adding : " << buffer << std::endl;
 
       } else if (a->at(i) == 1 && z->at(i) == 1) {
 
-         IonBuff = new FairIon("dummyIon", 50, 50, 0, 0.0, 100); // We fill the std::vector with a dummy ion
-         ParticleBuff = new FairParticle(2212, kProton);
+         IonBuff = new FairIon("dummyIon", 50, 50, 0, 0.0, 100); // NOLINT but probably a problem
+         ParticleBuff = new FairParticle(2212, kProton);         // NOLINT but probably a problem
          fPType.emplace_back("Proton");
 
       } else if (a->at(i) == 1 && z->at(i) == 0) {
 
-         IonBuff = new FairIon("dummyIon", 50, 50, 0, 0.0, 100); // We fill the std::vector with a dummy ion
-         ParticleBuff = new FairParticle(2112, kNeutron);
+         IonBuff = new FairIon("dummyIon", 50, 50, 0, 0.0, 100); // NOLINT but probably a problem
+         ParticleBuff = new FairParticle(2112, kNeutron);        // NOLINT but probably a problem
          fPType.emplace_back("Neutron");
       }
 
@@ -294,11 +294,11 @@ Bool_t AtTPC2Body::ReadEvent(FairPrimaryGenerator *primGen)
          }
 
          // AtVertexPropagator::Instance()->SetRecoilE(Ene.at(1));
-         AtVertexPropagator::Instance()->SetTrackEnergy(2, Ene.at(1));
-         AtVertexPropagator::Instance()->SetTrackAngle(2, Ang.at(1) * 180.0 / TMath::Pi());
+         AtVertexPropagator::Instance()->SetTrackEnergy(1, Ene.at(1));
+         AtVertexPropagator::Instance()->SetTrackAngle(1, Ang.at(1) * 180.0 / TMath::Pi());
 
-         AtVertexPropagator::Instance()->SetTrackEnergy(1, Ene.at(0));
-         AtVertexPropagator::Instance()->SetTrackAngle(1, Ang.at(0) * 180.0 / TMath::Pi());
+         AtVertexPropagator::Instance()->SetTrackEnergy(0, Ene.at(0));
+         AtVertexPropagator::Instance()->SetTrackAngle(0, Ang.at(0) * 180.0 / TMath::Pi());
 
          fPx.at(0) = 0.0;
          fPy.at(0) = 0.0;
@@ -336,8 +336,8 @@ Bool_t AtTPC2Body::ReadEvent(FairPrimaryGenerator *primGen)
 
          TVector3 BeamPos(fPxBeam * 1000, fPyBeam * 1000, fPzBeam * 1000); // To MeV for Euler Transformation
          // TVector3 BeamPos(1.0,1.0,0.0);
-         LOG(DEBUG) << " Beam Theta (Mom) : " << BeamPos.Theta() * 180.0 / TMath::Pi();
-         LOG(DEBUG) << " Beam Phi (Mom) : " << BeamPos.Phi() * 180.0 / TMath::Pi();
+         LOG(debug) << " Beam Theta (Mom) : " << BeamPos.Theta() * 180.0 / TMath::Pi();
+         LOG(debug) << " Beam Phi (Mom) : " << BeamPos.Phi() * 180.0 / TMath::Pi();
 
          Double_t thetaLab1, phiLab1, thetaLab2, phiLab2;
          auto EulerTransformer = std::make_unique<AtEulerTransformation>();
@@ -351,9 +351,9 @@ Bool_t AtTPC2Body::ReadEvent(FairPrimaryGenerator *primGen)
 
          thetaLab1 = EulerTransformer->GetThetaInLabSystem();
          phiLab1 = EulerTransformer->GetPhiInLabSystem();
-         LOG(DEBUG) << " Scattered  angle Phi :" << phiBeam1 * 180.0 / TMath::Pi() << " deg";
-         LOG(DEBUG) << " Scattered  angle Theta (Euler) :" << thetaLab1 * 180.0 / TMath::Pi() << " deg";
-         LOG(DEBUG) << " Scattered  angle Phi (Euler) :" << phiLab1 * 180.0 / TMath::Pi() << " deg";
+         LOG(debug) << " Scattered  angle Phi :" << phiBeam1 * 180.0 / TMath::Pi() << " deg";
+         LOG(debug) << " Scattered  angle Theta (Euler) :" << thetaLab1 * 180.0 / TMath::Pi() << " deg";
+         LOG(debug) << " Scattered  angle Phi (Euler) :" << phiLab1 * 180.0 / TMath::Pi() << " deg";
 
          /*TVector3 direction1 = TVector3(sin(thetaLab1)*cos(phiLab1),
                                                sin(thetaLab1)*sin(phiLab1),
@@ -371,19 +371,19 @@ Bool_t AtTPC2Body::ReadEvent(FairPrimaryGenerator *primGen)
 
          TVector3 direction2 = TVector3(sin(thetaLab2) * cos(phiLab2), sin(thetaLab2) * sin(phiLab2), cos(thetaLab2));
 
-         LOG(DEBUG) << " Recoiled  angle Phi :" << phiBeam2 * 180.0 / TMath::Pi() << " deg";
-         LOG(DEBUG) << " Recoiled  angle Theta (Euler) :" << thetaLab2 * 180.0 / TMath::Pi() << " deg";
-         LOG(DEBUG) << " Recoiled  angle Phi (Euler) :" << phiLab2 * 180.0 / TMath::Pi() << " deg";
+         LOG(debug) << " Recoiled  angle Phi :" << phiBeam2 * 180.0 / TMath::Pi() << " deg";
+         LOG(debug) << " Recoiled  angle Theta (Euler) :" << thetaLab2 * 180.0 / TMath::Pi() << " deg";
+         LOG(debug) << " Recoiled  angle Phi (Euler) :" << phiLab2 * 180.0 / TMath::Pi() << " deg";
 
-         LOG(DEBUG) << "  Phi Diference :" << (phiBeam1 * 180.0 / TMath::Pi()) - (phiBeam2 * 180.0 / TMath::Pi())
+         LOG(debug) << "  Phi Diference :" << (phiBeam1 * 180.0 / TMath::Pi()) - (phiBeam2 * 180.0 / TMath::Pi())
                     << " deg";
-         LOG(DEBUG) << "  Phi Diference (Euler) :" << (phiLab1 * 180.0 / TMath::Pi()) - (phiLab2 * 180.0 / TMath::Pi())
+         LOG(debug) << "  Phi Diference (Euler) :" << (phiLab1 * 180.0 / TMath::Pi()) - (phiLab2 * 180.0 / TMath::Pi())
                     << " deg";
 
-         LOG(DEBUG) << " Direction 1 Theta : " << direction1.Theta() * 180.0 / TMath::Pi();
-         LOG(DEBUG) << " Direction 1 Phi : " << direction1.Phi() * 180.0 / TMath::Pi();
-         LOG(DEBUG) << " Direction 2 Theta : " << direction2.Theta() * 180.0 / TMath::Pi();
-         LOG(DEBUG) << " Direction 2 Phi : " << direction2.Phi() * 180.0 / TMath::Pi();
+         LOG(debug) << " Direction 1 Theta : " << direction1.Theta() * 180.0 / TMath::Pi();
+         LOG(debug) << " Direction 1 Phi : " << direction1.Phi() * 180.0 / TMath::Pi();
+         LOG(debug) << " Direction 2 Theta : " << direction2.Theta() * 180.0 / TMath::Pi();
+         LOG(debug) << " Direction 2 Phi : " << direction2.Phi() * 180.0 / TMath::Pi();
 
          fPx.at(2) = p3_lab * direction1.X() / 1000.0; // To GeV for FairRoot
          fPy.at(2) = p3_lab * direction1.Y() / 1000.0;

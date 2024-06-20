@@ -2,7 +2,6 @@
 
 #include "AtDigiPar.h"       // for AtDigiPar
 #include "AtEvent.h"         // for AtEvent
-#include "AtHit.h"           // for AtHit
 #include "AtPRA.h"           // for AtPRA
 #include "AtPatternEvent.h"  // for AtPatternEvent
 #include "AtTrackFinderTC.h" // for AtTrackFinderHC
@@ -14,14 +13,15 @@
 
 #include <TObject.h> // for TObject
 
-#include <algorithm> // for max
 #include <iostream>  // for operator<<, basic_ostream, cout, ostream
 #include <memory>    // for unique_ptr<>::element_type, unique_ptr
 #include <stdexcept> // for runtime_error
 #include <utility>   // for move
 #include <vector>    // for allocator, vector
 
-AtPRAtask::AtPRAtask() : FairTask("AtPRAtask"), fPatternEventArray("AtPatternEvent", 1)
+AtPRAtask::AtPRAtask()
+   : fInputBranchName("AtEventH"), fOutputBranchName("AtPatternEvent"), FairTask("AtPRAtask"),
+     fPatternEventArray("AtPatternEvent", 1)
 {
 
    LOG(debug) << "Default Constructor of AtPRAtask";
@@ -139,13 +139,13 @@ InitStatus AtPRAtask::Init()
       return kERROR;
    }
 
-   fEventHArray = dynamic_cast<TClonesArray *>(ioMan->GetObject("AtEventH"));
+   fEventHArray = dynamic_cast<TClonesArray *>(ioMan->GetObject(fInputBranchName));
    if (fEventHArray == nullptr) {
       LOG(error) << "Cannot find AtEvent array!";
       return kERROR;
    }
 
-   ioMan->Register("AtPatternEvent", "AtTPC", &fPatternEventArray, kIsPersistence);
+   ioMan->Register(fOutputBranchName, "AtTPC", &fPatternEventArray, kIsPersistence);
 
    return kSUCCESS;
 }
@@ -159,9 +159,8 @@ void AtPRAtask::Exec(Option_t *option)
    if (fEventHArray->GetEntriesFast() == 0)
       return;
 
-   std::vector<AtHit> hitArray;
    AtEvent &event = *(dynamic_cast<AtEvent *>(fEventHArray->At(0))); // TODO: Make sure we are not copying
-   hitArray = event.GetHitArray();
+   auto &hitArray = event.GetHits();
 
    std::cout << "  -I- AtPRAtask -  Event Number :  " << event.GetEventID() << "\n";
 

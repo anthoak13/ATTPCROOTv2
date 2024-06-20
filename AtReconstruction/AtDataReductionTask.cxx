@@ -1,6 +1,6 @@
 #include "AtDataReductionTask.h"
 
-#include "AtRawEvent.h"
+#include "AtBaseEvent.h"
 
 #include <FairLogger.h>
 #include <FairRootManager.h>
@@ -10,11 +10,14 @@
 #include <TClonesArray.h>
 #include <TObject.h>
 
-#include <memory>
+ClassImp(AtDataReductionTask);
 
-AtDataReductionTask::AtDataReductionTask() : reduceFunc(nullptr), fInputBranchName("AtRawEvent") {}
-
-AtDataReductionTask::~AtDataReductionTask() = default;
+void AtDataReductionTask::SetReductionFunction(std::function<bool(AtBaseEvent *)> func)
+{
+   // Bind the reduction function to the passed function, having it call that function with the current
+   // AtRawEvent in the pointer this->fRawEvent.
+   fReductionFunc = [this, func]() { return func(fEvent); };
+}
 
 InitStatus AtDataReductionTask::Init()
 {
@@ -26,7 +29,7 @@ InitStatus AtDataReductionTask::Init()
 
    fInputEventArray = dynamic_cast<TClonesArray *>(ioMan->GetObject(fInputBranchName));
    if (fInputEventArray == nullptr) {
-      LOG(fatal) << "Cannot find AtRawEvent array in branch " << fInputBranchName << "!";
+      LOG(fatal) << "Cannot find TClonesArray in branch " << fInputBranchName << "!";
       return kFATAL;
    }
 
@@ -38,13 +41,28 @@ void AtDataReductionTask::Exec(Option_t *opt)
    // Get raw event
    if (fInputEventArray->GetEntriesFast() == 0)
       return;
-   fRawEvent = dynamic_cast<AtRawEvent *>(fInputEventArray->At(0));
+   fEvent = dynamic_cast<AtBaseEvent *>(fInputEventArray->At(0));
 
-   // If we should skip this event
-   if ((*reduceFunc)(fRawEvent))
-      LOG(info) << "Keeping event " << fRawEvent->GetEventID() << " with " << fRawEvent->GetNumPads() << " pads";
+   // If we should skip this event mark bad and don't fill tree
+   if (fReductionFunc())
+      LOG(info) << "Keeping event " << fEvent->GetEventID() << " at " << FairRootManager::Instance()->GetEntryNr();
    else {
-      fRawEvent->SetIsGood(false);
+
+      LOG(info) << "Skipping event " << fEvent->GetEventID() << " at " << FairRootManager::Instance()->GetEntryNr();
+
+      FairRootManager *ioMan = FairRootManager::Instance();
+      for (auto name : fOutputBranchs) {
+         auto b = dynamic_cast<TClonesArray *>(ioMan->GetObject(name));
+         if (fInputEventArray == nullptr)
+            LOG(fatal) << "Cannot find branch " << name << "!";
+
+         auto e = dynamic_cast<AtBaseEvent *>(b->At(0));
+         if (e == nullptr) {
+            LOG(error) << "Not setting " << name;
+            continue;
+         }
+         e->SetIsGood(false);
+      }
       FairRunAna::Instance()->MarkFill(false);
    }
 }

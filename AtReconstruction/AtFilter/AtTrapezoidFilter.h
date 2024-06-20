@@ -9,6 +9,7 @@
 
 class AtPad;
 class AtRawEvent;
+struct AtPadReference;
 
 class AtTrapezoidFilter : public AtFilter {
 
@@ -42,8 +43,8 @@ public:
 
    virtual void Init() override {}
    virtual void InitEvent(AtRawEvent *event) override {}
-   virtual void Filter(AtPad *pad) override;
+   virtual void Filter(AtPad *pad, AtPadReference *padReference) override;
    virtual bool IsGoodEvent() override { return true; }
 };
 
-#endif //#ifndef ATTRAPEZOIDFILTER_H
+#endif // #ifndef ATTRAPEZOIDFILTER_H

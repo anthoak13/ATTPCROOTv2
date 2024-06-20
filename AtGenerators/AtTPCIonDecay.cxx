@@ -28,6 +28,7 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
+#include <utility>
 
 constexpr float amu = 931.494;
 
@@ -57,10 +58,6 @@ AtTPCIonDecay::AtTPCIonDecay(std::vector<std::vector<Int_t>> *z, std::vector<std
      fPType(0), fSepEne(0), fMasses(0), fQ(0), fPxBeam(0.), fPyBeam(0.), fPzBeam(0.)
 {
 
-   auto *kProton = new TParticle(); // TODO: Memory leak, only cleaned if passed to FairParticle
-   kProton->SetPdgCode(2212);
-   auto *kNeutron = new TParticle(); // TODO: Memory leak, only cleaned if passed to FairParticle
-   kNeutron->SetPdgCode(2112);
    char buffer[40];
 
    fgNIon++;
@@ -90,30 +87,34 @@ AtTPCIonDecay::AtTPCIonDecay(std::vector<std::vector<Int_t>> *z, std::vector<std
    for (Int_t k = 0; k < fNbCases; k++) {
       for (Int_t i = 0; i < fMult.at(k); i++) {
 
-         FairIon *IonBuff = nullptr;
-         FairParticle *ParticleBuff = nullptr;
+         std::unique_ptr<FairIon> IonBuff = nullptr;
+         std::unique_ptr<FairParticle> ParticleBuff = nullptr;
          sprintf(buffer, "Product_Ion_dec%d_%d", k, i);
          if (a->at(k).at(i) != 1) {
-            IonBuff = new FairIon(buffer, z->at(k).at(i), a->at(k).at(i), q->at(k).at(i), 0.0,
-                                  mass->at(k).at(i) * amu / 1000.0);
-            ParticleBuff = new FairParticle("dummyPart", 1, 1, 1.0, 0, 0.0, 0.0);
+            IonBuff = std::make_unique<FairIon>(buffer, z->at(k).at(i), a->at(k).at(i), q->at(k).at(i), 0.0,
+                                                mass->at(k).at(i) * amu / 1000.0);
+            ParticleBuff = std::make_unique<FairParticle>("dummyPart", 1, 1, 1.0, 0, 0.0, 0.0);
             fPType.at(k).push_back("Ion");
-            run->AddNewIon(IonBuff);
+            run->AddNewIon(IonBuff.get());
 
          } else if (a->at(k).at(i) == 1 && z->at(k).at(i) == 1) {
-            IonBuff = new FairIon(buffer, z->at(k).at(i), a->at(k).at(i), q->at(k).at(i), 0.0,
-                                  mass->at(k).at(i) * amu / 1000.0);
-            ParticleBuff = new FairParticle(2212, kProton);
+            IonBuff = std::make_unique<FairIon>(buffer, z->at(k).at(i), a->at(k).at(i), q->at(k).at(i), 0.0,
+                                                mass->at(k).at(i) * amu / 1000.0);
+            auto *kProton = new TParticle(); // NOLINT
+            kProton->SetPdgCode(2212);
+            ParticleBuff = std::make_unique<FairParticle>(2212, kProton);
             fPType.at(k).push_back("Proton");
 
          } else if (a->at(k).at(i) == 1 && z->at(k).at(i) == 0) {
-            IonBuff = new FairIon(buffer, z->at(k).at(i), a->at(k).at(i), q->at(k).at(i), 0.0,
-                                  mass->at(k).at(i) * amu / 1000.0);
-            ParticleBuff = new FairParticle(2112, kNeutron);
+            IonBuff = std::make_unique<FairIon>(buffer, z->at(k).at(i), a->at(k).at(i), q->at(k).at(i), 0.0,
+                                                mass->at(k).at(i) * amu / 1000.0);
+            auto *kNeutron = new TParticle(); // NOLINT
+            kNeutron->SetPdgCode(2112);
+            ParticleBuff = std::make_unique<FairParticle>(2112, kNeutron);
             fPType.at(k).push_back("Neutron");
          }
-         fIon.at(k).push_back(IonBuff);
-         fParticle.at(k).push_back(ParticleBuff);
+         fIon.at(k).push_back(std::move(IonBuff));
+         fParticle.at(k).push_back(std::move(ParticleBuff));
       } // for mult
    }    // for case
 }
@@ -127,32 +128,32 @@ Bool_t AtTPCIonDecay::ReadEvent(FairPrimaryGenerator *primGen)
    fIsDecay = kFALSE;
    Double_t excitationEnergy = 0.0;
 
-   LOG(INFO) << cBLUE << " AtTPCIonDecay - Decay energy -  Excitation energy from reaction :  " << ExEject
+   LOG(info) << cBLUE << " AtTPCIonDecay - Decay energy -  Excitation energy from reaction :  " << ExEject
              << " and from task : " << fExEnergy
              << ". Beam energy : " << AtVertexPropagator::Instance()->GetEnergy() / 1000.0 << " GeV . Is Sequential? "
              << fIsSequentialDecay << cNORMAL << "\n";
-   LOG(INFO) << cORANGEWARNING
+   LOG(info) << cORANGEWARNING
              << " AtTPCIonDecay - Warning: Temporary warning message to control the flow of generators.Please, check "
                 "that if the decay comes from beam fusion, the energy from reaction is 0"
              << cNORMAL << "\n";
 
    if (ExEject > 0.0 && !fIsSequentialDecay) {
-      LOG(INFO) << cBLINKINGRED
-                << " AtTPCIonDecay - Warning, Incosistent variables: Recoil excitation energy from Vertex propagator "
+      LOG(info) << cBLINKINGRED
+                << " AtTPCIonDecay - Warning, Inconsistent variables: Recoil excitation energy from Vertex propagator "
                    "greater than 0 but sequential decay not enabled! Continue at your own risk!"
                 << cNORMAL << "\n";
 
    } else if (fIsSequentialDecay && fExEnergy > 0.0) {
 
-      LOG(INFO) << cBLINKINGRED
-                << " AtTPCIonDecay - Warning, Incosistent variables: Sequential decay should take the Ex energy from "
+      LOG(info) << cBLINKINGRED
+                << " AtTPCIonDecay - Warning, Inconsistent variables: Sequential decay should take the Ex energy from "
                    "the reaction generator! Continue at your own risk!"
                 << cNORMAL << "\n";
 
    } else if (ExEject > 0.0 && fExEnergy > 0.0) {
-      LOG(INFO)
+      LOG(info)
          << cBLINKINGRED
-         << " AtTPCIonDecay - Warning, Incosistent variables: Both, excitation energy from Vertex propagator and "
+         << " AtTPCIonDecay - Warning, Inconsistent variables: Both, excitation energy from Vertex propagator and "
             "excitation energy from task (introduced through the macro) are positive! Continue at your own risk!"
          << cNORMAL << "\n";
    }
@@ -172,7 +173,7 @@ Bool_t AtTPCIonDecay::ReadEvent(FairPrimaryGenerator *primGen)
       auto it = GoodCases.begin();
       std::advance(it, RandVar);
       Int_t Case = *it;
-      // LOG(INFO)<<"iterator "<<" "<<Case<<" "<<RandVar<<" "<<GoodCases.size()<<" "<<std::endl;
+      // LOG(info)<<"iterator "<<" "<<Case<<" "<<RandVar<<" "<<GoodCases.size()<<" "<<std::endl;
 
       Double_t beta;
       Double_t s = 0.0;
@@ -196,13 +197,13 @@ Bool_t AtTPCIonDecay::ReadEvent(FairPrimaryGenerator *primGen)
       fPy.resize(fMult.at(Case));
       fPz.resize(fMult.at(Case));
 
-      // LOG(INFO)<<" Case : "<<Case<<" with multiplicity : "<<fMult.at(Case)<<"\n";
+      // LOG(info)<<" Case : "<<Case<<" with multiplicity : "<<fMult.at(Case)<<"\n";
 
       fIsDecay = kFALSE;
 
       if (fIsSequentialDecay) // NB: Decay modelled as two-step (coming from reaction generator)
       {
-         fBeamEnergy = AtVertexPropagator::Instance()->GetTrackEnergy(1) / 1000.0;
+         fBeamEnergy = AtVertexPropagator::Instance()->GetTrackEnergy(0) / 1000.0;
          TVector3 ScatP = AtVertexPropagator::Instance()->GetScatterP();
          fPxBeam = ScatP.X();
          fPyBeam = ScatP.Y();
@@ -221,7 +222,7 @@ Bool_t AtTPCIonDecay::ReadEvent(FairPrimaryGenerator *primGen)
          fIon.at(Case).at(0)->GetName()); // NB: The first particle of the list must be the decaying ion
       int pdgType0 = thisPart0->PdgCode();
 
-      LOG(INFO) << cBLUE << " Ejectile info : " << pdgType0 << " " << fBeamMass << " " << fPxBeam << " " << fPyBeam
+      LOG(info) << cBLUE << " Ejectile info : " << pdgType0 << " " << fBeamMass << " " << fPxBeam << " " << fPyBeam
                 << " " << fPzBeam << " " << fBeamEnergy << " " << excitationEnergy << cNORMAL << "\n";
 
       // === Phase Space Calculation
@@ -231,10 +232,11 @@ Bool_t AtTPCIonDecay::ReadEvent(FairPrimaryGenerator *primGen)
       fEnergyImpulsionLab_target = TLorentzVector(TVector3(0, 0, 0), fTargetMass);
 
       if (fTargetMass > 0 && fIsSequentialDecay) {
-         LOG(INFO) << cBLINKINGRED
-                   << " AtTPCIonDecay - Warning, Incosistent variables: Target Impulsion included in sequential decay. "
-                      "Continue at your own risk!"
-                   << cNORMAL << "\n";
+         LOG(info)
+            << cBLINKINGRED
+            << " AtTPCIonDecay - Warning, Inconsistent variables: Target Impulsion included in sequential decay. "
+               "Continue at your own risk!"
+            << cNORMAL << "\n";
       }
 
       fEnergyImpulsionLab_Total = fEnergyImpulsionLab_beam + fEnergyImpulsionLab_target;
@@ -257,12 +259,11 @@ Bool_t AtTPCIonDecay::ReadEvent(FairPrimaryGenerator *primGen)
          // if(ExEject*1000.0>fSepEne){
          fIsDecay = kTRUE;
          event1.SetDecay(fEnergyImpulsionLab_Total, fMult.at(Case), mass_1);
-         // Double_t weight1 = event1.Generate();
-
+         event1.Generate(); // to generate the random final state
          std::vector<Double_t> KineticEnergy;
          std::vector<Double_t> ThetaLab;
 
-         LOG(INFO) << cBLUE << " AtTPCIonDecay -  Phase Space Information "
+         LOG(info) << cBLUE << " AtTPCIonDecay -  Phase Space Information "
                    << "\n";
          for (Int_t i = 0; i < fMult.at(Case); i++) {
             p_vector.push_back(event1.GetDecay(i));
@@ -271,15 +272,16 @@ Bool_t AtTPCIonDecay::ReadEvent(FairPrimaryGenerator *primGen)
             fPz.at(i) = p_vector.at(i)->Pz();
             KineticEnergy.push_back((p_vector.at(i)->E() - mass_1[i]) * 1000.0);
             ThetaLab.push_back(p_vector.at(i)->Theta() * 180. / TMath::Pi());
-            LOG(INFO) << " Particle " << i << " - TKE (MeV) : " << KineticEnergy.at(i)
-                      << " - Lab Angle (deg) : " << ThetaLab.at(i) << cNORMAL << "\n";
+            LOG(info) << " Particle " << i << " - TKE (MeV) : " << KineticEnergy.at(i)
+                      << " - Lab Angle (deg) : " << ThetaLab.at(i) << "\n";
          }
+         LOG(info) << cNORMAL;
 
       } else { // if kinematics condition
 
-         LOG(INFO) << cYELLOW << "AtTPCIonDecay - Warning, kinematical conditions for decay not fulfilled " << cNORMAL
+         LOG(info) << cYELLOW << "AtTPCIonDecay - Warning, kinematical conditions for decay not fulfilled " << cNORMAL
                    << "\n";
-         LOG(INFO) << cYELLOW << " s = " << s << " - pow(M_tot,2) = " << pow(M_tot, 2) << cNORMAL << "\n";
+         LOG(info) << cYELLOW << " s = " << s << " - pow(M_tot,2) = " << pow(M_tot, 2) << cNORMAL << "\n";
       }
 
       // === Propagate the decay products from the vertex of the reaction
@@ -309,21 +311,22 @@ Bool_t AtTPCIonDecay::ReadEvent(FairPrimaryGenerator *primGen)
 
          int pdgType = thisPart->PdgCode();
 
-         // To do: Add a member function to enable vertex from d2He generator
-         // TVector3 d2HeVtx = AtVertexPropagator::Instance()->Getd2HeVtx();
-         // fVx = d2HeVtx.X();
-         // fVy = d2HeVtx.Y();
-         // fVz = d2HeVtx.Z();
-
-         fVx = AtVertexPropagator::Instance()->GetVx();
-         fVy = AtVertexPropagator::Instance()->GetVy();
-         fVz = AtVertexPropagator::Instance()->GetVz();
+         if (AtVertexPropagator::Instance()->Getd2HeEvt()) {
+            TVector3 d2HeVtx = AtVertexPropagator::Instance()->Getd2HeVtx();
+            fVx = d2HeVtx.X();
+            fVy = d2HeVtx.Y();
+            fVz = d2HeVtx.Z();
+         } else {
+            fVx = AtVertexPropagator::Instance()->GetVx();
+            fVy = AtVertexPropagator::Instance()->GetVy();
+            fVz = AtVertexPropagator::Instance()->GetVz();
+         }
 
          // std::cout << "-I- FairIonGenerator: Generating " <<" with mass "<<thisPart->Mass()<<" ions of type "<<
-         // fIon.at(i)->GetName() << " (PDG code " << pdgType << ")" << std::endl; std::cout << "    Momentum (" <<
-         // fPx.at(i) << ", " << fPy.at(i) << ", " << fPz.at(i)
-         //<< ") Gev from vertex (" << fVx << ", " << fVy
-         //<< ", " << fVz << ") cm" << std::endl;
+         // fIon.at(Case).at(i)->GetName() << " (PDG code " << pdgType << ")" << std::endl; std::cout << "    Momentum
+         // (" << fPx.at(i) << ", " << fPy.at(i) << ", " << fPz.at(i)
+         // << ") Gev from vertex (" << fVx << ", " << fVy
+         // << ", " << fVz << ") cm" << std::endl;
 
          if (fIsDecay) {
             primGen->AddTrack(pdgType, fPx.at(i), fPy.at(i), fPz.at(i), fVx, fVy, fVz);

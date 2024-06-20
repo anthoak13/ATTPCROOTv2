@@ -17,11 +17,11 @@ namespace RandomSample {
 class AtIndependentSample : public AtSample {
 public:
    virtual ~AtIndependentSample() = default;
-   virtual void SetHitsToSample(const std::vector<AtHit> *hits) override;
+   virtual void SetHitsToSample(const std::vector<const AtHit *> &hits) override;
 
 protected:
    virtual std::vector<double> PDF(const AtHit &hit) override = 0;
 };
 } // namespace RandomSample
 
-#endif //#ifndef ATINDEPENDENTSAMPLE_H
+#endif // #ifndef ATINDEPENDENTSAMPLE_H

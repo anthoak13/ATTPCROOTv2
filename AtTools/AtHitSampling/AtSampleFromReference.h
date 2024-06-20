@@ -22,7 +22,7 @@ protected:
 public:
    virtual ~AtSampleFromReference() = default;
    virtual std::vector<AtHit> SampleHits(int N) override;
-   virtual void SetHitsToSample(const std::vector<AtHit> *hits) override;
+   virtual void SetHitsToSample(const std::vector<const AtHit *> &hits) override { fHits = &hits; }
    void SetReferenceHit(AtHit hit);
    const AtHit &GetReferenceHit() const { return fReferenceHit; }
 
@@ -30,4 +30,4 @@ protected:
    virtual void SampleReferenceHit();
 };
 } // namespace RandomSample
-#endif //#ifndef ATSAMPLEFROMREFERENCE_H
+#endif // #ifndef ATSAMPLEFROMREFERENCE_H

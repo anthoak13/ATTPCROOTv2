@@ -1,38 +1,42 @@
 #include "eFitterAnalysis.h"
-
+using XYZPoint = ROOT::Math::XYZPoint;
 int main(int argc, char *argv[])
 {
 
    // TODO Hardcoded parameters in fitter constructor
    // fEnableMerging = 1;
    // fEnableSingleVertexTrack = 1;
-  
+   // fExpNum = e20020;
+
    // Work directory
    TString dir = getenv("VMCWORKDIR");
+   std::string dirCstr = dir.Data();
 
    // Geometry file
-   TString geoManFile =
-      dir + "/geometry/ATTPC_He1bar_v2_geomanager.root"; // dir + "/geometry/ATTPC_D600torr_v2_geomanager.root";
+   TString geoManFile = dir + "/geometry/ATTPC_He1bar_v2_geomanager.root";
    // Ion list file
-   std::string ionList =
-      "/mnt/analysis/e20020/ATTPCROOTv2_fairroot_18_6/resources/ionFitLists/e20020_ionList.xml"; //"/mnt/analysis/e20020/ATTPCROOTv2_develop/resources/ionFitLists/e20009_ionList.xml";
+   std::string ionList = dirCstr + "/resources/ionFitLists/e20020_ionList.xml";
 
    // Analysis flow parameters
    std::size_t firstEvt = 0;
    std::size_t lastEvt = 0;
    bool fInteractiveMode = 1;
    TString inputFileName = "";
+   TString inputAuxFileName = "";
    bool fitDirection = 0; // 0: Forward (d,d) - 1: Backwards (d,p)
    bool simulationConv = 0;
    bool enableMerging = 1;
-   bool enableSingleVertexTrack = 0;
-   bool enableReclustering = 0;//For benchmarking purposes
+   bool enableSingleVertexTrack = 1;
+   bool enableReclustering = 1;//For benchmarking purposes
    Double_t clusterRadius = 7.5;//mm
-   Double_t clusterSize   = 10.0;//mm
-   
+   Double_t clusterDistance   = 15.0;//mm
+   bool externalTimeStamp = 0;       // Enables Timestamp merging from FRIB DAQ file
+   bool noMatEffects = 0;            // Disables material effects
+   Exp exp = a1975;
+
    // Physics parameters
-   Float_t magneticField = 3.0;        // T
-   Float_t gasMediumDensity = 0.1533;  //  0.1533 mg/cm3 (a,a) - 0.13129 mg/cm3 (d,p)
+   Float_t magneticField = 3.0;       // T
+   Float_t gasMediumDensity = 0.1533; //  0.1533 mg/cm3 (a,a) - 0.13129 mg/cm3 (d,p)
 
    //  Arguments
    if (argc == 7) {
@@ -64,21 +68,141 @@ int main(int argc, char *argv[])
    TString simFile;
    TString outputFileName;
 
+   switch(exp)
+      {
+
+   case a1975:
+      gasMediumDensity = 0.083147;
+      magneticField = 2.85;
+      noMatEffects = true;
+
+      if (simulationConv) {
+         filePath = dir + "/macro/Simulation/ATTPC/16C_pp/data/";
+         simFile = "_sim_";
+      } else {
+         filePath = dir + "/macro/Unpack_HDF5/a1975/";
+         simFile = "";
+      }
+
+      geoManFile = dir + "/geometry/ATTPC_H1bar_geomanager.root";
+      ionList = dirCstr + "/resources/ionFitLists/e20009_ionList.xml";
+
+      std::cout << " Analysis of experiment a1975. Gas density : " << gasMediumDensity << " mg/cm3"
+                << "\n";
+      std::cout << " File path : " << filePath << "\n";
+      std::cout << " Geomtry file : " << geoManFile << "\n";
+      std::cout << " Ion list file : " << ionList << "\n";
+
+      break;
+
+   case a1954:
+      gasMediumDensity = 0.083147;
+      magneticField = 2.85;
+
+      if (simulationConv) {
+         filePath = dir + "/macro/Simulation/ATTPC/14C_pp/data/";
+         simFile = "_sim_";
+      } else {
+         filePath = dir + "/macro/Unpack_HDF5/a1954/";
+         simFile = "";
+      }
+
+      geoManFile = dir + "/geometry/ATTPC_H1bar_geomanager.root";
+      ionList = dirCstr + "/resources/ionFitLists/e20009_ionList.xml";
+
+      std::cout << " Analysis of experiment a1954 (14C beam on proton). Gas density : " << gasMediumDensity << " mg/cm3"
+                << "\n";
+      std::cout << " File path : " << filePath << "\n";
+      std::cout << " Geomtry file : " << geoManFile << "\n";
+      std::cout << " Ion list file : " << ionList << "\n";
+
+      break;
+
+   case a1954b:
+      gasMediumDensity = 0.083147;
+      magneticField = 2.85;
+
+      if (simulationConv) {
+         filePath = dir + "/macro/Simulation/ATTPC/14C_pp/data/";
+         simFile = "_sim_";
+      } else {
+         filePath = dir + "/macro/Unpack_HDF5/a1954_Be12/";
+         simFile = "";
+      }
+
+      geoManFile = dir + "/geometry/ATTPC_H1bar_geomanager.root";
+      ionList = dirCstr + "/resources/ionFitLists/e20009_ionList.xml";
+
+      externalTimeStamp = 1;
+
+      std::cout << " Analysis of experiment a1954b (12Be beam on proton). Gas density : " << gasMediumDensity
+                << " mg/cm3"
+                << "\n";
+      std::cout << " File path : " << filePath << "\n";
+      std::cout << " Geomtry file : " << geoManFile << "\n";
+      std::cout << " Ion list file : " << ionList << "\n";
+      std::cout << " External timestamp: " << externalTimeStamp << "\n";
+
+      break;
+
+   case e20009:
+      gasMediumDensity = 0.13129;
+      magneticField = 3.0;
+
+      if (simulationConv) {
+         filePath = dir + "/macro/Simulation/ATTPC/10Be_dp/data/";
+         simFile = "_sim_";
+      } else {
+         filePath = dir + "/macro/Unpack_HDF5/e20009/";
+         simFile = "";
+
+        }
+
+        geoManFile = dir + "/geometry/ATTPC_D600torr_v2_geomanager.root";
+        ionList = dirCstr + "/resources/ionFitLists/e20009_ionList.xml";
+
+        std::cout << " Analysis of experiment e20009. Gas density : " << gasMediumDensity << " mg/cm3"
+                  << "\n";
+        std::cout << " File path : " << filePath << "\n";
+        std::cout << " Geomtry file : " << geoManFile << "\n";
+        std::cout << " Ion list file : " << ionList << "\n";
+
+        break;
+
+       case e20020:
+	gasMediumDensity = 0.1533;
+   magneticField = 3.0;
+
    if (simulationConv) {
-      filePath = dir + "/macro/Simulation/ATTPC/16O_aa_v2/"; //"/macro/Simulation/ATTPC/10Be_dp/";
+      filePath = dir + "/macro/Simulation/ATTPC/16O_aa_v2/";
       simFile = "_sim_";
-   } else {
-      filePath = dir + "/macro/Unpack_HDF5/e20020/"; //"/macro/Unpack_HDF5/e20009/rootFiles/";
-      simFile = "";
-   }
+        } else {
+           filePath = dir + "/macro/Unpack_HDF5/e20020/";
+           simFile = "";
+        }
+
+        geoManFile = dir + "/geometry/ATTPC_He1bar_v2_geomanager.root";
+        ionList = dirCstr + "/resources/ionFitLists/e20020_ionList.xml";
+
+        std::cout << " Analysis of experiment e20020. Gas density : " << gasMediumDensity << " mg/cm3"
+                  << "\n";
+        std::cout << " File path : " << filePath << "\n";
+        std::cout << " Geomtry file : " << geoManFile << "\n";
+        std::cout << " Ion list file : " << ionList << "\n";
+        break;
+     }
+
 
    outputFileName = "fit_analysis_" + simFile + inputFileName;
    outputFileName += "_" + std::to_string(firstEvt) + "_" + std::to_string(lastEvt) + ".root";
 
+   inputAuxFileName = filePath + inputFileName + "_FRIB_sorted.root";
    inputFileName = filePath + inputFileName + ".root";
 
-   ////FitManager becomes owner
+   std::cout << " Input file name : " << inputFileName << "\n";
+   std::cout << " Input auxiliary file name : " << inputAuxFileName << "\n";
 
+   ////FitManager becomes owner
    std::shared_ptr<FitManager> fitManager;
 
    try {
@@ -92,13 +216,19 @@ int main(int argc, char *argv[])
 
    fitManager->SetGeometry(geoManFile, magneticField, gasMediumDensity);
    fitManager->SetInputFile(inputFileName, firstEvt, lastEvt);
+
+   if (externalTimeStamp)
+      fitManager->SetAuxInputFile(inputAuxFileName, firstEvt, lastEvt);
+
    fitManager->SetOutputFile(outputFileName);
    fitManager->SetFitters(simulationConv);
    fitManager->SetFitDirection(fitDirection);
    fitManager->EnableMerging(enableMerging);
    fitManager->EnableSingleVertexTrack(enableSingleVertexTrack);
-   fitManager->EnableReclustering(enableReclustering,clusterRadius,clusterSize);
-   
+   fitManager->SetNoMaterialEffects(noMatEffects);
+   fitManager->EnableReclustering(enableReclustering, clusterRadius, clusterDistance);
+   fitManager->SetExpNum(exp);
+
    if (fInteractiveMode)
       fitManager->EnableGenfitDisplay();
 
@@ -110,6 +240,7 @@ int main(int argc, char *argv[])
    std::shared_ptr<AtTools::AtKinematics> kine = std::make_shared<AtTools::AtKinematics>();
 
    auto reader = fitManager->GetReader();
+   auto readerAux = fitManager->GetAuxReader();
 
    // Event loop
    for (auto i = firstEvt; i < lastEvt; i++) {
@@ -118,17 +249,30 @@ int main(int argc, char *argv[])
       fitManager->ClearTree();
 
       reader->Next();
+      if (externalTimeStamp)
+         readerAux->Next();
 
       AtPatternEvent *patternEvent = fitManager->GetPatternEve();
       AtEvent *event = fitManager->GetEve();
 
+      if (externalTimeStamp) {
+         fitManager->SetICMult(*fitManager->GetICMult());
+         fitManager->SetIC(*fitManager->GetIC());
+      }
+
       if (patternEvent) {
 
-         auto& auxPadArray = event->GetAuxPadArray();
+         auto &auxPadArray = event->GetAuxPads();
          std::cout << cGREEN << "   >>>> Number of auxiliary pads : " << auxPadArray.size() << cNORMAL << "\n";
 
          std::vector<AtTrack> &patternTrackCand = patternEvent->GetTrackCand();
          std::cout << cGREEN << "   >>>> Number of pattern tracks " << patternTrackCand.size() << cNORMAL << "\n";
+
+         auto &noiseHits = patternEvent->GetNoiseHits();
+         std::cout << cGREEN << "   >>>> Number of noise hits " << noiseHits.size() << cNORMAL << "\n";
+
+         auto &hits = event->GetHits();
+         std::cout << cGREEN << "   >>>> Number of hits " << hits.size() << cNORMAL << "\n";
 
          fitManager->GetAuxiliaryChannels(auxPadArray);
 
@@ -249,9 +393,9 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
       AtHitCluster endCluster;
       Double_t zIniCal = 0;
       Double_t zEndCal = 0;
-      XYZPoint iniPos;
-      XYZPoint secPos;
-      XYZPoint endPos;
+      ROOT::Math::XYZPoint iniPos;
+      ROOT::Math::XYZPoint secPos;
+      ROOT::Math::XYZPoint endPos;
 
       if (thetaConv < 90.0) { // Forward tracks
          iniCluster =
@@ -284,9 +428,13 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
 
       if (thetaConv > 90) {
          phiClus = TMath::ATan2(secPos.Y() - iniPos.Y(), -secPos.X() + iniPos.X());
+         if (fSimulationConv)
+            phiClus = TMath::ATan2(secPos.Y() - iniPos.Y(), secPos.X() - iniPos.X());
          track.SetGeoPhi(-phiClus);
       } else if (thetaConv < 90) {
          phiClus = TMath::ATan2(secPos.Y() - iniPos.Y(), -secPos.X() + iniPos.X());
+         if (fSimulationConv)
+            phiClus = TMath::ATan2(secPos.Y() - iniPos.Y(), secPos.X() - iniPos.X());
          track.SetGeoPhi(phiClus);
       }
 
@@ -316,6 +464,8 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
       }
 
    } // Tracks
+
+   FindSingleTracks(candTrackPool);
 
    // Find candidate tracks closer to vertex and discard duplicated
 
@@ -361,7 +511,6 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
    // Fitting track candidates
    for (auto track : mergedTrackPool) {
 
-      
       if (fEnableReclustering) {
            track.ResetHitClusterArray();
            fTrackTransformer->ClusterizeSmooth3D(track,fClusterRadius,fClusterSize); //NB: Just for analysis benchmarking
@@ -379,7 +528,7 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
       auto hitClusterArray = track.GetHitClusterArray();
       AtHitCluster iniCluster;
       Double_t zIniCal = 0;
-      XYZPoint iniPos;
+      ROOT::Math::XYZPoint iniPos;
 
       // for(auto hitCluster : *hitClusterArray)
       // std::cout<<" Cluster hit "<<hitCluster.GetHitID()<<" - "<<hitCluster.GetPosition().X()<<" -
@@ -425,26 +574,38 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
          fitter->Init();
 
       // Kinematic filters and fit selection
-      // This selection depends on the experiment. For the moment it is adapted to 10Be+d at 10A MeV
+
       std::vector<Int_t> pdgCandFit;
       if (thetaConv > 90) {
 
-         // continue;
-         // pdgCandFit.push_back(2212);
-         pdgCandFit.push_back(1000010020);
+        switch(fExpNum){
+	 case e20020:
+	   pdgCandFit.push_back(1000010020);
+	   break;
+	 case e20009:
+	   pdgCandFit.push_back(2212);
+	   break;
+   }
 
-      } else if (thetaConv < 90 && thetaConv > 0) { // NB: Excluding heavy recoils
+} else if (thetaConv < 90 && thetaConv > 10) {
 
-         pdgCandFit.push_back(1000020040);
-         // continue;
-         // pdgCandFit.push_back(2212);
-         // pdgCandFit.push_back(1000010020);
+         switch (fExpNum) {
+         case e20020: pdgCandFit.push_back(1000020040); break;
+         case e20009: pdgCandFit.push_back(1000010020); break;
+         case a1954: pdgCandFit.push_back(2212); break;
+         case a1954b: pdgCandFit.push_back(2212); break;
+         // case a1954b: pdgCandFit.push_back(1000010020); break;
+         case a1975: pdgCandFit.push_back(2212); break;
+         }
 
-      } else if (thetaConv < 0) {
+      } else if (thetaConv < 10) {
 
-         // continue;
-         // pdgCandFit.push_back(1000040100);
-         // pdgCandFit.push_back(1000040110);
+          switch (fExpNum) {
+          case e20009:
+             pdgCandFit.push_back(1000040100);
+             break;
+             // pdgCandFit.push_back(1000040110);
+          }
       }
 
       try {
@@ -467,7 +628,7 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
             }
 
             Int_t atomicNumber = 0;
-            Int_t massNumber = 0;
+            Double_t mass = 0;
             Double_t M_Ener = 0.0;
 
             auto fIl = std::find_if(ionList->begin(), ionList->end(),
@@ -477,13 +638,13 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
                int index = std::distance(ionList->begin(), fIl);
                std::cout << cBLUE << "  -  Ion info for : " << pdg << " found in " << index << cNORMAL << "\n";
                atomicNumber = ionList->at(index)._atomicNumber;
-               massNumber = ionList->at(index)._MassNumber;
-               M_Ener = massNumber * 931.49401 / 1000.0;
+               mass = ionList->at(index)._mass;
+               M_Ener = mass * 931.49401 / 1000.0;
             }
 
             // Kinematics from PRA
 
-            std::tuple<Double_t, Double_t> mom_ener = fKinematics->GetMomFromBrho(massNumber, atomicNumber, brho);
+            std::tuple<Double_t, Double_t> mom_ener = fKinematics->GetMomFromBrho(mass, atomicNumber, brho);
             EPRA = std::get<1>(mom_ener) * 1000.0;
             APRA = theta * TMath::RadToDeg();
             PhiPRA = phi * TMath::RadToDeg();
@@ -545,12 +706,12 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
                auto it = hitClusterArray->rbegin();
                while (it != hitClusterArray->rend()) {
 
-                  if (((Float_t)cnt / (Float_t)hitClusterArray->size()) > 0.75)
+                  if (((Float_t)cnt / (Float_t)hitClusterArray->size()) > 0.5)
                      break;
                   auto dir = (*it).GetPosition() - (*std::next(it, 1)).GetPosition();
                   eloss += (*it).GetCharge();
-                  len = std::sqrt(dir.Mag2());
-                  dedx += (*it).GetCharge() / len;
+                  len += std::sqrt(dir.Mag2());
+                  dedx += (*it).GetCharge();
                   // std::cout<<(*it).GetCharge()<<"\n";
                   it++;
                   ++cnt;
@@ -562,19 +723,20 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
                cnt = 1;
                for (auto iHitClus = 1; iHitClus < hitClusterArray->size(); ++iHitClus) {
 
-                  if (((Float_t)cnt / (Float_t)hitClusterArray->size()) > 0.75)
+                  if (((Float_t)cnt / (Float_t)hitClusterArray->size()) > 0.5)
                      break;
                   auto dir =
                      hitClusterArray->at(iHitClus).GetPosition() - hitClusterArray->at(iHitClus - 1).GetPosition();
-                  len = std::sqrt(dir.Mag2());
+                  len += std::sqrt(dir.Mag2());
                   eloss += hitClusterArray->at(iHitClus).GetCharge();
-                  dedx += hitClusterArray->at(iHitClus).GetCharge() / len;
+                  dedx += hitClusterArray->at(iHitClus).GetCharge();
                   // std::cout<<len<<" - "<<eloss<<" - "<<hitClusterArray->at(iHitClus).GetCharge()<<"\n";
                   ++cnt;
                }
             }
 
             eloss /= cnt;
+            dedx /= len;
 
             if (fitTrack == nullptr)
                continue;
@@ -670,6 +832,7 @@ Bool_t FitManager::FitTracks(std::vector<AtTrack> &tracks)
                      xiniFitXtr = pos_ext.X();
                      yiniFitXtr = pos_ext.Y();
                      ziniFitXtr = pos_ext.Z();
+
 
                      std::cout << cYELLOW << " Extrapolation: Total Momentum : " << mom_ext.Mag()
                                << " - Position : " << pos_ext.X() << "  " << pos_ext.Y() << "  " << pos_ext.Z()
@@ -778,7 +941,7 @@ Bool_t FitManager::SetFitters(Bool_t simConv)
      std::cout << " Creating fitter for : " << ion._ionName << " - " << (Int_t)ion._PDG << "\n";
      std::cout << " Energy loss file : " << fWorkDir.Data() + ion._eLossFile << "\n";
      fFitter = new AtFITTER::AtGenfit(fMagneticField, 0.00001, 1000.0, fWorkDir.Data() + ion._eLossFile, fGasDensity,
-                                      (Int_t)ion._PDG);
+                                      (Int_t)ion._PDG, 5, 20, fNoMatEffects);
      // dynamic_cast<AtFITTER::AtGenfit*>(fFitter)->SetPDGCode((Int_t)ion._PDG);
      dynamic_cast<AtFITTER::AtGenfit *>(fFitter)->SetIonName(ion._ionName);
      dynamic_cast<AtFITTER::AtGenfit *>(fFitter)->SetMass((Double_t)ion._mass);
@@ -825,17 +988,41 @@ Bool_t FitManager::SetInputFile(TString &file, std::size_t firstEve, std::size_t
    return true;
 }
 
-void FitManager::GetAuxiliaryChannels(const std::vector<AtAuxPad> &padArray)
+Bool_t FitManager::SetAuxInputFile(TString &file, std::size_t firstEve, std::size_t lastEve)
 {
-   for (const auto& pad : padArray) {
+   Int_t nEvents = lastEve - firstEve;
+   std::cout << " Opening Auxiliary File (FRIB DAQ) : " << file.Data() << "\n";
+   std::cout << " Number of events : " << nEvents << std::endl;
 
-      if (pad.GetAuxName().compare(std::string("IC_sca")) == 0) {
+   fAuxInputFile = std::make_shared<TFile>(file.Data(), "READ");
+   fAuxReader = std::make_shared<TTreeReader>("FRIB_output_tree", fAuxInputFile.get());
+   if (fAuxInputFile.get()->IsZombie()) {
+      std::cerr << " File not found ! " << file.Data() << "\n";
+      std::exit(0);
+   }
+   fTs = std::make_shared<TTreeReaderValue<ULong64_t>>(*fAuxReader, "timestamp");
+   fEnergyIC = std::make_shared<TTreeReaderValue<std::vector<Float_t>>>(*fAuxReader, "energy");
+   fTimeIC = std::make_shared<TTreeReaderValue<std::vector<Float_t>>>(*fAuxReader, "time");
+   fMultIC = std::make_shared<TTreeReaderValue<UInt_t>>(*fAuxReader, "mult");
+   fFribEvName = std::make_shared<TTreeReaderValue<std::string>>(*fAuxReader, "eventName");
+   fAuxReader->SetEntriesRange(firstEve, lastEve);
+
+   return true;
+}
+
+void FitManager::GetAuxiliaryChannels(const std::map<std::string, AtAuxPad> &padArray)
+{
+
+   for (const auto &[name, pad] : padArray) {
+
+      if (name.compare(std::string("IC_sca")) == 0) {
 
          auto adc = pad.GetADC();
          ICMult = GetNPeaksHRS(&ICTimeVec, &ICVec, adc.data());
       }
-      if (pad.GetAuxName().compare(std::string("IC")) == 0) {
-         auto& adc = pad.GetADC();
+      if (name.compare(std::string("IC")) == 0) {
+
+         auto &adc = pad.GetADC();
 
          for (auto iadc = 0; iadc < 512; ++iadc)
             ICEVec.push_back(adc[iadc]);
@@ -1039,6 +1226,29 @@ void FitManager::ConstructTrack(const genfit::StateOnPlane *prevState, const gen
       return;
    }
 
+   int pdg = rep->getPDG();
+
+   double massAMU = 1.007276466812;
+
+   //TODO Temporary solution
+   if(pdg == 1000020040)
+     massAMU = 4.0026;
+   else if(pdg == 2212)
+     massAMU = 1.00728;
+   else if(pdg == 1000010020)
+     massAMU = 2.01355;
+   else if(pdg == 1000060120)
+     massAMU = 12;
+   else if(pdg == 1000080160)
+     massAMU = 15.9949;
+   else if(pdg == 1000040100)
+     massAMU ==  10.0135347;
+   else
+     {
+       std::cerr<<" FitManager::ConstructTrack - Error! PDG code not found. Exiting..."<<"\n";
+       std::exit(0);
+     }
+
    TVector3 pos, dir, oldPos, oldDir;
    TVector3 mom, mdir, oldMom, oldmDir;
    rep->getPosDir(*state, pos, dir);
@@ -1075,7 +1285,7 @@ void FitManager::ConstructTrack(const genfit::StateOnPlane *prevState, const gen
 
    // NB Just for testing (d,p)
    // TODO
-   Double_t mass = 1.007276466812 * 931.49401 / 1000.0;
+   Double_t mass = massAMU * 931.49401 / 1000.0;
    Double_t ELoss2 = 1000.0 * (TMath::Sqrt(TMath::Power((mom).Mag(), 2) + TMath::Power(mass, 2)) - mass);
    Double_t ELoss1 = 1000.0 * (TMath::Sqrt(TMath::Power((oldMom).Mag(), 2) + TMath::Power(mass, 2)) - mass);
    Double_t ELoss = ELoss1 - ELoss2;
@@ -1123,13 +1333,8 @@ Bool_t FitManager::CompareTracks(AtTrack *trA, AtTrack *trB)
    if ((trB->GetGeoTheta() - angleSpread) <= trA->GetGeoTheta() &&
        trA->GetGeoTheta() <= (trB->GetGeoTheta() + angleSpread)) {
 
-      std::pair<Double_t, Double_t> centerA = trA->GetGeoCenter();
-      std::pair<Double_t, Double_t> centerB = trB->GetGeoCenter();
-      std::cout << " Center A : " << centerA.first << " - " << centerA.second << "\n";
-      std::cout << " Center B : " << centerB.first << " - " << centerB.second << "\n";
-      Double_t centerDistance =
-         TMath::Sqrt(TMath::Power(centerA.first - centerB.first, 2) + TMath::Power(centerA.second - centerB.second, 2));
-      std::cout << " Center Distance : " << centerDistance << "\n";
+      Double_t centerDistance = CenterDistance(trA, trB);
+
       if (centerDistance < distThresh) {
 
          if (!CheckOverlap(trA, trB)) {
@@ -1197,6 +1402,17 @@ Bool_t FitManager::CompareTracks(AtTrack *trA, AtTrack *trB)
    return false;
 }
 
+Double_t FitManager::CenterDistance(AtTrack *trA, AtTrack *trB)
+{
+   std::pair<Double_t, Double_t> centerA = trA->GetGeoCenter();
+   std::pair<Double_t, Double_t> centerB = trB->GetGeoCenter();
+   std::cout << " Center A : " << centerA.first << " - " << centerA.second << "\n";
+   std::cout << " Center B : " << centerB.first << " - " << centerB.second << "\n";
+   Double_t centerDistance =
+      TMath::Sqrt(TMath::Power(centerA.first - centerB.first, 2) + TMath::Power(centerA.second - centerB.second, 2));
+   std::cout << " Center Distance : " << centerDistance << "\n";
+   return centerDistance;
+}
 Bool_t FitManager::CheckOverlap(AtTrack *trA, AtTrack *trB)
 {
    auto &hitArrayA = trA->GetHitArray();
@@ -1208,9 +1424,10 @@ Bool_t FitManager::CheckOverlap(AtTrack *trA, AtTrack *trB)
 
       std::vector<Int_t> iTBMatches;
       auto itB = hitArrayB.begin();
-      while ((itB = std::find_if(itB, hitArrayB.end(), [&itA](AtHit &hitB) {
-                 return hitB.GetTimeStamp() == itA->GetTimeStamp();
+      while ((itB = std::find_if(itB, hitArrayB.end(), [&itA](std::unique_ptr<AtHit> &hitB) {
+                 return hitB->GetTimeStamp() == (*itA)->GetTimeStamp();
               })) != hitArrayB.end()) {
+
          iTBMatches.push_back(std::distance(hitArrayB.begin(), itB));
          itB++;
       }
@@ -1229,12 +1446,55 @@ Bool_t FitManager::CheckOverlap(AtTrack *trA, AtTrack *trB)
    }
 
    Double_t shortStraw = (hitArrayA.size() < hitArrayB.size()) ? hitArrayA.size() : hitArrayB.size();
-   // TODO: % of overlap
+   // TODO: % of overlap. Counted twice!
    // std::cout<<" Overlap "<<shortStraw<<" "<<iTBMatch<<"\n";
    if (iTBMatch > (shortStraw * 0.1))
       return true;
    else
       return false;
+}
+
+Bool_t FitManager::CheckAngles(AtTrack *trA, AtTrack *trB)
+{
+   // TODO
+   Double_t angleSpread = 5.0 * TMath::DegToRad();
+
+   if ((trB->GetGeoTheta() - angleSpread) <= trA->GetGeoTheta() &&
+       trA->GetGeoTheta() <= (trB->GetGeoTheta() + angleSpread))
+      return true;
+   else
+      return false;
+}
+
+std::vector<AtTrack *> FitManager::FindSingleTracks(std::vector<AtTrack *> &tracks)
+{
+
+   // TODO
+   Double_t angleSpread = 5.0 * TMath::DegToRad();
+   Double_t distThresh = 100.0;
+   Double_t distMax = 100.0;
+   std::vector<AtTrack *> singleTracks;
+   std::vector<AtTrack *> fragmentedTracks;
+
+   for (auto itA = tracks.begin(); itA != tracks.end(); ++itA) {
+      AtTrack *trA = *(itA);
+      std::cout << " Checking if track " << trA->GetTrackID() << " is single."
+                << "\n";
+      Bool_t isSingle = false;
+      // Length - center - overlap
+      for (auto itB = itA + 1; itB != tracks.end(); ++itB) {
+         AtTrack *trB = *(itB);
+         std::cout << " Track A : " << trA->GetTrackID() << " - Track B : " << trB->GetTrackID() << "\n";
+         std::cout << " Track A Theta : " << trA->GetGeoTheta() * TMath::RadToDeg()
+                   << " - Track B : " << trB->GetGeoTheta() * TMath::RadToDeg() << "\n";
+         std::cout << " Track A Phi : " << trA->GetGeoPhi() * TMath::RadToDeg()
+                   << " - Track B : " << trB->GetGeoPhi() * TMath::RadToDeg() << "\n";
+
+         Double_t centerDistance = CenterDistance(trA, trB);
+      }
+   }
+
+   return singleTracks;
 }
 
 Bool_t FitManager::SetOutputFile(TString &file)

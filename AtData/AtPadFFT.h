@@ -2,9 +2,10 @@
 #ifndef ATPADFFT_H
 #define ATPADFFT_H
 
-#include "AtPad.h"
+#include "AtPadBase.h"
 
 #include <Rtypes.h> // for Double_t, THashConsistencyHolder, ClassDefOverride
+#include <TComplex.h>
 
 #include <array>  // for array
 #include <memory> // for unique_ptr
@@ -15,7 +16,7 @@ class TBuffer;
 class TClass;
 class TMemberInspector;
 
-class AtPadFFT : public AtPad {
+class AtPadFFT : public AtPadBase {
 public:
    using TraceTrans = std::array<Double_t, 512 / 2 + 1>;
 
@@ -25,25 +26,24 @@ protected:
    TraceTrans fIm;
 
 public:
-   AtPadFFT(Int_t padNum = -1) : AtPad(padNum) {}
-   AtPadFFT(const AtPadFFT &obj) = default;
-   AtPadFFT(const AtPad &obj) : AtPad(obj) {}
-   virtual ~AtPadFFT() = default;
-   virtual std::unique_ptr<AtPad> Clone() override;
+   virtual std::unique_ptr<AtPadBase> Clone() const override;
 
-   Double_t GetPointRe(int i);
-   Double_t GetPointIm(int i);
-   Double_t GetPointMag(int i);
-   Double_t GetPointPhase(int i);
-   std::pair<Double_t, Double_t> GetPoint(int i) { return {GetPointRe(i), GetPointIm(i)}; }
+   Double_t GetPointRe(int i) const;
+   Double_t GetPointIm(int i) const;
+   Double_t GetPointMag(int i) const;
+   Double_t GetPointPhase(int i) const;
+   TComplex GetPointComplex(int i) const { return {GetPointRe(i), GetPointIm(i)}; }
+   std::pair<Double_t, Double_t> GetPoint(int i) const { return {GetPointRe(i), GetPointIm(i)}; }
 
    void SetPointRe(int i, Double_t val);
    void SetPointIm(int i, Double_t val);
+   void SetPoint(int i, TComplex val);
    void SetData(TraceTrans re, TraceTrans im);
-   void GetDataFromFFT(TVirtualFFT *fft);
+   void GetDataFromFFT(const TVirtualFFT *fft);
    void SetFFTData(TVirtualFFT *fft);
 
+   static std::unique_ptr<AtPadFFT> CreateFromFFT(const TVirtualFFT *fft);
    ClassDefOverride(AtPadFFT, 1);
 };
 
-#endif //#ifndef ATPADFFT_H
+#endif // #ifndef ATPADFFT_H

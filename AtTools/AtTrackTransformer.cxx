@@ -1,30 +1,30 @@
 #include "AtTrackTransformer.h"
+// IWYU pragma: no_include <ext/alloc_traits.h>
 
-#include <Math/Point3D.h>     // for PositionVector3D, Cart...
-#include <Math/Vector2D.h>    // for PositionVector3D, Cart...
-#include <Math/Vector2Dfwd.h> // for XYVector
-#include <Math/Vector3D.h>    // for DisplacementVector3D
-#include <TGraph.h>           // for TGraph
-#include <TMath.h>            // for Power, Sqrt, ATan2, Pi
-#include <TMatrixDSymfwd.h>   // for TMatrixDSym
-#include <TMatrixTSym.h>      // for TMatrixTSym
-#include <TVector3.h>         // for TVector3
+#include "AtHit.h"        // for AtHit, AtHit::XYZPoint
+#include "AtHitCluster.h" // for AtHitCluster
+#include "AtTrack.h"      // for XYZPoint, AtTrack
 
-#include <algorithm>          // for max, for_each, copy_if
-#include <cmath>              // for fabs, acos
-#include <cstddef>            // for size_t
-#include <exception>          // for exception
-#include <ext/alloc_traits.h> // for __alloc_traits<>::valu...
-#include <iostream>           // for operator<<, basic_ostream
-#include <iterator>           // for back_insert_iterator
-#include <memory>             // for shared_ptr, __shared_p...
+#include <Math/Point3D.h> // for PositionVector3D, Cart...
+#include <Math/Point3Dfwd.h>
+#include <Math/Vector3D.h>  // for DisplacementVector3D
+#include <TMath.h>          // for Power, Sqrt, ATan2, Pi
+#include <TMatrixDSymfwd.h> // for TMatrixDSym
+#include <TMatrixTSym.h>    // for TMatrixTSym
+#include <TVector3.h>       // for TVector3
+
+#include <algorithm> // for max, for_each, copy_if
+#include <iterator>  // for back_insert_iterator
+#include <memory>    // for shared_ptr, __shared_p...
+#include <vector>    // for vector
 
 AtTools::AtTrackTransformer::AtTrackTransformer() = default;
 AtTools::AtTrackTransformer::~AtTrackTransformer() = default;
+using XYZPoint = ROOT::Math::XYZPoint;
 
-void AtTools::AtTrackTransformer::ClusterizeSmooth3D(AtTrack &track, Float_t distance, Float_t radius)
+void AtTools::AtTrackTransformer::ClusterizeSmooth3D(AtTrack &track, Float_t radius, Float_t distance)
 {
-   std::vector<AtHit> hitArray = track.GetHitArray();
+   std::vector<AtHit> hitArray = track.GetHitArrayObject();
    std::vector<AtHit> hitTBArray;
    int clusterID = 0;
 
@@ -264,4 +264,49 @@ void AtTools::AtTrackTransformer::ClusterizeSmooth3D(AtTrack &track, Float_t dis
       } // Cluster array size
 
    } // if array size
+}
+
+const std::tuple<Double_t, Double_t> AtTools::AtTrackTransformer::GetPIDFromHits(AtTrack &track, Double_t theta)
+{
+
+   Double_t dedx = 0.0;
+   Double_t eloss = 0.0;
+
+   auto hitArray = &track.GetHitArray();
+   std::size_t cnt = 0;
+
+   if (theta < 90) {
+
+      auto it = hitArray->rbegin();
+      while (it != hitArray->rend()) {
+
+         if (((Float_t)cnt / (Float_t)hitArray->size()) > 0.8)
+            break;
+         auto dir = (*it).get()->GetPosition() - (*std::next(it, 1)).get()->GetPosition();
+         eloss += (*it).get()->GetCharge();
+         dedx += (*it).get()->GetCharge();
+         // std::cout<<(*it).GetCharge()<<"\n";
+         it++;
+         ++cnt;
+      }
+   } else if (theta > 90) {
+
+      eloss += hitArray->at(0).get()->GetCharge();
+
+      cnt = 1;
+      for (auto iHitClus = 1; iHitClus < hitArray->size(); ++iHitClus) {
+
+         if (((Float_t)cnt / (Float_t)hitArray->size()) > 0.8)
+            break;
+         auto dir = hitArray->at(iHitClus).get()->GetPosition() - hitArray->at(iHitClus - 1).get()->GetPosition();
+         eloss += hitArray->at(iHitClus).get()->GetCharge();
+         dedx += hitArray->at(iHitClus).get()->GetCharge();
+         // std::cout<<len<<" - "<<eloss<<" - "<<hitClusterArray->at(iHitClus).GetCharge()<<"\n";
+         ++cnt;
+      }
+   }
+
+   eloss /= cnt;
+
+   return std::forward_as_tuple(dedx, eloss);
 }

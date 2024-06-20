@@ -11,7 +11,7 @@ namespace AtPatterns {
  * Can be created with the static factory AtPatterns::CreatePattern(PatternType type)
  * @ingroup AtPattern
  */
-enum class PatternType { kLine, kCircle2D, kY };
+enum class PatternType { kLine, kRay, kCircle2D, kY, kFission };
 
 class AtPattern;
 /**
@@ -32,4 +32,4 @@ std::unique_ptr<AtPattern> CreatePattern(PatternType type);
 */
 
 } // namespace AtPatterns
-#endif //#ifndef ATPATTERNTYPES_H
+#endif // #ifndef ATPATTERNTYPES_H

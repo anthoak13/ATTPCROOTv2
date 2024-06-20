@@ -16,6 +16,7 @@ class TBuffer;
 class TClass;
 class TMemberInspector;
 class TEveLine;
+class TEveElement;
 class AtHit;
 
 /**
@@ -45,6 +46,7 @@ protected:
    Double_t fChi2{NAN};               //< How good the pattern is at describing the data
    Int_t fNFree{0};                   //< Degrees of freedom in the fit to the pattern
    const Int_t fNumPoints;            //< Number of 3D points that define the pattern (i.e. size of fIndices)
+   Double_t fTotCharge{0};            //< Total charge of the pattern
 
    using TEveLineVec = std::vector<std::unique_ptr<TEveLine>>;
 
@@ -55,6 +57,7 @@ public:
    virtual ~AtPattern() = default;
 
    Double_t FitPattern(const std::vector<AtHit> &pointsToFit, Double_t qThreshold = -1);
+   Double_t FitPattern(const std::vector<const AtHit *> &pointsToFit, Double_t qThreshold = -1);
    Double_t FitPattern(const std::vector<XYZPoint> &pointsToFit);
 
    /**
@@ -68,9 +71,18 @@ public:
    virtual void DefinePattern(const std::vector<XYZPoint> &points) = 0;
 
    /**
+    * @brief Define based on parameters.
+    *
+    * Sets up the pattern according to the passed parameters. The internal implementation of
+    * what these parameters mean may change. It is the inverse operation of GetPatternPar()
+    */
+   virtual void DefinePattern(std::vector<double> par) { fPatternPar = std::move(par); }
+
+   /**
     * @brief Closest distance to pattern.
     *
     * @param[in] point Point to get the distance from.
+    * @return distance from point to pattern in mm.
     */
    virtual Double_t DistanceToPattern(const XYZPoint &point) const = 0;
    /**
@@ -106,7 +118,7 @@ public:
     *
     * Calls GetEveLine(double tMin, double tMax, int n) with reasonable defaults for the shape
     */
-   virtual TEveLine *GetEveLine() const = 0;
+   virtual TEveElement *GetEveElement() const = 0;
 
    virtual std::unique_ptr<AtPattern> Clone() const = 0;
 
@@ -118,7 +130,15 @@ public:
    Int_t GetNumPoints() const { return fNumPoints; }
    Double_t GetChi2() const { return fChi2; }
    Int_t GetNFree() const { return fNFree; }
-   std::vector<double> GetPatternPar() const { return fPatternPar; }
+
+   /**
+    * @brief Get list or parameters that describe the pattern.
+    *
+    * It is the inverse operation of DefinePattern(std::vector<double>)
+    */
+   virtual std::vector<double> GetPatternPar() const { return fPatternPar; }
+
+   Double_t GetTotCharge() const { return fTotCharge; }
    void SetPatternPar(std::vector<double> par) { fPatternPar = std::move(par); }
    void SetChi2(double chi2) { fChi2 = chi2; }
 
@@ -132,4 +152,4 @@ protected:
    ClassDef(AtPattern, 1)
 };
 } // namespace AtPatterns
-#endif //#ifndef ATTRACKPATTERN_H
+#endif // #ifndef ATTRACKPATTERN_H

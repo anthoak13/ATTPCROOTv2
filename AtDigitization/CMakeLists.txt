@@ -13,18 +13,30 @@ Set(DEPENDENCIES
   ATTPCROOT::AtParameter
   ATTPCROOT::AtData
   ATTPCROOT::AtMap
+  ATTPCROOT::AtTools
 )
 
 set(SRCS
 # Add all the source files below this line.
+AtClusterize.cxx
+AtClusterizeLine.cxx
 AtClusterizeTask.cxx
 AtClusterizeLineTask.cxx
+
+AtPulse.cxx
+AtPulseLine.cxx
 AtPulseTask.cxx
-AtPulseLineTask.cxx
+AtPulseGADGET.cxx
+#AtPulseLineTask.cxx
 AtSimulatedPoint.cxx
 AtSimulatedLine.cxx
+
 AtTrigger.cxx
 AtTriggerTask.cxx
+AtVectorResponse.cxx
+
+AtSimpleSimulation.cxx
+AtTestSimulation.cxx
 )
 
 generate_target_and_root_library(${LIBRARY_NAME}

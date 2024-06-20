@@ -1,5 +1,7 @@
 #include "AtSampleConsensus.h"
 
+#include "AtBaseEvent.h" // for AtBaseEvent
+#include "AtContainerManip.h"
 #include "AtEvent.h" // for AtEvent
 #include "AtHit.h"   // for AtHit
 #include "AtPattern.h"
@@ -11,11 +13,9 @@
 
 #include <FairLogger.h> // for Logger, LOG
 
-#include <algorithm> // for max
-#include <fstream>   // for std
-#include <iterator>  // for insert_iterator, inserter
-#include <memory>    // for allocator_traits<>::value_type
-#include <set>       // for set, operator!=, _Rb_tree_const_iterator
+#include <fstream> // for std
+#include <memory>  // for allocator_traits<>::value_type
+#include <set>     // for set, operator!=, _Rb_tree_const_iterator
 
 using namespace SampleConsensus;
 
@@ -30,26 +30,27 @@ AtSampleConsensus::AtSampleConsensus(Estimators estimator, PatternType patternTy
 {
 }
 
-std::unique_ptr<AtPatterns::AtPattern> AtSampleConsensus::GeneratePatternFromHits(const std::vector<AtHit> &hitArray)
+std::unique_ptr<AtPatterns::AtPattern>
+AtSampleConsensus::GeneratePatternFromHits(const std::vector<const AtHit *> &hitArray)
 {
 
    if (hitArray.size() < fMinPatternPoints) {
       return nullptr;
    }
-
+   LOG(debug) << "Creating pattern";
    auto pattern = AtPatterns::CreatePattern(fPatternType);
-
+   LOG(debug) << "Sampling points";
    auto points = fRandSampler->SamplePoints(pattern->GetNumPoints());
-
+   LOG(debug) << "Defining pattern";
    pattern->DefinePattern(points);
 
-   LOG(debug) << "Testing pattern" << std::endl;
+   LOG(debug) << "Testing pattern";
    auto nInliers = SampleConsensus::AtEstimator::EvaluateModel(pattern.get(), hitArray, fDistanceThreshold, fEstimator);
-   LOG(debug) << "Found " << nInliers << " inliers";
+   LOG(debug) << "Found " << nInliers << " inliers" << std::endl;
 
    // If the pattern is consistent with enough points, save it
    if (nInliers > fMinPatternPoints) {
-      LOG(debug) << "Adding pattern with nInliers: " << nInliers;
+      LOG(debug) << "Adding pattern with nInliers: " << nInliers << std::endl;
       return pattern;
    }
 
@@ -58,30 +59,37 @@ std::unique_ptr<AtPatterns::AtPattern> AtSampleConsensus::GeneratePatternFromHit
 
 AtPatternEvent AtSampleConsensus::Solve(AtEvent *event)
 {
-   if (event->IsGood())
-      return Solve(event->GetHitArray());
-   return {};
+   auto hitVec = ContainerManip::GetConstPointerVector(event->GetHits());
+   return Solve(hitVec, event);
 }
 
-AtPatternEvent AtSampleConsensus::Solve(const std::vector<AtHit> &hitArray)
+AtPatternEvent AtSampleConsensus::Solve(const std::vector<AtHit> &hitArray, AtBaseEvent *event)
 {
+   auto hitVec = ContainerManip::GetConstPointerVector(hitArray);
+   return Solve(hitVec, event);
+};
+
+AtPatternEvent AtSampleConsensus::Solve(const std::vector<const AtHit *> &hitArray, AtBaseEvent *event)
+{
+   // Return early if we were passed an event and it is marked bad
+   if (event != nullptr && !event->IsGood())
+      return {*event};
+
    if (hitArray.size() < fMinPatternPoints) {
-      LOG(error) << "Not enough points to solve. Requires" << fMinPatternPoints;
+      LOG(error) << "Not enough points to solve. Has " << hitArray.size() << " requires " << fMinPatternPoints;
       return {};
    }
-   /*   if (fMinPatternPoints < AtPatterns::CreatePattern(fPatternType)->GetNumPoints()) {
-         LOG(debug)
-            << "Min number of points to be considered a pattern is less than the number of points to define a model "
-            << fMinPatternPoints;
-         return {};
-         }*/
+   LOG(info) << "Solving with " << hitArray.size() << " points";
 
    auto comp = [](const PatternPtr &a, const PatternPtr &b) { return a->GetChi2() < b->GetChi2(); };
    auto sortedPatterns = std::set<PatternPtr, decltype(comp)>(comp);
 
    LOG(debug2) << "Generating " << fIterations << " patterns";
-   fRandSampler->SetHitsToSample(&hitArray);
+   fRandSampler->SetHitsToSample(hitArray);
    for (int i = 0; i < fIterations; i++) {
+      if (i % 1000 == 0)
+         LOG(debug) << "Iteration: " << i << "/" << fIterations;
+
       auto pattern = GeneratePatternFromHits(hitArray);
       if (pattern != nullptr)
          sortedPatterns.insert(std::move(pattern));
@@ -91,6 +99,9 @@ AtPatternEvent AtSampleConsensus::Solve(const std::vector<AtHit> &hitArray)
    // Loop through each pattern, and extract the points that fit each pattern
    auto remainHits = hitArray;
    AtPatternEvent retEvent;
+   if (event)
+      retEvent = AtPatternEvent(*event);
+
    for (const auto &pattern : sortedPatterns) {
       if (remainHits.size() < fMinPatternPoints)
          break;
@@ -105,18 +116,18 @@ AtPatternEvent AtSampleConsensus::Solve(const std::vector<AtHit> &hitArray)
 
    // Add the remaining hits as noise
    for (auto &hit : remainHits)
-      retEvent.AddNoise(std::move(hit));
+      retEvent.AddNoise(std::move(*hit));
 
    return retEvent;
 }
 
-AtTrack AtSampleConsensus::CreateTrack(AtPattern *pattern, std::vector<AtHit> &inliers)
+AtTrack AtSampleConsensus::CreateTrack(AtPattern *pattern, std::vector<const AtHit *> &inliers)
 {
    AtTrack track;
 
    // Add inliers to our ouput track
-   for (auto &hit : inliers)
-      track.AddHit(std::move(hit));
+   for (auto hit : inliers)
+      track.AddHit(std::move(*hit));
 
    if (fFitPattern)
       pattern->FitPattern(inliers, fChargeThres);
@@ -132,39 +143,13 @@ AtTrack AtSampleConsensus::CreateTrack(AtPattern *pattern, std::vector<AtHit> &i
  * @return vector containing the AtHits consistent with the pattern
  *
  */
-std::vector<AtHit> AtSampleConsensus::movePointsInPattern(AtPattern *pattern, std::vector<AtHit> &hits)
+std::vector<const AtHit *> AtSampleConsensus::movePointsInPattern(AtPattern *pattern, std::vector<const AtHit *> &hits)
 {
 
-   std::vector<AtHit> retVec;
-   auto itStartEqualRange = hits.end();
+   auto isInPattern = [pattern, this](const AtHit *hit) {
+      double error = pattern->DistanceToPattern(hit->GetPosition());
+      return (error * error) < (fDistanceThreshold * fDistanceThreshold);
+   };
 
-   for (auto it = hits.begin(); it != hits.end(); ++it) {
-
-      double error = pattern->DistanceToPattern(it->GetPosition());
-      auto isInPattern = (error * error) < (fDistanceThreshold * fDistanceThreshold);
-
-      // Start of sub-vector with hits in pattern
-      if (isInPattern && itStartEqualRange == hits.end()) {
-         itStartEqualRange = it;
-         continue;
-      }
-
-      // End of sub-vector with hits in pattern.
-      // Move hits in this range to retVec then delete the empty entries
-      if (itStartEqualRange != hits.end() && !isInPattern) {
-         retVec.insert(retVec.end(), std::make_move_iterator(itStartEqualRange), std::make_move_iterator(it));
-         hits.erase(itStartEqualRange, it);
-         it = itStartEqualRange;
-         itStartEqualRange = hits.end();
-         continue;
-      }
-   }
-
-   // If the last chunk of the array was in the pattern, move it and delete empty entries
-   if (itStartEqualRange != hits.end()) {
-      auto it = hits.end();
-      retVec.insert(retVec.end(), std::make_move_iterator(itStartEqualRange), std::make_move_iterator(it));
-      hits.erase(itStartEqualRange, it);
-   }
-   return retVec;
+   return ContainerManip::MoveFromVector(hits, isInPattern);
 }

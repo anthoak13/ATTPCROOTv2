@@ -18,8 +18,8 @@
 #include <iostream>
 
 #include "TRelativisticKinematics.cxx"
-//#include "TRelativisticDecay.hh"
-//#include "TRelativisticDecay.cxx"
+// #include "TRelativisticDecay.hh"
+// #include "TRelativisticDecay.cxx"
 
 Double_t read_ame03(int Zin, int Ain, char *El);
 
@@ -32,32 +32,32 @@ int Mainrel()
    kineStr.open("Kine.txt");
 
    Int_t a = 1;
-   int A1 = 16.; // mass0 of the incident particle
-   int Z1 = 8.;  // charge of the incident particle
+   int A1 = 8.; // mass0 of the incident particle
+   int Z1 = 2.; // charge of the incident particle
    char *El1 = new char[2];
 
    // double m1=77.963180;
 
    // cout<<El1<<endl;
 
-   int A2 = 4.; // mass0 of the target
-   int Z2 = 2.; // charge of the target
+   int A2 = 1.; // mass0 of the target
+   int Z2 = 1.; // charge of the target
    char *El2 = new char[2];
 
    // double m2=2.0141;
 
    // cout<<El2<<endl;
 
-   int A3 = 16; // mass0 of the scattered particle
-   int Z3 = 8;  // charge of the scattered particle
+   int A3 = 8; // mass0 of the scattered particle
+   int Z3 = 2; // charge of the scattered particle
    char *El3 = new char[2];
 
    // double m3=78.971987;
 
    // cout<<El3<<endl;
 
-   int A4 = 4; // mass0 of the recoil
-   int Z4 = 2; // charge of the recoil
+   int A4 = 1; // mass0 of the recoil
+   int Z4 = 1; // charge of the recoil
    char *El4 = new char[2];
 
    // double m4=1.007825;
@@ -72,17 +72,17 @@ int Mainrel()
    int ZD2 = 2; // charge of the daugther 2
    char *ElD2 = new char[2];
 
-   double ex1 = 0;   // excitation energy of the incident particle
-   double ex2 = 0;   // excitation energy of the target
-   double ex3 = 0.0; // excitation energy of the scattered particle
-   double ex4 = 0.0; // excitation energy of the recoil
+   double ex1 = 0;    // excitation energy of the incident particle
+   double ex2 = 0;    // excitation energy of the target
+   double ex3 = 20.0; // excitation energy of the scattered particle
+   double ex4 = 0.0;  // excitation energy of the recoil
 
-   double tbt = 11.0; // incident energy (total Lab energy in MeV)
+   double tbt = 34.0; // incident energy (total Lab energy in MeV)
 
    double Energyrdec, Anglerdec;
 
-   // cout<<" Mass of the incident particle A1"<<endl;
-   // cin>>A1;
+   //  cout<<" Mass of the incident particle A1"<<endl;
+   //  cin>>A1;
    //  cout<<" Charge of the incident particle Z1"<<endl;
    //  cin>>Z1;
    double m1 = read_ame03(Z1, A1, El1);
@@ -248,7 +248,8 @@ int Mainrel()
 
 Double_t read_ame03(int Zin, int Ain, char *El)
 {
-   ifstream *in = new ifstream("masstable.dat");
+   // std::ifstream *in = new std::ifstream("masstable.dat");
+   std::ifstream in("masstable.dat");
    Char_t line[256];
    Int_t N;
    Int_t Z;
@@ -257,13 +258,13 @@ Double_t read_ame03(int Zin, int Ain, char *El)
    Char_t dummy[256];
    Double_t mass;
    for (Int_t k = 0; k < 39; k++) {
-      in->getline(line, 256);
+      in.getline(line, 256);
       // cout<<line<<endl;
    }
-   while (!in->eof()) {
-      *in >> N >> Z >> elem;
+   while (!in.eof()) {
+      in >> N >> Z >> elem;
       // cout<<N<<" "<<Z<<" "<<elem<<endl;
-      in->get(line, 256, '\n');
+      in.get(line, 256, '\n');
       // cout<<line<<endl;
       Int_t a = atoi(elem);
       if (a != 0) {
@@ -290,6 +291,6 @@ Double_t read_ame03(int Zin, int Ain, char *El)
       }
    }
    cout << "Mass not found!" << endl;
-   delete in;
+   // delete in;
    return -1;
 }

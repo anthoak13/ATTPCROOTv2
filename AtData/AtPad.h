@@ -8,21 +8,34 @@
 
 #ifndef AtPAD_H
 #define AtPAD_H
+#include "AtPadBase.h"
 
 #include <Math/Point2D.h>
 #include <Math/Point2Dfwd.h>
 #include <Rtypes.h>
-#include <TObject.h>
 
 #include <array>
+#include <map>
 #include <memory>
+#include <string>
+#include <type_traits>
 
 class TBuffer;
 class TClass;
 class TMemberInspector;
 class TH1D;
 
-class AtPad : public TObject {
+/**
+ * @brief Container class for AtPadBase objects
+ *
+ * This class contains the information associated with a pad (or channel). In addition to the
+ * information required to define a pad (adc value, pad number, etc) additional information can be
+ * added through pad "augments" (this follows the compostion design pattern). All augments should be
+ * listed in the group Pads, which has more documentation in this system.
+ *
+ * @ingroup Pads
+ */
+class AtPad : public AtPadBase {
 public:
    using rawTrace = std::array<Int_t, 512>;
    using trace = std::array<Double_t, 512>;
@@ -37,13 +50,35 @@ protected:
 
    rawTrace fRawAdc{};
    trace fAdc{};
+   std::map<std::string, std::unique_ptr<AtPadBase>> fPadAugments;
 
 public:
    AtPad(Int_t PadNum = -1);
-   AtPad(const AtPad &obj) = default;
+   AtPad(const AtPad &obj);
+   AtPad &operator=(AtPad obj);
+   AtPad(AtPad &&) = default;
    virtual ~AtPad() = default;
-   virtual std::unique_ptr<AtPad> Clone(); // Create a copy of sub-type
+   friend void swap(AtPad &a, AtPad &b) noexcept;
 
+   virtual std::unique_ptr<AtPadBase> Clone() const override;
+   virtual std::unique_ptr<AtPad> ClonePad() const;
+
+   AtPadBase *AddAugment(std::string name, std::unique_ptr<AtPadBase> augment);
+   AtPadBase *ReplaceAugment(std::string name, std::unique_ptr<AtPadBase> augment);
+   AtPadBase *GetAugment(std::string name);
+   const AtPadBase *GetAugment(std::string name) const;
+   template <typename T, typename std::enable_if_t<std::is_base_of<AtPadBase, T>::value> * = nullptr>
+   T *GetAugment(std::string name)
+   {
+      return dynamic_cast<T *>(GetAugment(name));
+   }
+   template <typename T, typename std::enable_if_t<std::is_base_of<AtPadBase, T>::value> * = nullptr>
+   const T *GetAugment(std::string name) const
+   {
+      return dynamic_cast<const T *>(GetAugment(name));
+   }
+
+   const std::map<std::string, std::unique_ptr<AtPadBase>> &GetAugments() const { return fPadAugments; }
    void SetValidPad(Bool_t val = kTRUE) { fIsValid = val; }
    void SetPadNum(Int_t padNum) { fPadNum = padNum; }
    void SetSizeID(Int_t sizeID) { fSizeID = sizeID; }
@@ -71,7 +106,8 @@ public:
 
    XYPoint GetPadCoord() const { return fPadCoord; }
 
-   ClassDef(AtPad, 2);
+   friend class AtGRAWUnpacker;
+   ClassDefOverride(AtPad, 3);
 };
 
 #endif

@@ -64,6 +64,8 @@
 #include <thread>
 #include <vector>
 
+enum Exp { e20020, e20009, a1954, a1975, a1954b };
+
 struct trackSegment {
    Double_t eLoss;
    TVector3 iniPos;
@@ -113,14 +115,25 @@ public:
    Bool_t SetFitters(Bool_t simConv);
    Bool_t SetGeometry(TString file, Float_t field, Float_t density);
    Bool_t SetInputFile(TString &file, std::size_t firstEve, std::size_t lastEve);
+   Bool_t SetAuxInputFile(TString &file, std::size_t firstEve, std::size_t lastEve);
    Bool_t SetOutputFile(TString &file);
    void SetFitDirection(Int_t direction) { fFitDirection = direction; }
+   void SetExpNum(Exp exp) { fExpNum = exp; }
+   void SetICMult(Int_t mult) { ICMult = mult; }
+   void SetIC(std::vector<Float_t> energy) { ICVec = energy; }
+   void SetNoMaterialEffects(Bool_t val) { fNoMatEffects = val; }
 
    // Getters
    std::shared_ptr<TTreeReader> GetReader() { return fReader; }
+   std::shared_ptr<TTreeReader> GetAuxReader() { return fAuxReader; }
    AtPatternEvent *GetPatternEve() { return (AtPatternEvent *)fPatternEveArray->Get()->At(0); }
    AtEvent *GetEve() { return (AtEvent *)fEveArray->Get()->At(0); }
-   void GetAuxiliaryChannels(const std::vector<AtAuxPad> &auxPadArray);
+   void GetAuxiliaryChannels(const std::map<std::string, AtAuxPad> &padArray);
+   ULong64_t *GetAuxTimeStamp() { return fTs->Get(); }
+   std::vector<Float_t> *GetIC() { return fEnergyIC->Get(); }
+   UInt_t *GetICMult() { return fMultIC->Get(); }
+
+   Exp GetExpNum() { return fExpNum; }
 
    // File management
    void ClearTree();
@@ -155,19 +168,30 @@ private:
    Double_t fClusterSize{0};
    Double_t fClusterRadius{0};
    Int_t fFitDirection;
+   Bool_t fNoMatEffects{0};
    std::vector<AtTools::IonFitInfo> *ionList;
    AtTools::AtParsers fParser;
    std::unique_ptr<AtTools::AtTrackTransformer> fTrackTransformer;
+   Exp fExpNum;
 
    genfit::EventDisplay *display;
 
    TString fWorkDir;
    std::shared_ptr<TTreeReader> fReader;
+   std::shared_ptr<TTreeReader> fAuxReader;
    std::shared_ptr<TFile> fInputFile;
+   std::shared_ptr<TFile> fAuxInputFile;
    std::shared_ptr<TFile> fOutputFile;
    std::shared_ptr<TTree> fOutputTree;
+
    std::shared_ptr<TTreeReaderValue<TClonesArray>> fPatternEveArray;
    std::shared_ptr<TTreeReaderValue<TClonesArray>> fEveArray;
+   std::shared_ptr<TTreeReaderValue<ULong64_t>> fTs;
+   std::shared_ptr<TTreeReaderValue<std::vector<Float_t>>> fEnergyIC;
+   std::shared_ptr<TTreeReaderValue<std::vector<Float_t>>> fTimeIC;
+   std::shared_ptr<TTreeReaderValue<UInt_t>> fMultIC;
+   std::shared_ptr<TTreeReaderValue<std::string>> fFribEvName;
+
    std::vector<AtFITTER::AtFitter *> fFitters;
    AtFITTER::AtFitter *fFitter;
    std::shared_ptr<AtTools::AtKinematics> fKinematics;
@@ -177,6 +201,9 @@ private:
                        std::vector<trackSegment> &segments);
    Bool_t CompareTracks(AtTrack *trA, AtTrack *trB);
    Bool_t CheckOverlap(AtTrack *trA, AtTrack *trB);
+   Bool_t CheckAngles(AtTrack *trA, AtTrack *trB);
+   Double_t CenterDistance(AtTrack *trA, AtTrack *trB);
+   std::vector<AtTrack *> FindSingleTracks(std::vector<AtTrack *> &tracks);
 
 public:
    // Output tree format (TODO: To be moved to other src file)

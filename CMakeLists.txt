@@ -17,9 +17,9 @@ include(ATTPCRootUtils)
 include(ATTPCRootFindPackage2)
 include(ROOTTargetMacros)
 include(WriteConfigFile)
-include(CTest)
 include(GNUInstallDirs)
 include(PrintSummary)
+include(FetchContent)
 
 set_attpcroot_defaults()
 
@@ -34,7 +34,7 @@ if(NOT TARGET ROOT::VMC)
   set_target_properties(VMCLibrary PROPERTIES IMPORTED_GLOBAL TRUE)
   add_library(ROOT::VMC ALIAS VMCLibrary)
 endif()
- 
+
 find_package2(PUBLIC FairLogger  VERSION 1.2.0 REQUIRED)
 foreach(dep IN LISTS FairLogger_PACKAGE_DEPENDENCIES)
   if(NOT dep STREQUAL "Boost")
@@ -44,21 +44,21 @@ foreach(dep IN LISTS FairLogger_PACKAGE_DEPENDENCIES)
   endif()
 endforeach()
 
-find_package2(PUBLIC Pythia6)
-find_package2(PUBLIC Pythia8)
-find_package2(PUBLIC Geant3)
+#find_package2(PUBLIC Pythia6)
+#find_package2(PUBLIC Pythia8)
+#find_package2(PUBLIC Geant3)
 find_package2(PUBLIC Geant4)
 Find_Package2(PUBLIC VGM)
 find_package2(PUBLIC Geant4VMC)
-find_package2(PUBLIC CLHEP)
-find_package2(PUBLIC HEPMC)
+#find_package2(PUBLIC CLHEP)
+#find_package2(PUBLIC HEPMC)
 
 # Right now, we just use header-only features of Boost (multi_array)
 find_package2(PUBLIC Boost 1.67
   REQUIRED headers
   ADD_REQUIREMENTS_OF FairRoot FairMQ FairLogger
   )
-  
+
 if(CMAKE_VERSION VERSION_LESS 3.15)
   set(Boost_VERSION "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
 endif()
@@ -104,18 +104,14 @@ if(NOT TARGET hdf5::hdf5-shared)
   message(STATUS "hdf5 library in use: ${hdf_libdir}")
   message(STATUS "hdf5 include directory: ${hdf_inc}")
 endif()
+if(TARGET hdf5_cpp-shared AND NOT TARGET hdf5::hdf5_cpp-shared)
+  # Until 3.18 we can only alias global targets
+  if(CMAKE_VERSION VERSION_LESS 3.18)
+    set_target_properties(hdf5_cpp-shared PROPERTIES IMPORTED_GLOBAL TRUE)
+  endif()
+  add_library(hdf5::hdf5_cpp-shared ALIAS hdf5_cpp-shared)
+endif()
 
-# Include PCL and hide some of their warnings
-# see here: https://github.com/PointCloudLibrary/pcl/issues/3680
-# when this is fixed, we can remove the following 3 lines.
-if(NOT DEFINED CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
-  set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1)
-  set(_temp_mod_dev_warning 1)
-endif()
-find_package2(PUBLIC PCL 1.8 CONFIG QUIET)
-if(_temp_mod_dev_warning)
-  unset(CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
-endif()
 
 #Include all of the other dependecies that  we need
 #find_package2(PUBLIC OpenMP)
@@ -123,13 +119,32 @@ find_package2(PUBLIC CUDA)
 find_package2(PUBLIC HiRAEVT CONFIG)
 find_package2(PUBLIC GENFIT2)
 
+#find_package2(PUBLIC Eigen3 3.3 REQUIRED NO_MODULE)
+
+if(TARGET Eigen3::Eigen)
+  message("Found Eigen, grabbing OpenKF")
+
+  #FetchContent_Declare(openkf
+  #  GIT_REPOSITORY https://github.com/anthoak13/OpenKF.git
+  #  GIT_TAG main)
+  #FetchContent_GetProperties(openkf)
+  #if (NOT openkf_POPULATED)
+  #  FetchContent_Populate(openkf)
+
+  #  add_subdirectory(${openkf_SOURCE_DIR}/cpp)
+    #get_target_property(openkf_include OpenKF INTERFACE_INCLUDE_DIRECTORIES)
+    #message("interface: ${openkf_include}")
+    
+  #endif()
+endif()
+
 if (OPENMP_CXX_FOUND)
  # MESSAGE("${Green} OpenMP Support Found ${OpenMP_CXX_SPEC_DATE} ${ColourReset}")
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
   # set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} ${OpenMP_C_FLAGS}")
   # set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} ${OpenMP_CXX_FLAGS}")
-  
+
 endif()
 
 #set(LD_LIBRARY_PATH  ${CMAKE_BINARY_DIR}/lib ${LD_LIBRARY_PATH})
@@ -143,6 +158,7 @@ add_subdirectory (AtUnpack)
 add_subdirectory (AtGenerators)
 add_subdirectory (AtTpc)
 add_subdirectory (AtSiArray)
+
 add_subdirectory (AtPassive)
 add_subdirectory (AtField)
 add_subdirectory (AtMap)
@@ -151,13 +167,17 @@ add_subdirectory (AtParameter)
 add_subdirectory (AtDigitization)
 add_subdirectory (AtS800)
 add_subdirectory (AtApollo)
+add_subdirectory (AtSeGA)
+add_subdirectory (AtDeGAi)
 add_subdirectory (AtAnalysis)
 add_subdirectory (AtTools)
 add_subdirectory (AtEventDisplay)
-  
+
+if(BUILD_TESTS)
+  include(ATTPCRootCTest)
+endif(BUILD_TESTS)
 
 # Generate config file for build
-
 fairroot_generate_config_sh(${CMAKE_BINARY_DIR}/config.sh
   BUILD
   PATH ${ROOT_BINARY_DIR}

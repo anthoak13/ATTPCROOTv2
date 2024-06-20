@@ -7,13 +7,10 @@
 #include <Math/Point3D.h>  // for Cartesian3D, operator-, PositionVector3D
 #include <Math/Vector3D.h> // for DisplacementVector3D
 #include <TMath.h>
-#include <TMatrixDSymfwd.h> // for TMatrixDSym
-#include <TMatrixTSym.h>    // for TMatrixTSym
 
 #include <algorithm>
 #include <cmath>    // for sqrt
 #include <iostream> // for operator<<, basic_ostream::operator<<
-#include <iterator> // for back_insert_iterator, back_inserter
 #include <memory>   // for shared_ptr, __shared_ptr_access, __sha...
 #include <utility>  // for pair
 
@@ -145,7 +142,7 @@ Bool_t AtFITTER::AtFitter::MergeTracks(std::vector<AtTrack *> *trackCandSource, 
                    << trackToMerge->GetTrackID() << "\n";
          for (const auto &hit : trackToMerge->GetHitArray()) {
 
-            vertexTrack->AddHit(hit);
+            vertexTrack->AddHit(hit->Clone()); // TODO: Look at code and see if this can be a move instead of a copy
             ++addHitCnt;
          }
 
@@ -187,7 +184,7 @@ AtFITTER::AtFitter::MergeTracks(std::vector<AtTrack> *trackCandSource, std::vect
 
    for (auto trackCand : *trackCandSource) {
       Double_t thetaCand = trackCand.GetGeoTheta();
-      auto hitArrayCand = trackCand.GetHitArray();
+      auto &hitArrayCand = trackCand.GetHitArray();
       std::pair<Double_t, Double_t> centerCand = trackCand.GetGeoCenter();
 
       AtTrack track = trackCand;
@@ -203,7 +200,7 @@ AtFITTER::AtFitter::MergeTracks(std::vector<AtTrack> *trackCandSource, std::vect
 
       for (auto trackJunk : *trackJunkSource) {
          Double_t thetaJunk = trackJunk.GetGeoTheta();
-         auto hitArrayJunk = trackJunk.GetHitArray();
+         auto &hitArrayJunk = trackJunk.GetHitArray();
          std::pair<Double_t, Double_t> centerJunk = trackJunk.GetGeoCenter();
 
          if (simulationConv) {
@@ -238,7 +235,7 @@ AtFITTER::AtFitter::MergeTracks(std::vector<AtTrack> *trackCandSource, std::vect
 
                   for (const auto &hit : hitArrayJunk) {
 
-                     track.AddHit(hit);
+                     track.AddHit(hit->Clone());
                      ++jnkHitCnt;
                   }
             }

@@ -1,8 +1,8 @@
 #include "AtPRA.h"
 
-#include "AtHit.h"        // for AtHit, XYZPoint
-#include "AtHitCluster.h" // for AtHitCluster
-#include "AtPattern.h"    // for AtPattern
+#include "AtContainerManip.h"
+#include "AtHit.h"     // for AtHit, XYZPoint
+#include "AtPattern.h" // for AtPattern
 #include "AtPatternCircle2D.h"
 #include "AtPatternEvent.h"
 #include "AtPatternLine.h"
@@ -16,22 +16,15 @@
 #include <Math/Vector2D.h>    // for PositionVector3D, Cart...
 #include <Math/Vector2Dfwd.h> // for XYVector
 #include <Math/Vector3D.h>    // for DisplacementVector3D
-#include <TF1.h>              // for TF1
 #include <TGraph.h>           // for TGraph
 #include <TMath.h>            // for Power, Sqrt, ATan2, Pi
-#include <TMatrixDSymfwd.h>   // for TMatrixDSym
-#include <TMatrixTSym.h>      // for TMatrixTSym
-#include <TVector3.h>         // for TVector3
 
-#include <algorithm>          // for max, for_each, copy_if
-#include <cmath>              // for fabs, acos
-#include <cstddef>            // for size_t
-#include <exception>          // for exception
-#include <ext/alloc_traits.h> // for __alloc_traits<>::valu...
-#include <iostream>           // for operator<<, basic_ostream
-#include <iterator>           // for back_insert_iterator
-#include <memory>             // for shared_ptr, __shared_p...
-
+#include <algorithm> // for max, for_each, copy_if
+#include <cmath>     // for fabs, acos
+#include <cstddef>   // for size_t
+#include <exception> // for exception
+#include <iostream>  // for operator<<, basic_ostream
+#include <memory>    // for shared_ptr, __shared_p...
 ClassImp(AtPATTERN::AtPRA);
 
 /**
@@ -49,22 +42,25 @@ std::cout << " Processing track with " << track.GetHitArray().size() << " points
       std::cout << hit.GetTimeStamp() << " ";
    std::cout << std::endl;
    */
-   std::vector<AtTrack> circularTracks;
+
    SampleConsensus::AtSampleConsensus RansacSmoothRadius;
    RansacSmoothRadius.SetPatternType(AtPatterns::PatternType::kCircle2D);
    RansacSmoothRadius.SetMinHitsPattern(0.1 * track.GetHitArray().size());
    RansacSmoothRadius.SetDistanceThreshold(6.0);
    RansacSmoothRadius.SetNumIterations(1000);
-   circularTracks =
-      RansacSmoothRadius.Solve(track.GetHitArray()).GetTrackCand(); // Only part of the spiral is used
-                                                                    // This function also sets the coefficients
-                                                                    // i.e. radius of curvature and center
+   auto circularTracks = RansacSmoothRadius.Solve(ContainerManip::GetConstPointerVector(track.GetHitArray()))
+                            .GetTrackCand(); // Only part of the spiral is used
+                                             // This function also sets the coefficients
+                                             // i.e. radius of curvature and center
 
    if (!circularTracks.empty()) {
 
-      std::vector<AtHit> hits = circularTracks.at(0).GetHitArray();
+      auto &hits = circularTracks.at(0).GetHitArray();
 
-      auto circle = dynamic_cast<const AtPatterns::AtPatternCircle2D *>(circularTracks.at(0).GetPattern());
+      // auto circle = dynamic_cast<const AtPatterns::AtPatternCircle2D *>(circularTracks.at(0).GetPattern());
+
+      auto circle = std::make_unique<AtPatterns::AtPatternCircle2D>();
+      circle->AtPattern::FitPattern(ContainerManip::GetConstPointerVector(track.GetHitArray()));
 
       auto center = circle->GetCenter();
       auto radius = circle->GetRadius();
@@ -73,13 +69,15 @@ std::cout << " Processing track with " << track.GetHitArray().size() << " points
       track.SetGeoRadius(radius);
       track.SetPattern(circle->Clone());
 
+      circularTracks.at(0).SetPattern(std::move(circle));
+
       // std::vector<double> wpca;
       std::vector<double> whit;
       std::vector<double> arclength;
 
       auto arclengthGraph = std::make_unique<TGraph>();
 
-      auto posPCA = hits.at(0).GetPosition();
+      auto posPCA = hits.at(0)->GetPosition();
       auto refPosOnCircle = posPCA - center;
       auto refAng = refPosOnCircle.Phi(); // Bounded between (-Pi,Pi]
 
@@ -93,7 +91,7 @@ std::cout << " Processing track with " << track.GetHitArray().size() << " points
 
       for (size_t i = 0; i < hits.size(); ++i) {
 
-         auto pos = hits.at(i).GetPosition();
+         auto pos = hits.at(i)->GetPosition();
          auto posOnCircle = pos - center;
          auto angleHit = posOnCircle.Phi();
 
@@ -116,14 +114,14 @@ std::cout << " Processing track with " << track.GetHitArray().size() << " points
 
          if (track.GetTrackID() > -1)
             LOG(debug2) << posOnCircle.X() << "  " << posOnCircle.Y() << " " << pos.Z() << " "
-                        << hits.at(i).GetTimeStamp() << " " << arclength.back() << "\n";
+                        << hits.at(i)->GetTimeStamp() << " " << arclength.back() << "\n";
 
          // Add a hit in the Arc legnth - Z plane
          Double_t xPos = arclength.at(i);
          Double_t yPos = pos.Z();
          Double_t zPos = i * 1E-19;
 
-         thetaHits.emplace_back(i, hits.at(i).GetPadNum(), XYZPoint(xPos, yPos, zPos), hits.at(i).GetCharge());
+         thetaHits.emplace_back(i, hits.at(i)->GetPadNum(), XYZPoint(xPos, yPos, zPos), hits.at(i)->GetCharge());
       }
 
       // TF1 *f1 = new TF1("f1", "pol1", -500, 500);
@@ -209,7 +207,7 @@ Double_t fitf(Double_t *x, Double_t *par)
 
 void AtPATTERN::AtPRA::PruneTrack(AtTrack &track)
 {
-   std::vector<AtHit> hitArray = track.GetHitArray();
+   auto &hitArray = track.GetHitArray();
 
    std::cout << "    === Prunning track : " << track.GetTrackID() << "\n";
    std::cout << "      = Hit Array size : " << hitArray.size() << "\n";
@@ -217,7 +215,7 @@ void AtPATTERN::AtPRA::PruneTrack(AtTrack &track)
    for (auto iHit = 0; iHit < hitArray.size(); ++iHit) {
 
       try {
-         bool isNoise = kNN(hitArray, hitArray.at(iHit), fKNN); // Returns true if hit is an outlier
+         bool isNoise = kNN(hitArray, *hitArray.at(iHit), fKNN); // Returns true if hit is an outlier
 
          if (isNoise) {
             // std::cout<<" Hit "<<iHit<<" flagged as outlier. "<<"\n";
@@ -232,14 +230,14 @@ void AtPATTERN::AtPRA::PruneTrack(AtTrack &track)
    std::cout << "      = Hit Array size after prunning : " << hitArray.size() << "\n";
 }
 
-bool AtPATTERN::AtPRA::kNN(const std::vector<AtHit> &hits, AtHit &hitRef, int k)
+bool AtPATTERN::AtPRA::kNN(const std::vector<std::unique_ptr<AtHit>> &hits, AtHit &hitRef, int k)
 {
 
    std::vector<Double_t> distances;
    distances.reserve(hits.size());
 
-   std::for_each(hits.begin(), hits.end(), [&distances, &hitRef](const AtHit &hit) {
-      distances.push_back(TMath::Sqrt((hitRef.GetPosition() - hit.GetPosition()).Mag2()));
+   std::for_each(hits.begin(), hits.end(), [&distances, &hitRef](const std::unique_ptr<AtHit> &hit) {
+      distances.push_back(TMath::Sqrt((hitRef.GetPosition() - hit->GetPosition()).Mag2()));
    });
 
    std::sort(distances.begin(), distances.end(), [](Double_t a, Double_t b) { return a < b; });
