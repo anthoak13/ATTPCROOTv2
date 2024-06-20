@@ -38,10 +38,5 @@
 #pragma link C++ class AtMergeTask + ;
 #pragma link C++ class S800Settings + ;
 #pragma link C++ class S800Ana + ;
-<<<<<<< HEAD
-// #pragma link C++ class vector<S800TSettings*>+;
 #pragma link C++ class AtS800Task + ;
-=======
->>>>>>> 7899f845... d,2He - added plots to help for the offline merging, inverse map updates, brho for simulation
-
 #endif

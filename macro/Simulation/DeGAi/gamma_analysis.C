@@ -27,10 +27,7 @@ void gamma_analysis(Int_t num_ev = 50000)
     std::cin >> fileName;
     Double_t momentum;
     std::vector<std::string> isotopes = { "60Co", "173Cs", "22Na" };
-<<<<<<< HEAD
-=======
     if (doesNotEqualAny(fileName, isotopes)) {
->>>>>>> Better gamma analysis for degai and efficency curve creation
 
         std::cout << "momentum: (MeV)";
         std::cin >> momentum;
@@ -93,9 +90,7 @@ void gamma_analysis(Int_t num_ev = 50000)
                 // Update hit count for VolName
                 crystalHits[VolName.Data()]++;
 
-<<<<<<< HEAD
-                
-=======
+
                 // Check if energyLoss is within the photopeak range for specific isotopes
                 if (fileName.find("60Co") != std::string::npos && ((energyLoss >= 1.16 && energyLoss <= 1.18) || (energyLoss >= 1.32 && energyLoss <= 1.34))) {
                     PhotopeakCount++;
@@ -106,7 +101,7 @@ void gamma_analysis(Int_t num_ev = 50000)
                 } else if (energyLoss >= momentum * 0.95 && energyLoss <= momentum * 1.05) {
                     PhotopeakCount++;
                 }
->>>>>>> Better gamma analysis for degai and efficency curve creation
+
             }
         }
 

@@ -9,6 +9,7 @@
 #include <TList.h>
 #include <TObject.h>
 #include <TString.h>
+#include <TMath.h>
 
 #include "S800Calc.h"
 #include "S800InverseMap.h"

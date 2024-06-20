@@ -15,12 +15,9 @@
 #include <TPad.h>
 #include <TFile.h>
 #include <TGraph.h>
-<<<<<<< HEAD
-=======
 #include <TObject.h>
 #include <TKey.h>
 #include <TList.h>
->>>>>>> 7899f845... d,2He - added plots to help for the offline merging, inverse map updates, brho for simulation
 #include <TObject.h>
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
