@@ -139,6 +139,9 @@ function(fairroot_generate_config_sh file)
     file(APPEND ${file} "export VMCWORKDIR=\"${ARGS_VMCWORKDIR}\"\n")
   endif()
 
+  # FAIRROOTPATH and SIMPATH
+  file(APPEND ${file} "export FAIRROOTPATH=\"$ENV{FAIRROOTPATH}\"\n")
+  file(APPEND ${file} "export SIMPATH=\"$ENV{SIMPATH}\"\n")
 
   set(rgenfile ${file}.gen_root_include_path)
   if(ARGS_BUILD)

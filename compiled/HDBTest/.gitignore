@@ -1,0 +1,5 @@
+HDBSCANUnitTest/Debug
+HDBSCAN-CPP/Debug
+build/
+main
+*.o

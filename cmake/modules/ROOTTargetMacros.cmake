@@ -33,7 +33,7 @@ function(generate_target_and_root_library target)
     1
     HT
     ""
-    ""
+    "EXT_CPP;EXT_H"
     "SRCS;HDRS;INCLUDE_DIR;LIBRARY_DIR;DEPS_PUBLIC;DEPS_PRIVATE;LINKDEF"
     )
 
@@ -47,10 +47,17 @@ function(generate_target_and_root_library target)
     message(FATAL_ERROR "Missing required argument: SRCS")
   endif()
 
+  if(NOT HT_EXT_CPP)
+    set(HT_EXT_CPP .cxx)
+  endif()
+  if(NOT HT_EXT_H)
+    set(HT_EXT_H .h)
+  endif()
   if(NOT HT_HDRS)
-    change_extensions_if_exists(.cxx .h
+    change_extensions_if_exists(${HT_EXT_CPP} ${HT_EXT_H}
       FILES "${HT_SRCS}"
       OUTVAR HT_HDRS)
+    message(STATUS "HT_SRCS: ${HT_SRCS} to HT_HDRS: ${HT_HDRS}")
   endif()
 
   # Add defaults to include directories
@@ -120,6 +127,7 @@ function(generate_target_and_root_library target)
   install(TARGETS ${target}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
     EXPORT GeneratedRootLibTargets)
+  #message(STATUS "Installing to ${CMAKE_INSTALL_LIBDIR}")
   
 endfunction()
 
