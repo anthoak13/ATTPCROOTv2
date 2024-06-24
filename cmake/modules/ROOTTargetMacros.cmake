@@ -57,7 +57,7 @@ function(generate_target_and_root_library target)
     change_extensions_if_exists(${HT_EXT_CPP} ${HT_EXT_H}
       FILES "${HT_SRCS}"
       OUTVAR HT_HDRS)
-    message(STATUS "HT_SRCS: ${HT_SRCS} to HT_HDRS: ${HT_HDRS}")
+    #message(STATUS "HT_SRCS: ${HT_SRCS} to HT_HDRS: ${HT_HDRS}")
   endif()
 
   # Add defaults to include directories
