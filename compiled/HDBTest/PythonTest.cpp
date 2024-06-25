@@ -3,6 +3,7 @@
 #include <TCanvas.h>
 #include <TGraph.h>
 #include <TGraph2D.h>
+#include <TRootCanvas.h>
 #include <TStyle.h>
 
 #include "hdbscan.hpp"
@@ -108,11 +109,8 @@ int main(int argc, char **argv)
          graph->SetMarkerColor(kBlack); // Noise is black
          continue;
       }
-      if (label >= 8)
-         graph->SetMarkerColor(kOrange);
-      else {
-         graph->SetMarkerColor(label + 1);
-      }
+
+      graph->SetMarkerColor((label % 8) + 1);
    }
 
    // Draw the graph
@@ -130,6 +128,10 @@ int main(int argc, char **argv)
            << endl;
    }
 
+   canvas->Modified();
+   canvas->Update();
+   TRootCanvas *rc = (TRootCanvas *)canvas->GetCanvasImp();
+   rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
    app.Run();
 
    return 0;
