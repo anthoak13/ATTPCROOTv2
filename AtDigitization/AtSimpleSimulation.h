@@ -77,8 +77,8 @@ public:
       std::function<bool(XYZPoint, PxPyPzEVector)> func = [](XYZPoint pos, PxPyPzEVector mom) { return true; });
 
    AtMCPoint &GetMcPoint(int i) { return dynamic_cast<AtMCPoint &>(*fMCPoints.At(i)); }
-   int GetNumPoints() { return fMCPoints.GetEntries(); }
-   TClonesArray &GetPointsArray() { return fMCPoints; }
+   int GetNumPoints();
+   TClonesArray &GetPointsArray();
    SpaceChargeModel GetSpaceChargeModel() { return fSCModel; }
 
 protected:

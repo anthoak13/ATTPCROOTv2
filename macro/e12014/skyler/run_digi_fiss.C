@@ -15,7 +15,7 @@ void run_digi_fiss(int runNum = 0)
    TString inOutDir = "./data/";
    // TString outputFile = inOutDir + "output_digiLg.root";
    TString outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
-   outputFile = inOutDir + TString::Format("output_digi%02d.root", 1);
+   outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
    TString scriptfile = "e12014_pad_mapping.xml";
    TString paramFile = "ATTPC.e12014.par";
 
@@ -80,15 +80,11 @@ void run_digi_fiss(int runNum = 0)
    // pulse->SetLowGain(1);
    Response::scaling = 0.01 * 0.75;
    AtPulseTask *pulseTask = new AtPulseTask(pulse);
-   pulseTask->SetPersistence(kTRUE);
+   pulseTask->SetPersistence(true);
 
    /*AtMacroTask *combTask = new AtMacroTask();
    combTask->AddInitFunction(eventComb::init);
    combTask->AddFunction(eventComb::combine);*/
-
-   AtDataReductionTask *reduceTask = new AtDataReductionTask();
-   reduceTask->SetInputBranch("AtRawEvent");
-   reduceTask->SetReductionFunction<AtRawEvent>(&reduceFunc);
 
    /**** PSA Task ****/
    AtRawEvent *respAvgEvent;
@@ -149,7 +145,6 @@ void run_digi_fiss(int runNum = 0)
 
    fRun->AddTask(clusterizer); // This task turns energy into electons in the gas
    fRun->AddTask(pulseTask);   // This task turns electorns in gas to traces on the pad plabe
-   fRun->AddTask(reduceTask);  // This task does nothing atm
    fRun->AddTask(psaTask);     // This turns waveforms on pads into hits in space
    fRun->AddTask(sacTask);     // This task finds the fisison Y-pattern
    fRun->AddTask(fissionTask); // This task assembles the fisison events
