@@ -1,12 +1,4 @@
-#include <FairFileSource.h>
-#include <FairParAsciiFileIo.h>
-#include <FairRootFileSink.h>
-#include <FairRuntimeDb.h>
 
-#include <TChain.h>
-#include <TFile.h>
-#include <TStopwatch.h>
-#include <TString.h>
 
 #include "SpaceChargeModel.h"
 #include "TxtEvent.h"
@@ -47,7 +39,7 @@
  *
  */
 
-void unpack_linked(int tpcRunNum = 130)
+void unpack_linked(int tpcRunNum = 210)
 {
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
@@ -62,13 +54,13 @@ void unpack_linked(int tpcRunNum = 130)
    timer.Start();
 
    // Set the input/output directories
-   TString inputDir = "/mnt/rawdata/e12014_attpc/h5";
-   TString evtInputDir = "/mnt/analysis/e12014/HiRAEVT/mapped";
+   TString inputDir = "./rawData";
+   //TString evtInputDir = "/mnt/analysis/e12014/HiRAEVT/mapped";
    // TString outDir = "/mnt/analysis/e12014/TPC/fission_linked";
-   TString outDir = "/mnt/analysis/e12014/TPC/fission_linked_baseline/";
+   TString outDir = "./";
    // TString outDir = "./";
    TString evtOutDir = outDir;
-   TString sharedInfoDir = "/mnt/projects/hira/e12014/tpcSharedInfo/";
+   TString sharedInfoDir = "/home/physics/fair_install/tpcSharedInfo/";
 
    /**** Should not have to change code between this line and the next star comment ****/
 
@@ -80,13 +72,13 @@ void unpack_linked(int tpcRunNum = 130)
    // Set the in/out files
    TString inputFile = inputDir + TString::Format("/run_%04d.h5", tpcRunNum);
    TString outputFile = outDir + TString::Format("/run_%04d.root", tpcRunNum);
-   TString evtOutputFile = evtOutDir + TString::Format("/evtRun_%04d.root", tpcRunNum);
-   TString evtInputFile = evtInputDir + TString::Format("/mappedRun-%d.root", nsclRunNum);
+   //TString evtOutputFile = evtOutDir + TString::Format("/evtRun_%04d.root", tpcRunNum);
+   //TString evtInputFile = evtInputDir + TString::Format("/mappedRun-%d.root", nsclRunNum);
 
    std::cout << "Unpacking run " << tpcRunNum << " from: " << inputFile << std::endl;
    std::cout << "Saving in: " << outputFile << std::endl;
-   std::cout << "Linking to run " << nsclRunNum << " from: " << evtInputFile << std::endl;
-   std::cout << "Saving in: " << evtOutputFile << std::endl;
+   //std::cout << "Linking to run " << nsclRunNum << " from: " << evtInputFile << std::endl;
+   //std::cout << "Saving in: " << evtOutputFile << std::endl;
 
    // Set the mapping for the TPC
    TString mapFile = "e12014_pad_mapping.xml"; //"Lookup20150611.xml";
@@ -133,7 +125,7 @@ void unpack_linked(int tpcRunNum = 130)
    unpacker->SetBaseLineSubtraction(true);
    auto unpackTask = new AtUnpackTask(std::move(unpacker));
    unpackTask->SetOuputBranchName("AtRawEventRaw");
-   unpackTask->SetPersistence(true);
+   unpackTask->SetPersistence(false);
 
    /**** Data reduction task (keep fission only) ****/
    AtDataReductionTask *reduceTask = new AtDataReductionTask();
@@ -143,15 +135,15 @@ void unpack_linked(int tpcRunNum = 130)
    reduceTask->SetReductionFunction(events);
 
    /**** DAQ linking task  ****/
-   AtLinkDAQTask *linker = new AtLinkDAQTask(); //< Must run after the data reduction task!!!
-   auto success = linker->SetInputTree(evtInputFile, "E12014");
-   linker->SetEvtOutputFile(evtOutputFile);
-   linker->SetEvtTimestamp("tstamp");
-   linker->SetTpcTimestampIndex(1);
-   linker->SetSearchMean(1);
-   linker->SetSearchRadius(2);
-   linker->SetCorruptedSearchRadius(1000);
-   linker->SetInputBranch("AtRawEventRaw");
+   // AtLinkDAQTask *linker = new AtLinkDAQTask(); //< Must run after the data reduction task!!!
+   // auto success = linker->SetInputTree(evtInputFile, "E12014");
+   // linker->SetEvtOutputFile(evtOutputFile);
+   // linker->SetEvtTimestamp("tstamp");
+   // linker->SetTpcTimestampIndex(1);
+   // linker->SetSearchMean(1);
+   // linker->SetSearchRadius(2);
+   // linker->SetCorruptedSearchRadius(1000);
+   // linker->SetInputBranch("AtRawEventRaw");
 
    /**** Ch0 subtraction ****/
    auto filterSub = new AtFilterSubtraction(mapping);
@@ -194,13 +186,13 @@ void unpack_linked(int tpcRunNum = 130)
 
    /**** Space charge correction ****/
    // auto SCModel = std::make_unique<AtRadialChargeModel>(E12014SC(nsclRunNum));
-   auto SCModel = std::make_unique<AtLineChargeModel>();
-   SCModel->SetLambda(E12014SC(nsclRunNum).GetLambda());
-   // SCModel->SetStepSize(0.1);
-   SCModel->SetBeamLocation({0, -6, 0}, {10, 0, 1000});
-   auto scTask = new AtSpaceChargeCorrectionTask(std::move(SCModel));
-   scTask->SetInputBranch("AtEvent");
-   scTask->SetOutputBranch("AtEventCorr");
+   // auto SCModel = std::make_unique<AtLineChargeModel>();
+   // SCModel->SetLambda(E12014SC(nsclRunNum).GetLambda());
+   // // SCModel->SetStepSize(0.1);
+   // SCModel->SetBeamLocation({0, -6, 0}, {10, 0, 1000});
+   // auto scTask = new AtSpaceChargeCorrectionTask(std::move(SCModel));
+   // scTask->SetInputBranch("AtEvent");
+   // scTask->SetOutputBranch("AtEventCorr");
 
    /**** 2 lines pattern fit ****/
    auto method = std::make_unique<SampleConsensus::AtSampleConsensus>(
@@ -216,21 +208,21 @@ void unpack_linked(int tpcRunNum = 130)
    sacTask->SetOutputBranch("AtPatternEvent");
 
    /******** Create fission task ********/
-   AtFissionTask *fissionTask = new AtFissionTask(E12014SC(nsclRunNum).GetLambda());
-   fissionTask->SetUncorrectedEventBranch("AtEvent");
-   fissionTask->SetPatternBranch("AtPatternEvent");
-   fissionTask->SetOutBranch("AtFissionEvent");
-   fissionTask->SetPersistance(true);
+   // AtFissionTask *fissionTask = new AtFissionTask(E12014SC(nsclRunNum).GetLambda());
+   // fissionTask->SetUncorrectedEventBranch("AtEvent");
+   // fissionTask->SetPatternBranch("AtPatternEvent");
+   // fissionTask->SetOutBranch("AtFissionEvent");
+   // fissionTask->SetPersistance(true);
 
    run->AddTask(unpackTask);
-   run->AddTask(reduceTask);
-   run->AddTask(linker);
+   //run->AddTask(reduceTask);
+   //run->AddTask(linker);
    // run->AddTask(subTask);
    // run->AddTask(calTask);
    run->AddTask(psaTask);
-   run->AddTask(scTask);
-   run->AddTask(sacTask);
-   run->AddTask(fissionTask);
+   //run->AddTask(scTask);
+   //run->AddTask(sacTask);
+   //run->AddTask(fissionTask);
 
    run->Init();
 
@@ -238,7 +230,7 @@ void unpack_linked(int tpcRunNum = 130)
    auto numEvents = unpackTask->GetNumEvents();
 
    // numEvents = 1700;//217;
-   numEvents = 100;
+   // numEvents = 100;
 
    std::cout << "Unpacking " << numEvents << " events. " << std::endl;
    // numEvents = 3800;
