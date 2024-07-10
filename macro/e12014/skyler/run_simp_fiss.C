@@ -70,7 +70,7 @@ void run_simp_fiss(int runNum = 0)
    auto scModel = std::make_shared<AtLineChargeModel>();
    scModel->SetBeamLocation({0, -6, 0},
                             {10, 0, 1000}); // Set the beam location at two points (entrace window and pad plane)
-   scModel->SetBeamRadius(0);
+   scModel->SetBeamRadius(5);
    sim->SetSpaceChargeModel(scModel); // Add the space charge model to the simulation
 
    // Create and load energy loss models
@@ -88,6 +88,7 @@ void run_simp_fiss(int runNum = 0)
    }
 
    // Load the energy loss table for the beam
+   std::cout << "Loading beam energy loss tables" << std::endl;
    auto beamloss = std::make_shared<AtTools::AtELossTable>();
    beamloss->LoadLiseTable(
       TString::Format(energyLossDir + "/LISE/%d_%d.txt", fissionSim::beamZ, fissionSim::beamA).Data(),
@@ -111,7 +112,7 @@ void run_simp_fiss(int runNum = 0)
 
    timer.Start();
    // fRun->Run(0, 10000);
-   fRun->Run(0, 100);
+   fRun->Run(0, 5);
    fissionSim::CleanUp();
    timer.Stop();
 
@@ -125,6 +126,7 @@ void run_simp_fiss(int runNum = 0)
    cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << endl;
    cout << endl;
    // ------------------------------------------------------------------------
+   return;
 }
 
 bool reduceFunc(AtRawEvent *evt)
