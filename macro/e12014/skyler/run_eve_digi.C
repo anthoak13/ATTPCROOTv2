@@ -7,10 +7,11 @@
 #include "FairRunAna.h"
 */
 
-void run_eve_digi(TString OutputDataFile = "./data/output.sim_display.root")
+void run_eve_digi(int runNum = 0, TString OutputDataFile = "./data/output.sim_display.root")
 {
    // TString InputDataFile = "/home/faculty/aanthony/fission/data/e12014/unpacked/Bi200Sim.root";
-   TString InputDataFile = "./data/output_digi01.root";
+   TString InputDataFile = TString::Format("./data/output_digi%02d.root", runNum);
+
    std::cout << "Opening: " << InputDataFile << std::endl;
 
    TString dir = getenv("VMCWORKDIR");

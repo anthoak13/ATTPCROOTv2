@@ -21,6 +21,16 @@
 thread_local TClonesArray AtSimpleSimulation::fMCPoints("AtMCPoint");
 thread_local int AtSimpleSimulation::fTrackID = 0;
 
+int AtSimpleSimulation::GetNumPoints()
+{
+   return fMCPoints.GetEntries();
+}
+
+TClonesArray &AtSimpleSimulation::GetPointsArray()
+{
+   return fMCPoints;
+}
+
 using SpaceChargeModel = std::shared_ptr<AtSpaceChargeModel>;
 using ModelPtr = std::shared_ptr<AtTools::AtELossModel>;
 using XYZPoint = ROOT::Math::XYZPoint;
@@ -140,7 +150,7 @@ AtSimpleSimulation::SimulateParticle(ModelPtr model, const XYZPoint &iniPos, con
       double p = sqrt(E * E - mom.M2());
       mom.SetPxPyPzE(dir.X() * p, dir.Y() * p, dir.Z() * p, E);
 
-      LOG(debug) << mom << " " << mom.M() << " " << iniMom.M();
+      LOG(debug) << pos << " " << eLoss << " " << iniMom.E() - iniMom.M();
 
       pos += dir * fDistStep;
       length += fDistStep;
@@ -152,6 +162,7 @@ AtSimpleSimulation::SimulateParticle(ModelPtr model, const XYZPoint &iniPos, con
 
 void AtSimpleSimulation::NewEvent()
 {
+   LOG(info) << "Starting new event";
    fMCPoints.Clear();
    fTrackID = 0;
 }

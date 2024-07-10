@@ -245,6 +245,7 @@ void generateEvent()
    cout << "Simulated vertex Position: (" << beamPos.first.X() << ", " << beamPos.first.Y() << ", "
         << 1000 - beamPos.first.Z() << ")" << endl;
    cout << "Simulated vertex Energy: " << beamPos.second.E() - beamPos.second.M() << endl;
+   cout << "Number of hits registered: " << fSimulation->GetNumPoints() << endl;
 
    vecInt fragZ = {0, 0};
    vecInt fragA = {0, 0};
@@ -277,6 +278,7 @@ void generateEvent()
       // cout << "fragZ.size() " << fragZ.size() << "; fragA.size()" << fragA.size() << endl;
       cout << "Z: " << fragZ[i] << ", A: " << fragA[i] << endl;
       fSimulation->SimulateParticle(fragZ[i], fragA[i], beamPos.first, labP);
+      cout << "Number of hits registered: " << fSimulation->GetNumPoints() << endl;
    }
 }
 
