@@ -1,7 +1,7 @@
 namespace Response {
 
 double response[512] = {};
-TString sharedInfoDir = "~/fission/data/e12014/tpcSharedInfo/";
+TString sharedInfoDir = "~/fair_install/tpcSharedInfo/";
 
 double scaling = 1.0;
 
