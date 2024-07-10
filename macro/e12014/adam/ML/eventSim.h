@@ -1,3 +1,8 @@
+/**
+ * This file contains infomration for using the AtSimpleSimulation class to simulate fission events.
+ * It mostly is responsible for generating fission events based on
+ *
+ */
 #include "TCanvas.h"
 #include "TChain.h"
 #include "TFile.h"
@@ -16,9 +21,11 @@
 #include "Math/Vector3D.h"
 #include "Math/Vector4D.h"
 
-namespace simEvent {
-const double AtoE = 939.0;
-const double c = 2.998e8; // In m/s
+namespace fissionSim {
+
+// Define constants and short names for various classes.
+constexpr double AtoE = 939.0;
+constexpr double c = 2.998e8; // In m/s
 using VecXYZE = ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<>>;
 using VecPolar = ROOT::Math::Polar3D<double>;
 using XYZVector = ROOT::Math::XYZVector;
@@ -27,19 +34,22 @@ using XYZPoint = ROOT::Math::XYZPoint;
 using vecInt = std::vector<Int_t>;
 using test = AtTools::AtKinematics; // Literally this is just to force ROOT to load the AtTools lib
 
-TF1 *fAsym = nullptr;
-TF1 *fInvSin = nullptr;
+TF1 *fAsym = nullptr;   // Function describing the angular distribution of the fission fragments
+TF1 *fInvSin = nullptr; // Function describing the angular distribution of the fission fragments (in some limit)
 
 double angMin = TMath::Pi() / 2 - 1;
 double angMax = TMath::Pi() / 2 + 1;
 
 TF1 *csFit = nullptr;
 
+// This are the important parameters to set in the simulation
 int beamZ = 83;
 int beamA = 200;
 double beamM = 199.9332;
 float massFrac = 0.56;
 float massDev = 6;
+float decayAngle =
+   0; // Angle of the fission fragments in the CoM frame in radians. If 0, then sample from the angular distribution
 
 // double beamOffsetX = -7.03043e+00;
 // double beamOffsetXsig = 1.62047e+01;
@@ -97,42 +107,28 @@ TString A0 = "A0";
 TString Z0 = "Z0";
 TString ang = "ang";
 
-// Function prototypes
+/**  Function prototypes defined in this header files **/
+
+// Sample masses of FF given Acn and the gaussian distribution parameters massFrac and massDev
 vecInt getProducMasses(Int_t A, Float_t massFrac, Float_t massDev, TRandom *rand = new TRandom3());
+
+// Different ways of generating Z of FF given sampled masses
 vecInt getProductChargeSameDistro(Int_t Z, const vecInt &masses);
 vecInt getProductChargeMaxBE(Int_t Z, const vecInt &masses);
 vecInt getProductChargeMaxBEA(Int_t Z, const vecInt &masses);
 vecInt getProductChargeDist(Int_t Z, const vecInt &masses);
 
+// Return the four momenta of the products in the center of mass frame
 std::vector<VecXYZE> getProductMomenta(const vecInt &fragA, const vecInt &fragZ, TRandom *rand, VecPolar &decayAng);
 
-Double_t polyFunc(Double_t x, Double_t *p, Int_t order)
-{
-   Double_t value = 0;
-   for (int i = 0; i < order + 1; i++) {
-      Double_t subVal = p[i];
-      for (int j = 0; j < i; j++) {
-         subVal *= x;
-      }
-      value += subVal;
-   }
-   return value;
-}
-
-Double_t csFunction(Double_t *x, Double_t *p)
-{
-   Double_t value = p[0];
-   Double_t c[7] = {p[2], p[3], p[4], p[5], p[6], p[7], p[8]};
-   if (x[0] >= p[0] && x[0] < p[1])
-      value = polyFunc(x[0], c, 6);
-   if (x[0] >= p[1])
-      value = polyFunc(p[1], c, 6);
-   return value;
-}
+// Generate and simulate a fission event (end result is energy deposition in space in the TPC)
+void generateEvent();
+void Init();    // Called at the start of the run
+void Exec();    // Called for each event
+void CleanUp(); // Called at the end of the run
 
 XYZVector SampleAsym()
 {
-
    if (fAsym == nullptr) {
       fAsym = new TF1("asym",
                       "1 + [0] * cos(x) * cos(x) + [1] * cos(x) * cos(x) * cos(x) * cos(x)+ [2] * cos(x) * cos(x)* "
@@ -148,7 +144,6 @@ XYZVector SampleAsym()
 
 XYZVector SampleInvSin()
 {
-
    if (fInvSin == nullptr) {
       fInvSin = new TF1("invSin", "1 / sin(x)", angMin, angMax);
    }
@@ -158,20 +153,10 @@ XYZVector SampleInvSin()
    return {decayAng.x(), decayAng.y(), decayAng.z()};
 }
 
-void moveSim(unique_ptr<AtSimpleSimulation> sim)
-{
-   fSimulation = std::move(sim);
-}
-
 void Init()
 {
    fSimulation->RegisterBranch();
    outFile.open("simOutFile.txt");
-
-   // cout << "defining fit" << endl;
-   csFit = new TF1("csFit", csFunction, 0, 2700, 9);
-   csFit->SetParameters(1100, 1965, 0.859148, -0.00517684, 1.22862e-05, -1.4605e-08, 9.12099e-12, -2.82295e-15,
-                        3.39612e-19);
 
    simInfo->GetXaxis()->SetBinLabel(1, vX);
    simInfo->GetXaxis()->SetBinLabel(2, vY);
@@ -208,49 +193,45 @@ void generateEvent()
       simInfo->SetBinContent(i, 0);
    }
 
-   VecXYZE beamMomenta;
    XYZPoint beamOrigin;
 
    XYZVector beamDirection;
 
+   /** Sample the beam direction, location, and energy and store it in the 4-vector beamMomentum*/
    beamOrigin.SetX(gRandom->Gaus(beamOffsetX, beamOffsetXsig));
    beamOrigin.SetY(gRandom->Gaus(beamOffsetY, beamOffsetYsig));
    beamOrigin.SetZ(0);
 
-   // auto dirXmean = beamDirX1 + beamDirX2 * (beamOrigin.X() - beamOffsetX);
-   // auto dirXsigma = beamDirXsig1 + beamDirXsig2 * beamOrigin.X();
-   // auto dirYmean = beamDirY1 + beamDirY2 * (beamOrigin.Y() - beamOffsetY);
-   // auto dirYsigma = beamDirYsig1 + beamDirYsig2 * beamOrigin.Y();
-
-   auto dirXmean = beamDirX;
-   auto dirXsigma = beamDirXsig;
-   auto dirYmean = beamDirY;
-   auto dirYsigma = beamDirYsig;
-
-   beamDirection.SetX(gRandom->Gaus(dirXmean, dirXsigma));
-   beamDirection.SetY(gRandom->Gaus(dirYmean, dirYsigma));
+   beamDirection.SetX(gRandom->Gaus(beamDirX, beamDirXsig));
+   beamDirection.SetY(gRandom->Gaus(beamDirY, beamDirYsig));
    beamDirection.SetZ(1);
+
    auto originEnergy = gRandom->Gaus(beamE, beamEsig);
+
+   auto beamMomMag = sqrt(pow(originEnergy + beamM * AtoE, 2) - pow(beamM * AtoE, 2));
+   VecXYZE beamMomentum = AtTools::Kinematics::Get4Vector(beamMomMag * beamDirection.Unit(), beamM * AtoE);
    // cout << "Beam Origin Energy: " << originEnergy << endl;
    // cout << "Beam Origin: (" << beamOrigin.X() << ", " << beamOrigin.Y() << ", " << beamOrigin.Z() << ")" << endl;
-   auto beamMomMag = sqrt(pow(originEnergy + beamM * AtoE, 2) - pow(beamM * AtoE, 2));
-   beamMomenta = AtTools::Kinematics::Get4Vector(beamMomMag * beamDirection.Unit(), beamM * AtoE);
-   // cout << "Beam Momentum: (" << beamMomenta.X() << ", " << beamMomenta.Y() << ", " << beamMomenta.Z() << ")" <<
-   // endl; cout << "Beam Energy: " << beamMomenta.E()  - beamMomenta.M() << endl;
+   // cout << "Beam Momentum: (" << beamMomentum.X() << ", " << beamMomentum.Y() << ", " << beamMomentum.Z() << ")" <<
+   // endl; cout << "Beam Energy: " << beamMomentum.E()  - beamMomentum.M() << endl;
 
    // outFile << beamOrigin.X() << " " << beamOrigin.Y() << " " << beamOrigin.Z() << " ";
 
+   /** Sample the location where the reaction should occur in the detector (in z-dir in mm) */
    auto vertexZ = gRandom->Uniform(1000);
-   auto vertexE = csFit->GetRandom();
+   cout << "Simulating beam to " << vertexZ << " mm" << endl;
 
-   cout << "Simulating beam to " << vertexZ << endl;
+   // Simulate the beam to the reaction vertex. The lambda function is used to stop the simulation when the beam reaches
+   // the vertex. Returns the position and 4 momentum of the beam at the reaction vertex.
    auto beamPos =
-      fSimulation->SimulateParticle(beamZ, beamA, beamOrigin, beamMomenta, [vertexZ](XYZPoint pos, VecXYZE mom) {
+      fSimulation->SimulateParticle(beamZ, beamA, beamOrigin, beamMomentum, [vertexZ](XYZPoint pos, VecXYZE mom) {
          return pos.Z() < vertexZ - 10;
          // return (mom.E() < vertexE);
       });
+
+   //** Record data in output file and into the meta data histogram*/
    outFile << beamOrigin.X() << " " << beamOrigin.Y() << " " << beamOrigin.Z() << " "
-           << beamMomenta.E() - beamMomenta.M() << " ";
+           << beamMomentum.E() - beamMomentum.M() << " ";
    outFile << beamPos.first.X() << " " << beamPos.first.Y() << " " << beamPos.first.Z() << " "
            << beamPos.second.E() - beamPos.second.M() << " ";
 
@@ -268,6 +249,7 @@ void generateEvent()
    vecInt fragZ = {0, 0};
    vecInt fragA = {0, 0};
 
+   // Generate the masses and charges of the fission fragments
    while (fragZ[0] == 0) {
       fragA = getProducMasses(beamA + 4, massFrac, massDev, gRandom);
       fragZ = getProductChargeDist(beamZ + 2, fragA);
@@ -293,7 +275,7 @@ void generateEvent()
 
       cout << "Simulating fragment " << i << endl;
       // cout << "fragZ.size() " << fragZ.size() << "; fragA.size()" << fragA.size() << endl;
-      cout << fragZ[i] << "; " << fragA[i] << endl;
+      cout << "Z: " << fragZ[i] << ", A: " << fragA[i] << endl;
       fSimulation->SimulateParticle(fragZ[i], fragA[i], beamPos.first, labP);
    }
 }
@@ -321,20 +303,19 @@ vecInt getProductChargeMaxBE(Int_t Z, const vecInt &masses)
 
 vecInt getProductChargeDist(Int_t Z, const vecInt &masses)
 {
-
-   vecInt val = {0, 0};
    std::vector<int> distZ;
-   for (auto ion : ions) {
-      if (ion.second == masses[0])
-         distZ.push_back(ion.first);
+   for (auto [Z, A] : ions) {
+      if (A == masses[0])
+         distZ.push_back(Z);
    }
 
    if (distZ.size() > 0) {
       auto Z0 = distZ[gRandom->Integer(distZ.size())];
       auto Z1 = Z - Z0;
-      val = {Z0, Z1};
+      return {Z0, Z1};
    }
-   return val;
+
+   return {0, 0};
 }
 
 vecInt getProductChargeMaxBEA(Int_t Z, const vecInt &masses)
@@ -389,7 +370,7 @@ std::vector<VecXYZE> getProductMomenta(const vecInt &fragA, const vecInt &fragZ,
       // decayAng = SampleInvSin();
    }
 
-   cout << "Theta: " << decayAng.Theta() * TMath::RadToDeg() << "deg" << endl;
+   cout << "Theta in CoM: " << decayAng.Theta() * TMath::RadToDeg() << " deg" << endl;
 
    // Set the momentum of first particles
    // decayAng.SetR(TMath::Sqrt(E[0] * E[0] - m[0] * m[0]));
@@ -397,8 +378,6 @@ std::vector<VecXYZE> getProductMomenta(const vecInt &fragA, const vecInt &fragZ,
    ROOT::Math::XYZVector pDir(decayAng);
 
    std::vector<VecXYZE> ret;
-   // ret.push_back(VecXYZE(decayAng.X(), decayAng.Y(), decayAng.Z(), E[0]));
-   // ret.push_back(VecXYZE(-decayAng.X(), -decayAng.Y(), -decayAng.Z(), E[1]));
    ret.push_back(AtTools::Kinematics::Get4Vector(pDir, m[0]));
    ret.push_back(AtTools::Kinematics::Get4Vector(-pDir, m[1]));
 
@@ -428,4 +407,4 @@ void CleanUp()
    outFile.close();
 }
 
-} // namespace simEvent
+} // namespace fissionSim
