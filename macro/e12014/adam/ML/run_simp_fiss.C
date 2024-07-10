@@ -7,49 +7,47 @@ void run_simp_fiss(int runNum = 0)
 {
 
    delete gRandom;
-   gRandom = new TRandom3;   
+   gRandom = new TRandom3;
    gRandom->SetSeed(0);
 
    //************ Things to change ************//
-   int Zcn = 83 + 2;
-   int Acn = 200 + 4;
-   int Zmin = 26;
-   int Zmax = 59;
+   int Zcn = 83 + 2;  // Number of protons in the compound nucleus
+   int Acn = 200 + 4; // Number of nucleons in the compound nucleus
+   int Zmin = 26;     // Minimum Z to simulate for the fission fragments
+   int Zmax = 59;     // Maximum Z to simulate for hte fission fragments
 
-   simEvent::beamZ = 83;
-   simEvent::beamA = 200;
-   simEvent::beamM = 199.9332;
-   simEvent::massFrac = 0.56; //Probably don't change
-   simEvent::massDev = 6; //Probably don't change
+   fissionSim::beamZ = 83;       // Number of protons in the beam
+   fissionSim::beamA = 200;      // Number of nucleons in the beam
+   fissionSim::beamM = 199.9332; // Mass of the beam in amu
+   fissionSim::massFrac = 0.56;  // Mean of the FF mass distribution (as a fraction of Acn).
+   fissionSim::massDev =
+      6; // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
+   fissionSim::decayAngle =
+      90 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
 
-   simEvent::beamE = 2.70013e+03; //Get from LISE
-   simEvent::beamEsig = 1.28122e+02; //Either set to 0 or maintain the same ratio with beamE
+   fissionSim::beamE = 2.70013e+03; // Get from LISE, beam energy in MeV
+   fissionSim::beamEsig =
+      1.28122e+02; // Spread in the beam energy from strageling. Either set to 0 or maintain the same ratio with beamE
 
    //************ End things to change ************//
 
-   TString inOutDir = "./data/";
-   //TString outputFile = inOutDir + "symFissionLg.root";
+   TString inOutDir = "./data/"; // Directory to save the output file
+   TString tpcSharedInfoDir =
+      "/home/adam/fair_install/tpcSharedInfo/";          // Directory containing the shared information for the TPC
+   TString energyLossDir = tpcSharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
    TString outputFile = inOutDir + TString::Format("simFission%02d.root", runNum);
    TString geoFile = "ATTPC_v1.1_geomanager.root";
    TString scriptfile = "e12014_pad_mapping.xml";
    TString paramFile = "ATTPC.e12014.par";
 
    TString dir = getenv("VMCWORKDIR");
-
-   // TString mcFile = "./data/sim_attpc.root";
-
-   // Create the full parameter file paths
-   //TString digiParFile = dir + "/parameters/" + paramFile;
    TString GeoDataPath = dir + "/geometry/" + geoFile;
    TString digiParFile = paramFile;
    TString mapParFile = dir + "/scripts/" + scriptfile;
 
-   // -----   Timer   --------------------------------------------------------
    TStopwatch timer;
 
-   // ------------------------------------------------------------------------
-
-   // __ Run ____________________________________________
+   /** Create the run and set the output file and parameter file */
    FairRunAna *fRun = new FairRunAna();
    fRun->SetSink(new FairRootFileSink(outputFile));
    fRun->SetGeomFile(GeoDataPath);
@@ -59,54 +57,62 @@ void run_simp_fiss(int runNum = 0)
    parIo1->open(digiParFile.Data(), "in");
    rtdb->setFirstInput(parIo1);
 
-   // Create the detector map to pass to the simulation
+   // Create the detector map to pass to the simulation (this is the pad plane mapping)
    auto mapping = std::make_shared<AtTpcMap>();
    mapping->ParseXMLMap(mapParFile.Data());
    mapping->GeneratePadPlane();
 
+   // Create the simulation object and set the distance step (how far should the particles move in each step)
    auto sim = std::make_unique<AtSimpleSimulation>(GeoDataPath.Data());
-   sim->SetDistanceStep(1);
+   sim->SetDistanceStep(1); // Units for distance are mm
 
+   // Create the space charge model that we use to deform the tracks
    auto scModel = std::make_shared<AtLineChargeModel>();
-   //scModel->SetBeamLocation({7, -10, 0}, {0, 7, 1000});
-   scModel->SetBeamLocation({0, -6, 0}, {10, 0, 1000});
-   //scModel->SetBeamLocation({1, -4, 0}, {-0.1197, 13.01, 1000});
+   scModel->SetBeamLocation({0, -6, 0},
+                            {10, 0, 1000}); // Set the beam location at two points (entrace window and pad plane)
    scModel->SetBeamRadius(0);
-   sim->SetSpaceChargeModel(scModel);
+   sim->SetSpaceChargeModel(scModel); // Add the space charge model to the simulation
 
    // Create and load energy loss models
    std::vector<std::pair<int, int>> ions;
    for (int i = Zmin; i <= Zmax; i++)
-      ions.push_back({i, std::round((double)i / Zcn * Acn)});
+      ions.push_back(
+         {i, std::round((double)i / Zcn * Acn)}); // Calculate the number of nucleons for each Z and add to the list
+
+   // For all our ions, load the energy loss tables
    for (auto [Z, A] : ions) {
       auto eloss = std::make_shared<AtTools::AtELossTable>();
-      eloss->LoadLiseTable(TString::Format("./eLoss/LISE/%d_%d.txt", Z, A).Data(), A, 0);
+      eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
+                           0); // Note a different function call will be needed if loading SRIM tables
       sim->AddModel(Z, A, eloss);
    }
 
-      auto beamloss = std::make_shared<AtTools::AtELossTable>();
-      beamloss->LoadLiseTable(TString::Format("./eLoss/LISE/%d_%d.txt", 83, 200).Data(), 200, 0);
-      sim->AddModel(83, 200, beamloss);
+   // Load the energy loss table for the beam
+   auto beamloss = std::make_shared<AtTools::AtELossTable>();
+   beamloss->LoadLiseTable(
+      TString::Format(energyLossDir + "/LISE/%d_%d.txt", fissionSim::beamZ, fissionSim::beamA).Data(),
+      fissionSim::beamA, 0);
+   sim->AddModel(fissionSim::beamZ, fissionSim::beamA, beamloss);
 
-   simEvent::moveSim(std::move(sim));
-   simEvent::ions = ions;
+   /**  At this point, the simulation object is fully constructed and ready to be used. **/
+   fissionSim::fSimulation = std::move(sim);
+   fissionSim::ions = ions;
 
+   // Create the task that will actually simulate events
    AtMacroTask *simTask = new AtMacroTask();
-   simTask->AddInitFunction(simEvent::Init);
-   simTask->AddFunction(simEvent::Exec);
+   simTask->AddInitFunction(fissionSim::Init);
+   simTask->AddFunction(fissionSim::Exec);
+
+   // Create the tasks to digitze the event (simulate detector effects and create the raw data)
 
    fRun->AddTask(simTask);
 
-   //  __ Init and run ___________________________________
-
-   //Response::Init();
    fRun->Init();
 
-
    timer.Start();
-   // fRun->Run(0, 20001);
-   fRun->Run(0, 10000);
-   simEvent::CleanUp();
+   // fRun->Run(0, 10000);
+   fRun->Run(0, 100);
+   fissionSim::CleanUp();
    timer.Stop();
 
    std::cout << std::endl << std::endl;
@@ -123,8 +129,7 @@ void run_simp_fiss(int runNum = 0)
 
 bool reduceFunc(AtRawEvent *evt)
 {
-   if(evt->GetEventID() % 2 == 0)
+   if (evt->GetEventID() % 2 == 0)
       return false;
    return (evt->GetNumPads() > 0) && evt->IsGood();
 }
-
