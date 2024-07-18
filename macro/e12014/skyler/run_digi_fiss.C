@@ -69,18 +69,18 @@ void run_digi_fiss(int runNum = 0)
    // __ AT digi tasks___________________________________
    // AtClusterizeTask *clusterizer = new AtClusterizeTask(std::make_shared<AtClusterize>());
    AtClusterizeTask *clusterizer = new AtClusterizeTask(std::make_shared<AtClusterizeLine>());
-   clusterizer->SetPersistence(kFALSE);
+   clusterizer->SetPersistence(false);
 
    // AtPulseLineTask *pulse = new AtPulseLineTask();
 
    // AtPulseTask *pulse = new AtPulseTask(std::make_shared<AtPulse>(mapping));
    auto pulse = std::make_shared<AtPulseLine>(mapping, Response::GetResponse);
-   pulse->SetSaveCharge(true);
+   pulse->SetSaveCharge(false);
    pulse->SetLowGain(0.19);
    // pulse->SetLowGain(1);
    Response::scaling = 0.01 * 0.75;
    AtPulseTask *pulseTask = new AtPulseTask(pulse);
-   pulseTask->SetPersistence(true);
+   pulseTask->SetPersistence(false);
 
    /*AtMacroTask *combTask = new AtMacroTask();
    combTask->AddInitFunction(eventComb::init);
