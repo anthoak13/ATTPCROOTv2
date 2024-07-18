@@ -256,19 +256,20 @@ bool generateEvent()
    while (fragZ[0] == 0) {
       fragA = getProducMasses(beamA + 4, massFrac, massDev, gRandom);
       fragZ = getProductChargeDist(beamZ + 2, fragA);
+      std::cout << "Trying " << fragA[0] << " " << fragZ[0] << std::endl;
    }
 
    // Generate an array of products in the rest frame using the supplied angle
    // or a random angle if 0 was supplied
-   VecPolar decayAngle(1, 0, 0); // r, theta, phi
+   VecPolar decayDir(1, decayAngle, 0); // r, theta, phi
 
-   auto decayMomenta = getProductMomenta(fragA, fragZ, gRandom, decayAngle);
+   auto decayMomenta = getProductMomenta(fragA, fragZ, gRandom, decayDir);
 
-   outFile << fragA[0] << " " << fragZ[0] << " " << decayAngle.Theta() << " ";
+   outFile << fragA[0] << " " << fragZ[0] << " " << decayDir.Theta() << " ";
 
    simInfo->Fill(A0, fragA[0]);
    simInfo->Fill(Z0, fragZ[0]);
-   simInfo->Fill(ang, decayAngle.Theta());
+   simInfo->Fill(ang, decayDir.Theta());
 
    auto fBeamBoost = ROOT::Math::Boost(beamPos.second.BoostToCM());
    fBeamBoost.Invert();
@@ -415,6 +416,7 @@ void Exec()
       fSimulation->NewEvent();
       if (generateEvent())
          break;
+      cout << "Failed to generate event that passes trigger. Trying again." << std::endl;
    }
    outFile << endl;
 }
