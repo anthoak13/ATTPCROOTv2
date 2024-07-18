@@ -71,7 +71,7 @@ void run_simp_fiss(int runNum = 0)
    scModel->SetBeamLocation({0, -6, 0},
                             {10, 0, 1000}); // Set the beam location at two points (entrace window and pad plane)
    scModel->SetBeamRadius(5);
-   sim->SetSpaceChargeModel(scModel); // Add the space charge model to the simulation
+   // sim->SetSpaceChargeModel(scModel); // Add the space charge model to the simulation
 
    // Create and load energy loss models
    std::vector<std::pair<int, int>> ions;
@@ -111,8 +111,8 @@ void run_simp_fiss(int runNum = 0)
    fRun->Init();
 
    timer.Start();
-   // fRun->Run(0, 10000);
-   fRun->Run(0, 5);
+   fRun->Run(0, 10000);
+   // fRun->Run(0, 5);
    fissionSim::CleanUp();
    timer.Stop();
 
