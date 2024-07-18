@@ -5,7 +5,7 @@
 
 bool reduceFunc(AtRawEvent *evt);
 
-void run_digi_fiss(int runNum = 0)
+void run_digi_fiss(int runNum = 0, bool saveRawEvent = true)
 {
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
@@ -24,7 +24,8 @@ void run_digi_fiss(int runNum = 0)
    // TString mcFile = "./data/sim_attpc.root";
    // TString mcFile = inOutDir + "symFissionLg.root";
    TString mcFile = inOutDir + TString::Format("simFission%02d.root", runNum);
-   TString sharedInfoDir = "~/fair_install/tpcSharedInfo/";
+   TString sharedInfoDir =
+      "/home/adam/fair_install/tpcSharedInfo/"; // Directory containing the shared information for the TPC
 
    // Create the full parameter file paths
    // TString digiParFile = dir + "/parameters/" + paramFile;
@@ -75,12 +76,12 @@ void run_digi_fiss(int runNum = 0)
 
    // AtPulseTask *pulse = new AtPulseTask(std::make_shared<AtPulse>(mapping));
    auto pulse = std::make_shared<AtPulseLine>(mapping, Response::GetResponse);
-   pulse->SetSaveCharge(false);
+   pulse->SetSaveCharge(saveRawEvent);
    pulse->SetLowGain(0.19);
    // pulse->SetLowGain(1);
    Response::scaling = 0.01 * 0.75;
    AtPulseTask *pulseTask = new AtPulseTask(pulse);
-   pulseTask->SetPersistence(false);
+   pulseTask->SetPersistence(saveRawEvent);
 
    /*AtMacroTask *combTask = new AtMacroTask();
    combTask->AddInitFunction(eventComb::init);

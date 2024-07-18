@@ -39,7 +39,7 @@ void run_eve_digi(int runNum = 0, TString OutputDataFile = "./data/output.sim_di
    fMap->ParseXMLMap(mapDir.Data());
    AtViewerManager *eveMan = new AtViewerManager(fMap);
 
-   auto tabMain = std::make_unique<AtTabMain>();
+   auto tabMain = std::make_unique<AtTabFission>();
    tabMain->SetMultiHit(100); // Set the maximum number of multihits in the visualization
    eveMan->AddTab(std::move(tabMain));
 
