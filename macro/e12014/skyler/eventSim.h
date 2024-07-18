@@ -27,6 +27,7 @@ namespace fissionSim {
 constexpr double AtoE = 939.0;
 constexpr double c = 2.998e8; // In m/s
 using VecXYZE = ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<>>;
+using PxPyPzEVector = ROOT::Math::PxPyPzEVector;
 using VecPolar = ROOT::Math::Polar3D<double>;
 using XYZVector = ROOT::Math::XYZVector;
 using Cartesian3D = ROOT::Math::Cartesian3D<>;
@@ -122,7 +123,8 @@ vecInt getProductChargeDist(Int_t Z, const vecInt &masses);
 std::vector<VecXYZE> getProductMomenta(const vecInt &fragA, const vecInt &fragZ, TRandom *rand, VecPolar &decayAng);
 
 // Generate and simulate a fission event (end result is energy deposition in space in the TPC)
-void generateEvent();
+// Returns true if the event should be accepted.
+bool generateEvent();
 void Init();    // Called at the start of the run
 void Exec();    // Called for each event
 void CleanUp(); // Called at the end of the run
@@ -186,7 +188,7 @@ double violaEn(int A, int Z)
    return 0.1189 * Z * Z / TMath::Power(A, 1.0 / 3.0) + 7.3;
 }
 
-void generateEvent()
+bool generateEvent()
 {
 
    for (int i = 0; i < 8; i++) {
@@ -271,15 +273,24 @@ void generateEvent()
    auto fBeamBoost = ROOT::Math::Boost(beamPos.second.BoostToCM());
    fBeamBoost.Invert();
 
+   std::array<std::pair<XYZPoint, PxPyPzEVector>, 2> finalPos;
+   bool keepEvent = true;
+   double radCut = 20; // in mm
    for (int i = 0; i < 2; i++) {
       auto labP = fBeamBoost(decayMomenta[i]);
 
       cout << "Simulating fragment " << i << endl;
       // cout << "fragZ.size() " << fragZ.size() << "; fragA.size()" << fragA.size() << endl;
       cout << "Z: " << fragZ[i] << ", A: " << fragA[i] << endl;
-      fSimulation->SimulateParticle(fragZ[i], fragA[i], beamPos.first, labP);
+      auto [fragPos, fragMom] = fSimulation->SimulateParticle(fragZ[i], fragA[i], beamPos.first, labP);
+
+      // Only keep events that would have passed our trigger condition
+      double fragRho = std::sqrt(fragPos.X() * fragPos.X() + fragPos.Y() * fragPos.Y());
+      keepEvent &= fragRho > radCut;
+
       cout << "Number of hits registered: " << fSimulation->GetNumPoints() << endl;
    }
+   return keepEvent;
 }
 
 vecInt getProductChargeMaxBE(Int_t Z, const vecInt &masses)
@@ -399,8 +410,12 @@ vecInt getProducMasses(Int_t A, Float_t massFrac, Float_t massDev, TRandom *rand
 
 void Exec()
 {
-   fSimulation->NewEvent();
-   generateEvent();
+
+   while (true) {
+      fSimulation->NewEvent();
+      if (generateEvent())
+         break;
+   }
    outFile << endl;
 }
 
