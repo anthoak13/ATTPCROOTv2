@@ -4,7 +4,7 @@
 void unpack_toH5(TString inputFilePath, TString branchName)
 {
    inputFilePath = "/home/faculty/aanthony/fission/data/e12014/unpacked/Bi200Sim.root";
-   inputFilePath = "/home/faculty/aanthony/attpcroot/macro/e12014/adam/ML/data/output_digi01.root";
+   inputFilePath = "/home/adam/fair_install/ATTPCROOTv2/macro/e12014/skyler/data/output_digi00.root";
    // Load the library for unpacking and reconstruction
    gSystem->Load("libAtReconstruction.so");
 
@@ -60,16 +60,16 @@ void unpack_toH5(TString inputFilePath, TString branchName)
    std::cout << "***** Ending Init ******" << std::endl;
 
    // Get the number of events and unpack the whole run
-   auto numEvents = run->GetSource()->CheckMaxEventNo() - 1;
+   // auto numEvents = run->GetSource()->CheckMaxEventNo() - 1;
 
    // numEvents = 1700;//217;
    // numEvents = 10;
 
-   std::cout << "Unpacking " << numEvents << " events. " << std::endl;
+   // std::cout << "Unpacking " << numEvents << " events. " << std::endl;
 
    // return;
    std::cout << "starting run" << std::endl;
-   run->Run(0, numEvents);
+   run->Run();
 
    std::cout << std::endl << std::endl;
    std::cout << "Done unpacking events" << std::endl << std::endl;
