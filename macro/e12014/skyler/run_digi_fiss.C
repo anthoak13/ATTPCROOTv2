@@ -5,7 +5,7 @@
 
 bool reduceFunc(AtRawEvent *evt);
 
-void run_digi_fiss(int runNum = 0, bool saveRawEvent = true)
+void run_digi_fiss(int runNum = 0, bool saveRawEvent = false)
 {
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);

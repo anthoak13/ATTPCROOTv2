@@ -51,6 +51,7 @@ float massFrac = 0.56;
 float massDev = 6;
 float decayAngle =
    0; // Angle of the fission fragments in the CoM frame in radians. If 0, then sample from the angular distribution
+float zCutoff = 300; // Only simulate events from the window to here (dist from pad plane)
 
 // double beamOffsetX = -7.03043e+00;
 // double beamOffsetXsig = 1.62047e+01;
@@ -220,7 +221,7 @@ bool generateEvent()
    // outFile << beamOrigin.X() << " " << beamOrigin.Y() << " " << beamOrigin.Z() << " ";
 
    /** Sample the location where the reaction should occur in the detector (in z-dir in mm) */
-   auto vertexZ = gRandom->Uniform(1000);
+   auto vertexZ = gRandom->Uniform(1000 - zCutoff);
    cout << "Simulating beam to " << vertexZ << " mm" << endl;
 
    // Simulate the beam to the reaction vertex. The lambda function is used to stop the simulation when the beam reaches
