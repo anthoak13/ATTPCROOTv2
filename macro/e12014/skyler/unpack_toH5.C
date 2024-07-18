@@ -4,7 +4,7 @@
 void unpack_toH5(TString inputFilePath, TString branchName)
 {
    inputFilePath = "/home/faculty/aanthony/fission/data/e12014/unpacked/Bi200Sim.root";
-   inputFilePath = "/home/adam/fair_install/ATTPCROOTv2/macro/e12014/skyler/data/output_digi00.root";
+   inputFilePath = "/home/adam/fair_install/ATTPCROOTv2/macro/e12014/skyler/data/output_digi03.root";
    // Load the library for unpacking and reconstruction
    gSystem->Load("libAtReconstruction.so");
 
@@ -13,7 +13,7 @@ void unpack_toH5(TString inputFilePath, TString branchName)
 
    // Set the input/output directories
    TString outDir = "./data";
-   TString outFileName = "Bi200Sim";
+   TString outFileName = "Bi200SimTriggered";
    // Set the in/out files
    TString inputFile(inputFilePath);
    TString outputFile = outDir + "/" + outFileName + ".root";
