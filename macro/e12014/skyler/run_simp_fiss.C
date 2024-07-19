@@ -36,7 +36,7 @@ void run_simp_fiss(int runNum = 0)
 
    TString inOutDir = "./data/"; // Directory to save the output file
    TString tpcSharedInfoDir =
-      "/home/adam/fair_install/tpcSharedInfo/";          // Directory containing the shared information for the TPC
+      "/home/physics/fair_install/tpcSharedInfo/";          // Directory containing the shared information for the TPC
    TString energyLossDir = tpcSharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
    TString outputFile = inOutDir + TString::Format("simFission%02d.root", runNum);
    TString geoFile = "ATTPC_v1.1_geomanager.root";
