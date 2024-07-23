@@ -1,3 +1,5 @@
+#include "AtCSVReader.h"
+
 #include <TString.h>
 
 /**
@@ -140,7 +142,7 @@ void plot_fit(int runNum = 3, bool draw = true)
 {
    TH1::SetDefaultSumw2();
    TString inOutDir = "./data/"; // Directory to save the output file
-   TString fileName = inOutDir + TString::Format("simFission%02d.root", runNum);
+   TString fileName = inOutDir + TString::Format("output_fit%02d.root", runNum);
 
    if (!tree) {
       tree = new TChain("cbmsim");
