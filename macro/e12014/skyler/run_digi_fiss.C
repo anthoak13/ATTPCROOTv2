@@ -25,7 +25,7 @@ void run_digi_fiss(int runNum = 0, bool saveRawEvent = false)
    // TString mcFile = inOutDir + "symFissionLg.root";
    TString mcFile = inOutDir + TString::Format("simFission%02d.root", runNum);
    TString sharedInfoDir =
-      "/home/adam/fair_install/tpcSharedInfo/"; // Directory containing the shared information for the TPC
+      "/home/physics/fair_install/tpcSharedInfo/"; // Directory containing the shared information for the TPC
 
    // Create the full parameter file paths
    // TString digiParFile = dir + "/parameters/" + paramFile;
