@@ -277,7 +277,7 @@ bool generateEvent()
 
    std::array<std::pair<XYZPoint, PxPyPzEVector>, 2> finalPos;
    bool keepEvent = true;
-   double radCut = 20; // in mm
+   double radCut = 50; // in mm
    for (int i = 0; i < 2; i++) {
       auto labP = fBeamBoost(decayMomenta[i]);
 
