@@ -18,8 +18,8 @@ void run_fit(int runNum = 0)
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
    fair::Logger::DefineVerbosity("user1", verbSpec);
-   fair::Logger::SetVerbosity("user1");
-   // fair::Logger::SetConsoleSeverity("debug");
+   // fair::Logger::SetVerbosity("user1");
+   //  fair::Logger::SetConsoleSeverity("debug");
 
    TString InputDataFile = TString::Format("./data/output_digi%02d.root", runNum);
    TString OutputDataFile = TString::Format("./data/output_fit%02d.root", runNum);
