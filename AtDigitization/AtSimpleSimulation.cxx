@@ -112,8 +112,12 @@ AtSimpleSimulation::SimulateParticle(int Z, int A, const XYZPoint &iniPos, const
    auto modelIt = fModels.find({A, Z});
    if (modelIt == fModels.end())
       throw std::invalid_argument("Missing energy loss model for Z:" + std::to_string(Z) + " A:" + std::to_string(A));
-   if (!IsInVolume("drift_volume", iniPos))
-      throw std::invalid_argument("Position of particle is not in active volume but is in " + GetVolumeName(iniPos));
+   if (!IsInVolume("drift_volume", iniPos)) {
+      LOG(error) << "Position of particle " << Z << ", " << A << " is not in active volume but is in "
+                 << GetVolumeName(iniPos);
+      return {iniPos, iniMom};
+      // throw std::invalid_argument("Position of particle is not in active volume but is in " + GetVolumeName(iniPos));
+   }
 
    return SimulateParticle(modelIt->second, iniPos, iniMom, func);
 }

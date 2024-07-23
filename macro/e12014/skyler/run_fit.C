@@ -88,6 +88,7 @@ void run_fit(int runNum = 0)
    auto fitter = std::make_shared<MCFitter::AtMCFission>(sim, cluster, pulse);
    fitter->SetPSA(psa2);
    fitter->SetNumIter(100);
+   fitter->SetNumThreads(4);
 
    AtMCFitterTask *fitTask = new AtMCFitterTask(fitter);
    fitTask->SetPatternBranchName("AtFissionEvent");
@@ -95,6 +96,17 @@ void run_fit(int runNum = 0)
    fRun->AddTask(fitTask);
 
    fRun->Init();
+
+   TStopwatch timer;
+
+   timer.Start();
    fRun->Run(0, 100);
+   timer.Stop();
+
+   Double_t rtime = timer.RealTime();
+   Double_t ctime = timer.CpuTime();
+   cout << endl;
+   cout << "Real time " << rtime << " s, CPU time " << ctime << " s" << endl;
+   cout << endl;
    std::cout << "Finished init" << std::endl;
 }
