@@ -36,7 +36,7 @@ void run_fit(int runNum = 0)
    TString GeoDataPath = dir + "/geometry/" + geoFile;
    TString mapDir = dir + "/scripts/" + mapFile;
    TString tpcSharedInfoDir =
-      "/home/adam/fair_install/tpcSharedInfo/";          // Directory containing the shared information for the TPC
+      "/home/physics/fair_install/tpcSharedInfo/";          // Directory containing the shared information for the TPC
    TString energyLossDir = tpcSharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
 
    FairRunAna *fRun = new FairRunAna();
