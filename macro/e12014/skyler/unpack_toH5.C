@@ -1,10 +1,10 @@
 
 // Takes a ROOT file and a branch name for an AtEvent.
 // Saves the hists to an H5 file for DavidsonML group.
-void unpack_toH5(TString inputFilePath, TString branchName)
+void unpack_toH5(TString inputFilePath = "", TString branchName = "AtEvent")
 {
    inputFilePath = "/home/faculty/aanthony/fission/data/e12014/unpacked/Bi200Sim.root";
-   inputFilePath = "/home/adam/fair_install/ATTPCROOTv2/macro/e12014/skyler/data/output_digi03.root";
+   inputFilePath = "/home/adam/fair_install/ATTPCROOTv2/macro/e12014/skyler/data/output_digi05.root";
    // Load the library for unpacking and reconstruction
    gSystem->Load("libAtReconstruction.so");
 
@@ -13,7 +13,7 @@ void unpack_toH5(TString inputFilePath, TString branchName)
 
    // Set the input/output directories
    TString outDir = "./data";
-   TString outFileName = "Bi200SimTriggered";
+   TString outFileName = "Bi200SimMoreTriggered";
    // Set the in/out files
    TString inputFile(inputFilePath);
    TString outputFile = outDir + "/" + outFileName + ".root";

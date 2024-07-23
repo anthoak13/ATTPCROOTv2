@@ -28,7 +28,9 @@ void plot_sim(int runNum = 3)
    tree.Draw("Info->GetBinContent(3)>>hZpos");
    tree.Draw("Info->GetBinContent(4)>>hEner");
    tree.Draw("Info->GetBinContent(5)>>hFragA");
+   // tree.Draw("204 - Info->GetBinContent(5)>>hFragA");
    tree.Draw("Info->GetBinContent(6)>>hFragZ");
+   // tree.Draw("85 - Info->GetBinContent(6)>>hFragZ"); //Plot the second fragment
    tree.Draw("Info->GetBinContent(7)>>hAng");
    tree.Draw("Info->GetBinContent(7)*TMath::RadToDeg()>>hAngDeg"); // You can also call other functions and do math in
                                                                    // Draw commands
