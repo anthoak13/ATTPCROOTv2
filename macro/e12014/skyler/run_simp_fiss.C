@@ -15,7 +15,7 @@ void run_simp_fiss(int runNum = 0)
    int Acn = 200 + 4; // Number of nucleons in the compound nucleus
    int Zmin = 26;     // Minimum Z to simulate for the fission fragments
    int Zmax = 59;     // Maximum Z to simulate for hte fission fragments
-   int zToSim = 42;
+   int zToSim = 50;
 
    fissionSim::beamZ = 83;                     // Number of protons in the beam
    fissionSim::beamA = 200;                    // Number of nucleons in the beam
@@ -26,7 +26,7 @@ void run_simp_fiss(int runNum = 0)
    fissionSim::massDev = 0;
    // 6; // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
    fissionSim::decayAngle =
-      0 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
+      90 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
 
    fissionSim::beamE = 2.70013e+03; // Get from LISE, beam energy in MeV
    fissionSim::beamEsig =
@@ -116,7 +116,7 @@ void run_simp_fiss(int runNum = 0)
 
    timer.Start();
    // fRun->Run(0, 5000);
-   fRun->Run(0, 10);
+   fRun->Run(0, 100);
    fissionSim::CleanUp();
    timer.Stop();
 

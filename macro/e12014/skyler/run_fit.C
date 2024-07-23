@@ -18,7 +18,7 @@ void run_fit(int runNum = 0)
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
    fair::Logger::DefineVerbosity("user1", verbSpec);
-   // fair::Logger::SetVerbosity("user1");
+   fair::Logger::SetVerbosity("user1");
    // fair::Logger::SetConsoleSeverity("debug");
 
    TString InputDataFile = TString::Format("./data/output_digi%02d.root", runNum);
@@ -28,7 +28,7 @@ void run_fit(int runNum = 0)
 
    TString dir = getenv("VMCWORKDIR");
    TString geoFile = "ATTPC_v1.1_geomanager.root";
-   TString mapFile = "e12014_pad_mapping.xml";
+   TString mapFile = "e12014_pad_map_size.xml";
    TString parFile = "ATTPC.e12014.par";
 
    TString InputDataPath = InputDataFile;
@@ -62,7 +62,7 @@ void run_fit(int runNum = 0)
    auto scModel = std::make_shared<AtRadialChargeModel>(nullptr);
    scModel->SetStepSize(0.1);
    scModel->SetBeamLocation({0, -6, 0}, {10, 0, 1000});
-   sim->SetSpaceChargeModel(scModel);
+   // sim->SetSpaceChargeModel(scModel);
 
    // Create and load energy loss models
    std::vector<std::pair<int, int>> ions;
@@ -95,6 +95,6 @@ void run_fit(int runNum = 0)
    fRun->AddTask(fitTask);
 
    fRun->Init();
-   fRun->Run(0, 5);
+   fRun->Run(0, 100);
    std::cout << "Finished init" << std::endl;
 }

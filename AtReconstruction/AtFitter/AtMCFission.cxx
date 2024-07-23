@@ -112,7 +112,7 @@ double AtMCFission::ObjectiveFunction(const AtBaseEvent &expEvent, int SimEventI
    auto charge = ObjectiveCharge(expFission, SimEventID, definition);
    // auto charge = ObjectiveChargePads(expFission, SimEventID, definition);
    auto pos = ObjectivePositionPads(expFission, SimEventID);
-   LOG(info) << "Chi2 Pos: " << pos << " Chi2 Q: " << charge;
+   LOG(info) << "Event ID: " << SimEventID << "Chi2 Pos: " << pos << " Chi2 Q: " << charge;
    definition.fParameters["ObjQ"] = charge;
    definition.fParameters["ObjPos"] = pos;
 
@@ -209,12 +209,16 @@ double AtMCFission::ObjectiveCharge(const AtFissionEvent &expEvent, int SimEvent
    AtEvent &simEvent = fEventArray.at(SimEventID);
    auto fragHits = expEvent.GetFragHits();
 
+   LOG(debug) << "Exp hits: " << fragHits.size() << " Sim hits: " << simEvent.GetHits().size();
+
    // Get the charge curves for this event
    std::array<std::vector<double>, 2> exp;
    std::array<std::vector<double>, 2> sim;
    for (int i = 0; i < 2; ++i) {
+      LOG(debug) << "Frag " << i << " hits: " << expEvent.GetFragHits(i).size();
       E12014::FillHitSums(exp[i], sim[i], expEvent.GetFragHits(i), ContainerManip::GetPointerVector(simEvent.GetHits()),
                           E12014::fThreshold, E12014::fSatThreshold, fPar);
+      LOG(debug) << "Filled hits exp: " << exp[i].size() << " sim: " << sim[i].size();
    }
 
    return ObjectiveCharge(exp, sim, def);
@@ -288,7 +292,7 @@ double AtMCFission::ObjectiveCharge(const std::array<std::vector<double>, 2> &ex
    }
 
    if (fFitAmp && !(exp.size() == 0 || exp.size() != sim.size())) {
-      LOG(info) << exp.size() << " " << sim.size();
+      LOG(debug) << "Exp size: " << exp.size() << " Sim size: " << sim.size();
       auto functor = ROOT::Math::Functor(std::bind(fObjCharge, exp, sim, std::placeholders::_1), 1); // NOLINT
 
       std::vector<double> A = {fAmp};

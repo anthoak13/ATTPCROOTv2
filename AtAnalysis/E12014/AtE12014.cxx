@@ -120,18 +120,25 @@ int E12014::FillHitSums(std::vector<double> &exp, std::vector<double> &sim, cons
 
    int numGoodHits = 0;
    for (auto &expHit : expHits) {
+      LOG(debug) << "Checking pad " << expHit->GetPadNum();
       if (fMap->IsInhibited(expHit->GetPadNum()) != AtMap::InhibitType::kNone)
          continue;
-      if (expHit->GetCharge() > satThresh)
-         continue;
 
-      if (fMap->GetPadSize(expHit->GetPadNum()) != 0)
+      if (expHit->GetCharge() > satThresh) {
+         LOG(debug) << "Pad " << expHit->GetPadNum() << " is saturated. Threshold " << satThresh;
          continue;
+      }
+
+      if (fMap->GetPadSize(expHit->GetPadNum()) != 0) {
+         LOG(debug) << "Pad " << expHit->GetPadNum() << " is a large pad";
+         continue;
+      }
 
       auto funcExp = AtTools::GetHitFunctionTB(*expHit, fPar);
-      if (funcExp == nullptr)
+      if (funcExp == nullptr) {
+         LOG(debug) << "Failed to get function for pad " << expHit->GetPadNum();
          continue;
-
+      }
       // We have a hit we want to save for both exp and fisison.
       // Find the corresponding simulated hit if it exists.
       AtHit *simHit = nullptr;
