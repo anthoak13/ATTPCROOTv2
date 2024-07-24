@@ -89,6 +89,7 @@ void run_fit(int runNum = 0)
    fitter->SetPSA(psa2);
    fitter->SetNumIter(100);
    fitter->SetNumThreads(4);
+   fitter->SetNumRounds(2);
 
    AtMCFitterTask *fitTask = new AtMCFitterTask(fitter);
    fitTask->SetPatternBranchName("AtFissionEvent");

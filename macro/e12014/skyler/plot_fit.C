@@ -27,7 +27,7 @@ TH2F *hAmpvsLoc = nullptr;
 TChain *tree;
 MCFitter::AtMCResult *result = nullptr;
 
-int maxObjQ = 100;
+int maxObjQ = 200;
 
 // Calculates the excitation energy of the compound nucleus given energy (right now no-op)
 double ex(double E)
@@ -87,6 +87,7 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
          result = dynamic_cast<MCFitter::AtMCResult *>(resultArray->At(0));
 
          int z = result->fParameters["Z1"];
+         z = 50;
          int z2 = result->fParameters["Z2"];
          float amp = result->fParameters["Amp"];
          float objPos = result->fParameters["ObjPos"];
@@ -140,7 +141,7 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
 
 void plot_fit(int runNum = 3, bool draw = true)
 {
-   TH1::SetDefaultSumw2();
+   // TH1::SetDefaultSumw2();
    TString inOutDir = "./data/"; // Directory to save the output file
    TString fileName = inOutDir + TString::Format("output_fit%02d.root", runNum);
 
