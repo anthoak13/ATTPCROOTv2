@@ -7,9 +7,11 @@
 #include "FairRunAna.h"
 */
 
-void run_eve(int runNum = 210, TString OutputDataFile = "./data/output.reco_display.root")
+void run_eve_digi(int runNum = 0, TString OutputDataFile = "./data/output.sim_display.root")
 {
-   TString InputDataFile = TString::Format("./data/run_%04d.root", runNum);
+   // TString InputDataFile = "/home/faculty/aanthony/fission/data/e12014/unpacked/Bi200Sim.root";
+   TString InputDataFile = TString::Format("./data/output_digi%02d.root", runNum);
+
    std::cout << "Opening: " << InputDataFile << std::endl;
 
    TString dir = getenv("VMCWORKDIR");
@@ -37,9 +39,16 @@ void run_eve(int runNum = 210, TString OutputDataFile = "./data/output.reco_disp
    fMap->ParseXMLMap(mapDir.Data());
    AtViewerManager *eveMan = new AtViewerManager(fMap);
 
-   auto tabMain = std::make_unique<AtTabMain>();
+   auto tabMain = std::make_unique<AtTabFission>();
    tabMain->SetMultiHit(100); // Set the maximum number of multihits in the visualization
    eveMan->AddTab(std::move(tabMain));
+
+   auto tabPad = std::make_unique<AtTabPad>(2, 2);
+   tabPad->DrawRawADC(0, 0);
+   tabPad->DrawADC(0, 1);
+   tabPad->DrawArrayAug("Q", 1, 0);
+   tabPad->DrawADC(1, 1);
+   eveMan->AddTab(std::move(tabPad));
 
    eveMan->Init();
 

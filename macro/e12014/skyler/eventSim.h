@@ -222,6 +222,7 @@ bool generateEvent()
 
    /** Sample the location where the reaction should occur in the detector (in z-dir in mm) */
    auto vertexZ = gRandom->Uniform(1000 - zCutoff);
+   // vertexZ = 900;
    cout << "Simulating beam to " << vertexZ << " mm" << endl;
 
    // Simulate the beam to the reaction vertex. The lambda function is used to stop the simulation when the beam reaches
@@ -283,7 +284,8 @@ bool generateEvent()
 
       cout << "Simulating fragment " << i << endl;
       // cout << "fragZ.size() " << fragZ.size() << "; fragA.size()" << fragA.size() << endl;
-      cout << "Z: " << fragZ[i] << ", A: " << fragA[i] << endl;
+      cout << "Z: " << fragZ[i] << ", A: " << fragA[i] << " at " << labP.E() - labP.M() << " MeV, "
+           << (labP.E() - labP.M()) / fragA[i] << "MeV/A" << endl;
       auto [fragPos, fragMom] = fSimulation->SimulateParticle(fragZ[i], fragA[i], beamPos.first, labP);
 
       // Only keep events that would have passed our trigger condition
