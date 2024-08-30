@@ -116,7 +116,7 @@ void run_simp_fiss(int runNum = 0)
 
    timer.Start();
    // fRun->Run(0, 5000);
-   fRun->Run(0, 100);
+   fRun->Run(0, 1);
    fissionSim::CleanUp();
    timer.Stop();
 
