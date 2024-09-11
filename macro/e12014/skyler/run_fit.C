@@ -7,7 +7,7 @@
 */
 #include "FairLogger.h"
 
-void run_fit(int runNum = 0)
+void run_fit(int runNum = 2)
 {
    // Set the limits of the potential species to try to match to
    int Zcn = 83 + 2;  // Number of protons in the compound nucleus
@@ -22,7 +22,7 @@ void run_fit(int runNum = 0)
    //  fair::Logger::SetConsoleSeverity("debug");
 
    TString InputDataFile = TString::Format("./data/output_digi%02d.root", runNum);
-   TString OutputDataFile = TString::Format("./data/output_fit%02d.root", runNum);
+   TString OutputDataFile = TString::Format("./data/output_fit%02d.root", runNum+1);
 
    std::cout << "Opening: " << InputDataFile << std::endl;
 
@@ -93,6 +93,9 @@ void run_fit(int runNum = 0)
 
    AtMCFitterTask *fitTask = new AtMCFitterTask(fitter);
    fitTask->SetPatternBranchName("AtFissionEvent");
+   fitTask->SetSaveEvent(true);
+   fitTask->SetSaveRawEvent(true);
+
 
    fRun->AddTask(fitTask);
 
@@ -101,7 +104,7 @@ void run_fit(int runNum = 0)
    TStopwatch timer;
 
    timer.Start();
-   fRun->Run(0, 100);
+   fRun->Run(0, 1);
    timer.Stop();
 
    Double_t rtime = timer.RealTime();
