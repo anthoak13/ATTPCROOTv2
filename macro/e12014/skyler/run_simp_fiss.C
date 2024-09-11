@@ -15,7 +15,7 @@ void run_simp_fiss(int runNum = 0)
    int Acn = 200 + 4; // Number of nucleons in the compound nucleus
    int Zmin = 26;     // Minimum Z to simulate for the fission fragments
    int Zmax = 59;     // Maximum Z to simulate for hte fission fragments
-   int zToSim = 50;
+   int zToSim = 47;
 
    fissionSim::beamZ = 83;                     // Number of protons in the beam
    fissionSim::beamA = 200;                    // Number of nucleons in the beam

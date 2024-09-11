@@ -26,6 +26,11 @@ int E12014::fTBMin = 105;
 int E12014::fThreshold = 1;
 double E12014::fSatThreshold = 4200;
 
+void E12014::CreateDummyMap()
+{
+   fMap = std::make_shared<AtTpcMap>();
+}
+
 void E12014::CreateMap()
 {
    fMap = std::make_shared<AtTpcMap>();

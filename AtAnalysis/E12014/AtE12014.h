@@ -30,6 +30,7 @@ public:
     * Create and set fMap to the mapping for this experiment including setting the pad pads.
     */
    static void CreateMap();
+   static void CreateDummyMap();
 
    /**
     * Fill the historgram with charge information from the pads associated with the passed hits
