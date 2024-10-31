@@ -3,7 +3,7 @@
 
 bool reduceFunc(AtRawEvent *evt);
 
-void run_simp_fiss(int runNum = 0)
+void run_simp_fiss(int runNum = 60)
 {
 
    delete gRandom;
@@ -23,7 +23,8 @@ void run_simp_fiss(int runNum = 0)
                                                // fissionSim::massFrac = 0.56;
    fissionSim::massFrac = (float)zToSim / Zcn; // Mean of the FF mass distribution (as a fraction of Acn).
 
-   fissionSim::massDev = 0;
+   fissionSim::mas
+   sDev = 0;
    // 6; // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
    fissionSim::decayAngle =
       90 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
@@ -116,7 +117,7 @@ void run_simp_fiss(int runNum = 0)
 
    timer.Start();
    // fRun->Run(0, 5000);
-   fRun->Run(0, 2);
+   fRun->Run(0, 60);
    fissionSim::CleanUp();
    timer.Stop();
 
