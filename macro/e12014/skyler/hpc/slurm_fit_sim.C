@@ -16,7 +16,7 @@ void slurm_fit_sim(int runNum, int numThreads, bool saveRawEvent)
    // TString outputFile = inOutDir + "output_digiLg.root";
    TString outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
    outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
-   TString scriptfile = "e12014_pad_mapping.xml";
+   TString scriptfile = "e12014_pad_map_size.xml";
    TString paramFile = "ATTPC.e12014.par";
 
    TString dir = getenv("VMCWORKDIR");
@@ -202,7 +202,8 @@ void slurm_fit_sim(int runNum, int numThreads, bool saveRawEvent)
 
    AtMCFitterTask *fitTask = new AtMCFitterTask(fitter);
    fitTask->SetPatternBranchName("AtFissionEvent");
-
+   fitTask->SetSaveEvent(true);
+   fitTask->SetSaveRawEvent(true);
    fRun->AddTask(fitTask);
 
    Response::Init();
