@@ -139,11 +139,11 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    }
 }
 
-void plot_fit(int runNum = 3, bool draw = true)
+void plot_fit(int runNum = 5, bool draw = true)
 {
    // TH1::SetDefaultSumw2();
    TString inOutDir = "./data/"; // Directory to save the output file
-   TString fileName = inOutDir + TString::Format("output_fit%02d.root", runNum);
+   TString fileName = inOutDir + TString::Format("output_digi%02d.root", runNum);
 
    if (!tree) {
       tree = new TChain("cbmsim");

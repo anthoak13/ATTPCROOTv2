@@ -7,24 +7,24 @@
 */
 #include "FairLogger.h"
 
-void run_eve_fit(int runNum = 0, TString OutputDataFile = "./data/output.sim_display.root")
+void run_eve_fit(int runNum = 60, TString OutputDataFile = "./data/output.sim_display.root")
 {
 
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
    fair::Logger::DefineVerbosity("user1", verbSpec);
     fair::Logger::SetVerbosity("user1");
-   // fair::Logger::SetConsoleSeverity("debug");
+   fair::Logger::SetConsoleSeverity("debug");
 
    //TString InputDataFile = TString::Format("/mnt/analysis/e12014/TPC/%dTorr/%s.root", pressure, species.Data());
-   TString InputDataFile = TString::Format("./data/output_fit%02d.root", runNum);
+   TString InputDataFile = TString::Format("./data/output_digi%02d.root", runNum);
 
 
    std::cout << "Opening: " << InputDataFile << std::endl;
 
    TString dir = getenv("VMCWORKDIR");
    TString geoFile = "ATTPC_v1.1_geomanager.root";
-   TString mapFile = "e12014_pad_mapping.xml";
+   TString mapFile = "e12014_pad_map_size.xml";
    TString parFile = "ATTPC.e12014.par";
 
    TString InputDataPath = InputDataFile;
@@ -41,9 +41,9 @@ void run_eve_fit(int runNum = 0, TString OutputDataFile = "./data/output.sim_dis
 
    
    FairParAsciiFileIo *parIo1 = new FairParAsciiFileIo();
-   //parIo1->open(dir + "/parameters/" + parFile, "in");
+   parIo1->open(dir + "/parameters/" + parFile, "in");
    fRun->GetRuntimeDb()->setFirstInput(parIo1);
-   //fRun->GetRuntimeDb()->getContainer("AtDigiPar");
+   fRun->GetRuntimeDb()->getContainer("AtDigiPar");
 
   auto fMap = std::make_shared<AtTpcMap>();
   E12014::fMap = fMap;
