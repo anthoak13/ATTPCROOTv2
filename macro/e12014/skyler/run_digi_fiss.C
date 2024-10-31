@@ -5,7 +5,7 @@
 
 bool reduceFunc(AtRawEvent *evt);
 
-void run_digi_fiss(int runNum = 0, bool saveRawEvent = false)
+void run_digi_fiss(int runNum = 60, bool saveRawEvent = true)
 {
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
@@ -16,7 +16,7 @@ void run_digi_fiss(int runNum = 0, bool saveRawEvent = false)
    // TString outputFile = inOutDir + "output_digiLg.root";
    TString outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
    outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
-   TString scriptfile = "e12014_pad_mapping.xml";
+   TString scriptfile = "e12014_pad_map_size.xml";
    TString paramFile = "ATTPC.e12014.par";
 
    TString dir = getenv("VMCWORKDIR");
@@ -25,7 +25,7 @@ void run_digi_fiss(int runNum = 0, bool saveRawEvent = false)
    // TString mcFile = inOutDir + "symFissionLg.root";
    TString mcFile = inOutDir + TString::Format("simFission%02d.root", runNum);
    TString sharedInfoDir =
-      "/home/adam/fair_install/tpcSharedInfo/"; // Directory containing the shared information for the TPC
+      "/home/physics/fair_install/tpcSharedInfo/"; // Directory containing the shared information for the TPC
 
    // Create the full parameter file paths
    // TString digiParFile = dir + "/parameters/" + paramFile;
@@ -201,6 +201,8 @@ void run_digi_fiss(int runNum = 0, bool saveRawEvent = false)
 
    AtMCFitterTask *fitTask = new AtMCFitterTask(fitter);
    fitTask->SetPatternBranchName("AtFissionEvent");
+   fitTask->SetSaveEvent(true);
+   fitTask->SetSaveRawEvent(true);
 
    fRun->AddTask(fitTask);
 
@@ -209,7 +211,7 @@ void run_digi_fiss(int runNum = 0, bool saveRawEvent = false)
 
    timer.Start();
    // fRun->Run(0, 20001);
-   fRun->Run();
+   fRun->Run(0,60);
    timer.Stop();
 
    std::cout << std::endl << std::endl;
