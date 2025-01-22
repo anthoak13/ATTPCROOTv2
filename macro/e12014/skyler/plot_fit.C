@@ -1,4 +1,5 @@
 #include "AtCSVReader.h"
+//#include "AtDataManip.h"
 
 #include <TString.h>
 
@@ -182,8 +183,49 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    }
 }
 
+void plot_fit(vector<int> runNums, bool draw = true)
+{
+   TString inOutDir = "./data/"; // Directory to save the output file
+   for(auto runNum : runNums)
+   {
+      
+   TString fileName = inOutDir + TString::Format("output_digi%02d.root", runNum);
+
+   if (!tree) {
+      tree = new TChain("cbmsim");
+   }
+
+      tree->Add(fileName);
+   }
+
+   int zMin = 26;
+   int zMax = 59;
+   int aMin = zMin * (float)204 / 85;
+   int aMax = zMax * (float)204 / 85;
+   zHist = new TH1F("hZ", "Z", zMax - zMin + 1, zMin - 0.5, zMax + 0.5);
+   hMR = new TH1F("hMR", "M_R", zMax - zMin + 1, (zMin - 0.5) / 85, (zMax + 0.5) / 85);
+   aHist = new TH1F("hA", "A", zMax - zMin + 1, aMin, aMax);
+   hBeam = new TH2F("hBeam", "Beam energy", 100, 0, 1000, 100, 0, ex(4500));
+   hAmp = new TH1F("hAmp", "Charge Scaling Factor", 100, 0, 1);
+   hObj = new TH1F("hObj", "Objective Function", 100, 0, maxObjQ);
+   hObjPos = new TH1F("hObjPos", "Objective Function Position", 50, 0, 50);
+   hObjQ = new TH1F("hObjQ", "Objective Function Charge", 100, 0, maxObjQ);
+
+   hZvsObj = new TH2F("hZvsObj", "dZ vs Chi2", 21, -10 - .5, 10.5, 100, 0, maxObjQ);
+   hZvsAmp = new TH2F("hZvsAmp", "dZ vs Amp", 20 + 1, -10, 10, 50, 0, 1);
+   hAmpvsPosObj = new TH2F("hAmpvsPosObj", "Amp vs Pos Objective", 50, 0, 1, 50, 0, 10);
+   hAmpvsObj = new TH2F("hAmpvsObj", "Amp vs Objective", 25, 0.3, .8, 25, 0, maxObjQ / 2.);
+   hAmpvsLoc = new TH2F("hAmpvsLoc", "Amp vs Location", 50, 0, 1000, 50, 0, 1);
+   FillPlots();
+   if (draw)
+      zHist->Draw();
+}
+
 void plot_fit(int runNum = 5, bool draw = true)
 {
+   plot_fit(std::vector<int>{runNum},true);
+   return;
+
    // TH1::SetDefaultSumw2();
    TString inOutDir = "./data/"; // Directory to save the output file
    TString fileName = inOutDir + TString::Format("output_digi%02d.root", runNum);
