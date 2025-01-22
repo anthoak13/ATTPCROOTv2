@@ -19,13 +19,17 @@ TH1F *hMR = nullptr;     // Mass ratio Z1/(Z1+Z2)
 
 TH2F *hBeam = nullptr; // vertex location (z) vs energy of beam. Fig 4.32
 
-TH2F *hZvsObj = nullptr; // difference in charge from best (Z) vs objetive function. Thesis Fig. 4.39
+TH2F *hZvsObj = nullptr; // difference in charge from best (Z) vs objective function. Thesis Fig. 4.39
 TH2F *hZvsAmp = nullptr; // difference in charge from best (Z) vs scaling factor
 TH2F *hAmpvsPosObj = nullptr;
 TH2F *hAmpvsObj = nullptr; // Fig. 4.45
 TH2F *hAmpvsLoc = nullptr;
 TChain *tree;
 MCFitter::AtMCResult *result = nullptr;
+
+// Add some more plots comparing to the true simulated value
+TH2F *hZvsObjSim = nullptr; // difference in charge from true (Z) vs objective function.
+TH1F *zHistSim = nullptr;   // Simulated Z of FF.
 
 int maxObjQ = 200;
 
@@ -65,6 +69,19 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
 
    TTreeReader reader(tree);
    TTreeReaderValue<TClonesArray> resultArray(reader, "AtMCResult");
+   TTreeReaderValue<TH1D> simInfoPtr(reader, "SimInfo");
+   /**
+    * SimInfo is a histogram with labeled bins. This is an odd choice for how to
+    * store data. Definitely do NOT do this, but it is the choice someone in my old
+    * group made, and often it is better to use an imperfect, working solution rather than
+    * redo a bunch of work for a marginal improvement.
+    *
+    * The information stored in this histogram is defined in the `eventSim.h` header file.
+    * You can access data like this
+    * ```cpp
+    * auto A0 = simInfo->GetBinContents(5);
+    * auto Z0 = simInfo->GetBinContents(6);
+    */
    zHist->Reset();
    aHist->Reset();
    hAmp->Reset();
@@ -78,20 +95,30 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    hAmpvsObj->Reset();
    hAmpvsLoc->Reset();
    hMR->Reset();
-
+   hZvsObjSim->Reset(); // difference in charge from true (Z) vs objective function.
+   zHistSim->Reset();   // Simulated Z of FF.
    while (reader.Next() && reader.GetCurrentEntry() < 10000) {
 
       if (true || reader.GetCurrentEntry() == 17) {
 
          // This pulls the results of the fit and gets the relevant parameters for the best fit
          result = dynamic_cast<MCFitter::AtMCResult *>(resultArray->At(0));
+         int z = result->fParameters["Z0"];
+         int z2 = result->fParameters["Z1"];
 
-         int z = result->fParameters["Z1"];
-         z = 50;
-         int z2 = result->fParameters["Z2"];
          float amp = result->fParameters["Amp"];
          float objPos = result->fParameters["ObjPos"];
          float objQ = result->fParameters["ObjQ"];
+
+         int Asim = simInfoPtr->GetBinContent(5);
+         int Zsim = simInfoPtr->GetBinContent(6);
+
+         // We do not explicitly save the Z of the CN being simulated, so grab it from our fits.
+         // By definition z < z2, so make sure Zsim follows that convention
+         int z_CN = z + z2;
+         int Zsim2 = z_CN - Zsim;
+         if (Zsim2 < Zsim)
+            std::swap(Zsim, Zsim2);
 
          // This pulls the results for **All** fit results for one event
          for (int i = 0; i < resultArray->GetEntries(); ++i) {
@@ -103,6 +130,11 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
                hZvsObj->Fill(z - result->fParameters["Z1"], result->fParameters["ObjQ"]);
                hZvsObj->Fill(-(z - result->fParameters["Z1"]), result->fParameters["ObjQ"]);
                // hZvsObj->Fill(z2 - result->fParameters["Z2"], result->fParameters["ObjQ"]);
+
+               hZvsObjSim->Fill(Zsim - result->fParameters["Z1"], result->fParameters["ObjQ"]);
+               hZvsObjSim->Fill(-(Zsim - result->fParameters["Z1"]), result->fParameters["ObjQ"]);
+               // std::cout << Zsim << "\t" << result->fParameters["Z1"] << std::endl;
+
                hZvsAmp->Fill(z - result->fParameters["Z1"], result->fParameters["Amp"]);
                hAmpvsPosObj->Fill(result->fParameters["Amp"], result->fParameters["ObjPos"]);
             }
@@ -110,6 +142,15 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
       }
 
       result = dynamic_cast<MCFitter::AtMCResult *>(resultArray->At(0));
+      int Asim = simInfoPtr->GetBinContent(5);
+      int Zsim = simInfoPtr->GetBinContent(6);
+
+      // We do not explicitly save the Z of the CN being simulated, so grab it from our fits.
+      // By definition z < z2, so make sure Zsim follows that convention
+      int z_CN = result->fParameters["Z0"] + result->fParameters["Z1"];
+      int Zsim2 = z_CN - Zsim;
+      if (Zsim2 < Zsim)
+         std::swap(Zsim, Zsim2);
       if (result) {
          if (ex(result->fParameters["EBeam"]) > EMin && ex(result->fParameters["EBeam"]) < EMax &&
              result->fParameters["Amp"] < ampCut && result->fParameters["Amp"] > ampMin &&
@@ -118,6 +159,8 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
 
             zHist->Fill(result->fParameters["Z0"]);
             zHist->Fill(result->fParameters["Z1"]);
+            zHistSim->Fill(Zsim);
+            zHistSim->Fill(Zsim2);
             // zHist->Fill(GetAvg("Z0", *resultArray, 10));
             // zHist->Fill(GetAvg("Z1", *resultArray, 10));
 
@@ -168,6 +211,10 @@ void plot_fit(int runNum = 5, bool draw = true)
    hAmpvsPosObj = new TH2F("hAmpvsPosObj", "Amp vs Pos Objective", 50, 0, 1, 50, 0, 10);
    hAmpvsObj = new TH2F("hAmpvsObj", "Amp vs Objective", 25, 0.3, .8, 25, 0, maxObjQ / 2.);
    hAmpvsLoc = new TH2F("hAmpvsLoc", "Amp vs Location", 50, 0, 1000, 50, 0, 1);
+
+   zHistSim = new TH1F("hZSim", "Z", zMax - zMin + 1, zMin - 0.5, zMax + 0.5);
+   hZvsObjSim = new TH2F("hZvsObjSim", "dZ vs Chi2", 21, -10 - .5, 10.5, 100, 0, maxObjQ);
+
    FillPlots();
    if (draw)
       zHist->Draw();
