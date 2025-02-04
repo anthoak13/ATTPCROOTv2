@@ -23,8 +23,7 @@ void run_simp_fiss(int runNum = 60)
                                                // fissionSim::massFrac = 0.56;
    fissionSim::massFrac = (float)zToSim / Zcn; // Mean of the FF mass distribution (as a fraction of Acn).
 
-   fissionSim::mas
-   sDev = 0;
+   fissionSim::massDev = 0;
    // 6; // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
    fissionSim::decayAngle =
       90 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
@@ -37,7 +36,7 @@ void run_simp_fiss(int runNum = 60)
 
    TString inOutDir = "./data/"; // Directory to save the output file
    TString tpcSharedInfoDir =
-      "/home/physics/fair_install/tpcSharedInfo/";          // Directory containing the shared information for the TPC
+      "/home/skyler/fission/tpcSharedInfo/";          // Directory containing the shared information for the TPC
    TString energyLossDir = tpcSharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
    TString outputFile = inOutDir + TString::Format("simFission%02d.root", runNum);
    TString geoFile = "ATTPC_v1.1_geomanager.root";
