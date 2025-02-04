@@ -1,7 +1,7 @@
 namespace Response {
 
 double response[512] = {};
-TString sharedInfoDir = "/home/faculty/aanthony/fission/data/e12014/tpcSharedInfo/";
+TString sharedInfoDir = "/home/skyler/fission/tpcSharedInfo/";
 
 double scaling = 1.0;
 

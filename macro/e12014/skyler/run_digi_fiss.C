@@ -5,7 +5,7 @@
 
 bool reduceFunc(AtRawEvent *evt);
 
-void run_digi_fiss(int runNum = 60, bool saveRawEvent = true)
+void run_digi_fiss(int runNum = 4, bool saveRawEvent = true)
 {
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
@@ -25,10 +25,10 @@ void run_digi_fiss(int runNum = 60, bool saveRawEvent = true)
    // TString mcFile = inOutDir + "symFissionLg.root";
    TString mcFile = inOutDir + TString::Format("simFission%02d.root", runNum);
    TString sharedInfoDir =
-      "/home/physics/fair_install/tpcSharedInfo/"; // Directory containing the shared information for the TPC
+      "/home/skyler/fission/tpcSharedInfo/"; // Directory containing the shared information for the TPC
 
    // Create the full parameter file paths
-   // TString digiParFile = dir + "/parameters/" + paramFile;
+    //TString digiParFile = dir + "/parameters/" + paramFile;
    TString digiParFile = paramFile;
    TString mapParFile = dir + "/scripts/" + scriptfile;
 
@@ -211,7 +211,7 @@ void run_digi_fiss(int runNum = 60, bool saveRawEvent = true)
 
    timer.Start();
    // fRun->Run(0, 20001);
-   fRun->Run(0,60);
+   fRun->Run(0,2);
    timer.Stop();
 
    std::cout << std::endl << std::endl;
