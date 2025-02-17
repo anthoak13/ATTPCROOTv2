@@ -32,6 +32,8 @@ MCFitter::AtMCResult *result = nullptr;
 TH2F *hZvsObjSim = nullptr; // difference in charge from true (Z) vs objective function.
 TH1F *zHistSim = nullptr;   // Simulated Z of FF.
 
+TH1F *zHistDiff = nullptr; //Difference of Sim and Exp
+
 int maxObjQ = 200;
 
 // Calculates the excitation energy of the compound nucleus given energy (right now no-op)
@@ -98,6 +100,7 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    hMR->Reset();
    hZvsObjSim->Reset(); // difference in charge from true (Z) vs objective function.
    zHistSim->Reset();   // Simulated Z of FF.
+   zHistDiff -> Reset(); // Difference Z Sim and Exp
    while (reader.Next() && reader.GetCurrentEntry() < 10000) {
 
       if (true || reader.GetCurrentEntry() == 17) {
@@ -164,6 +167,20 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
             zHist->Fill(result->fParameters["Z1"]);
             zHistSim->Fill(Zsim);
             zHistSim->Fill(Zsim2);
+            if (result->fParameters["Z0"]<result->fParameters["Z1"])
+            {
+            int ZDiff = Zsim - result->fParameters["Z0"];
+            int ZDiff2 = Zsim2 - result->fParameters["Z1"];
+            zHistDiff->Fill(ZDiff);
+            zHistDiff ->Fill(ZDiff2);
+            }
+            else
+            {
+            int ZDiff = Zsim - result->fParameters["Z1"];
+            int ZDiff2 = Zsim2 - result->fParameters["Z0"];
+            zHistDiff->Fill(ZDiff);
+            zHistDiff ->Fill(ZDiff2);
+            }
             // zHist->Fill(GetAvg("Z0", *resultArray, 10));
             // zHist->Fill(GetAvg("Z1", *resultArray, 10));
 
@@ -221,6 +238,8 @@ void plot_fit(vector<int> runNums, bool draw = true)
 
    zHistSim = new TH1F("hZSim", "Z", zMax - zMin + 1, zMin - 0.5, zMax + 0.5);
    hZvsObjSim = new TH2F("hZvsObjSim", "dZ vs Chi2", 21, -10 - .5, 10.5, 100, 0, maxObjQ);
+
+   zHistDiff = new TH1F("hzdiff", "Z Difference", 21, -10 , 10);
 
    FillPlots();
    if (draw)
