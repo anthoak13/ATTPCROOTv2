@@ -28,7 +28,7 @@ void run_digi_fiss(int runNum = 4, bool saveRawEvent = true)
       "/home/skyler/fission/tpcSharedInfo/"; // Directory containing the shared information for the TPC
 
    // Create the full parameter file paths
-    //TString digiParFile = dir + "/parameters/" + paramFile;
+   // TString digiParFile = dir + "/parameters/" + paramFile;
    TString digiParFile = paramFile;
    TString mapParFile = dir + "/scripts/" + scriptfile;
 
@@ -126,7 +126,7 @@ void run_digi_fiss(int runNum = 4, bool saveRawEvent = true)
       SampleConsensus::Estimators::kYRANSAC, AtPatterns::PatternType::kFission, RandomSample::SampleMethod::kY);
    method->SetDistanceThreshold(20);
    method->SetNumIterations(500);
-   method->SetMinHitsPattern(150);
+   method->SetMinHitsPattern(50);
    method->SetChargeThreshold(10); //-1 implies no charge-weighted fitting
    method->SetFitPattern(true);
    auto sacTask = new AtSampleConsensusTask(std::move(method));
@@ -211,7 +211,7 @@ void run_digi_fiss(int runNum = 4, bool saveRawEvent = true)
 
    timer.Start();
    // fRun->Run(0, 20001);
-   fRun->Run(0,2);
+   fRun->Run(0, 500);
    timer.Stop();
 
    std::cout << std::endl << std::endl;
