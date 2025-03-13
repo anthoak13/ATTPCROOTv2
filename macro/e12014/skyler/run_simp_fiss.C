@@ -15,7 +15,7 @@ void run_simp_fiss(int runNum = 60)
    int Acn = 200 + 4; // Number of nucleons in the compound nucleus
    int Zmin = 26;     // Minimum Z to simulate for the fission fragments
    int Zmax = 59;     // Maximum Z to simulate for hte fission fragments
-   int zToSim = 47;
+   int zToSim = 50;
 
    fissionSim::beamZ = 83;                     // Number of protons in the beam
    fissionSim::beamA = 200;                    // Number of nucleons in the beam
@@ -23,7 +23,7 @@ void run_simp_fiss(int runNum = 60)
                                                // fissionSim::massFrac = 0.56;
    fissionSim::massFrac = (float)zToSim / Zcn; // Mean of the FF mass distribution (as a fraction of Acn).
 
-   fissionSim::massDev = 0;
+   fissionSim::massDev = 2;
    // 6; // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
    fissionSim::decayAngle =
       90 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
@@ -36,7 +36,7 @@ void run_simp_fiss(int runNum = 60)
 
    TString inOutDir = "./data/"; // Directory to save the output file
    TString tpcSharedInfoDir =
-      "/home/skyler/fission/tpcSharedInfo/";          // Directory containing the shared information for the TPC
+      "/home/skyler/fission/tpcSharedInfo/";             // Directory containing the shared information for the TPC
    TString energyLossDir = tpcSharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
    TString outputFile = inOutDir + TString::Format("simFission%02d.root", runNum);
    TString geoFile = "ATTPC_v1.1_geomanager.root";
@@ -85,7 +85,8 @@ void run_simp_fiss(int runNum = 60)
    // For all our ions, load the energy loss tables
    for (auto [Z, A] : ions) {
       auto eloss = std::make_shared<AtTools::AtELossTable>();
-      std::cout << "Loading table for [Z,A]: " << "[" << Z << "," << A << "]" << std::endl;
+      std::cout << "Loading table for [Z,A]: "
+                << "[" << Z << "," << A << "]" << std::endl;
       eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
                            0); // Note a different function call will be needed if loading SRIM tables
       sim->AddModel(Z, A, eloss);
@@ -116,7 +117,7 @@ void run_simp_fiss(int runNum = 60)
 
    timer.Start();
    // fRun->Run(0, 5000);
-   fRun->Run(0, 60);
+   fRun->Run(0, 5000);
    fissionSim::CleanUp();
    timer.Stop();
 
