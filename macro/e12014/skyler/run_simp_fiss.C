@@ -23,10 +23,10 @@ void run_simp_fiss(int runNum = 60)
                                                // fissionSim::massFrac = 0.56;
    fissionSim::massFrac = (float)zToSim / Zcn; // Mean of the FF mass distribution (as a fraction of Acn).
 
-   fissionSim::massDev = 2;
+   fissionSim::massDev = 0;
    // 6; // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
    fissionSim::decayAngle =
-      90 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
+      120 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
 
    fissionSim::beamE = 2.70013e+03; // Get from LISE, beam energy in MeV
    fissionSim::beamEsig =
@@ -34,7 +34,7 @@ void run_simp_fiss(int runNum = 60)
 
    //************ End things to change ************//
 
-   TString inOutDir = "./data/"; // Directory to save the output file
+   TString inOutDir = "/mnt/tpc-data/"; // Directory to save the output file
    TString tpcSharedInfoDir =
       "/home/skyler/fission/tpcSharedInfo/";             // Directory containing the shared information for the TPC
    TString energyLossDir = tpcSharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
@@ -117,7 +117,7 @@ void run_simp_fiss(int runNum = 60)
 
    timer.Start();
    // fRun->Run(0, 5000);
-   fRun->Run(0, 5000);
+   fRun->Run(0, 2000);
    fissionSim::CleanUp();
    timer.Stop();
 
