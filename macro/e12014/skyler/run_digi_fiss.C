@@ -12,7 +12,7 @@ void run_digi_fiss(int runNum = 4, bool saveRawEvent = true)
    fair::Logger::DefineVerbosity("user1", verbSpec);
    fair::Logger::SetVerbosity("user1");
 
-   TString inOutDir = "./data/";
+   TString inOutDir = "/mnt/tpc-data/";
    // TString outputFile = inOutDir + "output_digiLg.root";
    TString outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
    outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
