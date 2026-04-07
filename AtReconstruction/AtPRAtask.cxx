@@ -1,10 +1,16 @@
 #include "AtPRAtask.h"
 
-#include "AtDigiPar.h"       // for AtDigiPar
-#include "AtEvent.h"         // for AtEvent
-#include "AtPRA.h"           // for AtPRA
-#include "AtPatternEvent.h"  // for AtPatternEvent
-#include "AtTrackFinderTC.h" // for AtTrackFinderHC
+#include "AtBeamTrackRejector.h"
+#include "AtCircleSeeder.h"
+#include "AtClusterOrderer.h"
+#include "AtDigiPar.h"      // for AtDigiPar
+#include "AtEvent.h"        // for AtEvent
+#include "AtFragmentMerger.h"
+#include "AtPatternEvent.h" // for AtPatternEvent
+#include "AtSmooth3DClusterer.h"
+#include "AtTrackFinderTC.h"
+#include "AtTrackPruner.h"
+#include "AtVertexTrackSelector.h"
 
 #include <FairLogger.h>      // for LOG, FairLogger
 #include <FairRootManager.h> // for FairRootManager
@@ -60,6 +66,41 @@ void AtPRAtask::SetPRAlgorithm(Int_t value)
    fPRAlgorithm = value;
 }
 
+void AtPRAtask::SetClusterer(std::unique_ptr<AtPATTERN::AtSmooth3DClusterer> clusterer)
+{
+   fClusterer = std::move(clusterer);
+}
+
+void AtPRAtask::SetOrderer(std::unique_ptr<AtPATTERN::AtClusterOrderer> orderer)
+{
+   fOrderer = std::move(orderer);
+}
+
+void AtPRAtask::SetBeamRejector(std::unique_ptr<AtPATTERN::AtBeamTrackRejector> r)
+{
+   fBeamRejector = std::move(r);
+}
+
+void AtPRAtask::SetFragmentMerger(std::unique_ptr<AtPATTERN::AtFragmentMerger> m)
+{
+   fFragmentMerger = std::move(m);
+}
+
+void AtPRAtask::SetVertexSelector(std::unique_ptr<AtPATTERN::AtVertexTrackSelector> s)
+{
+   fVertexSelector = std::move(s);
+}
+
+void AtPRAtask::SetSeeder(std::unique_ptr<AtPATTERN::AtCircleSeeder> seeder)
+{
+   fSeeder = std::move(seeder);
+}
+
+void AtPRAtask::SetPruner(std::unique_ptr<AtPATTERN::AtTrackPruner> pruner)
+{
+   fPruner = std::move(pruner);
+}
+
 void AtPRAtask::SetParContainers()
 {
    LOG(debug) << "SetParContainers of AtPRAtask";
@@ -84,15 +125,15 @@ InitStatus AtPRAtask::Init()
    if (fPRAlgorithm == 0) {
       LOG(info) << "Using Track Finder TriplClust algorithm";
 
-      fPRA = new AtPATTERN::AtTrackFinderTC();
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetTcluster(fHCt);
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetScluster(fHCs);
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetKtriplet(fHCk);
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetNtriplet(fHCn);
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetMcluster(fHCm);
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetRsmooth(fHCr);
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetAtriplet(fHCa);
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetPadding(fHCpadding);
+      fPRA = std::make_unique<AtPATTERN::AtTrackFinderTC>();
+      fPRA->SetTcluster(fHCt);
+      fPRA->SetScluster(fHCs);
+      fPRA->SetKtriplet(fHCk);
+      fPRA->SetNtriplet(fHCn);
+      fPRA->SetMcluster(fHCm);
+      fPRA->SetRsmooth(fHCr);
+      fPRA->SetAtriplet(fHCa);
+      fPRA->SetPadding(fHCpadding);
 
       std::cout << " Track Finder TriplClust parameters (see Dalitz et al.) "
                 << "\n";
@@ -104,43 +145,63 @@ InitStatus AtPRAtask::Init()
       std::cout << " R Smooth  : " << fHCr << "\n";
       std::cout << " A Triplet : " << fHCa << "\n";
 
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetClusterRadius(fClusterRadius);
-      dynamic_cast<AtPATTERN::AtTrackFinderTC *>(fPRA)->SetClusterDistance(fClusterDistance);
-
-      std::cout << " Track finder - Parameters for clusterization "
-                << "\n";
-      std::cout << " Cluster radius " << fClusterRadius << "\n";
-      std::cout << " Cluster distance " << fClusterDistance << "\n";
-
    } else if (fPRAlgorithm == 1) {
       LOG(info) << "Using RANSAC algorithm";
 
    } else if (fPRAlgorithm == 2) {
       LOG(info) << "Using Hough transform algorithm";
-      // fPSA = new AtPSAProto();
    }
 
-   // Prunning options
-   std::cout << " Track prunning : " << kSetPrunning << "\n";
-   if (kSetPrunning) {
-      fPRA->SetPrunning();
-      std::cout << " Number of k-nearest neighbors (kNN) : " << fKNN << "\n";
-      fPRA->SetkNN(fKNN);
-      std::cout << " Std deviation multiplier : " << fStdDevMulkNN << "\n";
-      fPRA->SetStdDevMulkNN(fStdDevMulkNN);
-      std::cout << " kNN Distance threshold : " << fkNNDist << "\n";
-      fPRA->SetkNNDist(fkNNDist);
-   }
+   // Build the post-finding transform chain only when not user-provided
+   if (!fClusterer)
+      fClusterer = std::make_unique<AtPATTERN::AtSmooth3DClusterer>(fClusterRadius, fClusterDistance);
 
-   // Pass diffusion parameters from AtDigiPar to the track transformer for covariance calculation
-   if (fPar && fPRA) {
+   if (fPar) {
       double tbTime = fPar->GetTBTime() * 1e-3; // ns → us
-      fPRA->SetDiffusionParams(fPar->GetCoefDiffusionTrans(), fPar->GetCoefDiffusionLong(),
-                               fPar->GetDriftVelocity(), tbTime);
+      fClusterer->SetDiffusionParams(fPar->GetCoefDiffusionTrans(), fPar->GetCoefDiffusionLong(),
+                                     fPar->GetDriftVelocity(), tbTime);
       LOG(info) << "AtPRAtask: diffusion params from AtDigiPar — CoefT=" << fPar->GetCoefDiffusionTrans()
                 << " CoefL=" << fPar->GetCoefDiffusionLong() << " DriftVel=" << fPar->GetDriftVelocity()
                 << " TBTime=" << tbTime << " us";
    }
+
+   if (!fOrderer)
+      fOrderer = std::make_unique<AtPATTERN::AtClusterOrderer>();
+
+   if (!fBeamRejector)
+      fBeamRejector = std::make_unique<AtPATTERN::AtBeamTrackRejector>(fMinLabTheta);
+
+   if (!fFragmentMerger)
+      fFragmentMerger = std::make_unique<AtPATTERN::AtFragmentMerger>(fMergeDist, fVertexRadiusXY);
+
+   if (!fVertexSelector)
+      fVertexSelector = std::make_unique<AtPATTERN::AtVertexTrackSelector>(fVertexRadiusXY);
+
+   if (!fSeeder)
+      fSeeder = std::make_unique<AtPATTERN::AtCircleSeeder>();
+
+   if (kSetPrunning && !fPruner) {
+      fPruner = std::make_unique<AtPATTERN::AtTrackPruner>();
+      fPruner->SetKNN(fKNN);
+      fPruner->SetStdDevMul(fStdDevMulkNN);
+      fPruner->SetKNNDist(fkNNDist);
+   }
+
+   // Wire the shared clusterer and orderer into the fragment merger for per-merge
+   // re-clustering and re-ordering. Both are owned by this task and share the same lifetime.
+   fFragmentMerger->SetClusterer(fClusterer.get());
+   fFragmentMerger->SetOrderer(fOrderer.get());
+
+   // Build the post-finding transform chain. Pipeline order matches prior Exec() sequence.
+   // Null-safe: Add() silently skips nullptr (e.g. fPruner when pruning is disabled).
+   fChain.Clear();
+   fChain.Add(fClusterer.get());
+   fChain.Add(fPruner.get());
+   fChain.Add(fOrderer.get());
+   fChain.Add(fBeamRejector.get());
+   fChain.Add(fFragmentMerger.get());
+   fChain.Add(fVertexSelector.get());
+   fChain.Add(fSeeder.get());
 
    // Get a handle from the IO manager
    FairRootManager *ioMan = FairRootManager::Instance();
@@ -178,14 +239,21 @@ void AtPRAtask::Exec(Option_t *option)
 
       if (hitArray.size() > fMinNumHits && hitArray.size() < fMaxNumHits) {
          auto patternEvent = fPRA->FindTracks(event);
-         new (fPatternEventArray[0]) AtPatternEvent(std::move(*patternEvent));
+         if (patternEvent) {
+            fChain.Transform(*patternEvent);
+            new (fPatternEventArray[0]) AtPatternEvent(std::move(*patternEvent));
+         }
       }
 
    } catch (std::runtime_error e) {
       std::cout << "Analyzation failed! Error: " << e.what() << std::endl;
    }
+}
 
-   // fEvent  = (AtEvent *) fEventHArray -> At(0);
+void AtPRAtask::SetDiffusionParams(double coefT, double coefL, double driftVel, double tbTime)
+{
+   if (fClusterer)
+      fClusterer->SetDiffusionParams(coefT, coefL, driftVel, tbTime);
 }
 
 void AtPRAtask::Finish()

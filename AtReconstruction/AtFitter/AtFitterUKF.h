@@ -73,6 +73,7 @@ public:
    /// and sorted from vertex (high Z_lab) toward Bragg peak (low Z_lab).
    void SetZPadPlane(double z) { fZPadPlane = z; }
    void SetClusterCovarianceMode(AtTools::AtTrackTransformer::CovarianceMode mode) { fClusterCovarianceMode = mode; }
+   void SetAdaptiveClustering(bool enabled) { fAdaptiveClustering = enabled; }
 
    /// AtFitter interface — no-op; UKF is created lazily on first GetFittedTrack() call.
    void Init() override {}

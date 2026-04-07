@@ -1,10 +1,9 @@
 #include "AtTrackFinderTC.h"
 
-#include "AtEvent.h"            // for AtEvent
-#include "AtHit.h"              // for AtHit
-#include "AtPatternEvent.h"     // for AtPatternEvent
-#include "AtTrack.h"            // for AtTrack
-#include "AtTrackTransformer.h" // for AtTrackTransformer
+#include "AtEvent.h"        // for AtEvent
+#include "AtHit.h"          // for AtHit
+#include "AtPatternEvent.h" // for AtPatternEvent
+#include "AtTrack.h"        // for AtTrack
 
 #include <Math/Point3D.h> // for PositionVector3D
 
@@ -21,13 +20,6 @@
 #include <memory>   // for allocator_traits<>::value_...
 #include <utility>  // for move
 
-constexpr auto cRED = "\033[1;31m";
-constexpr auto cYELLOW = "\033[1;33m";
-constexpr auto cNORMAL = "\033[0m";
-constexpr auto cGREEN = "\033[1;32m";
-
-AtPATTERN::AtTrackFinderTC::AtTrackFinderTC() : AtPATTERN::AtPRA() {}
-
 std::unique_ptr<AtPatternEvent> AtPATTERN::AtTrackFinderTC::FindTracks(AtEvent &event)
 {
    Opt opt_params;
@@ -41,63 +33,63 @@ std::unique_ptr<AtPatternEvent> AtPATTERN::AtTrackFinderTC::FindTracks(AtEvent &
 
    if (cloud_xyz.size() == 0) {
       std::cerr << "[Error] empty cloud " << std::endl;
-
       return nullptr;
    }
 
    if (opt_params.needs_dnn()) {
       double dnn = std::sqrt(first_quartile(cloud_xyz));
-      if (opt_verbose > 0) {
+      if (opt_verbose > 0)
          std::cout << "AtPATTERN::AtTrackFinderTC - [Info] computed dnn: " << dnn << std::endl;
-      }
       opt_params.set_dnn(dnn);
       if (dnn == 0.0) {
-         std::cerr << "AtPATTERN::AtTrackFinderTC - [Error] dnn computed as zero. "
-                   << "Suggestion: remove doublets, e.g. with 'sort -u'" << std::endl;
+         std::cerr << "AtPATTERN::AtTrackFinderTC - [Error] dnn computed as zero." << std::endl;
          return nullptr;
       }
    }
 
-   // Step 1) smoothing by position averaging of neighboring points
+   // Step 1: smooth by position averaging of neighboring points
    PointCloud cloud_xyz_smooth;
    smoothen_cloud(cloud_xyz, cloud_xyz_smooth, opt_params.get_r());
 
-   // Step 2) finding triplets of approximately collinear points
+   // Step 2: find triplets of approximately collinear points
    std::vector<triplet> triplets;
    generate_triplets(cloud_xyz_smooth, triplets, opt_params.get_k(), opt_params.get_n(), opt_params.get_a());
 
-   // Step 3) single link hierarchical clustering of the triplets
+   // Step 3: single-link hierarchical clustering of triplets
    cluster_group cl_group;
    compute_hc(cloud_xyz_smooth, cl_group, triplets, opt_params.get_s(), opt_params.get_t(), opt_params.is_tauto(),
               opt_params.get_dmax(), opt_params.is_dmax(), opt_params.get_linkage(), opt_verbose);
 
-   // Step 4) pruning by removal of small clusters ...
+   // Step 4: prune small clusters
    cleanup_cluster_group(cl_group, opt_params.get_m(), opt_verbose);
    cluster_triplets_to_points(triplets, cl_group);
-   // .. and (optionally) by splitting up clusters at gaps > dmax
    if (opt_params.is_dmax()) {
       cluster_group cleaned_up_cluster_group;
-      for (auto &cl : cl_group) {
+      for (auto &cl : cl_group)
          max_step(cleaned_up_cluster_group, cl, cloud_xyz, opt_params.get_dmax(), opt_params.get_m() + 2);
-      }
       cl_group = cleaned_up_cluster_group;
    }
 
-   // store cluster labels in points
    add_clusters(cloud_xyz, cl_group, opt_params.is_gnuplot());
 
-   // Post processing
-   // process_pointcloud(cloud_xyz, 25, 0);
+   // Convert clusters to raw AtTrack candidates (hits only, no clustering)
+   auto noisePoints = cloud_xyz;
+   std::vector<AtTrack> tracks;
+   BuildRawTracksFromClusters(cloud_xyz, cl_group, event, tracks, noisePoints);
 
-   // Adapt clusters to AtTrack
-   return clustersToTrack(cloud_xyz, cl_group, event);
+   auto retEvent = std::make_unique<AtPatternEvent>();
+   for (const auto &point : noisePoints)
+      retEvent->AddNoise(event.GetHit(point.GetID()));
+   for (auto &track : tracks)
+      retEvent->AddTrack(std::move(track));
+
+   return retEvent;
 }
 
 void AtPATTERN::AtTrackFinderTC::eventToClusters(AtEvent &event, PointCloud &cloud)
 {
-   Int_t nHits = event.GetNumHits();
-
-   for (Int_t iHit = 0; iHit < nHits; iHit++) {
+   int nHits = event.GetNumHits();
+   for (int iHit = 0; iHit < nHits; iHit++) {
       Point point;
       const AtHit hit = event.GetHit(iHit);
       auto position = hit.GetPosition();
@@ -109,71 +101,28 @@ void AtPATTERN::AtTrackFinderTC::eventToClusters(AtEvent &event, PointCloud &clo
    }
 }
 
-std::unique_ptr<AtPatternEvent>
-AtPATTERN::AtTrackFinderTC::clustersToTrack(PointCloud &cloud, const std::vector<cluster_t> &clusters, AtEvent &event)
+void AtPATTERN::AtTrackFinderTC::BuildRawTracksFromClusters(PointCloud &cloud, const std::vector<cluster_t> &clusters,
+                                                            AtEvent &event, std::vector<AtTrack> &tracks,
+                                                            PointCloud &noisePoints)
 {
-
-   std::vector<AtTrack> tracks;
-   // std::vector<Point> points = cloud;
-   auto points = cloud;
-
    for (size_t cluster_index = 0; cluster_index < clusters.size(); ++cluster_index) {
-
-      AtTrack track; // One track per cluster
-
+      AtTrack track;
       const std::vector<size_t> &point_indices = clusters[cluster_index];
-      if (point_indices.size() == 0)
+      if (point_indices.empty())
          continue;
 
-      // add points
       for (auto ind : point_indices) {
-
          const Point &point = cloud[ind];
-
          track.AddHit(event.GetHit(point.GetID()));
-
-         // remove current point from vector points
-         for (auto p = points.begin(); p != points.end(); p++) {
+         for (auto p = noisePoints.begin(); p != noisePoints.end(); p++) {
             if (*p == point) {
-               points.erase(p);
+               noisePoints.erase(p);
                break;
             }
          }
-
-      } // Point indices
+      }
 
       track.SetTrackID(cluster_index);
-
-      fTrackTransformer->ClusterizeSmooth3D(track, fClusterRadius, fClusterDistance);
-      OrderClustersAlongTrack(track);
-
-      if (kSetPrunning)
-         PruneTrack(track);
-
       tracks.push_back(track);
-
-   } // Clusters loop
-
-   std::cout << cRED << " Tracks found " << tracks.size() << cNORMAL << std::endl;
-
-   // Vertex-based track selection: reject beam, find primaries near vertex,
-   // merge fragments extending from primaries, reject isolated fragments
-   SelectAndMergeTracks(tracks);
-   std::cout << cGREEN << " After selection: " << tracks.size() << " tracks" << cNORMAL << std::endl;
-
-   // Compute initial parameters on selected/merged tracks
-   for (auto &track : tracks) {
-      if (track.GetHitArray().size() > 0)
-         SetTrackInitialParameters(track);
    }
-
-   // Dump noise into pattern event
-   auto retEvent = std::make_unique<AtPatternEvent>();
-   for (const auto &point : points)
-      retEvent->AddNoise(event.GetHit(point.GetID()));
-
-   for (auto &track : tracks)
-      retEvent->AddTrack(std::move(track));
-
-   return retEvent;
 }

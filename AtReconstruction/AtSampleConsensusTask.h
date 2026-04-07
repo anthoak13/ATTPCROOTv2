@@ -16,7 +16,9 @@ class TBuffer;
 class TClass;
 class TMemberInspector;
 
-class AtSampleConsensusTask : public FairTask {
+/// @deprecated Use AtPatternFindingTask with AtPATTERN::AtRANSACPatternFinder instead.
+class [[deprecated("Use AtPatternFindingTask with AtRANSACPatternFinder instead")]]
+AtSampleConsensusTask : public FairTask {
 private:
    TString fInputBranchName;
    TString fOutputBranchName;

@@ -25,7 +25,6 @@ void EventFit::AtFitter::FitEvent(AtTrackingEvent *trackingEvent, AtPatternEvent
 
    // Save the original AtTracks to the AtTrackingEvent.
    trackingEvent->SetTrackArray(&tracks);
-
    // Iterate over the AtTracks and store the AtFittedTracks in the AtTrackingEvent.
    for (auto track : tracks) {
       std::unique_ptr<AtFittedTrack> fittedTrack(GetFittedTrack(&track, fitMetadata, rawEvent, event));

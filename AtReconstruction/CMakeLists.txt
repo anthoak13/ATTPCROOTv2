@@ -41,6 +41,16 @@ Set(DEPENDENCIES
   hdf5::hdf5-shared
   )
 
+set(TEST_SRCS_RECO
+  AtPRABehaviorTest.cxx
+  AtTrackComponentsTest.cxx
+  )
+
+attpcroot_generate_tests(${LIBRARY_NAME}Tests
+  SRCS ${TEST_SRCS_RECO}
+  DEPS ${LIBRARY_NAME}
+  )
+
 set(SRCS
   # Add all the source files below this line. Those must have cxx for their extension.
 
@@ -79,7 +89,6 @@ set(SRCS
   AtMacroTask.cxx
   AtCopyAuxTreeTask.cxx
 
-  AtPatternRecognition/AtPRA.cxx
   AtPatternRecognition/AtSampleConsensus.cxx
   AtPatternRecognition/AtSampleEstimator.cxx
   AtPatternRecognition/AtEstimatorMethods.cxx
@@ -87,6 +96,20 @@ set(SRCS
   AtSampleConsensusTask.cxx
   AtPRAtask.cxx
   AtCopyTreeTask.cxx
+
+  # New pattern finding / transform framework
+  AtPatternRecognition/AtPRAUtils.cxx
+  AtPatternRecognition/AtSmooth3DClusterer.cxx
+  AtPatternRecognition/AtGroupClusterer.cxx
+  AtPatternRecognition/AtClusterOrderer.cxx
+  AtPatternRecognition/AtBeamTrackRejector.cxx
+  AtPatternRecognition/AtVertexTrackSelector.cxx
+  AtPatternRecognition/AtFragmentMerger.cxx
+  AtPatternRecognition/AtTrackPruner.cxx
+  AtPatternRecognition/AtCircleSeeder.cxx
+  AtPatternRecognition/AtRANSACPatternFinder.cxx
+  AtPatternFindingTask.cxx
+  AtPatternTransformTask.cxx
   
   AtPatternRecognition/triplclust/src/cluster.cxx
   AtPatternRecognition/triplclust/src/triplet.cxx

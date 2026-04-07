@@ -1,6 +1,8 @@
 #ifndef ATTRACKTRANSFORMER_H
 #define ATTRACKTRANSFORMER_H
 
+#include "AtTrackClusterBuilder.h" // for AtTools::CovarianceMode type alias
+
 #include <Rtypes.h>
 
 class AtTrack;
@@ -10,7 +12,8 @@ namespace AtTools {
 class AtTrackTransformer {
 
 public:
-   enum class CovarianceMode { TransformerDirect, HitClusterOnline };
+   /// Backward-compatible alias — enum is now defined in AtTrackClusterBuilder.h
+   using CovarianceMode = AtTools::CovarianceMode;
 
    AtTrackTransformer();
    ~AtTrackTransformer();

@@ -28,8 +28,18 @@
 #pragma link C++ nestedclass;
 #pragma link C++ nestedtypedef;
 
-#pragma link C++ class AtPATTERN::AtTrackFinderTC + ;
-#pragma link C++ class AtPATTERN::AtPRA + ;
+#pragma link C++ class AtPATTERN::AtPatternFinder - !;
+#pragma link C++ class AtPATTERN::AtPatternTransform - !;
+#pragma link C++ class AtPATTERN::AtTrackFinderTC - !;
+#pragma link C++ class AtPATTERN::AtRANSACPatternFinder - !;
+#pragma link C++ class AtPATTERN::AtSmooth3DClusterer - !;
+#pragma link C++ class AtPATTERN::AtGroupClusterer - !;
+#pragma link C++ class AtPATTERN::AtClusterOrderer - !;
+#pragma link C++ class AtPATTERN::AtBeamTrackRejector - !;
+#pragma link C++ class AtPATTERN::AtVertexTrackSelector - !;
+#pragma link C++ class AtPATTERN::AtFragmentMerger - !;
+#pragma link C++ class AtPATTERN::AtTrackPruner - !;
+#pragma link C++ class AtPATTERN::AtCircleSeeder - !;
 #pragma link C++ namespace AtPATTERN;
 
 #pragma link C++ namespace SampleConsensus;
@@ -72,6 +82,8 @@
 #pragma link C++ class AtMCFitterTaskOld + ;
 
 /* Tasks in AtReconstruction */
+#pragma link C++ class AtPatternFindingTask + ;
+#pragma link C++ class AtPatternTransformTask + ;
 #pragma link C++ class AtPSAtask + ;
 #pragma link C++ class AtPRAtask + ;
 #pragma link C++ class AtRansacTask + ;

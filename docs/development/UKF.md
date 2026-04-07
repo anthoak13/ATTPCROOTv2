@@ -127,33 +127,43 @@ Integration/demo macros in `macro/tests/UKF/`:
 
 ### Validation with Digitized Data
 
-End-to-end validation using fully digitized 16C(p,p) events at 20 deg CMS
-(`macro/Simulation/ATTPC/16C_pp/run_ukf_digi.C`):
+End-to-end validation using fully digitized 16C(p,p) events, 20–90° CMS, 1000 events,
+MC truth momentum seed at first cluster (`macro/Simulation/ATTPC/16C_pp/run_ukf_digi.C`).
+_Last measured 2026-04-06 after PRA seam-1 refactor._
 
 | Metric | Value |
 |--------|-------|
-| Convergence rate | 98% (49/50 events) |
-| Momentum bias | -1.6% (systematic) |
-| Momentum resolution (RMS) | 1.0% |
-| Theta bias | ~0 deg |
-| Mean residual | 0.9 mm |
-| Avg clusters per track | 60 |
+| Convergence rate | 100% (480/480 proton tracks, 0 failures) |
+| Momentum bias | +0.31% |
+| Momentum resolution (RMS) | 1.09% |
+| Theta bias | +0.008 deg |
+| Mean residual | 0.96 mm |
+| Avg clusters per track | 40 |
 
-### Systematic Momentum Bias (-1.6%)
+### History and Current Status of the Momentum Bias
 
-The UKF consistently reconstructs momentum ~1.6% below the MC truth.
-Two sources were identified:
+The bias has evolved through several documented stages as fixes were applied:
+
+| Commit | Bias | RMS | Note |
+|--------|------|-----|------|
+| `fdd4e279` | −1.6% | 1.0% | Original; r10d20 clustering |
+| `709fd9ae` | −0.03% | 4.8% | Propagator back-extrapolation added |
+| `b9053cbc` | −0.5% | 2.8% | r20d15 overlapping clustering default |
+| `aaabc313` | −0.5% | 2.5% | Capped linear back-extrapolation (full pipeline) |
+| current | +0.31% | 1.09% | r20d15 clustering + MC truth seed at first cluster |
+
+Two sources were identified and addressed:
 
 **Source 1 (~0.9%): Vertex-to-cluster offset** — RESOLVED
 - The first digitized cluster is ~10 mm from the MC vertex due to pad granularity
   and the clusterization radius.
 - When seeding the UKF with the vertex momentum but starting at the first cluster
   position, the momentum is already lower than the seed.
-- Fix: seed with the MC truth momentum at the position of the first cluster,
-  not at the vertex. For real data, this means the seed momentum should correspond
-  to the first measurement point, not the extrapolated vertex.
+- Fix (run_ukf_digi.C): seed with MC truth momentum at the position of the first
+  cluster. Fix (AtFitterUKF full pipeline): capped linear back-extrapolation from
+  first cluster to beam axis, added in `aaabc313`.
 
-**Source 2 (~1.6%): CATIMA vs GEANT4 energy loss mismatch** — DOCUMENTED
+**Source 2 (~0.9%): CATIMA vs GEANT4 energy loss mismatch** — RESIDUAL ~0.3%
 - The UKF propagator uses CATIMA for energy loss, while the simulation uses GEANT4's
   built-in stopping power tables. They disagree by ~5% at low energies:
 
@@ -163,8 +173,8 @@ Two sources were identified:
 
 - CATIMA predicts ~5% higher energy loss → the propagator removes too much energy
   per step → reconstructed momentum is systematically low.
-- This is a fundamental model mismatch, not a bug. In practice it appears as a
-  small systematic bias on the reconstructed vertex momentum.
+- This is a fundamental model mismatch, not a bug. With the r20d15 clustering
+  default and MC truth seeding the net residual bias is +0.31%, near zero.
 
 **Mitigation options** (in order of preference):
 

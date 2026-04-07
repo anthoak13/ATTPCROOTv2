@@ -5,6 +5,7 @@ set(SRCS
   AtParsers.cxx
   AtELossManager.cxx
   AtTrackTransformer.cxx
+  AtTrackClusterBuilder.cxx
   AtDataManip.cxx
   AtStringManip.cxx
   AtELossModel.cxx
@@ -82,6 +83,7 @@ set(TEST_SRCS
   AtELossTableTest.cxx
   AtPropagatorTest.cxx
   AtTrackTransformerCovarianceTest.cxx
+  AtTrackClusterBuilderTest.cxx
   AtELossBetheBlochTest.cxx
 )
 if(CATIMA_FOUND)

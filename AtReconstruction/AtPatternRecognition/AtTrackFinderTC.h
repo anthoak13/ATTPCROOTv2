@@ -10,9 +10,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include "AtPRA.h" // for AtPRA
-
-#include <Rtypes.h> // for THashConsistencyHolder, ClassDef
+#include "AtPatternFinder.h"
 
 #include "cluster.h" // for Cluster
 #include <stdio.h>   // for size_t
@@ -23,9 +21,7 @@
 class PointCloud;
 class AtEvent;
 class AtPatternEvent;
-class TBuffer;
-class TClass;
-class TMemberInspector;
+class AtTrack;
 
 namespace AtPATTERN {
 struct hc_params {
@@ -39,12 +35,21 @@ struct hc_params {
    float _padding;
 };
 
-class AtTrackFinderTC : public AtPRA {
+/**
+ * @brief TriplClust pattern finder.
+ *
+ * Assigns hits to raw track candidates using the TriplClust hierarchical
+ * clustering algorithm (Dalitz et al.). Output tracks contain raw hits only;
+ * no clustering, ordering, or geometric seeding is performed here.
+ *
+ * @ingroup PatternFinders
+ */
+class AtTrackFinderTC : public AtPatternFinder {
 private:
    hc_params inputParams{.s = 0.3, .k = 19, .n = 2, .m = 15, .r = 2, .a = 0.03, .t = 4.0};
 
 public:
-   AtTrackFinderTC();
+   AtTrackFinderTC() = default;
    ~AtTrackFinderTC() = default;
 
    std::unique_ptr<AtPatternEvent> FindTracks(AtEvent &event) override;
@@ -58,12 +63,10 @@ public:
    void SetTcluster(float t) { inputParams.t = t; }
    void SetPadding(size_t padding) { inputParams._padding = padding; }
 
-private:
+protected:
    void eventToClusters(AtEvent &event, PointCloud &cloud);
-   std::unique_ptr<AtPatternEvent>
-   clustersToTrack(PointCloud &cloud, const std::vector<cluster_t> &clusters, AtEvent &event);
-
-   ClassDefOverride(AtTrackFinderTC, 1);
+   void BuildRawTracksFromClusters(PointCloud &cloud, const std::vector<cluster_t> &clusters, AtEvent &event,
+                                   std::vector<AtTrack> &tracks, PointCloud &noisePoints);
 };
 
 } // namespace AtPATTERN

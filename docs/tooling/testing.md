@@ -41,11 +41,19 @@ cd build && ctest -V          # all tests
 
 More involved tests (those that require data files or test full pipelines) live in `macro/tests/`. They are written as ROOT macros (`.C` files) and run interpreted, not compiled.
 
+Do not use ACLiC (`.C+`, `.C++`) or any other macro-compilation path for repo macros. Run them with `root -l -q ...` or `root -l -b -q ...`.
+
 These are listed and run separately from unit tests. Use them for:
 
 - end-to-end workflow checks
 - simulation plus reconstruction flows
 - experiment-facing regression scenarios
+
+One focused simulation-based PRA regression now lives in `macro/tests/AT-TPC/`:
+
+- `run_pra_sim_integration.C` generates a small `16C(p,p)` simulation sample
+- `run_pra_sim_reco.C` runs the full `AtPRAtask` plus `AtFitterTask` UKF chain on that sample
+- `AssertPRASimIntegration.C` opens the output and fails if the run does not produce at least a minimal amount of `AtPatternEvent` and `AtTrackingEvent` content
 
 ### Prerequisites
 
@@ -67,6 +75,17 @@ macro/tests/runAllTest.sh
 ```
 
 Results are logged in each test subdirectory as `test.log`.
+
+### Running The Simulation-Based PRA Integration Test
+
+```bash
+source build/config.sh
+root -l -b -q 'macro/tests/AT-TPC/run_pra_sim_integration.C(8)'
+root -l -b -q 'macro/tests/AT-TPC/run_pra_sim_reco.C(8)'
+root -l -b -q 'macro/tests/AT-TPC/AssertPRASimIntegration.C()'
+```
+
+This test is intended as a PRA-friendly simulation smoke/regression check. It is a better fit for PRA cleanup work than the real fission sample `run_0174.root`, which remains useful for branch-flow smoke testing but is not a representative PRA efficiency benchmark.
 
 See [macro-cookbook.md](macro-cookbook.md) for curated macro starting points.
 
