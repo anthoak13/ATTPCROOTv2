@@ -1,3 +1,5 @@
+> **Status (2026-04-06): PARTIAL** — Phase 1 (digitized proton tracks via `AtSimpleSimulation`) is complete. Systematic PSA method comparison and gas pressure scans are not yet done. The body below remains a valid forward plan.
+
 # Synthetic Data Pipeline for UKF Validation
 
 ## Overview

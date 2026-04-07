@@ -1,3 +1,5 @@
+> **Status (2026-04-06): PARTIAL** — Clustering defaults were unified (r20d15, ~98% convergence) and documented in `AtSmooth3DClusterer` header defaults. Full macro consolidation and centralized settings documentation are still incomplete.
+
 # UKF Pipeline Unification
 
 ## Goal

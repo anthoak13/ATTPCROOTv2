@@ -34,7 +34,20 @@ Agent-facing docs for the current branch state of ATTPCROOT.
 
 ## Branch-Specific Notes
 
-- fitting status: [fitting-status.md](fitting-status.md)
+Active development notes for this branch:
+
+- fitting status: [development/fitting-status.md](development/fitting-status.md)
+- UKF fitter architecture and tuning: [development/UKF.md](development/UKF.md)
+- PRA refactor review (post-completion): [development/PRARefactorReview.md](development/PRARefactorReview.md)
+- synthetic data pipeline (partial): [development/SyntheticData.md](development/SyntheticData.md)
+- pipeline unification (partial): [development/PipelineUnification.md](development/PipelineUnification.md)
+
+Historical/completed notes (body text preserved, see status banner in each file):
+
+- cluster covariance study: [development/ClusterCovariance.md](development/ClusterCovariance.md)
+- cluster method comparison and study results: [development/ClusterComparison.md](development/ClusterComparison.md)
+- branch governing summary: [development/OpenKFBranchSummary.md](development/OpenKFBranchSummary.md)
+- branch summary audit: [development/OpenKFBranchSummaryAudit.md](development/OpenKFBranchSummaryAudit.md)
 
 ## Scope Notes
 

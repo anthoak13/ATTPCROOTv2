@@ -16,6 +16,9 @@ ATTPCROOT is organized as CMake library targets layered around data, simulation,
 | `AtSimulationData` | MC truth and simulation shared state | MC objects, stack, propagator | change truth object layout or simulation state | [simulation-pipeline.md](../subsystems/simulation-pipeline.md), [data-model.md](data-model.md) |
 | `AtGenerators` | FairRoot generator implementations | reaction and beam generators | change simulation source behavior | [generators.md](../subsystems/generators.md), [simulation-pipeline.md](../subsystems/simulation-pipeline.md) |
 | `AtDetectors` | detector geometry and sensitive detectors | detector-specific subdirs, field/passive geometry | detector implementation changes | [geometry.md](../subsystems/geometry.md) |
+| `AtMap` | detector pad mapping and lookup | mapping tables, lookup utilities | change pad-to-channel mapping | [branch-io-contracts.md](branch-io-contracts.md) |
+| `AtParameter` | runtime parameter container | `AtDigiPar` and derivatives | add/modify detector parameters | [parameters.md](parameters.md) |
+| `AtS800` | S800 spectrometer integration | S800 data containers, tasks | S800-correlated analysis | [data-model.md](data-model.md) |
 | `AtAnalysis` | higher-level analysis code | experiment-facing analysis | analysis task changes | [data-model.md](data-model.md), [reconstruction-pipeline.md](../subsystems/reconstruction-pipeline.md) |
 | `AtEventDisplay` | event visualization | `AtTabs/`, `AtSidebar/`, legacy display code | visualization changes | [visualization.md](../subsystems/visualization.md), [data-model.md](data-model.md) |
 

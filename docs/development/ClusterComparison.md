@@ -1,4 +1,6 @@
-/pa  # Plan: Add Covariance-Method Comparison Without Changing Current Behavior
+> **Status (2026-04-06): COMPLETED** — Comparison methodology and baseline characterization tests are implemented in `AtPRABehaviorTest.cxx` and `AtTrackComponentsTest.cxx`. Systematic study results are preserved in the body below.
+
+# Plan: Add Covariance-Method Comparison Without Changing Current Behavior
 
   ## Summary
 

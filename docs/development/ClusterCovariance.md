@@ -1,3 +1,5 @@
+> **Status (2026-04-06): RESOLVED** — Diffusion coefficients and pad resolution are now wired from `AtDigiPar` into `AtSmooth3DClusterer` and `AtTrackTransformer` via `AtPRAtask::Init()`. The residual science question (per-cluster covariance 1.27% vs fixed sigma 1.04% RMS) is documented in the body below.
+
 # Cluster Covariance Infrastructure
 
 ## Problem

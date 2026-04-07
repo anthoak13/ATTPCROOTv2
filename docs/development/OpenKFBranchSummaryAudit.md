@@ -1,3 +1,5 @@
+> **Status (2026-04-06): POINT-IN-TIME SNAPSHOT** — Audits the `OpenKFBranchSummary.md` as of a specific point in development. Several discrepancies identified here have since been addressed by the PRA refactor (commits `89d8f071`, `dba73e87`) and subsequent UKF validation work. Body text preserved as-is.
+
 # OpenKF Branch Summary Audit
 
 ## Purpose

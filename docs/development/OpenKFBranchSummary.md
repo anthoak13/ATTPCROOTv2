@@ -1,3 +1,5 @@
+> **Status (2026-04-06): POINT-IN-TIME SNAPSHOT** — Written at a specific point in the branch's development. Several "architectural gaps" noted here have since been resolved: the PRA monolith was refactored into a composable `AtPatternFinder`/`AtPatternTransform` pipeline, and UKF fitting is now validated at ~98% convergence. Body text is preserved as-is.
+
 # OpenKF Branch Governing Summary
 
 ## Purpose
