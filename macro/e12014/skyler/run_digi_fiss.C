@@ -181,8 +181,9 @@ void run_digi_fiss(int runNum = 4, bool saveRawEvent = true)
    // For all our ions, load the energy loss tables
    for (auto [Z, A] : ions) {
       auto eloss = std::make_shared<AtTools::AtELossTable>();
-      eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
-                           0); // Note a different function call will be needed if loading SRIM tables
+      eloss->LoadSrimTable(TString::Format(energyLossDir + "/SRIM/%d_%d.txt", Z, A).Data());
+      // eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
+      //                     0); // Note a different function call will be needed if loading SRIM tables
       sim->AddModel(Z, A, eloss);
    }
 
