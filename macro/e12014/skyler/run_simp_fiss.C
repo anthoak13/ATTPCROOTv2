@@ -3,7 +3,7 @@
 
 bool reduceFunc(AtRawEvent *evt);
 
-void run_simp_fiss(int runNum = 60)
+void run_simp_fiss(int runNum = 60, int num_events = 500)
 {
 
    delete gRandom;
@@ -14,7 +14,7 @@ void run_simp_fiss(int runNum = 60)
    int Zcn = 83 + 2;  // Number of protons in the compound nucleus
    int Acn = 200 + 4; // Number of nucleons in the compound nucleus
    int Zmin = 26;     // Minimum Z to simulate for the fission fragments
-   int Zmax = 59;     // Maximum Z to simulate for hte fission fragments
+   int Zmax = 59;     // Maximum Z to simulate for the fission fragments
    int zToSim = 50;
 
    fissionSim::beamZ = 83;                     // Number of protons in the beam
@@ -26,7 +26,7 @@ void run_simp_fiss(int runNum = 60)
    fissionSim::massDev = 0;
    // 6; // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
    fissionSim::decayAngle =
-      120 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
+      90 * TMath::DegToRad(); // Angle of the decay in CoM frame in radians (0 means sample the distribution)
 
    fissionSim::beamE = 2.70013e+03; // Get from LISE, beam energy in MeV
    fissionSim::beamEsig =
@@ -89,6 +89,7 @@ void run_simp_fiss(int runNum = 60)
                 << "[" << Z << "," << A << "]" << std::endl;
       eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
                            0); // Note a different function call will be needed if loading SRIM tables
+                               // eloss->LoadSrimTable(TString::Format(energyLossDir + "/SRIM/%d_%d.txt", Z, A).Data());
       sim->AddModel(Z, A, eloss);
    }
 
@@ -98,6 +99,8 @@ void run_simp_fiss(int runNum = 60)
    beamloss->LoadLiseTable(
       TString::Format(energyLossDir + "/LISE/%d_%d.txt", fissionSim::beamZ, fissionSim::beamA).Data(),
       fissionSim::beamA, 0);
+   // beamloss->LoadSrimTable(
+   //  TString::Format(energyLossDir + "/SRIM/%d_%d.txt", fissionSim::beamZ, fissionSim::beamA).Data());
    sim->AddModel(fissionSim::beamZ, fissionSim::beamA, beamloss);
 
    /**  At this point, the simulation object is fully constructed and ready to be used. **/
@@ -117,7 +120,7 @@ void run_simp_fiss(int runNum = 60)
 
    timer.Start();
    // fRun->Run(0, 5000);
-   fRun->Run(0, 2000);
+   fRun->Run(0, num_events);
    fissionSim::CleanUp();
    timer.Stop();
 
