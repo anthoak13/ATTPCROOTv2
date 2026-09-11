@@ -151,62 +151,6 @@ void run_digi_fiss(int runNum = 4, bool saveRawEvent = true)
    fRun->AddTask(fissionTask); // This task assembles the fisison events
    fRun->AddTask(infoTask);    //
 
-   /** Begin MC Fit **/
-   int Zcn = 83 + 2;  // Number of protons in the compound nucleus
-   int Acn = 200 + 4; // Number of nucleons in the compound nucleus
-   int Zmin = 26;     // Minimum Z to simulate for the fission fragments
-   int Zmax = 59;     // Maximum Z to simulate for hte fission fragments
-
-   TString geoFile = "ATTPC_v1.1_geomanager.root";
-   TString GeoDataPath = dir + "/geometry/" + geoFile;
-   TString energyLossDir = sharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
-
-   E12014::fMap = mapping;
-   //  __ Init and run ___________________________________
-
-   // Create underlying simulation class
-   auto sim = std::make_shared<AtSimpleSimulation>(GeoDataPath.Data());
-
-   auto scModel = std::make_shared<AtRadialChargeModel>(nullptr);
-   scModel->SetStepSize(0.1);
-   scModel->SetBeamLocation({0, -6, 0}, {10, 0, 1000});
-   // sim->SetSpaceChargeModel(scModel);
-
-   // Create and load energy loss models
-   std::vector<std::pair<int, int>> ions;
-   for (int i = Zmin; i <= Zmax; i++)
-      ions.push_back(
-         {i, std::round((double)i / Zcn * Acn)}); // Calculate the number of nucleons for each Z and add to the list
-
-   // For all our ions, load the energy loss tables
-   for (auto [Z, A] : ions) {
-      auto eloss = std::make_shared<AtTools::AtELossTable>();
-      eloss->LoadSrimTable(TString::Format(energyLossDir + "/SRIM/%d_%d.txt", Z, A).Data());
-      // eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
-      //                     0); // Note a different function call will be needed if loading SRIM tables
-      sim->AddModel(Z, A, eloss);
-   }
-
-   auto cluster = std::make_shared<AtClusterizeLine>();
-   auto pulseSim = std::make_shared<AtPulseLine>(mapping);
-   pulseSim->SetSaveCharge(true);
-   auto psa2 = std::make_shared<AtPSADeconvFit>();
-   psa2->SetUseSimCharge(true);
-   psa2->SetThreshold(25);
-
-   auto fitter = std::make_shared<MCFitter::AtMCFission>(sim, cluster, pulseSim);
-   fitter->SetPSA(psa2);
-   fitter->SetNumIter(100);
-   fitter->SetNumThreads(4);
-   fitter->SetNumRounds(2);
-
-   AtMCFitterTask *fitTask = new AtMCFitterTask(fitter);
-   fitTask->SetPatternBranchName("AtFissionEvent");
-   fitTask->SetSaveEvent(true);
-   fitTask->SetSaveRawEvent(true);
-
-   fRun->AddTask(fitTask);
-
    Response::Init();
    fRun->Init();
 
