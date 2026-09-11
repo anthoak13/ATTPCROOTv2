@@ -22,7 +22,7 @@ void run_fit(int runNum = 2)
    //  fair::Logger::SetConsoleSeverity("debug");
 
    TString InputDataFile = TString::Format("./data/output_digi%02d.root", runNum);
-   TString OutputDataFile = TString::Format("./data/output_fit%02d.root", runNum+1);
+   TString OutputDataFile = TString::Format("./data/output_fit%02d.root", runNum + 1);
 
    std::cout << "Opening: " << InputDataFile << std::endl;
 
@@ -36,7 +36,7 @@ void run_fit(int runNum = 2)
    TString GeoDataPath = dir + "/geometry/" + geoFile;
    TString mapDir = dir + "/scripts/" + mapFile;
    TString tpcSharedInfoDir =
-      "/home/physics/fair_install/tpcSharedInfo/";          // Directory containing the shared information for the TPC
+      "/home/physics/fair_install/tpcSharedInfo/";       // Directory containing the shared information for the TPC
    TString energyLossDir = tpcSharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
 
    FairRunAna *fRun = new FairRunAna();
@@ -73,8 +73,10 @@ void run_fit(int runNum = 2)
    // For all our ions, load the energy loss tables
    for (auto [Z, A] : ions) {
       auto eloss = std::make_shared<AtTools::AtELossTable>();
-      eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
-                           0); // Note a different function call will be needed if loading SRIM tables
+      // eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
+      //   0);
+      eloss->LoadSrimTable(TString::Format(energyLossDir + "/SRIM/%d_%d.txt", Z, A)
+                              .Data()); // Note a different function call will be needed if loading SRIM tables
       sim->AddModel(Z, A, eloss);
    }
 
@@ -95,7 +97,6 @@ void run_fit(int runNum = 2)
    fitTask->SetPatternBranchName("AtFissionEvent");
    fitTask->SetSaveEvent(true);
    fitTask->SetSaveRawEvent(true);
-
 
    fRun->AddTask(fitTask);
 
