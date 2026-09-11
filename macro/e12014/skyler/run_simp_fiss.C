@@ -85,11 +85,10 @@ void run_simp_fiss(int runNum = 60, int num_events = 500)
    // For all our ions, load the energy loss tables
    for (auto [Z, A] : ions) {
       auto eloss = std::make_shared<AtTools::AtELossTable>();
-      std::cout << "Loading table for [Z,A]: "
-                << "[" << Z << "," << A << "]" << std::endl;
+      std::cout << "Loading table for [Z,A]: " << "[" << Z << "," << A << "]" << std::endl;
       eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
                            0); // Note a different function call will be needed if loading SRIM tables
-                               // eloss->LoadSrimTable(TString::Format(energyLossDir + "/SRIM/%d_%d.txt", Z, A).Data());
+      // eloss->LoadSrimTable(TString::Format(energyLossDir + "/SRIM/%d_%d.txt", Z, A).Data());
       sim->AddModel(Z, A, eloss);
    }
 
