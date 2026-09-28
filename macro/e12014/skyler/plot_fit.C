@@ -1,5 +1,5 @@
 #include "AtCSVReader.h"
-//#include "AtDataManip.h"
+// #include "AtDataManip.h"
 
 #include <TString.h>
 
@@ -26,6 +26,7 @@ TH2F *hAmpvsPosObj = nullptr;
 TH2F *hAmpvsObj = nullptr; // Fig. 4.45
 TH2F *hAmpvsLoc = nullptr;
 TChain *tree;
+TChain *simTree;
 MCFitter::AtMCResult *result = nullptr;
 
 // Add some more plots comparing to the true simulated value
@@ -205,14 +206,18 @@ void plot_fit(vector<int> runNums, bool draw = true)
                                         // inOutDir = "./ data / ;"
    for (auto runNum : runNums) {
 
-      TString fileName = inOutDir + TString::Format("output_digi%02d.root", runNum);
+      TString fileName = inOutDir + TString::Format("output_fit%02d.root", runNum);
+      TString fileNameSim = inOutDir + TString::Format("output_digi%02d.root", runNum);
 
       if (!tree) {
          tree = new TChain("cbmsim");
+         simTree = new TChain("cbmsim");
       }
 
       tree->Add(fileName);
+      simTree->Add(fileNameSim);
    }
+   tree->AddFriend(simTree);
 
    int zMin = 26;
    int zMax = 59;
