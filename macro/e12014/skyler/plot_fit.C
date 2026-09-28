@@ -203,7 +203,8 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
 void plot_fit(vector<int> runNums, bool draw = true)
 {
    TString inOutDir = "/mnt/tpc-data/"; // Directory to save the output file
-                                        // inOutDir = "./ data / ;"
+   // inOutDir = "./ data / ;"
+   int newTree = 0;
    for (auto runNum : runNums) {
 
       TString fileName = inOutDir + TString::Format("output_fit%02d.root", runNum);
@@ -214,10 +215,13 @@ void plot_fit(vector<int> runNums, bool draw = true)
          simTree = new TChain("cbmsim");
       }
 
-      tree->Add(fileName);
+      newTree = tree->Add(fileName, 0);
       simTree->Add(fileNameSim);
    }
-   tree->AddFriend(simTree);
+   if (newTree != 0)
+      tree->AddFriend(simTree);
+   else
+      tree = simTree;
 
    int zMin = 26;
    int zMax = 59;
