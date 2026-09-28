@@ -5,7 +5,7 @@
 #include "FairParRootFileIo.h"
 #include "FairRunAna.h"
 */
-#include "FairLogger.h"
+// #include <FairLogger.h>
 
 void run_fit(int runNum = 2)
 {
@@ -15,14 +15,18 @@ void run_fit(int runNum = 2)
    int Zmin = 26;     // Minimum Z to simulate for the fission fragments
    int Zmax = 59;     // Maximum Z to simulate for hte fission fragments
 
-   auto verbSpec =
-      fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
-   fair::Logger::DefineVerbosity("user1", verbSpec);
-   // fair::Logger::SetVerbosity("user1");
-   //  fair::Logger::SetConsoleSeverity("debug");
+   // auto verbSpec =
+   // fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
+   // fair::Logger::DefineVerbosity("user1", verbSpec);
+   //  fair::Logger::SetVerbosity("user1");
+   //   fair::Logger::SetConsoleSeverity("debug");
+   TString inOutDir = "/mnt/tpc-data/";
+   // // TString outputFile = inOutDir + "output_digiLg.root";
+   // TString outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
+   // outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
 
-   TString InputDataFile = TString::Format("./data/output_digi%02d.root", runNum);
-   TString OutputDataFile = TString::Format("./data/output_fit%02d.root", runNum + 1);
+   TString InputDataFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
+   TString OutputDataFile = inOutDir + TString::Format("output_fit%02d.root", runNum);
 
    std::cout << "Opening: " << InputDataFile << std::endl;
 
@@ -36,7 +40,7 @@ void run_fit(int runNum = 2)
    TString GeoDataPath = dir + "/geometry/" + geoFile;
    TString mapDir = dir + "/scripts/" + mapFile;
    TString tpcSharedInfoDir =
-      "/home/physics/fair_install/tpcSharedInfo/";       // Directory containing the shared information for the TPC
+      "/home/skyler/fission/tpcSharedInfo/";             // Directory containing the shared information for the TPC
    TString energyLossDir = tpcSharedInfoDir + "/eLoss/"; // Directory containing the energy loss tables
 
    FairRunAna *fRun = new FairRunAna();
@@ -105,7 +109,7 @@ void run_fit(int runNum = 2)
    TStopwatch timer;
 
    timer.Start();
-   fRun->Run(0, 1);
+   fRun->Run(0, 500);
    timer.Stop();
 
    Double_t rtime = timer.RealTime();

@@ -68,6 +68,11 @@ double AtELossTable::GetRange(double energyIni, double energyFin) const
                  << fdXdE.get_x_min();
       energyFin = fdXdE.get_x_min();
    }
+   if (energyIni > fdXdE.get_x_max()) {
+      LOG(debug) << "Attempting to integrate energy from " << energyIni << " when max energy in table is "
+                 << fdXdE.get_x_max();
+      energyIni = fdXdE.get_x_max();
+   }
    return fdXdE.integrate(energyFin, energyIni);
 }
 
