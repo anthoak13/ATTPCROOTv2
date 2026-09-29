@@ -32,7 +32,9 @@ Agent-facing docs for the current branch state of ATTPCROOT.
 
 ## Branch-Specific Notes
 
-- fitting status: [fitting-status.md](fitting-status.md)
+- fitting status: [development/fitting-status.md](development/fitting-status.md)
+- MC truth design (under discussion): [development/mc-truth.md](development/mc-truth.md)
+- units and conventions: [development/units-and-conventions.md](development/units-and-conventions.md)
 
 ## Scope Notes
 
