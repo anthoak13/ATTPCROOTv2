@@ -203,13 +203,13 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    }
 }
 
-/// True if name is a fit file of study-run: <study>-<run>.fit.root or <study>-<run>.fit.cNN.root
-bool IsFitFile(TString name, TString study, TString run)
+/// True if file is an output of [fit <name>] in study: <study>-<name>.fit.root or <study>-<name>.fit.cNN.root
+bool IsFitFile(TString file, TString study, TString name)
 {
-   TString prefix = study + "-" + run + ".fit.";
-   if (!name.BeginsWith(prefix))
+   TString prefix = study + "-" + name + ".fit.";
+   if (!file.BeginsWith(prefix))
       return false;
-   TString rest = name(prefix.Length(), name.Length());
+   TString rest = file(prefix.Length(), file.Length());
    return rest == "root" ||
           (rest.Length() == 8 && rest.EndsWith(".root") && rest[0] == 'c' && isdigit(rest[1]) && isdigit(rest[2]));
 }
@@ -225,30 +225,30 @@ bool IsFinished(TString path)
    return !gSystem->AccessPathName(cfgFile) && !RunConfig::FromOutput(path).Empty();
 }
 
-/// Finished fit files of a run (one file, or one per chunk). Unfinished ones are skipped with a warning.
-std::vector<TString> FitFiles(TString study, TString run)
+/// Finished files of [fit <name>] in study (one file, or one per chunk). Unfinished ones are skipped with a warning.
+std::vector<TString> FitFiles(TString study, TString name)
 {
    std::vector<TString> files;
    auto dataDir = RunConfig::DataDir();
    auto dir = gSystem->OpenDirectory(dataDir);
    while (auto entry = gSystem->GetDirEntry(dir)) {
-      TString name = entry;
-      if (!IsFitFile(name, study, run))
+      TString file = entry;
+      if (!IsFitFile(file, study, name))
          continue;
-      if (IsFinished(dataDir + "/" + name))
-         files.push_back(dataDir + "/" + name);
+      if (IsFinished(dataDir + "/" + file))
+         files.push_back(dataDir + "/" + file);
       else
-         Warning("FitFiles", "Skipping %s: the fit failed, is running or is queued", name.Data());
+         Warning("FitFiles", "Skipping %s: the fit failed, is running or is queued", file.Data());
    }
    gSystem->FreeDirectory(dir);
    std::sort(files.begin(), files.end());
    if (files.empty())
-      Error("FitFiles", "No finished fit files for %s-%s in %s", study.Data(), run.Data(), dataDir.Data());
+      Error("FitFiles", "No finished fit files for %s-%s in %s", study.Data(), name.Data(), dataDir.Data());
    return files;
 }
 
 /// Fill the plots from fit files. Each entry may be a file name or a wildcard pattern. Unlike
-/// plot_fit(study, run), the files are not checked (see IsFinished).
+/// plot_fit(study, name), the files are not checked (see IsFinished).
 void plot_fit(std::vector<TString> files, bool draw = true)
 {
    delete tree;
@@ -293,10 +293,10 @@ void plot_fit(std::vector<TString> files, bool draw = true)
       zHist->Draw();
 }
 
-/// Plot one run of a study, e.g. plot_fit("angle_scan", "90deg")
-void plot_fit(TString study, TString run, bool draw = true)
+/// Plot [fit <name>] of a study, e.g. plot_fit("decay_angle", "90deg")
+void plot_fit(TString study, TString name, bool draw = true)
 {
-   plot_fit(FitFiles(study, run), draw);
+   plot_fit(FitFiles(study, name), draw);
 }
 
 // The following are just a bunch of fitting functions for different histograms. I just left them in here as examples.

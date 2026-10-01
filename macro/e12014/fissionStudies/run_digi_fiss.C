@@ -14,7 +14,7 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
 
    delete gRandom;
    gRandom = new TRandom3;
-   gRandom->SetSeed(cfg.GetInt("seed", std::random_device{}() & 0x7fffffff));
+   gRandom->SetSeed(cfg.GetInt("digi.seed", std::random_device{}() & 0x7fffffff));
 
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);
@@ -140,7 +140,7 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    fRun->AddTask(infoTask);    //
 
    Response::Init(sharedInfoDir);
-   cfg.CheckUnused({"sim.", "ions.", "events"}); // Passed to every stage but not used here
+   cfg.CheckUnused({"sim."}); // The sim's settings, passed on to describe the input
    fRun->Init();
 
    timer.Start();

@@ -9,7 +9,7 @@ void run_fit(TString cfgFile = "")
 
    delete gRandom;
    gRandom = new TRandom3;
-   gRandom->SetSeed(cfg.GetInt("seed", std::random_device{}() & 0x7fffffff));
+   gRandom->SetSeed(cfg.GetInt("fit.seed", std::random_device{}() & 0x7fffffff));
 
    TString InputDataFile = cfg.File("input", "digi");
    TString OutputDataFile = cfg.File("output", "fit");
@@ -86,7 +86,7 @@ void run_fit(TString cfgFile = "")
    infoTask->AddInitFunction([] { digiSimInfo::Forward("SimInfo", "SimInfo"); });
    fRun->AddTask(infoTask);
 
-   cfg.CheckUnused({"sim.", "digi.", "events"}); // Passed to every stage but not used here
+   cfg.CheckUnused({"sim.", "digi."}); // Earlier stages' settings, passed on to describe the input
    fRun->Init();
 
    TStopwatch timer;

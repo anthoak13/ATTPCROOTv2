@@ -417,7 +417,7 @@ void CheckMassFrac()
    bool found = std::any_of(ions.begin(), ions.end(), [A1](auto &ion) { return ion.second == A1; });
    if (!found)
       throw std::invalid_argument("Mean fragment mass " + std::to_string(A1) +
-                                  " (sim.zToSim) has no ion in ions.zmin-zmax");
+                                  " (sim.zToSim) has no ion in sim.ions.zmin-zmax");
 }
 
 void Exec()
