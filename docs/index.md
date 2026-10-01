@@ -34,6 +34,7 @@ Agent-facing docs for the current branch state of ATTPCROOT.
 
 - fitting status: [development/fitting-status.md](development/fitting-status.md)
 - MC truth design (under discussion): [development/mc-truth.md](development/mc-truth.md)
+- MC fitter threading (bugs and bottlenecks): [development/mc-fitter-threading.md](development/mc-fitter-threading.md)
 - units and conventions: [development/units-and-conventions.md](development/units-and-conventions.md)
 
 ## Scope Notes
