@@ -5,13 +5,17 @@
  *
  * With no file every Get() returns the default passed to it, so the macros still run when called
  * with no arguments. Finish() records the settings in the output file (TNamed "RunConfig") and next
- * to it (<output>.cfg). fission.py reads the .cfg to decide whether a stage needs to be rerun, so it
- * is only written after the stage finished.
+ * to it (<output>.cfg). The TNamed holds every setting the stage ran with, including macro defaults.
+ * The .cfg is a copy of the config file (or the same record for runs without one). fission.py
+ * compares it with what it would pass now to decide whether a stage needs to be rerun, so it is only
+ * written after the stage finished.
  *
  * Paths come from the environment:
  *   FISSION_DATA     directory for all run files (default ./data)
  *   TPC_SHARED_INFO  directory holding eLoss/, respAvg.root and e12014_zap.csv
  */
+#include "AtCSVReader.h"
+
 #include <FairRootManager.h>
 
 #include <TFile.h>
@@ -19,6 +23,7 @@
 #include <TString.h>
 #include <TSystem.h>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -30,8 +35,8 @@
 
 class RunConfig {
    std::map<std::string, std::string> fValues; // From the config file
-   std::map<std::string, std::string> fUsed;   // What the macro asked for (recorded for manual runs)
-   std::string fText;                          // Config file contents, recorded verbatim
+   std::map<std::string, std::string> fUsed;   // What the macro asked for, including defaults
+   std::string fText;                          // Config file contents, copied to the .cfg
 
    static std::string Trim(const std::string &s)
    {
@@ -50,8 +55,23 @@ public:
          throw std::runtime_error(std::string("Cannot open config file ") + path.Data());
       std::stringstream ss;
       ss << file.rdbuf();
-      fText = ss.str();
+      Parse(ss.str());
+   }
 
+   /// The settings recorded in a stage's output file by Finish(). Empty if the file has none.
+   static RunConfig FromOutput(const TString &rootFile)
+   {
+      RunConfig cfg;
+      std::unique_ptr<TFile> file(TFile::Open(rootFile));
+      auto record = file ? file->Get<TNamed>("RunConfig") : nullptr;
+      if (record)
+         cfg.Parse(record->GetTitle());
+      return cfg;
+   }
+
+   void Parse(const std::string &text)
+   {
+      fText = text;
       std::istringstream lines(fText);
       std::string line;
       while (std::getline(lines, line)) {
@@ -61,6 +81,8 @@ public:
          fValues[Trim(line.substr(0, eq))] = Trim(line.substr(eq + 1));
       }
    }
+
+   bool Empty() const { return fValues.empty(); }
 
    std::string GetStr(const std::string &key, const std::string &def)
    {
@@ -100,34 +122,74 @@ public:
       return GetStr(key, (DataDir() + "/manual." + stage + ".root").Data());
    }
 
+   /**
+    * Throw if the config file has a setting the macro never read, which is usually a typo. Settings
+    * starting with one of `ignored` are allowed: each stage receives every upstream stage's settings
+    * (e.g. the fit stage is passed all sim.* keys). Call after the last Get().
+    */
+   void CheckUnused(const std::vector<std::string> &ignored = {}) const
+   {
+      std::string unused;
+      for (auto &entry : fValues) {
+         auto &key = entry.first;
+         bool isIgnored =
+            std::any_of(ignored.begin(), ignored.end(), [&key](const std::string &p) { return key.rfind(p, 0) == 0; });
+         if (!fUsed.count(key) && !isIgnored)
+            unused += " " + key;
+      }
+      if (!unused.empty())
+         throw std::runtime_error("Settings never read by this stage (typo?):" + unused);
+   }
+
    /// Call after fRun->Run(). Closes the output file, then records the settings in and next to it.
    void Finish(const TString &outFile)
    {
-      std::string text = fText;
-      if (text.empty())
-         for (auto &[key, val] : fUsed)
-            text += key + " = " + val + "\n";
+      // Everything passed in (upstream settings describe the input), then the defaults the macro used
+      std::string record;
+      for (auto &[key, val] : fValues)
+         record += key + " = " + val + "\n";
+      std::string defaults;
+      for (auto &[key, val] : fUsed)
+         if (!fValues.count(key))
+            defaults += key + " = " + val + "\n";
+      if (!defaults.empty())
+         record += "# Macro defaults\n" + defaults;
 
       FairRootManager::Instance()->CloseSink();
       TFile file(outFile, "UPDATE");
-      TNamed("RunConfig", text.c_str()).Write("RunConfig", TObject::kOverwrite);
+      TNamed("RunConfig", record.c_str()).Write("RunConfig", TObject::kOverwrite);
       file.Close();
 
       TString cfgFile = outFile;
       cfgFile.ReplaceAll(".root", ".cfg");
-      std::ofstream(cfgFile.Data()) << text;
+      std::ofstream(cfgFile.Data()) << (fText.empty() ? record : fText);
    }
 };
 
 /**** Settings shared by the sim and fit stages, so the two can't disagree ****/
 
-/// Fission-fragment species [Z, A] that can be simulated or fit. A follows Z/Zcn of the compound nucleus.
+/// [Z, A] of the compound nucleus that fissions.
+std::pair<int, int> CompoundNucleus(RunConfig &cfg)
+{
+   return {cfg.GetInt("ions.zcn", 85), cfg.GetInt("ions.acn", 204)};
+}
+
+/**
+ * Fission-fragment species [Z, A] that can be simulated or fit. A follows Z/Zcn of the compound nucleus.
+ * Both fragments of a split need a table, so the partner Zcn - Z of every Z must be in the range too,
+ * which holds only if zmin + zmax = Zcn.
+ */
 std::vector<std::pair<int, int>> IonList(RunConfig &cfg)
 {
-   int Zcn = cfg.GetInt("ions.zcn", 85);
-   int Acn = cfg.GetInt("ions.acn", 204);
+   auto [Zcn, Acn] = CompoundNucleus(cfg);
+   int zMin = cfg.GetInt("ions.zmin", 26);
+   int zMax = cfg.GetInt("ions.zmax", 59);
+   if (zMin + zMax != Zcn || zMin > zMax)
+      throw std::invalid_argument("ions.zmin (" + std::to_string(zMin) + ") + ions.zmax (" + std::to_string(zMax) +
+                                  ") must equal ions.zcn (" + std::to_string(Zcn) +
+                                  ") so both fragments of every split have a table");
    std::vector<std::pair<int, int>> ions;
-   for (int Z = cfg.GetInt("ions.zmin", 26); Z <= cfg.GetInt("ions.zmax", 59); Z++)
+   for (int Z = zMin; Z <= zMax; Z++)
       ions.emplace_back(Z, std::round((double)Z / Zcn * Acn));
    return ions;
 }
@@ -144,6 +206,41 @@ std::shared_ptr<AtTools::AtELossTable> LoadELoss(const std::string &type, int Z,
    else
       throw std::invalid_argument("Unknown energy-loss table type " + type + " (use LISE or SRIM)");
    return eloss;
+}
+
+/**
+ * Mark the pads in TPC_SHARED_INFO/e12014_zap.csv low-gain. Digi turns them down by digi.lowGain, and
+ * the fit's charge objective skips them (as it does on real data), so both stages must use the same list.
+ */
+void InhibitZapPads(AtMap &map)
+{
+   auto path = RunConfig::SharedInfo() + "/e12014_zap.csv";
+   std::ifstream file(path.Data());
+   if (!file)
+      throw std::runtime_error(std::string("Cannot open smart zap file ") + path.Data());
+
+   // Some copies of the file end lines with a bare \r, which getline would read as one line
+   std::stringstream ss;
+   ss << file.rdbuf();
+   TString text = ss.str();
+   text.ReplaceAll("\r\n", "\n").ReplaceAll("\r", "\n");
+   std::istringstream lines(text.Data());
+
+   // Skip the two header lines
+   std::string temp;
+   std::getline(lines, temp);
+   std::getline(lines, temp);
+
+   int nPads = 0;
+   for (auto &row : CSVRange<int>(lines)) {
+      if (row.size() < 5)
+         continue; // Blank line
+      map.InhibitPad(row[4], AtMap::InhibitType::kLowGain);
+      ++nPads;
+   }
+   if (nPads == 0)
+      throw std::runtime_error(std::string("No pads in smart zap file ") + path.Data());
+   std::cout << "Marked " << nPads << " pads low-gain from " << path << std::endl;
 }
 
 #endif

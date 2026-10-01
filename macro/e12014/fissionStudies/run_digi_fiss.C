@@ -54,19 +54,7 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    mapping->ParseXMLMap(mapParFile.Data());
    mapping->GeneratePadPlane();
 
-   std::ifstream file(sharedInfoDir + "/e12014_zap.csv");
-   if (!file.is_open())
-      LOG(error) << "Failed to open smart zap file";
-
-   // Clear out the header
-   std::string temp;
-   std::getline(file, temp);
-   std::getline(file, temp);
-
-   for (auto &row : CSVRange<int>(file)) {
-      LOG(debug) << "Inhibiting " << row[4];
-      mapping->InhibitPad(row[4], AtMap::InhibitType::kLowGain);
-   }
+   InhibitZapPads(*mapping); // Same pads the fit skips
 
    // __ AT digi tasks___________________________________
    // AtClusterizeTask *clusterizer = new AtClusterizeTask(std::make_shared<AtClusterize>());
@@ -152,6 +140,7 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    fRun->AddTask(infoTask);    //
 
    Response::Init(sharedInfoDir);
+   cfg.CheckUnused({"sim.", "ions.", "events"}); // Passed to every stage but not used here
    fRun->Init();
 
    timer.Start();

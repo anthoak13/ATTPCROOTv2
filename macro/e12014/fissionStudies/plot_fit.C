@@ -104,6 +104,8 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    zHistSim->Reset();   // Simulated Z of FF.
    zHistDiff->Reset();  // Difference Z Sim and Exp
    while (reader.Next() && reader.GetCurrentEntry() < 10000) {
+      if (resultArray->GetEntriesFast() == 0)
+         continue; // Event the fitter skipped (no good pattern)
 
       if (true || reader.GetCurrentEntry() == 17) {
 
@@ -201,13 +203,52 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    }
 }
 
-/// Path pattern for every fit file of a run (one file, or one per chunk).
-TString FitFiles(TString study, TString run)
+/// True if name is a fit file of study-run: <study>-<run>.fit.root or <study>-<run>.fit.cNN.root
+bool IsFitFile(TString name, TString study, TString run)
 {
-   return RunConfig::DataDir() + "/" + study + "-" + run + ".fit*.root";
+   TString prefix = study + "-" + run + ".fit.";
+   if (!name.BeginsWith(prefix))
+      return false;
+   TString rest = name(prefix.Length(), name.Length());
+   return rest == "root" ||
+          (rest.Length() == 8 && rest.EndsWith(".root") && rest[0] == 'c' && isdigit(rest[1]) && isdigit(rest[2]));
 }
 
-/// Fill the plots from fit files. Each entry may be a file name or a wildcard pattern (see FitFiles).
+/**
+ * True if the stage that wrote path finished: its settings are recorded in the file and next to it
+ * (<output>.cfg). A failed or still running stage hasn't recorded them yet, and fission.py removes the
+ * .cfg when it starts or queues a stage, so a file about to be rewritten doesn't count either.
+ */
+bool IsFinished(TString path)
+{
+   TString cfgFile = path(0, path.Length() - 5) + ".cfg"; // Strip .root
+   return !gSystem->AccessPathName(cfgFile) && !RunConfig::FromOutput(path).Empty();
+}
+
+/// Finished fit files of a run (one file, or one per chunk). Unfinished ones are skipped with a warning.
+std::vector<TString> FitFiles(TString study, TString run)
+{
+   std::vector<TString> files;
+   auto dataDir = RunConfig::DataDir();
+   auto dir = gSystem->OpenDirectory(dataDir);
+   while (auto entry = gSystem->GetDirEntry(dir)) {
+      TString name = entry;
+      if (!IsFitFile(name, study, run))
+         continue;
+      if (IsFinished(dataDir + "/" + name))
+         files.push_back(dataDir + "/" + name);
+      else
+         Warning("FitFiles", "Skipping %s: the fit failed, is running or is queued", name.Data());
+   }
+   gSystem->FreeDirectory(dir);
+   std::sort(files.begin(), files.end());
+   if (files.empty())
+      Error("FitFiles", "No finished fit files for %s-%s in %s", study.Data(), run.Data(), dataDir.Data());
+   return files;
+}
+
+/// Fill the plots from fit files. Each entry may be a file name or a wildcard pattern. Unlike
+/// plot_fit(study, run), the files are not checked (see IsFinished).
 void plot_fit(std::vector<TString> files, bool draw = true)
 {
    delete tree;
@@ -216,12 +257,19 @@ void plot_fit(std::vector<TString> files, bool draw = true)
       if (tree->Add(file) == 0)
          Error("plot_fit", "No files match %s", file.Data());
 
-   int zMin = 26;
-   int zMax = 59;
-   int aMin = zMin * (float)204 / 85;
-   int aMax = zMax * (float)204 / 85;
+   // Ranges follow the ions and compound nucleus the first file was fit with
+   auto chained = tree->GetListOfFiles();
+   auto cfg = chained->GetEntries() > 0 ? RunConfig::FromOutput(chained->At(0)->GetTitle()) : RunConfig();
+   if (cfg.Empty())
+      Warning("plot_fit", "No recorded settings, using the default ion range");
+   auto Zcn = CompoundNucleus(cfg).first;
+   auto ions = IonList(cfg);
+   int zMin = ions.front().first;
+   int zMax = ions.back().first;
+   int aMin = ions.front().second;
+   int aMax = ions.back().second;
    zHist = new TH1F("hZ", "Z", zMax - zMin + 1, zMin - 0.5, zMax + 0.5);
-   hMR = new TH1F("hMR", "M_R", zMax - zMin + 1, (zMin - 0.5) / 85, (zMax + 0.5) / 85);
+   hMR = new TH1F("hMR", "M_R", zMax - zMin + 1, (zMin - 0.5) / Zcn, (zMax + 0.5) / Zcn);
    aHist = new TH1F("hA", "A", zMax - zMin + 1, aMin, aMax);
    hBeam = new TH2F("hBeam", "Beam energy", 100, 0, 1000, 100, 0, ex(4500));
    hAmp = new TH1F("hAmp", "Charge Scaling Factor", 100, 0, 1);
@@ -230,7 +278,7 @@ void plot_fit(std::vector<TString> files, bool draw = true)
    hObjQ = new TH1F("hObjQ", "Objective Function Charge", 100, 0, maxObjQ);
 
    hZvsObj = new TH2F("hZvsObj", "dZ vs Chi2", 21, -10 - .5, 10.5, 100, 0, maxObjQ);
-   hZvsAmp = new TH2F("hZvsAmp", "dZ vs Amp", 20 + 1, -10, 10, 50, 0, 1);
+   hZvsAmp = new TH2F("hZvsAmp", "dZ vs Amp", 21, -10.5, 10.5, 50, 0, 1);
    hAmpvsPosObj = new TH2F("hAmpvsPosObj", "Amp vs Pos Objective", 50, 0, 1, 50, 0, 10);
    hAmpvsObj = new TH2F("hAmpvsObj", "Amp vs Objective", 25, 0.3, .8, 25, 0, maxObjQ / 2.);
    hAmpvsLoc = new TH2F("hAmpvsLoc", "Amp vs Location", 50, 0, 1000, 50, 0, 1);
@@ -238,7 +286,7 @@ void plot_fit(std::vector<TString> files, bool draw = true)
    zHistSim = new TH1F("hZSim", "Z", zMax - zMin + 1, zMin - 0.5, zMax + 0.5);
    hZvsObjSim = new TH2F("hZvsObjSim", "dZ vs Chi2", 21, -10 - .5, 10.5, 100, 0, maxObjQ);
 
-   zHistDiff = new TH1F("hzdiff", "Z Difference", 21, -10, 10);
+   zHistDiff = new TH1F("hzdiff", "Z Difference", 21, -10.5, 10.5); // Integer dZ at bin centres
 
    FillPlots();
    if (draw)
@@ -248,7 +296,7 @@ void plot_fit(std::vector<TString> files, bool draw = true)
 /// Plot one run of a study, e.g. plot_fit("angle_scan", "90deg")
 void plot_fit(TString study, TString run, bool draw = true)
 {
-   plot_fit(std::vector<TString>{FitFiles(study, run)}, draw);
+   plot_fit(FitFiles(study, run), draw);
 }
 
 // The following are just a bunch of fitting functions for different histograms. I just left them in here as examples.
