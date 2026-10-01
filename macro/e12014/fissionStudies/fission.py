@@ -4,7 +4,9 @@
 A study file (studies/*.ini) holds shared [defaults] and one [run <name>] section per run. Keys are
 prefixed by the stage that uses them (sim., digi., fit.). ions.*, events and seed are used by every
 stage. chunks splits a run's events into independent pieces that can run in parallel. A run with
-`upstream = <other run>` reuses that run's sim and digi output and only refits.
+`upstream = <other run>` reuses that run's sim and digi output and only refits. The upstream may be in
+another study (`upstream = <study>:<run>`) or be existing digi files (`upstream = <path or glob>`,
+relative to FISSION_DATA). Those are never run or removed from here: they must already be up to date.
 
 Each stage writes <data>/<study>-<run>.<stage>[.cNN].root and, when it finishes, a .cfg file with the
 settings it used. A stage is rerun if its output is missing, its settings (or any upstream settings)
@@ -31,6 +33,7 @@ import subprocess
 import sys
 import time
 import zlib
+from collections import Counter, namedtuple
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -46,6 +49,11 @@ SLURM_DEFAULTS = {
     "fit": {"time": "3-00:00:00", "mem": "8G"},
 }
 DATA = os.path.abspath(os.environ.get("FISSION_DATA", os.path.join(HERE, "data")))
+RUN_NAME = r"[A-Za-z0-9_-]+"
+STUDY_NAME = r"[A-Za-z0-9_]+"  # No - in study names, so <study>-<run> splits only one way
+# Stage outputs are <study>-<run>.<stage>[.cNN] plus one of OUTPUT_EXTS (also the SLURM job name)
+JOB_NAME = re.compile(rf"(?P<study_run>{STUDY_NAME}-{RUN_NAME})\.(?:{'|'.join(STAGES)})(?:\.c\d\d)?")
+OUTPUT_EXTS = (".root", ".cfg", ".cfg.in", ".log")
 
 
 def used_by(key, stage):
@@ -62,9 +70,34 @@ def is_slurm_key(key):
     return len(parts) == 3 and parts[0] == "slurm" and parts[1] in STAGES and parts[2] in ("time", "mem")
 
 
-def chunk_suffix(chunk, nchunks):
-    """File name suffix of one chunk: none for an unchunked run, else .cNN."""
-    return f".c{chunk:02d}" if nchunks > 1 else ""
+def fit_default_key(key):
+    """True for the [defaults] settings that reach a run fitting another study's or a file's digi."""
+    return key.startswith("fit.") or is_slurm_key(key)
+
+
+def is_upstream_file(upstream):
+    """True if upstream names digi files (a path or glob) rather than a run."""
+    return "/" in upstream or upstream.endswith(".root")
+
+
+def derived_seed(name):
+    return str(zlib.crc32(name.encode()) & 0x7FFFFFFF or 1)
+
+
+def short_path(path):
+    """path relative to the current directory if it is below it, for messages to copy and paste."""
+    rel = os.path.relpath(path)
+    return path if rel.startswith("..") else rel if os.sep in rel else os.path.join(".", rel)
+
+
+def stem(study, run, stage, chunk, nchunks):
+    """Path of a stage output without extension. Unchunked runs have no .cNN."""
+    return os.path.join(DATA, f"{study}-{run}.{stage}" + (f".c{chunk:02d}" if nchunks > 1 else ""))
+
+
+def sidecar(output):
+    """The .cfg a stage writes next to its .root output when it finishes."""
+    return output[: -len(".root")] + ".cfg"
 
 
 def read_cfg(path):
@@ -78,8 +111,27 @@ def read_cfg(path):
     return values
 
 
+Resolved = namedtuple("Resolved", "settings origins owner")
+_cache = {}
+
+
+def load_study(path):
+    """The Study of an .ini file, parsed once, so runs of one study compare as the same owner."""
+    path = os.path.abspath(path)
+    if path not in _cache:
+        _cache[path] = Study(path)
+    return _cache[path]
+
+
+def load_digi_files(pattern):
+    if ("files", pattern) not in _cache:
+        _cache[("files", pattern)] = DigiFiles(pattern)
+    return _cache[("files", pattern)]
+
+
 class Study:
     def __init__(self, path):
+        self.path = path
         self.name = os.path.splitext(os.path.basename(path))[0]
         parser = configparser.ConfigParser(inline_comment_prefixes=(";", "#"))
         parser.optionxform = str  # Keep key case (sim.massDev)
@@ -89,11 +141,10 @@ class Study:
         if not self.sections:
             sys.exit(f"{path}: no [run <name>] sections")
         # Names end up in file names (<study>-<run>.<stage>), SLURM job names and ROOT command lines.
-        # No - in study names, so <study>-<run> splits only one way.
-        if not re.fullmatch(r"[A-Za-z0-9_]+", self.name):
+        if not re.fullmatch(STUDY_NAME, self.name):
             sys.exit(f"{path}: study name {self.name!r} may only use letters, digits and _")
         for run in self.sections:
-            if not re.fullmatch(r"[A-Za-z0-9_-]+", run):
+            if not re.fullmatch(RUN_NAME, run):
                 sys.exit(f"{path}: run name {run!r} may only use letters, digits, _ and -")
         for section, values in [("defaults", self.defaults)] + [(f"run {r}", v) for r, v in self.sections.items()]:
             for key in values:
@@ -101,73 +152,144 @@ class Study:
                         or (key == "upstream" and section != "defaults")):
                     sys.exit(f"{path}: [{section}] has unknown setting {key} (use a {', '.join(STAGES)} or ions. prefix,"
                              f" or slurm.<stage>.time/mem)")
+            upstream = values.get("upstream")
+            if upstream is not None and not (re.fullmatch(RUN_NAME, upstream) or is_upstream_file(upstream)
+                                             or re.fullmatch(f"{STUDY_NAME}:{RUN_NAME}", upstream)):
+                sys.exit(f"{path}: [{section}] upstream = {upstream} is not a run, <study>:<run>, or digi file path")
 
-    def settings(self, run):
-        """Resolved settings for a run, and the run that owns its sim and digi output."""
+    def owner_of(self, upstream):
+        """The owner of the sim and digi output an upstream setting names: (Study, run) for <run> or
+        <study>:<run>, or DigiFiles for a path or glob."""
+        if is_upstream_file(upstream):
+            return load_digi_files(upstream)
+        if ":" not in upstream:
+            return self, upstream
+        name, run = upstream.split(":")
+        if name == self.name:
+            sys.exit(f"{self.path}: upstream = {upstream} is in this study, write upstream = {run}")
+        path = os.path.join(os.path.dirname(self.path), name + ".ini")
+        if not os.path.exists(path):
+            sys.exit(f"{self.path}: upstream = {upstream}, but there is no {path}")
+        study = load_study(path)
+        if run not in study.sections:
+            sys.exit(f"{self.path}: upstream = {upstream}, but {path} has no [run {run}]")
+        return study, run
+
+    def resolve(self, run):
+        """A run's settings, where each comes from (for --show), and the owner of its sim and digi
+        output: (Study, run), which may be another study, or DigiFiles for a run that fits files."""
         if run not in self.sections:
             sys.exit(f"{self.name}: no run named {run}")
         section = dict(self.sections[run])
         upstream = section.pop("upstream", None)
-        settings = {**self.defaults, **section}
-        owner = run
-        if upstream:
-            up_settings, owner = self.settings(upstream)
-            settings = {**up_settings, **section}
-            for key in settings:
-                if not (used_by(key, "digi") or key == "chunks"):
-                    continue
-                if settings[key] != up_settings.get(key):
-                    sys.exit(f"{self.name}: run {run} changes {key} but reuses sim/digi of {upstream}")
-        settings.setdefault("seed", str(zlib.crc32(f"{self.name}-{owner}".encode()) & 0x7FFFFFFF or 1))
-        settings.setdefault("events", "500")
-        return settings, owner
+        owner = self.owner_of(upstream) if upstream else (self, run)
+        files = isinstance(owner, DigiFiles)
+        settings, origins = {}, {}
 
-    def origin(self, run, key):
-        """Where a run's resolved setting comes from."""
-        section = self.sections[run]
-        if key in section:
-            return "run"
-        if "upstream" in section:
-            return f"{section['upstream']}: {self.origin(section['upstream'], key)}"
-        if key in self.defaults:
-            return "defaults"
-        return "from study and run name" if key == "seed" else "driver default"
+        def add(values, origin):
+            """Add values over the settings so far. origin labels them all, or is a label per key."""
+            settings.update(values)
+            origins.update(origin if isinstance(origin, dict) else dict.fromkeys(values, origin))
+
+        if not files:  # Files without an event count: each chunk takes its file's
+            add({"events": "500"}, "driver default")
+        add({"seed": derived_seed(f"{self.name}-{run}")}, "from study and run name")
+        if not upstream:
+            add(self.defaults, "defaults")
+        else:
+            if files:
+                up_settings, up_origins = owner.settings, "digi files"
+            else:
+                up = owner[0].resolve(owner[1])
+                up_settings, up_origins = up.settings, {k: f"{upstream}: {o}" for k, o in up.origins.items()}
+            add(up_settings, up_origins)
+            for key, val in section.items():
+                if (used_by(key, "digi") or key == "chunks") and val != up_settings.get(key):
+                    sys.exit(f"{self.name}: run {run} changes {key} but reuses sim/digi of {upstream}")
+            if files or owner[0] is not self:
+                # Another study's or a file's run starts from its own fit settings, then this study's fit defaults
+                add({k: v for k, v in self.defaults.items() if fit_default_key(k)}, "defaults")
+        add(section, "run")
+        return Resolved(settings, origins, owner)
+
+    def owner_name(self, owner):
+        """How this study refers to a sim/digi owner: <run>, <study>:<run>, or the file pattern."""
+        if isinstance(owner, DigiFiles):
+            return owner.pattern
+        study, run = owner
+        return run if study is self else f"{study.name}:{run}"
+
+
+class DigiFiles:
+    """Existing digi files a run fits (upstream = <path or glob>, relative to FISSION_DATA), one per
+    chunk, with the settings recorded in their .cfg. The driver never reruns or removes them."""
+
+    def __init__(self, pattern):
+        self.pattern = pattern
+        self.paths = sorted(glob.glob(os.path.join(DATA, pattern)))  # An absolute pattern ignores DATA
+        if not self.paths:
+            sys.exit(f"upstream = {pattern}: no files match in {DATA}")
+        self.chunk_settings = []
+        for path in self.paths:
+            if not (path.endswith(".root") and os.path.exists(sidecar(path))):
+                sys.exit(f"upstream = {pattern}: {path} has no .cfg next to it (unfinished, or not a stage output)")
+            cfg = read_cfg(sidecar(path))
+            self.chunk_settings.append({k: v for k, v in cfg.items() if k not in ("input", "output")})
+        # Chunks differ only in their events and seed
+        common = [{k: v for k, v in s.items() if k not in ("events", "seed")} for s in self.chunk_settings]
+        for path, values in zip(self.paths[1:], common[1:]):
+            if values != common[0]:
+                sys.exit(f"upstream = {pattern}: {os.path.basename(path)} was made with different settings"
+                         f" than {os.path.basename(self.paths[0])}")
+        self.settings = dict(common[0], chunks=str(len(self.paths)))
+        if all("events" in s for s in self.chunk_settings):
+            self.settings["events"] = str(sum(int(s["events"]) for s in self.chunk_settings))
+        if "seed" in self.chunk_settings[0]:
+            self.settings["seed"] = self.chunk_settings[0]["seed"]
 
 
 class Job:
-    """One stage of one chunk of one run."""
+    """One stage of one chunk of one run.
 
-    def __init__(self, study, run, stage, chunk, settings, input_run):
+    input is the previous stage's output (None for sim). chunk_cfg, for a fit of existing digi files,
+    is that chunk's file's settings: its events and seed are used instead of a share of the run's."""
+
+    def __init__(self, study, run, stage, chunk, settings, input=None, chunk_cfg=None):
         self.study, self.run, self.stage, self.chunk = study, run, stage, chunk
         self.nchunks = nchunks = int(settings.get("chunks", 1))
-        suffix = chunk_suffix(chunk, nchunks)
-        self.base = os.path.join(DATA, f"{study}-{run}.{stage}{suffix}")
+        self.base = stem(study, run, stage, chunk, nchunks)
         self.output = self.base + ".root"
+        self.sidecar = sidecar(self.output)
+        self.log = self.base + ".log"
         self.deps = []
+        self.external = None  # The Study that owns this job, if it isn't the one being run
         self.slurm = {opt: settings.get(f"slurm.{stage}.{opt}", default) for opt, default in SLURM_DEFAULTS[stage].items()}
 
         cfg = {k: v for k, v in settings.items() if used_by(k, stage)}
-        events = int(settings["events"])
-        cfg["events"] = str(events // nchunks + (chunk < events % nchunks))
-        cfg["seed"] = str(int(settings["seed"]) + chunk)
+        if chunk_cfg is None:
+            events = int(settings["events"])
+            cfg["events"] = str(events // nchunks + (chunk < events % nchunks))
+            cfg["seed"] = str(int(settings["seed"]) + chunk)
+        else:
+            cfg.pop("events", None)
+            cfg.update({k: chunk_cfg[k] for k in ("events", "seed") if k in chunk_cfg})
+            cfg.setdefault("seed", str(int(settings["seed"]) + chunk))
         cfg["output"] = self.output
-        if stage != "sim":
-            prev = STAGES[STAGES.index(stage) - 1]
-            cfg["input"] = os.path.join(DATA, f"{study}-{input_run}.{prev}{suffix}.root")
+        if input:
+            cfg["input"] = input
         self.cfg = cfg
 
     @property
     def key(self):
-        return (self.run, self.stage, self.chunk)
+        return (self.study, self.run, self.stage, self.chunk)
 
     def __str__(self):
         return os.path.basename(self.base)
 
     def stale_reason(self):
-        sidecar = self.base + ".cfg"
-        if not (os.path.exists(self.output) and os.path.exists(sidecar)):
+        if not (os.path.exists(self.output) and os.path.exists(self.sidecar)):
             return "missing"
-        done = read_cfg(sidecar)
+        done = read_cfg(self.sidecar)
         changed = [f"{k} {done.get(k, '-')}->{self.cfg.get(k, '-')}"
                    for k in sorted(set(done) | set(self.cfg)) if done.get(k) != self.cfg.get(k)]
         if changed:
@@ -187,94 +309,111 @@ class Job:
 
     def run_local(self):
         """Run the macro. Success means the macro wrote its .cfg (RunConfig::Finish)."""
-        sidecar = self.base + ".cfg"
-        if os.path.exists(sidecar):
-            os.remove(sidecar)
+        if os.path.exists(self.sidecar):
+            os.remove(self.sidecar)
         start = time.time()
-        with open(self.base + ".log", "w") as log:
+        with open(self.log, "w") as log:
             subprocess.run(self.command(), cwd=HERE, stdout=log, stderr=subprocess.STDOUT)
-        ok = os.path.exists(sidecar)
+        ok = os.path.exists(self.sidecar)
         print(f"{'done' if ok else 'FAILED':6} {self} ({time.time() - start:.0f} s)"
-              + ("" if ok else f", see {self.base}.log"), flush=True)
+              + ("" if ok else f", see {self.log}"), flush=True)
         return ok
 
 
 def plan(study, runs, last_stage, force):
-    """The jobs needed to bring every run up to last_stage, in dependency order."""
-    return [j for j in plan_all(study, runs, last_stage, force).values() if j.reason]
+    """The jobs needed to bring every run up to last_stage, in dependency order, and the jobs of other
+    studies that are out of date and must be run there first."""
+    jobs = [j for j in plan_all(study, runs, last_stage, force).values() if j.reason]
+    return [j for j in jobs if not j.external], [j for j in jobs if j.external]
 
 
 def plan_all(study, runs, last_stage, force):
-    """Every job of the runs up to last_stage, keyed (run, stage, chunk) so shared upstream appears once.
-    job.reason says why a job must run, or is None if it is up to date."""
+    """Every job of the runs up to last_stage, keyed (study, run, stage, chunk) so shared upstream appears
+    once. job.reason says why a job must run, or is None if it is up to date. Sim and digi jobs of
+    another study are included with job.external set. Digi files have no jobs: the fit reads them."""
     jobs = {}
     for run in runs:
-        settings, owner = study.settings(run)
+        settings, _, owner = study.resolve(run)
+        files = owner if isinstance(owner, DigiFiles) else None
         for chunk in range(int(settings.get("chunks", 1))):
             prev = None
             for stage in STAGES[: STAGES.index(last_stage) + 1]:
-                job_run = run if stage == "fit" else owner
-                key = (job_run, stage, chunk)
+                if stage == "fit":
+                    job_study, job_run = study, run
+                elif files:
+                    continue
+                else:
+                    job_study, job_run = owner
+                key = (job_study.name, job_run, stage, chunk)
                 if key in jobs:  # sim/digi shared with an upstream run, already planned
                     prev = key
                     continue
-                job = jobs[key] = Job(study.name, job_run, stage, chunk, settings, owner)
+                input = jobs[prev].output if prev else files.paths[chunk] if files and stage == "fit" else None
+                job = jobs[key] = Job(job_study.name, job_run, stage, chunk, settings, input,
+                                      files.chunk_settings[chunk] if files else None)
+                if job_study is not study:
+                    job.external = job_study
                 reason = job.stale_reason()
-                if force and STAGES.index(stage) >= STAGES.index(force):
+                if force and not job.external and STAGES.index(stage) >= STAGES.index(force):
                     reason = "forced"
                 if prev is not None and jobs[prev].reason:
                     reason = reason or "upstream rerun"
                     job.deps.append(jobs[prev])
                 job.reason = reason
-                prev = job.key
+                prev = key
     return jobs
 
 
 def status(study, runs):
     """Print a table of each run's stages: done, or how many chunks are missing, stale or in SLURM."""
-    jobs = plan_all(study, runs, STAGES[-1], None)
     queued = slurm_jobs()
     rows = []
     for run in runs:
-        settings, owner = study.settings(run)
+        owner = study.resolve(run).owner
+        stage_jobs = {stage: [] for stage in STAGES}  # Sim and digi stay empty for a fit of digi files
+        for job in plan_all(study, [run], STAGES[-1], None).values():
+            stage_jobs[job.stage].append(job)
         cells = []
-        for stage in STAGES:
-            job_run = run if stage == "fit" else owner
-            stage_jobs = [jobs[(job_run, stage, c)] for c in range(int(settings.get("chunks", 1)))]
-            counts = {}
-            for job in stage_jobs:
-                state = "queued" if str(job) in queued else (job.reason or "done").split(":")[0]
-                counts[state] = counts.get(state, 0) + 1
-            if counts == {"done": len(stage_jobs)}:
+        for jobs in stage_jobs.values():
+            counts = Counter("queued" if str(job) in queued else (job.reason or "done").split(":")[0] for job in jobs)
+            if not jobs:
+                cells.append("-")
+            elif counts == {"done": len(jobs)}:
                 cells.append("done")
-            elif len(stage_jobs) == 1:
+            elif len(jobs) == 1:
                 cells.append(next(iter(counts)))
             else:
                 cells.append(", ".join(f"{n} {state}" for state, n in sorted(counts.items())))
-        rows.append([run + (f" (from {owner})" if owner != run else "")] + cells)
+        rows.append([run + (f" (from {study.owner_name(owner)})" if owner != (study, run) else "")] + cells)
     header = ["run"] + STAGES
     widths = [max(len(r[i]) for r in rows + [header]) for i in range(len(header))]
     for row in [header] + rows:
         print("  ".join(f"{cell:{w}}" for cell, w in zip(row, widths)).rstrip())
-    done = sum(all(c == "done" for c in row[1:]) for row in rows)
+    done = sum(all(c in ("done", "-") for c in row[1:]) for row in rows)
     print(f"\n{done} of {len(rows)} runs finished." + (" --dry-run shows why the rest would run." if done < len(rows) else ""))
 
 
 def show(study, runs, last_stage):
     """Print each run's resolved settings, with where each comes from, and what each stage is passed."""
     for run in runs:
-        settings, owner = study.settings(run)
-        print(f"[run {run}]" + (f"  (sim and digi from {owner})" if owner != run else ""))
+        settings, origins, owner = study.resolve(run)
+        if isinstance(owner, DigiFiles):
+            print(f"[run {run}]  (fits {len(owner.paths)} digi files matching {owner.pattern})")
+        else:
+            print(f"[run {run}]" + (f"  (sim and digi from {study.owner_name(owner)})" if owner != (study, run) else ""))
         width = max(len(f"{k} = {v}") for k, v in settings.items())
         for key in sorted(settings):
-            print(f"  {f'{key} = {settings[key]}':{width}}  ; {study.origin(run, key)}")
+            print(f"  {f'{key} = {settings[key]}':{width}}  ; {origins[key]}")
         nchunks = int(settings.get("chunks", 1))
-        for stage in STAGES[: STAGES.index(last_stage) + 1]:
-            job = Job(study.name, run if stage == "fit" else owner, stage, 0, settings, owner)
-            print(f"  {os.path.basename(job.base)}.cfg.in" + (f" (chunk 0 of {nchunks})" if nchunks > 1 else ""))
+        for job in plan_all(study, [run], last_stage, None).values():
+            if job.chunk != 0:
+                continue
+            print(f"  {os.path.basename(job.base)}.cfg.in" + (f" (chunk 0 of {nchunks})" if nchunks > 1 else "")
+                  + (f" (owned by {job.external.name}, not run from here)" if job.external else ""))
             for key, val in job.cfg.items():
                 print(f"    {key} = {val}")
-            print(f"    (--slurm: --time={job.slurm['time']} --mem={job.slurm['mem']})")
+            if not job.external:
+                print(f"    (--slurm: --time={job.slurm['time']} --mem={job.slurm['mem']})")
         print()
     print("Settings not passed to a stage use the macro's built-in default.")
 
@@ -282,8 +421,8 @@ def show(study, runs, last_stage):
 def affected_runs(study, todo):
     """Runs whose files the jobs in todo replace: the runs owning the sim/digi output being rerun, and
     every run that refits it."""
-    owners = {study.settings(job.run)[1] for job in todo}
-    return sorted(run for run in study.sections if study.settings(run)[1] in owners)
+    owners = {study.resolve(job.run).owner for job in todo}  # todo holds only this study's jobs
+    return sorted(run for run in study.sections if study.resolve(run).owner in owners)
 
 
 def old_chunking(study, runs):
@@ -293,14 +432,13 @@ def old_chunking(study, runs):
     old digi and fit chunks would otherwise stay behind and be picked up by the plots."""
     old = []
     for run in runs:
-        nchunks = int(study.settings(run)[0].get("chunks", 1))
+        nchunks = int(study.resolve(run).settings.get("chunks", 1))
         for stage in STAGES:
-            prefix = os.path.join(DATA, f"{study.name}-{run}.{stage}")
-            current = {prefix + chunk_suffix(c, nchunks) + ".root" for c in range(nchunks)}
-            for path in sorted(glob.glob(prefix + ".root") + glob.glob(prefix + ".c[0-9][0-9].root")):
-                if path not in current:
-                    old += [path[:-5] + ext for ext in (".root", ".cfg", ".cfg.in", ".log")
-                            if os.path.exists(path[:-5] + ext)]
+            current = {stem(study.name, run, stage, c, nchunks) for c in range(nchunks)}
+            for path in sorted(glob.glob(stem(study.name, run, stage, 0, 1) + "*.root")):
+                base = path[: -len(".root")]
+                if base not in current and JOB_NAME.fullmatch(os.path.basename(base)):
+                    old += [base + ext for ext in OUTPUT_EXTS if os.path.exists(base + ext)]
     return old
 
 
@@ -327,10 +465,8 @@ def run_local(todo, n_jobs):
 
 def job_run_name(name):
     """<study>-<run> of a job name <study>-<run>.<stage>[.cNN], or None if it isn't one."""
-    base, _, last = name.rpartition(".")
-    if re.fullmatch(r"c\d\d", last):
-        base, _, last = base.rpartition(".")
-    return base if base and last in STAGES else None
+    match = JOB_NAME.fullmatch(name)
+    return match and match["study_run"]
 
 
 def slurm_jobs():
@@ -357,18 +493,73 @@ def run_slurm(todo):
     ids = {}
     for job in todo:  # plan() returns jobs in dependency order
         threads = job.cfg.get("fit.threads", FIT_THREADS_DEFAULT) if job.stage == "fit" else "1"
-        cmd = ["sbatch", "--parsable", f"--job-name={job}", f"--output={job.base}.log",
+        cmd = ["sbatch", "--parsable", f"--job-name={job}", f"--output={job.log}",
                f"--cpus-per-task={threads}", f"--time={job.slurm['time']}", f"--mem={job.slurm['mem']}",
                f"--chdir={HERE}"]
         if job.deps:
             cmd.append("--dependency=afterok:" + ":".join(ids[d.key] for d in job.deps))
             cmd.append("--kill-on-invalid-dep=yes")
-        if os.path.exists(job.base + ".cfg"):
-            os.remove(job.base + ".cfg")
-        sidecar = shlex.quote(job.base + ".cfg")
-        cmd.append(f"--wrap=rm -f {sidecar}; {shlex.join(job.command())}; test -f {sidecar}")
+        if os.path.exists(job.sidecar):
+            os.remove(job.sidecar)
+        quoted = shlex.quote(job.sidecar)
+        cmd.append(f"--wrap=rm -f {quoted}; {shlex.join(job.command())}; test -f {quoted}")
         ids[job.key] = subprocess.run(cmd, check=True, capture_output=True, text=True).stdout.strip().split(";")[0]
         print(f"submitted {job} as {ids[job.key]}")
+
+
+def blockers(study, external, affected, queued):
+    """Why the jobs can't run yet, as messages: runs in the way of SLURM jobs, and other studies' stale jobs."""
+    messages = []
+    # Jobs still in SLURM own their files: don't run them again here or delete their outputs. This
+    # includes jobs from any chunk count, whose files may not exist yet.
+    planned = {f"{study.name}-{run}" for run in affected}
+    busy = sorted(name for name in queued if job_run_name(name) in planned)
+    if busy:
+        messages.append("Still queued or running in SLURM (wait, or scancel them): " + ", ".join(busy))
+    if external:
+        # Other studies' files are theirs to run: running them from here would change the inputs of
+        # their own fits behind their back
+        owners = sorted({(job.external.path, job.run) for job in external})
+        messages.append("Bring the sim and digi of other studies up to date first:\n" + "\n".join(
+            f"  {shlex.quote(short_path(os.path.join(HERE, 'fission.py')))} {shlex.quote(short_path(path))} {run}"
+            " --stage digi" for path, run in owners))
+    return messages
+
+
+def print_plan(jobs, old, queued, remove):
+    """Print why each job runs, and the files of an old chunk count that are (or would be) removed."""
+    for job in jobs:
+        print(f"{str(job):40} {job.reason}" + (" (queued in SLURM)" if str(job) in queued else "")
+              + (f" (owned by {job.external.name})" if job.external else ""))
+    for path in old:
+        print(f"{'remove' if remove else 'would remove'} {os.path.basename(path)} (old chunk count)")
+
+
+def update(study, runs, args):
+    """Run, or with --dry-run only list, the jobs that bring the runs up to args.stage."""
+    todo, external = plan(study, runs, args.stage, args.force)
+    if not todo and not external:
+        print("Everything is up to date.")
+        return
+    queued = slurm_jobs()
+    affected = affected_runs(study, todo)
+    old = old_chunking(study, affected)  # Removed so plots don't pick them up
+    messages = blockers(study, external, affected, queued)
+    print_plan(external + todo, old, queued, remove=not (args.dry_run or messages))
+    if args.dry_run:
+        for message in messages:
+            print(message)
+        return
+    if messages:
+        sys.exit("\n".join(messages))
+
+    os.makedirs(DATA, exist_ok=True)
+    for path in old:
+        os.remove(path)
+    if args.slurm:
+        run_slurm(todo)
+    elif not run_local(todo, args.j):
+        sys.exit(1)
 
 
 def main():
@@ -386,43 +577,14 @@ def main():
     parser.add_argument("--slurm", action="store_true", help="submit jobs with sbatch")
     args = parser.parse_intermixed_args()
 
-    study = Study(args.study)
+    study = load_study(args.study)
+    runs = args.runs or list(study.sections)
     if args.show:
-        show(study, args.runs or list(study.sections), args.stage)
-        return
-    if args.status:
-        status(study, args.runs or list(study.sections))
-        return
-    todo = plan(study, args.runs or list(study.sections), args.stage, args.force)
-    if not todo:
-        print("Everything is up to date.")
-        return
-    # Jobs still in SLURM own their files: don't run them again here or delete their outputs. This
-    # includes jobs from any chunk count, whose files may not exist yet.
-    queued = slurm_jobs()
-    affected = affected_runs(study, todo)
-    old = old_chunking(study, affected)  # Removed so plots don't pick them up
-    planned = {f"{study.name}-{run}" for run in affected}
-    busy = sorted(name for name in queued if job_run_name(name) in planned)
-    for job in todo:
-        print(f"{str(job):40} {job.reason}" + (" (queued in SLURM)" if str(job) in queued else ""))
-    for path in old:
-        print(f"{'would remove' if args.dry_run or busy else 'remove'} {os.path.basename(path)} (old chunk count)")
-    if busy:
-        message = "Still queued or running in SLURM (wait, or scancel them): " + ", ".join(busy)
-        if not args.dry_run:
-            sys.exit(message)
-        print(message)
-    if args.dry_run:
-        return
-
-    os.makedirs(DATA, exist_ok=True)
-    for path in old:
-        os.remove(path)
-    if args.slurm:
-        run_slurm(todo)
-    elif not run_local(todo, args.j):
-        sys.exit(1)
+        show(study, runs, args.stage)
+    elif args.status:
+        status(study, runs)
+    else:
+        update(study, runs, args)
 
 
 if __name__ == "__main__":
