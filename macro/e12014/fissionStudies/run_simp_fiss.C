@@ -16,13 +16,15 @@ void run_simp_fiss(TString cfgFile = "")
 
    //************ Things to change (or set in a study file) ************//
    int num_events = cfg.GetInt("events", 500);
-   int Zcn = cfg.GetInt("ions.zcn", 85); // Number of protons in the compound nucleus
+   auto [Zcn, Acn] = CompoundNucleus(cfg); // The nucleus that fissions
    int zToSim = cfg.GetInt("sim.zToSim", 50);
    std::string elossType = cfg.GetStr("sim.eloss", "LISE"); // LISE or SRIM
 
-   fissionSim::beamZ = 83;                     // Number of protons in the beam
-   fissionSim::beamA = 200;                    // Number of nucleons in the beam
-   fissionSim::beamM = 199.9332;               // Mass of the beam in amu
+   fissionSim::beamZ = 83;       // Number of protons in the beam
+   fissionSim::beamA = 200;      // Number of nucleons in the beam
+   fissionSim::beamM = 199.9332; // Mass of the beam in amu
+   fissionSim::cnZ = Zcn;
+   fissionSim::cnA = Acn;
    fissionSim::massFrac = (float)zToSim / Zcn; // Mean of the FF mass distribution (as a fraction of Acn).
    // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
    fissionSim::massDev = cfg.Get("sim.massDev", 0);
@@ -88,6 +90,7 @@ void run_simp_fiss(TString cfgFile = "")
    /**  At this point, the simulation object is fully constructed and ready to be used. **/
    fissionSim::fSimulation = std::move(sim);
    fissionSim::ions = ions;
+   fissionSim::CheckMassFrac();
 
    // Create the task that will actually simulate events
    AtMacroTask *simTask = new AtMacroTask();
@@ -98,6 +101,7 @@ void run_simp_fiss(TString cfgFile = "")
 
    fRun->AddTask(simTask);
 
+   cfg.CheckUnused();
    fRun->Init();
 
    timer.Start();

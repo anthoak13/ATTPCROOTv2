@@ -6,6 +6,9 @@
 
 #include "RunConfig.h"
 
+#include <algorithm>
+#include <cctype>
+#include <fstream>
 #include <map>
 
 #include "plot_fit.C"
@@ -35,10 +38,47 @@ std::vector<GroupedFitPlot> GetGroupedFitPlots()
            {"ZDiff", zHistDiff}};
 }
 
+/// Section name of an .ini line, or "" if it isn't a section header. Matches fission.py's configparser:
+/// a ; or # after whitespace starts a comment, and the header runs to the last ].
+TString SectionName(const std::string &line)
+{
+   std::string text = line;
+   for (size_t i = 1; i < text.size(); ++i)
+      if ((text[i] == ';' || text[i] == '#') && isspace(text[i - 1])) {
+         text.resize(i);
+         break;
+      }
+   TString trimmed = TString(text).Strip(TString::kBoth);
+   auto close = trimmed.Last(']');
+   if (!trimmed.BeginsWith("[") || close < 2)
+      return "";
+   return trimmed(1, close - 1);
+}
+
+/// Run names of a study, from the [run <name>] sections of studies/<study>.ini.
+std::vector<TString> StudyRuns(TString study)
+{
+   std::vector<TString> runs;
+   std::ifstream file(("studies/" + study + ".ini").Data());
+   if (!file) {
+      Error("StudyRuns", "Cannot open studies/%s.ini (start ROOT from the fissionStudies directory)", study.Data());
+      return runs;
+   }
+   std::string line;
+   while (std::getline(file, line)) {
+      auto section = SectionName(line);
+      if (section.BeginsWith("run "))
+         runs.push_back(TString(section(4, section.Length())).Strip(TString::kBoth));
+   }
+   return runs;
+}
+
 /**
  * Group the runs of a study by the value of one setting and write each plot, one histogram per value,
- * to <outputDir>/<plot>.root. Values are read from the .cfg file written next to every fit file, so
- * they are what was actually run. Runs (and chunks) sharing a value are combined.
+ * to <outputDir>/<plot>.root. Values are read from the settings recorded in every fit file, which
+ * include the macro defaults, so they are what was actually run. Runs (and chunks) sharing a value
+ * are combined. Only runs listed in studies/<study>.ini are used, so files of removed or renamed runs
+ * are ignored.
  *
  *    group_fit_plots("angle_scan", "sim.decayAngle")
  *    show_groups("Z", "./groups_angle_scan")
@@ -48,21 +88,26 @@ void group_fit_plots(TString study, TString key, TString outputDir = "")
    if (outputDir.IsNull())
       outputDir = "./groups_" + study;
 
-   // Collect fit files for this study by the value of key
+   // Collect fit files of the study's current runs by the value of key
+   auto runs = StudyRuns(study);
+   if (runs.empty())
+      return;
    std::map<std::string, std::vector<TString>> groups;
    auto dataDir = RunConfig::DataDir();
    auto dir = gSystem->OpenDirectory(dataDir);
    while (auto entry = gSystem->GetDirEntry(dir)) {
       TString name = entry;
-      if (!name.BeginsWith(study + "-") || !name.EndsWith(".cfg") || !name.Contains(".fit."))
+      if (std::none_of(runs.begin(), runs.end(), [&](const TString &run) { return IsFitFile(name, study, run); }))
          continue;
-      RunConfig cfg(dataDir + "/" + name);
+      if (!IsFinished(dataDir + "/" + name))
+         continue;
+      auto cfg = RunConfig::FromOutput(dataDir + "/" + name);
       auto value = cfg.GetStr(key.Data(), "");
       if (value.empty()) {
          Warning("group_fit_plots", "%s has no %s, skipping", name.Data(), key.Data());
          continue;
       }
-      groups[value].push_back(dataDir + "/" + name.ReplaceAll(".cfg", ".root"));
+      groups[value].push_back(dataDir + "/" + name);
    }
    gSystem->FreeDirectory(dir);
 

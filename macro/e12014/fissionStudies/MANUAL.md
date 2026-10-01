@@ -29,10 +29,10 @@ $TPC_SHARED_INFO/
 │   ├── LISE/<Z>_<A>.txt     # one per fragment in the ion list, plus the beam: 83_200.txt
 │   └── SRIM/<Z>_<A>.txt     # same, for SRIM
 ├── respAvg.root             # averaged pad response
-└── e12014_zap.csv           # low-gain pads to inhibit
+└── e12014_zap.csv           # low-gain pads: digi turns them down, the fit skips them
 ```
 
-The fragment tables (Z 26–59) are in the repo at `macro/e12014/adam/determineZ/eLoss/`. `respAvg.root` is at `macro/e12014/curtis/viewer/respAvg.root`. The ²⁰⁰Bi beam table (`83_200.txt`) and the zap file are not in the repo. Simulation cannot run without the beam table. See the [appendix](#appendix-known-paths-by-machine) for where copies were last seen.
+The fragment tables (Z 26–59) are in the repo at `macro/e12014/adam/determineZ/eLoss/`. `respAvg.root` is at `macro/e12014/curtis/viewer/respAvg.root`. The ²⁰⁰Bi beam table (`83_200.txt`) and the zap file are not in the repo. Simulation cannot run without the beam table, and digi and fit stop if the zap file is missing or lists no pads. See the [appendix](#appendix-known-paths-by-machine) for where copies were last seen.
 
 Set the environment:
 
@@ -64,7 +64,13 @@ done   smoke-base.sim (4 s)
 ...
 ```
 
-Run it again and it prints `Everything is up to date.`
+Run it again and it prints `Everything is up to date.` `--status` shows what is finished:
+
+```
+run                  sim   digi  fit
+base                 done  done  done
+srimfit (from base)  done  done  done
+```
 
 Plot one run:
 
@@ -92,7 +98,7 @@ sim.massDev = 0
 sim.eloss = LISE
 fit.iter = 100
 
-[run 90deg]                   ; one section per run; the name is free text
+[run 90deg]                   ; one section per run
 sim.decayAngle = 90
 
 [run 120deg]
@@ -101,10 +107,10 @@ sim.decayAngle = 120
 
 Rules:
 
-- A run's settings are `[defaults]` overridden by its own section. Anything not set uses the macro's built-in default (see the [reference](#settings-reference)).
+- A run's settings are `[defaults]` overridden by its own section. A run with `upstream` is different: it starts from the upstream run's resolved settings instead (see [below](#reusing-another-runs-simulation)). Anything not set uses the macro's built-in default (see the [reference](#settings-reference)).
 - A setting's prefix says which stage uses it: `sim.`, `digi.` or `fit.`. `events`, `seed`, `chunks` and `ions.*` apply to the whole run.
 - Comments start with `;` or `#`.
-- Run names become part of file names, so avoid spaces and slashes.
+- Run names may use letters, digits, `_` and `-`. Study names (the file name) may use letters, digits and `_`, so `<study>-<run>` splits only one way. The driver rejects anything else.
 
 ### Reusing another run's simulation
 
@@ -121,6 +127,8 @@ fit.eloss = SRIM
 
 The upstream run's sim and digi are produced if needed. A run with `upstream` may only change `fit.*` settings. Changing anything else is an error, because it would no longer match the reused simulation.
 
+A run with `upstream` takes all its settings from the upstream run, including that run's `fit.*` settings, and then applies its own section. `[defaults]` reaches it only through the upstream run. So if the upstream run sets `fit.iter = 500`, the refit uses 500 too unless its own section sets `fit.iter`.
+
 ## Settings reference
 
 Defaults are the macros' built-in values.
@@ -132,14 +140,14 @@ Defaults are the macros' built-in values.
 | `events` | 500 | Events to simulate. Digi and fit process every event they receive. |
 | `seed` | from study and run name | Random seed. The derived default is fixed for a given study and run, so sim and digi reruns reproduce. The fit does not (see [parallel running](#parallel-running)). |
 | `chunks` | 1 | Split the run into this many independent pieces. See [parallel running](#parallel-running). |
-| `ions.zmin`, `ions.zmax` | 26, 59 | Fragment Z range that can be simulated and fit. Every Z needs tables. |
-| `ions.zcn`, `ions.acn` | 85, 204 | Compound nucleus (²⁰⁴At). A fragment's A is `round(Z / zcn * acn)`. |
+| `ions.zmin`, `ions.zmax` | 26, 59 | Fragment Z range that can be simulated and fit. Every Z needs tables. Both fragments of a split must be in range, so `zmin + zmax` must equal `zcn`, or every stage stops with an error. |
+| `ions.zcn`, `ions.acn` | 85, 204 | Compound nucleus (²⁰⁴At). The simulation fissions it, the fit assumes it, and `plot_fit` scales its ranges by it. A fragment's A is `round(Z / zcn * acn)`. |
 
 **Simulation (`sim.`)**
 
 | Key | Default | Meaning |
 |---|---|---|
-| `sim.zToSim` | 50 | Sets the mean fragment mass, as the fraction `zToSim / zcn` of the compound nucleus. |
+| `sim.zToSim` | 50 | Sets the mean fragment mass, as the fraction `zToSim / zcn` of the compound nucleus. That mass must belong to a Z in `ions.zmin`–`ions.zmax`, or the sim stops with an error. |
 | `sim.massDev` | 0 | Width of the fragment mass distribution (amu). 0 gives a single split. |
 | `sim.decayAngle` | 90 | CoM decay angle in degrees. 0 samples the measured angular distribution. |
 | `sim.eloss` | LISE | Energy-loss tables used in simulation: `LISE` or `SRIM`. |
@@ -166,6 +174,8 @@ Defaults are the macros' built-in values.
 
 To expose a new setting, read it in the macro with `cfg.Get("stage.name", default)`, `cfg.GetInt` or `cfg.GetStr`. Give it the prefix of the stage that reads it, so the driver knows what to rerun when it changes.
 
+Misspelled settings are errors. The driver rejects a key without a known prefix. Each macro calls `cfg.CheckUnused(...)` before running and fails on any setting it was passed but never read, except for the prefixes it lists (upstream settings every stage receives).
+
 ## Running a study
 
 ```bash
@@ -176,6 +186,8 @@ To expose a new setting, read it in the macro with `cfg.Get("stage.name", defaul
 |---|---|
 | `RUN ...` | Only these runs (default: all). |
 | `--dry-run` | Show what would run and why, then stop. |
+| `--status` | Show a table of each run's stages: `done`, or how many chunks are `missing`, `changed`, `input newer`, `upstream rerun` or `queued` in SLURM, then stop. |
+| `--show` | Print each run's resolved settings, with where each comes from (`run`, `defaults`, the upstream run, or a driver default), and the settings each stage would be passed (its `.cfg.in`), then stop. With `chunks`, chunk 0 is shown; chunk k uses `seed + k` and its share of `events`. |
 | `-j N` | Run up to N jobs at once (default 1). |
 | `--stage sim\|digi\|fit` | Stop after this stage (default fit). |
 | `--force sim\|digi\|fit` | Rerun from this stage down, even if up to date. |
@@ -205,12 +217,14 @@ All files go in `$FISSION_DATA`:
 <study>-<run>.sim.root    simulated energy deposits + truth
 <study>-<run>.digi.root   traces, hits, Y-pattern fits + truth
 <study>-<run>.fit.root    fit results (AtMCResult), best simulated events + truth
-<study>-<run>.<stage>.cfg     settings the stage used (written only on success)
+<study>-<run>.<stage>.cfg     copy of the .cfg.in, written only on success
 <study>-<run>.<stage>.cfg.in  settings passed to the macro
 <study>-<run>.<stage>.log     full ROOT output
 ```
 
-Each ROOT file also contains its settings as a `TNamed` called `RunConfig`:
+The driver compares the `.cfg` with what it would pass now to decide what to rerun. It does not see macro defaults, so changing a default in a macro reruns nothing (use `--force`).
+
+Each ROOT file also records every setting the stage ran with, including the macro defaults it used, as a `TNamed` called `RunConfig`:
 
 ```cpp
 TFile f("data/smoke-base.fit.root"); cout << f.Get<TNamed>("RunConfig")->GetTitle();
@@ -229,7 +243,7 @@ Prefer more chunks over more threads. The fitter's threads wait on a shared lock
 
 No fit is reproducible, even with one thread: the fitter seeds its parameter sampling randomly and `seed` does not reach it. See bug 2 in [mc-fitter-threading.md](../../../docs/development/mc-fitter-threading.md).
 
-Changing `chunks` renames the files, so the run is redone and the old files are removed.
+Changing `chunks` renames the files, so the run is redone and the old files are removed. That includes every stage of the run and the fits of runs that reuse its simulation, even with `--stage sim`, so no plot can mix chunk counts. `--dry-run` lists the files it would remove.
 
 ## Looking at results
 
@@ -243,9 +257,11 @@ plot_fit("decay_angle", "90deg")     // fills and draws the Z histogram
 zHistDiff->Draw()                    // true Z minus fitted Z
 ```
 
+Events the fitter skipped (no good Y-pattern) have no fit results and are left out of every plot. Only finished fit files are read: a fit that failed, is running or is queued is skipped with a warning.
+
 The histograms are globals in `plot_fit.C`: `zHist`, `aHist`, `hMR`, `hAmp`, `hObj`, `hObjPos`, `hObjQ`, `hBeam`, `hZvsObj`, `hZvsAmp`, `hAmpvsPosObj`, `hAmpvsObj`, `hAmpvsLoc`, `zHistSim`, `hZvsObjSim`, `zHistDiff`. `FillPlots(...)` refills them with different cuts.
 
-To plot specific files, give a list. Wildcards are allowed:
+To plot specific files, give a list. Wildcards are allowed, and the files are read as they are, finished or not:
 
 ```cpp
 plot_fit(std::vector<TString>{"data/decay_angle-90deg.fit*.root", "data/decay_angle-120deg.fit*.root"});
@@ -260,7 +276,7 @@ show_groups("Z", "./groups_decay_angle")           // side by side
 show_groups("Z", "./groups_decay_angle", true)     // overlaid
 ```
 
-Runs with the same value of the setting are combined. The values come from the `.cfg` files, so they are what actually ran. The plot names are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `MR`, `Beam`, `ZvsObj`, `ZvsAmp`, `AmpvsPosObj`, `AmpvsObj`, `AmpvsLoc`, `ZvsObjSim`, `ZSim` and `ZDiff`.
+Runs with the same value of the setting are combined. The values come from the settings recorded in each fit file, including macro defaults, so they are what actually ran. Only the runs listed in `studies/<study>.ini` are used, so leftover files from renamed or removed runs are ignored. Start ROOT from this directory so it can find the study file. The plot names are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `MR`, `Beam`, `ZvsObj`, `ZvsAmp`, `AmpvsPosObj`, `AmpvsObj`, `AmpvsLoc`, `ZvsObjSim`, `ZSim` and `ZDiff`.
 
 When the study is done, write the answer in its `result =` line and commit the study file.
 
@@ -270,7 +286,17 @@ When the study is done, write the answer in its `result =` line and commit the s
 ./fission.py studies/decay_angle.ini --slurm
 ```
 
-This submits one `sbatch` job per stage and chunk. Each job waits for the job that makes its input (`--dependency=afterok`). Fit jobs request `fit.threads` CPUs, and other jobs request one. Logs go to the usual `.log` files.
+This submits one `sbatch` job per stage and chunk. Each job waits for the job that makes its input (`--dependency=afterok`). As with local runs, a job succeeds if the macro wrote its `.cfg`, whatever ROOT's exit code. Fit jobs request `fit.threads` CPUs, and other jobs request one. Logs go to the usual `.log` files.
+
+Each stage also requests a time limit and memory:
+
+| Stage | `--time` | `--mem` |
+|---|---|---|
+| sim | 4:00:00 | 4G |
+| digi | 8:00:00 | 8G |
+| fit | 3-00:00:00 | 8G |
+
+These are rough upper bounds for a 500-event chunk, not measurements. Override them per stage in the study file, in `[defaults]` or a run, with `slurm.<stage>.time` and `slurm.<stage>.mem` (e.g. `slurm.fit.time = 12:00:00`). They only change the `sbatch` request, so changing them never reruns anything. `--show` prints what each stage would request. They take precedence over `SBATCH_TIMELIMIT` and similar environment variables.
 
 Before submitting:
 
@@ -278,7 +304,9 @@ Before submitting:
 - Set `TPC_SHARED_INFO` and `FISSION_DATA` to paths the compute nodes can see.
 - Add a partition or account through the usual `SBATCH_*` environment variables (e.g. `export SBATCH_PARTITION=cs`).
 
-Check status with `squeue`. When the jobs finish, run without `--slurm` (or with `--dry-run`) to confirm everything is up to date. If a job failed, the next run reruns only that stage and what depends on it.
+Check status with `squeue`. If a job fails, SLURM cancels the jobs waiting on it. To check progress, use `--status`: stages with jobs still in SLURM show as `queued`. When the jobs finish, every stage shows `done`. If a job failed, the next run reruns only that stage and what depends on it.
+
+While any job of a run it would process or remove files of is queued or running, the driver refuses to run, with or without `--slurm`. Jobs are matched by name (`<study>-<run>.<stage>`, with or without `.cNN`), so this covers jobs from an old chunk count too, even ones that haven't started. Their files are never removed or written over while they are still pending. Wait for them, or `scancel` them first. On a machine without `squeue` the check is skipped.
 
 ## Running macros by hand
 
@@ -317,9 +345,13 @@ Interactive viewers (`run_eve_*.C`) take file names directly and are not part of
 - `TPC_SHARED_INFO is not set`. Set it.
 - An input file that can't be opened, because the stage before it failed. Rerunning the study retries from the first failed stage.
 
+**`unknown setting ...` or `Settings never read by this stage (typo?)`.** A misspelled key in the study file. Fix the spelling.
+
+**`Still queued or running in SLURM`.** Jobs from an earlier `--slurm` submission are still in `squeue`. Wait for them, or `scancel` them.
+
 **`run X changes sim.foo but reuses sim/digi of Y`.** A run with `upstream` may only change `fit.*` settings. Remove `upstream`, or move the setting into the upstream run.
 
-**Everything reruns when I didn't expect it.** Run `--dry-run` and read the reason. Changing `[defaults]` affects every run. A `sim.*` change redoes all three stages.
+**Everything reruns when I didn't expect it.** Run `--dry-run` and read the reason. `--show RUN` shows where each of the run's settings comes from. Changing `[defaults]` affects every run. A `sim.*` change redoes all three stages.
 
 **Nothing reruns after I edited a macro.** The driver tracks settings, not code. Use `--force <stage>`.
 
