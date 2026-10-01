@@ -279,13 +279,11 @@ class Section:
         return base + (f".c{chunk:02d}" if chunk is not None and self.nchunks > 1 else "")
 
     def chain(self, study):
-        """What the section reads, and what that reads in turn, e.g. '[digi a] <- [sim a]'."""
+        """What the section reads, and what that reads in turn, e.g. 'digi a <- sim a'."""
         parts, source = [], self.input
-        while isinstance(source, Section):
-            parts.append(f"[{source.ref(study)}]")
+        while source:
+            parts.append(source.ref(study))
             source = source.input
-        if source is not None:
-            parts.append(source.describe())
         return " <- ".join(parts)
 
     def cfg(self, chunk):
@@ -299,18 +297,28 @@ class Section:
         return {f"{self.stage}.{k}": v for k, v in cfg.items()}
 
 
+class InputFile:
+    """One file of InputFiles, which a section reads like the output of a Job that is up to date."""
+    reason = None
+
+    def __init__(self, output, cfg):
+        self.output, self.cfg = output, cfg
+
+
 class InputFiles:
     """Files made elsewhere that a section reads (input = <path or glob>, relative to FISSION_DATA).
     Each file is one chunk, and its settings come from the .cfg next to it. The driver never reruns or
-    removes these files."""
+    removes these files. Like a Section, it has input (None, since what made the files isn't known)
+    and ref()."""
+    input = None
 
     def __init__(self, pattern, stage, where):
         self.pattern = pattern
-        self.paths = sorted(glob.glob(os.path.join(DATA, pattern)))  # An absolute pattern ignores DATA
-        if not self.paths:
+        paths = sorted(glob.glob(os.path.join(DATA, pattern)))  # An absolute pattern ignores DATA
+        if not paths:
             sys.exit(f"{where}: no files match in {DATA}")
-        self.cfgs = []
-        for path in self.paths:
+        self.chunks = []
+        for path in paths:
             if not (path.endswith(".root") and os.path.exists(sidecar(path))):
                 sys.exit(f"{where}: {path} has no .cfg next to it (unfinished, or not a stage output)")
             cfg = {k: v for k, v in read_cfg(sidecar(path)).items() if k not in ("input", "output")}
@@ -321,30 +329,30 @@ class InputFiles:
                              f" sections ({key} has no stage prefix). Rerun it.")
                 if STAGES.index(prefix) > STAGES.index(stage):
                     sys.exit(f"{where}: {os.path.basename(path)} has {key}, so it is not a {stage} output")
-            self.cfgs.append(cfg)
+            self.chunks.append(InputFile(path, cfg))
         # The files must agree on everything but events and seeds
-        common = [{k: v for k, v in c.items() if not k.endswith((".events", ".seed"))} for c in self.cfgs]
-        for path, values in zip(self.paths[1:], common[1:]):
+        common = [{k: v for k, v in c.cfg.items() if not k.endswith((".events", ".seed"))} for c in self.chunks]
+        for path, values in zip(paths[1:], common[1:]):
             if values != common[0]:
                 sys.exit(f"{where}: {os.path.basename(path)} was made with different settings"
-                         f" than {os.path.basename(self.paths[0])}")
-        self.nchunks = len(self.paths)
+                         f" than {os.path.basename(paths[0])}")
+        self.nchunks = len(self.chunks)
 
-    def describe(self):
-        return f"{self.pattern} ({len(self.paths)} file{'s' if len(self.paths) > 1 else ''})"
+    def ref(self, study):
+        return f"{self.pattern} ({self.nchunks} file{'s' if self.nchunks > 1 else ''})"
 
 
 class Job:
     """One chunk of one section: a single ROOT macro call.
 
-    cfg holds what the macro is passed: the input's settings (its job's cfg, or the input file's .cfg),
-    then the section's own, then input and output. So a fit is passed every sim.*, digi.* and fit.*
+    cfg holds what the macro is passed: the settings of prev (the Job or InputFile it reads, or None for
+    a sim), then the section's own, then input and output. So a fit is passed every sim.*, digi.* and fit.*
     setting of its chain, and a change anywhere in the chain changes its cfg.
 
     plan_all() sets reason (why the job must run, or None), deps (jobs that must finish first) and
     external."""
 
-    def __init__(self, section, chunk, input_cfg, input_path):
+    def __init__(self, section, chunk, prev):
         self.section, self.chunk = section, chunk
         self.name, self.stage = section.name, section.stage
         self.base = section.stem(chunk)
@@ -355,10 +363,10 @@ class Job:
         self.external = None  # The other Study this job belongs to, if any. Such jobs never run from here.
         self.slurm = section.slurm
 
-        cfg = {k: v for k, v in input_cfg.items() if k not in ("input", "output")}
+        cfg = {k: v for k, v in prev.cfg.items() if k not in ("input", "output")} if prev else {}
         cfg.update(section.cfg(chunk))
-        if input_path:
-            cfg["input"] = input_path
+        if prev:
+            cfg["input"] = prev.output
         cfg["output"] = self.output
         self.cfg = cfg
 
@@ -441,13 +449,13 @@ def plan_all(study, sections, force):
     def add(section):
         if section in planned:
             return planned[section]
-        inputs = add(section.input) if isinstance(section.input, Section) else None
-        files = section.input if isinstance(section.input, InputFiles) else None
+        if isinstance(section.input, Section):
+            inputs = add(section.input)
+        else:
+            inputs = section.input.chunks if section.input else [None] * section.nchunks
         jobs = []
-        for chunk in range(section.nchunks):
-            prev = inputs[chunk] if inputs else None
-            job = Job(section, chunk, prev.cfg if prev else files.cfgs[chunk] if files else {},
-                      prev.output if prev else files.paths[chunk] if files else None)
+        for chunk, prev in enumerate(inputs):
+            job = Job(section, chunk, prev)
             if section.study is not study:
                 job.external = section.study
             reason = job.stale_reason()
@@ -480,9 +488,7 @@ def status(study, sections):
             state = next(iter(counts))
         else:
             state = ", ".join(f"{n} {s}" for s, n in sorted(counts.items()))
-        source = section.input
-        rows.append([section.ref(study), "" if source is None else "<- " + (
-            source.ref(study) if isinstance(source, Section) else source.pattern), state])
+        rows.append([section.ref(study), "<- " + section.input.ref(study) if section.input else "", state])
     header = ["section", "input", "state"]
     widths = [max(len(r[i]) for r in rows + [header]) for i in range(len(header))]
     for row in [header] + rows:
@@ -523,7 +529,7 @@ def affected_sections(study, todo):
     written = {job.section for job in todo}  # todo holds only this study's jobs
 
     def reads_written(section):
-        while isinstance(section, Section):
+        while section:
             if section in written:
                 return True
             section = section.input
