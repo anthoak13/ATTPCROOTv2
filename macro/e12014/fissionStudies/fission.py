@@ -346,8 +346,8 @@ class Job:
     """One chunk of one section: a single ROOT macro call.
 
     cfg holds what the macro is passed: the settings of prev (the Job or InputFile it reads, or None for
-    a sim), then the section's own, then input and output. So a fit is passed every sim.*, digi.* and fit.*
-    setting of its chain, and a change anywhere in the chain changes its cfg.
+    a sim), then the section's own, then input and output. So a fit is passed every sim.*, digi.* and
+    fit.* setting of its chain, and a change anywhere in the chain changes its cfg.
 
     plan_all() sets reason (why the job must run, or None), deps (jobs that must finish first) and
     external."""
@@ -358,6 +358,7 @@ class Job:
         self.base = section.stem(chunk)
         self.output = self.base + ".root"
         self.sidecar = sidecar(self.output)
+        self.cfg_in = self.base + ".cfg.in"
         self.log = self.base + ".log"
         self.deps = []
         self.external = None  # The other Study this job belongs to, if any. Such jobs never run from here.
@@ -388,23 +389,24 @@ class Job:
         return None
 
     def write_cfg(self):
-        """Write what the macro is passed to <base>.cfg.in, and return its path."""
-        with open(self.base + ".cfg.in", "w") as f:
+        """Write what the macro is passed to <base>.cfg.in."""
+        with open(self.cfg_in, "w") as f:
             f.write("".join(f"{k} = {v}\n" for k, v in self.cfg.items()))
-        return self.base + ".cfg.in"
 
-    def command(self):
-        return ["root", "-l", "-b", "-q", f'{MACROS[self.stage]}("{self.write_cfg()}")']
+    def script(self):
+        """The shell command that runs the macro, here or in SLURM. It succeeds only if the macro reached
+        the end and wrote a new .cfg (RunConfig::Finish), whatever ROOT's exit code."""
+        sidecar = shlex.quote(self.sidecar)
+        root = ["root", "-l", "-b", "-q", f'{MACROS[self.stage]}("{self.cfg_in}")']
+        return f"rm -f {sidecar}; {shlex.join(root)}; test -f {sidecar}"
 
     def run_local(self):
-        """Run the macro here. Success means the macro reached the end and wrote its .cfg
-        (RunConfig::Finish), not ROOT's exit code."""
-        if os.path.exists(self.sidecar):
-            os.remove(self.sidecar)
+        """Run the macro here, and return whether it succeeded."""
+        self.write_cfg()
         start = time.time()
         with open(self.log, "w") as log:
-            subprocess.run(self.command(), cwd=HERE, stdout=log, stderr=subprocess.STDOUT)
-        ok = os.path.exists(self.sidecar)
+            result = subprocess.run(self.script(), shell=True, cwd=HERE, stdout=log, stderr=subprocess.STDOUT)
+        ok = result.returncode == 0
         print(f"{'done' if ok else 'FAILED':6} {self} ({time.time() - start:.0f} s)"
               + ("" if ok else f", see {self.log}"), flush=True)
         return ok
@@ -591,10 +593,8 @@ def slurm_jobs():
 def run_slurm(todo):
     """Submit each job with sbatch, to start once the jobs it depends on succeed.
 
-    As in Job.run_local, success means the macro wrote its .cfg: the submitted command removes the old
-    .cfg, runs ROOT, then fails unless a new one exists. The .cfg is also removed at submission, so a
-    queued job never looks up to date. SLURM cancels a job whose dependency failed rather than
-    leaving it pending.
+    Each job runs Job.script(). The old .cfg is also removed at submission, so a queued job never looks
+    up to date. SLURM cancels a job whose dependency failed rather than leaving it pending.
     """
     if shutil.which("sbatch") is None:
         sys.exit("sbatch not found")
@@ -609,8 +609,8 @@ def run_slurm(todo):
             cmd.append("--kill-on-invalid-dep=yes")
         if os.path.exists(job.sidecar):
             os.remove(job.sidecar)
-        quoted = shlex.quote(job.sidecar)
-        cmd.append(f"--wrap=rm -f {quoted}; {shlex.join(job.command())}; test -f {quoted}")
+        job.write_cfg()
+        cmd.append(f"--wrap={job.script()}")
         ids[job] = subprocess.run(cmd, check=True, capture_output=True, text=True).stdout.strip().split(";")[0]
         print(f"submitted {job} as {ids[job]}")
 
