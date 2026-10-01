@@ -1,12 +1,13 @@
 #ifndef FISSION_RUNCONFIG_H
 #define FISSION_RUNCONFIG_H
 /**
- * Settings for one stage of one run, read from a key=value file (written by fission.py, or by hand).
+ * Settings for one stage of one chunk of a study section, read from a key=value file (written by
+ * fission.py, or by hand).
  *
  * With no file every Get() returns the default passed to it, so the macros still run when called
  * with no arguments. Finish() records the settings in the output file (TNamed "RunConfig") and next
  * to it (<output>.cfg). The TNamed holds every setting the stage ran with, including macro defaults.
- * The .cfg is a copy of the config file (or the same record for runs without one). fission.py
+ * The .cfg is a copy of the config file (or the same record for manual runs without one). fission.py
  * compares it with what it would pass now to decide whether a stage needs to be rerun, so it is only
  * written after the stage finished.
  *
@@ -166,12 +167,12 @@ public:
    }
 };
 
-/**** Settings shared by the sim and fit stages, so the two can't disagree ****/
+/**** The sim's ion settings (sim.ions.*), passed on to the fit so both use the same nucleus ****/
 
 /// [Z, A] of the compound nucleus that fissions.
 std::pair<int, int> CompoundNucleus(RunConfig &cfg)
 {
-   return {cfg.GetInt("ions.zcn", 85), cfg.GetInt("ions.acn", 204)};
+   return {cfg.GetInt("sim.ions.zcn", 85), cfg.GetInt("sim.ions.acn", 204)};
 }
 
 /**
@@ -182,11 +183,11 @@ std::pair<int, int> CompoundNucleus(RunConfig &cfg)
 std::vector<std::pair<int, int>> IonList(RunConfig &cfg)
 {
    auto [Zcn, Acn] = CompoundNucleus(cfg);
-   int zMin = cfg.GetInt("ions.zmin", 26);
-   int zMax = cfg.GetInt("ions.zmax", 59);
+   int zMin = cfg.GetInt("sim.ions.zmin", 26);
+   int zMax = cfg.GetInt("sim.ions.zmax", 59);
    if (zMin + zMax != Zcn || zMin > zMax)
-      throw std::invalid_argument("ions.zmin (" + std::to_string(zMin) + ") + ions.zmax (" + std::to_string(zMax) +
-                                  ") must equal ions.zcn (" + std::to_string(Zcn) +
+      throw std::invalid_argument("sim.ions.zmin (" + std::to_string(zMin) + ") + sim.ions.zmax (" +
+                                  std::to_string(zMax) + ") must equal sim.ions.zcn (" + std::to_string(Zcn) +
                                   ") so both fragments of every split have a table");
    std::vector<std::pair<int, int>> ions;
    for (int Z = zMin; Z <= zMax; Z++)

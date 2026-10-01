@@ -12,10 +12,10 @@ void run_simp_fiss(TString cfgFile = "")
 
    delete gRandom;
    gRandom = new TRandom3;
-   gRandom->SetSeed(cfg.GetInt("seed", std::random_device{}() & 0x7fffffff));
+   gRandom->SetSeed(cfg.GetInt("sim.seed", std::random_device{}() & 0x7fffffff));
 
    //************ Things to change (or set in a study file) ************//
-   int num_events = cfg.GetInt("events", 500);
+   int num_events = cfg.GetInt("sim.events", 500);
    auto [Zcn, Acn] = CompoundNucleus(cfg); // The nucleus that fissions
    int zToSim = cfg.GetInt("sim.zToSim", 50);
    std::string elossType = cfg.GetStr("sim.eloss", "LISE"); // LISE or SRIM
