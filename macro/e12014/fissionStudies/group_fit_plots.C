@@ -55,30 +55,30 @@ TString SectionName(const std::string &line)
    return trimmed(1, close - 1);
 }
 
-/// Run names of a study, from the [run <name>] sections of studies/<study>.ini.
-std::vector<TString> StudyRuns(TString study)
+/// Names of a study's fits, from the [fit <name>] sections of studies/<study>.ini.
+std::vector<TString> StudyFits(TString study)
 {
-   std::vector<TString> runs;
+   std::vector<TString> fits;
    std::ifstream file(("studies/" + study + ".ini").Data());
    if (!file) {
-      Error("StudyRuns", "Cannot open studies/%s.ini (start ROOT from the fissionStudies directory)", study.Data());
-      return runs;
+      Error("StudyFits", "Cannot open studies/%s.ini (start ROOT from the fissionStudies directory)", study.Data());
+      return fits;
    }
    std::string line;
    while (std::getline(file, line)) {
       auto section = SectionName(line);
-      if (section.BeginsWith("run "))
-         runs.push_back(TString(section(4, section.Length())).Strip(TString::kBoth));
+      if (section.BeginsWith("fit "))
+         fits.push_back(TString(section(4, section.Length())).Strip(TString::kBoth));
    }
-   return runs;
+   return fits;
 }
 
 /**
- * Group the runs of a study by the value of one setting and write each plot, one histogram per value,
+ * Group the fits of a study by the value of one setting and write each plot, one histogram per value,
  * to <outputDir>/<plot>.root. Values are read from the settings recorded in every fit file, which
- * include the macro defaults, so they are what was actually run. Runs (and chunks) sharing a value
- * are combined. Only runs listed in studies/<study>.ini are used, so files of removed or renamed runs
- * are ignored.
+ * include the macro defaults, so they are what was actually run. Fits (and chunks) sharing a value
+ * are combined. Only the [fit <name>] sections of studies/<study>.ini are used, so files of removed or
+ * renamed fits are ignored.
  *
  *    group_fit_plots("angle_scan", "sim.decayAngle")
  *    show_groups("Z", "./groups_angle_scan")
@@ -88,16 +88,16 @@ void group_fit_plots(TString study, TString key, TString outputDir = "")
    if (outputDir.IsNull())
       outputDir = "./groups_" + study;
 
-   // Collect fit files of the study's current runs by the value of key
-   auto runs = StudyRuns(study);
-   if (runs.empty())
+   // Collect fit files of the study's current fits by the value of key
+   auto fits = StudyFits(study);
+   if (fits.empty())
       return;
    std::map<std::string, std::vector<TString>> groups;
    auto dataDir = RunConfig::DataDir();
    auto dir = gSystem->OpenDirectory(dataDir);
    while (auto entry = gSystem->GetDirEntry(dir)) {
       TString name = entry;
-      if (std::none_of(runs.begin(), runs.end(), [&](const TString &run) { return IsFitFile(name, study, run); }))
+      if (std::none_of(fits.begin(), fits.end(), [&](const TString &fit) { return IsFitFile(name, study, fit); }))
          continue;
       if (!IsFinished(dataDir + "/" + name))
          continue;
