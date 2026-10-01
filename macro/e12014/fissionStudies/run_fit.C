@@ -40,6 +40,7 @@ void run_fit(TString cfgFile = "")
 
    auto fMap = std::make_shared<AtTpcMap>();
    fMap->ParseXMLMap(mapDir.Data());
+   InhibitZapPads(*fMap); // Digi turned these down, so the charge objective skips them
 
    E12014::fMap = fMap;
 
@@ -52,7 +53,8 @@ void run_fit(TString cfgFile = "")
    // sim->SetSpaceChargeModel(scModel);
 
    // Create and load energy loss models
-   for (auto [Z, A] : IonList(cfg))
+   auto ions = IonList(cfg);
+   for (auto [Z, A] : ions)
       sim->AddModel(Z, A, LoadELoss(elossType, Z, A));
 
    auto cluster = std::make_shared<AtClusterizeLine>();
@@ -64,8 +66,11 @@ void run_fit(TString cfgFile = "")
 
    auto fitter = std::make_shared<MCFitter::AtMCFission>(sim, cluster, pulse);
    fitter->SetPSA(psa2);
+   auto [Zcn, Acn] = CompoundNucleus(cfg); // Must match the ion list the tables were loaded for
+   fitter->SetCN({Zcn, Acn});
+   fitter->SetZRange(ions.front().first, ions.back().first); // Only try Z with a table loaded
    fitter->SetNumIter(cfg.GetInt("fit.iter", 100));
-   fitter->SetNumThreads(cfg.GetInt("fit.threads", 4));
+   fitter->SetNumThreads(cfg.GetInt("fit.threads", 4)); // Keep in sync with FIT_THREADS_DEFAULT in fission.py
    fitter->SetNumRounds(cfg.GetInt("fit.rounds", 2));
    fitter->SetTimeEvent(cfg.GetInt("fit.timeEvent", 0));
 
@@ -81,6 +86,7 @@ void run_fit(TString cfgFile = "")
    infoTask->AddInitFunction([] { digiSimInfo::Forward("SimInfo", "SimInfo"); });
    fRun->AddTask(infoTask);
 
+   cfg.CheckUnused({"sim.", "digi.", "events"}); // Passed to every stage but not used here
    fRun->Init();
 
    TStopwatch timer;
