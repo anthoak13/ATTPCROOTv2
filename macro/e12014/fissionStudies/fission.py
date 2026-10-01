@@ -98,11 +98,6 @@ def short_path(path):
     return path if rel.startswith("..") else rel if os.sep in rel else os.path.join(".", rel)
 
 
-def stem(study, name, stage, chunk, nchunks):
-    """Path of a stage's files without extension: <data>/<study>-<name>.<stage>, plus .cNN if chunked."""
-    return os.path.join(DATA, f"{study}-{name}.{stage}" + (f".c{chunk:02d}" if nchunks > 1 else ""))
-
-
 def sidecar(output):
     """The .cfg a stage writes next to its .root output when it finishes."""
     return output[: -len(".root")] + ".cfg"
@@ -123,8 +118,8 @@ _studies = {}
 
 
 def load_study(path):
-    """Parse a study file, once per path. Code compares Study and Section objects, so every reference
-    to one file must get the same object."""
+    """Parse a study file, once per path. Code compares Study and Section objects and uses them as keys,
+    so every reference to one file must get the same object."""
     path = os.path.abspath(path)
     if path not in _studies:
         _studies[path] = Study(path)
@@ -273,13 +268,15 @@ class Section:
         self.slurm = {opt: self.settings.get(f"slurm.{opt}", default)
                       for opt, default in SLURM_DEFAULTS[stage].items()}
 
-    @property
-    def key(self):
-        return (self.study.name, self.name, self.stage)
-
     def ref(self, study):
         """How study names this section in messages: '<stage> <name>', with <study>: if in another study."""
         return f"{self.stage} " + (self.name if self.study is study else f"{self.study.name}:{self.name}")
+
+    def stem(self, chunk=None):
+        """Path of the section's files without extension: <data>/<study>-<name>.<stage>, plus .cNN for a
+        chunk if the section is chunked."""
+        base = os.path.join(DATA, f"{self.study.name}-{self.name}.{self.stage}")
+        return base + (f".c{chunk:02d}" if chunk is not None and self.nchunks > 1 else "")
 
     def chain(self, study):
         """What the section reads, and what that reads in turn, e.g. '[digi a] <- [sim a]'."""
@@ -349,8 +346,8 @@ class Job:
 
     def __init__(self, section, chunk, input_cfg, input_path):
         self.section, self.chunk = section, chunk
-        self.study, self.name, self.stage = section.key
-        self.base = stem(self.study, self.name, self.stage, chunk, section.nchunks)
+        self.name, self.stage = section.name, section.stage
+        self.base = section.stem(chunk)
         self.output = self.base + ".root"
         self.sidecar = sidecar(self.output)
         self.log = self.base + ".log"
@@ -364,10 +361,6 @@ class Job:
             cfg["input"] = input_path
         cfg["output"] = self.output
         self.cfg = cfg
-
-    @property
-    def key(self):
-        return self.section.key + (self.chunk,)
 
     def __str__(self):
         return os.path.basename(self.base)
@@ -412,19 +405,20 @@ class Job:
 def select(study, selectors, stages):
     """The sections to process, in file order: those matching a selector (NAME for every section with
     that name, NAME.STAGE for one), or all, then only those of the given stages."""
-    keys = list(study.raw)
+    keys = list(study.raw)  # (stage, name), so sections are resolved only if selected
     if selectors:
         chosen = set()
         for selector in selectors:
-            name, _, stage = selector.partition(".")
-            matches = [k for k in keys if k[1] == name and stage in ("", k[0])]
+            sel_name, _, sel_stage = selector.partition(".")
+            matches = [(stage, name) for stage, name in keys if name == sel_name and sel_stage in ("", stage)]
             if not matches:
+                first_stage, first_name = keys[0]
                 sys.exit(f"{short_path(study.path)}: no section matches {selector} (give NAME or NAME.STAGE,"
-                         f" e.g. {keys[0][1]}.{keys[0][0]})")
+                         f" e.g. {first_name}.{first_stage})")
             chosen.update(matches)
         keys = [k for k in keys if k in chosen]
     if stages:
-        keys = [k for k in keys if k[0] in stages]
+        keys = [(stage, name) for stage, name in keys if stage in stages]
         if not keys:
             sys.exit(f"No {' or '.join(stages)} sections selected")
     return [study.section(*k) for k in keys]
@@ -438,15 +432,15 @@ def plan(study, sections, force):
 
 
 def plan_all(study, sections, force):
-    """Every job of the sections and their inputs, up to date or not, as {section key: [job per chunk]}
+    """Every job of the sections and their inputs, up to date or not, as {section: [job per chunk]}
     in dependency order. Inputs shared by several sections appear once. job.reason says why a job must
     run, or is None. Sections of other studies are included with job.external set. Input files have
     no jobs."""
     planned = {}
 
     def add(section):
-        if section.key in planned:
-            return planned[section.key]
+        if section in planned:
+            return planned[section]
         inputs = add(section.input) if isinstance(section.input, Section) else None
         files = section.input if isinstance(section.input, InputFiles) else None
         jobs = []
@@ -464,7 +458,7 @@ def plan_all(study, sections, force):
                 job.deps.append(prev)
             job.reason = reason
             jobs.append(job)
-        planned[section.key] = jobs
+        planned[section] = jobs
         return jobs
 
     for section in sections:
@@ -478,7 +472,7 @@ def status(study, sections):
     planned = plan_all(study, sections, None)
     rows = []
     for section in sections:
-        jobs = planned[section.key]
+        jobs = planned[section]
         counts = Counter("queued" if str(job) in queued else (job.reason or "done").split(":")[0] for job in jobs)
         if counts == {"done": len(jobs)}:
             state = "done"
@@ -511,7 +505,7 @@ def show(study, sections):
         width = max(len(f"{section.stage}.{k} = {v}") for k, v in own.items())
         for key in sorted(own):
             print(f"  {f'{section.stage}.{key} = {own[key]}':{width}}  ; {section.origins[key]}")
-        job = planned[section.key][0]
+        job = planned[section][0]
         n = section.nchunks
         print(f"  {job}.cfg.in" + (f" (chunk 0 of {n}; chunk k uses seed + k"
                                     + (" and its share of sim.events)" if section.stage == "sim" else ")")
@@ -542,9 +536,8 @@ def old_chunking(sections):
     """Outputs (with their .cfg, .cfg.in and .log) of sections left over from a different chunk count."""
     old = []
     for section in sections:
-        study, name, stage = section.key
-        current = {stem(study, name, stage, c, section.nchunks) for c in range(section.nchunks)}
-        for path in sorted(glob.glob(stem(study, name, stage, 0, 1) + "*.root")):
+        current = {section.stem(c) for c in range(section.nchunks)}
+        for path in sorted(glob.glob(section.stem() + "*.root")):
             base = path[: -len(".root")]
             if base not in current and JOB_NAME.fullmatch(os.path.basename(base)):
                 old += [base + ext for ext in OUTPUT_EXTS if os.path.exists(base + ext)]
@@ -606,14 +599,14 @@ def run_slurm(todo):
                f"--cpus-per-task={threads}", f"--time={job.slurm['time']}", f"--mem={job.slurm['mem']}",
                f"--chdir={HERE}"]
         if job.deps:
-            cmd.append("--dependency=afterok:" + ":".join(ids[d.key] for d in job.deps))
+            cmd.append("--dependency=afterok:" + ":".join(ids[d] for d in job.deps))
             cmd.append("--kill-on-invalid-dep=yes")
         if os.path.exists(job.sidecar):
             os.remove(job.sidecar)
         quoted = shlex.quote(job.sidecar)
         cmd.append(f"--wrap=rm -f {quoted}; {shlex.join(job.command())}; test -f {quoted}")
-        ids[job.key] = subprocess.run(cmd, check=True, capture_output=True, text=True).stdout.strip().split(";")[0]
-        print(f"submitted {job} as {ids[job.key]}")
+        ids[job] = subprocess.run(cmd, check=True, capture_output=True, text=True).stdout.strip().split(";")[0]
+        print(f"submitted {job} as {ids[job]}")
 
 
 def blockers(study, external, affected, queued):
@@ -622,7 +615,7 @@ def blockers(study, external, affected, queued):
     messages = []
     # Jobs still in SLURM own their files: don't run them again here or delete their outputs. This
     # includes jobs from any chunk count, whose files may not exist yet.
-    keys = {s.key for s in affected}
+    keys = {(s.study.name, s.name, s.stage) for s in affected}
     busy = sorted(name for name in queued if job_section(name) in keys)
     if busy:
         messages.append("Still queued or running in SLURM (wait, or scancel them): " + ", ".join(busy))
