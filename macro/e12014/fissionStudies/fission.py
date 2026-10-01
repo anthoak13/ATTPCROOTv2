@@ -78,10 +78,8 @@ OUTPUT_EXTS = (".root", ".cfg", ".cfg.in", ".log")
 
 
 def driver_key(key):
-    """True for <stage>.chunks, <stage>.input and <stage>.slurm.*: settings the driver uses itself and
-    never passes to a macro."""
-    rest = key.split(".", 1)[1]
-    return rest in ("chunks", "input") or rest.startswith("slurm.")
+    """True for chunks, input and slurm.*: settings the driver uses itself and never passes to a macro."""
+    return key in ("chunks", "input") or key.startswith("slurm.")
 
 
 def is_input_file(spec):
@@ -155,7 +153,7 @@ class Study:
         except configparser.Error as error:
             sys.exit(str(error))
 
-        self.defaults = {}
+        defaults = {}
         self.raw = {}  # (stage, name) -> the section's keys as written, in file order
         self._sections = {}
         for header in parser.sections():
@@ -164,7 +162,7 @@ class Study:
             if header == "study":
                 continue
             elif header == "defaults":
-                self.defaults = values
+                defaults = values
             elif not match:
                 sys.exit(f"{self.where(header)}: unknown section (use [study], [defaults] or"
                          f" [{'|'.join(STAGES)} <name>])")
@@ -177,12 +175,14 @@ class Study:
         if not self.raw:
             sys.exit(f"{short_path(path)}: no [{'|'.join(STAGES)} <name>] sections")
 
-        for key in self.defaults:
+        self.defaults = {stage: {} for stage in STAGES}  # stage -> [defaults] of that stage, without prefix
+        for key, val in defaults.items():
             stage, _, rest = key.partition(".")
             if stage not in STAGES or not rest:
                 sys.exit(f"{self.where('defaults')}: {key} needs a stage prefix ({', '.join(STAGES)}),"
                          f" e.g. sim.{key}")
             self.check_key(stage, rest, "defaults", key)
+            self.defaults[stage][rest] = val
         for (stage, name), values in self.raw.items():
             for key in values:
                 self.check_key(stage, key, f"{stage} {name}", key)
@@ -241,8 +241,8 @@ class Study:
 class Section:
     """One [<stage> <name>] section: one output of one stage, possibly split into chunks.
 
-    settings  the section's own settings with their stage prefix: [defaults] of its stage, then the
-              section, then derived defaults (seed, and sim.events and sim.chunks for a sim)
+    settings  the section's own settings, without stage prefix: [defaults] of its stage, then the
+              section, then derived defaults (seed, and events and chunks for a sim)
     origins   where each setting comes from, for --show
     input     what it reads: a Section of the previous stage, InputFiles, or None for a sim
     nchunks   number of chunks: sim.chunks for a sim, else the input's
@@ -250,27 +250,27 @@ class Section:
 
     def __init__(self, study, stage, name):
         self.study, self.stage, self.name = study, stage, name
-        self.settings = {k: v for k, v in study.defaults.items() if k.startswith(stage + ".")}
+        self.settings = dict(study.defaults[stage])
         self.origins = dict.fromkeys(self.settings, "defaults")
-        own = {f"{stage}.{k}": v for k, v in study.raw[(stage, name)].items()}
+        own = study.raw[(stage, name)]
         self.settings.update(own)
         self.origins.update(dict.fromkeys(own, "section"))
-        derived = {f"{stage}.seed": (derived_seed(f"{study.name}-{name}.{stage}"), "from study, name and stage")}
+        derived = {"seed": (derived_seed(f"{study.name}-{name}.{stage}"), "from study, name and stage")}
         if stage == "sim":
-            derived.update({"sim.events": ("500", "driver default"), "sim.chunks": ("1", "driver default")})
+            derived.update({"events": ("500", "driver default"), "chunks": ("1", "driver default")})
         for key, (val, origin) in derived.items():
             if key not in self.settings:
                 self.settings[key], self.origins[key] = val, origin
 
         self.input = None
         if stage == "sim":
-            self.nchunks = int(self.settings["sim.chunks"])
+            self.nchunks = int(self.settings["chunks"])
         else:
-            spec, origin = self.settings.get(f"{stage}.input", name), self.origins.get(f"{stage}.input", "same name")
+            spec, origin = self.settings.get("input", name), self.origins.get("input", "same name")
             self.input_origin = origin
             self.input = study.resolve_input(self, spec, origin)
             self.nchunks = self.input.nchunks
-        self.slurm = {opt: self.settings.get(f"{stage}.slurm.{opt}", default)
+        self.slurm = {opt: self.settings.get(f"slurm.{opt}", default)
                       for opt, default in SLURM_DEFAULTS[stage].items()}
 
     @property
@@ -292,14 +292,14 @@ class Section:
         return " <- ".join(parts)
 
     def cfg(self, chunk):
-        """The section's own settings as one chunk's macro receives them: without the driver's settings,
-        with seed + chunk, and for a sim with the chunk's share of sim.events."""
+        """The section's own settings as one chunk's macro receives them: with stage prefix, without the
+        driver's settings, with seed + chunk, and for a sim with the chunk's share of sim.events."""
         cfg = {k: v for k, v in self.settings.items() if not driver_key(k)}
-        cfg[f"{self.stage}.seed"] = str(int(cfg[f"{self.stage}.seed"]) + chunk)
+        cfg["seed"] = str(int(cfg["seed"]) + chunk)
         if self.stage == "sim":
-            events = int(cfg["sim.events"])
-            cfg["sim.events"] = str(events // self.nchunks + (chunk < events % self.nchunks))
-        return cfg
+            events = int(cfg["events"])
+            cfg["events"] = str(events // self.nchunks + (chunk < events % self.nchunks))
+        return {f"{self.stage}.{k}": v for k, v in cfg.items()}
 
 
 class InputFiles:
@@ -507,10 +507,10 @@ def show(study, sections):
         if section.input is not None:
             origin = section.input_origin
             print(f"  reads {section.chain(study)}  ; " + (origin if origin == "same name" else f"input in {origin}"))
-        own = {k: v for k, v in section.settings.items() if k != f"{section.stage}.input"}
-        width = max(len(f"{k} = {v}") for k, v in own.items())
+        own = {k: v for k, v in section.settings.items() if k != "input"}
+        width = max(len(f"{section.stage}.{k} = {v}") for k, v in own.items())
         for key in sorted(own):
-            print(f"  {f'{key} = {own[key]}':{width}}  ; {section.origins[key]}")
+            print(f"  {f'{section.stage}.{key} = {own[key]}':{width}}  ; {section.origins[key]}")
         job = planned[section.key][0]
         n = section.nchunks
         print(f"  {job}.cfg.in" + (f" (chunk 0 of {n}; chunk k uses seed + k"
