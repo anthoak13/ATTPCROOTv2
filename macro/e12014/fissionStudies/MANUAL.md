@@ -7,13 +7,23 @@ How to run simulate → digitize → fit studies for e12014 fission and look at 
 1. [Setup](#setup)
 2. [Quick start](#quick-start)
 3. [Writing a study](#writing-a-study)
-4. [Settings reference](#settings-reference)
-5. [Running a study](#running-a-study)
-6. [Looking at results](#looking-at-results)
-7. [Running on a cluster](#running-on-a-cluster)
-8. [Running macros by hand](#running-macros-by-hand)
-9. [Troubleshooting](#troubleshooting)
-10. [Appendix: known paths by machine](#appendix-known-paths-by-machine)
+4. [Running a study](#running-a-study)
+5. [Looking at results](#looking-at-results)
+6. [Running on a cluster](#running-on-a-cluster)
+7. [Running macros by hand](#running-macros-by-hand)
+
+Reference:
+
+8. [Settings reference](#settings-reference)
+9. [Command-line options](#command-line-options)
+10. [What reruns](#what-reruns)
+11. [Files produced](#files-produced)
+12. [Chunks and seeds](#chunks-and-seeds)
+13. [SLURM details](#slurm-details)
+14. [Plots](#plots)
+15. [Troubleshooting](#troubleshooting)
+16. [Adding a setting](#adding-a-setting)
+17. [Appendix: known paths by machine](#appendix-known-paths-by-machine)
 
 ## Setup
 
@@ -47,7 +57,7 @@ From this directory:
 
 ```bash
 ./fission.py studies/smoke.ini --dry-run   # list what would run
-./fission.py studies/smoke.ini -j 2        # run using two jobs using 4 threads per job (a few minutes)
+./fission.py studies/smoke.ini -j 2        # run using two jobs using 2 threads per job (a few minutes)
 ```
 
 Output:
@@ -89,7 +99,7 @@ A study is one `.ini` file in `studies/`. The file name (without `.ini`) is the 
 The studies already in `studies/`:
 
 - `smoke.ini`: 5 events through sim, digi and fit, plus a second fit of the same digi with SRIM tables. 
-- `smoke_refit.ini`: one more fit (20 iterations) of `smoke.ini`'s digi. An example of a study that reads another study's output (see [Reading another study](#reading-another-study)).
+- `smoke_refit.ini`: one more fit (20 iterations) of `smoke.ini`'s digi. An example of a study that reads another study's output (see [What a section reads](#what-a-section-reads)).
 - `digi_scan.ini`: digitize `smoke.ini`'s sim with three different sets of parameters.
 - `fit_scan.ini`: one fit of each `digi_scan.ini` digitization. 
 - `bench.ini`: one sim and digi, fit with 1, 2, 4 and 8 threads, to time the fit.
@@ -143,58 +153,123 @@ The `input` key has three forms for chaining different studies. For example, for
 | `input = decay_angle:90deg` | the output of `[digi 90deg]` in the same folder as this study |
 | `input = manualDigi.root` | a digitization file made outside the driver by running `run_digi_fiss.C` [by hand](#running-macros-by-hand).|
 
-An `input` containing `/` or ending in `.root` is a file path which is treated as relative to `$FISSION_DATA` unless it's an absolute path. It may be a glob that matches several files. See [Reading files](#reading-files).
+An `input` containing `/` or ending in `.root` is a file path which is treated as relative to `$FISSION_DATA` unless it's an absolute path. It may be a glob that matches several files.
 
 Running a section also brings its inputs in this study up to date: running a fit first runs its digitization and simulation if they are missing or suspected to be out of date.
 
-### What a stage is passed
+## Running a study
 
-Each stage's macro is passed its own settings plus every setting of its input, and of that input's input. A fit is therefore passed every `sim.*`, `digi.*` and `fit.*` setting of its chain, which is how a change anywhere in the chain reaches the fits that depend on it. `--show` prints what each section's macro is passed.
-
-This is also how a fit learns about the simulation it is fitting: `fit.eloss` falls back to `sim.eloss`, and the fit uses the sim's `sim.ions.*`.
-
-### Reading another study
-
-`input = <study>:<name>` reads a section of another study in the same directory, without touching that study's file:
-
-```ini
-; studies/fit_scan.ini
-[defaults]
-fit.iter = 10
-
-[fit resp050]
-input = digi_scan:resp050
+```bash
+./fission.py STUDY.ini [SECTION ...] [options]
 ```
 
-The other study's files are read-only from here. The driver never runs, forces or removes them, and `--force` reaches only this study's sections. If the other study's section (or anything it reads) is missing, out of date with its own study file, or queued in SLURM, the driver stops and prints the commands that bring it up to date:
+With no sections named, the whole study runs. `NAME` selects every section with that name, and `NAME.STAGE` (e.g. `90deg.digi`) one section. The everyday commands:
 
-```
-Bring other studies' sections up to date first:
-  ./fission.py studies/smoke.ini base.sim
-  ./fission.py studies/digi_scan.ini resp050.digi resp075.digi resp100.digi
-```
-
-Once that study reruns its section, the fits here show `input is newer` and run again next time.
-
-The other study can't see the sections here. Don't rerun its outputs while sections reading them are queued or running in SLURM. If its chunk count changes, the sections here follow on their next run and their old chunks are removed.
-
-### Reading files
-
-`input` may also be a path or glob for files, such as ones made [by hand](#running-macros-by-hand):
-
-```ini
-[fit byhand]
-input = manual.digi.root        ; made by run_digi_fiss.C run by hand
-iter = 200
+```bash
+./fission.py studies/decay_angle.ini --dry-run              # what would run, and why
+./fission.py studies/decay_angle.ini -j 4                   # run, up to 4 jobs at once
+./fission.py studies/decay_angle.ini --status               # what is finished
+./fission.py studies/decay_angle.ini 90deg --force fit      # refit 90deg even if up to date
 ```
 
-Each matching file is one chunk. Each must have the `.cfg` written next to it when its stage finished, and that `.cfg` takes the place of the input's settings. The files must agree on every setting except `*.events` and `*.seed`. A `.cfg` with unprefixed keys (`events`, `seed`, `ions.*`) was made before study files had stage sections, and is rejected: rerun it. As with another study, the files are never rerun or removed.
+Every option is in [Command-line options](#command-line-options).
 
-### Chunks and seeds
+Only out-of-date sections run: a section reruns when its output is missing, when a setting it or its input chain depends on changed in the study file, or when its input reran. `--dry-run` gives the reason for each. See [What reruns](#what-reruns).
 
-`sim.chunks = N` splits a sim's events into N independent pieces (`.c00`, `.c01`, …) that can run in parallel. Chunk k gets its share of `sim.events`. The digis and fits that read a chunked sim have one job per chunk too. A digi or fit has as many chunks as its input: one per chunk of the section it reads, or one per matched file.
+Outputs are overwritten in place. To keep an old result, give the new version a new name.
 
-Every stage has its own seed: `sim.seed`, `digi.seed` and `fit.seed`. Each defaults to a value derived from `<study>-<name>.<stage>`, so it is fixed for a given section, and chunk k uses seed + k.
+### Parallel running
+
+There are two independent levers:
+
+- **`-j N`** runs separate jobs at once, such as different sections, or a fit while another sim runs.
+- **`sim.chunks = N`** splits a sim into N pieces, each with its own seeds. Each piece goes through digi and fit on its own. Plots combine the pieces automatically. See [Chunks and seeds](#chunks-and-seeds).
+
+Every fit job also uses `fit.threads` threads. Keep `-j × fit.threads` near your core count.
+
+Prefer more chunks over more threads. The fitter's threads wait on a shared lock, so speed does not grow with thread count, and they draw from one shared random-number generator. Separate processes avoid both. `studies/bench.ini` measures how fit time scales with threads on a given machine.
+
+No fit is reproducible, even with one thread: the fitter seeds its parameter sampling randomly and `fit.seed` does not reach it. See bug 2 in [mc-fitter-threading.md](../../../docs/development/mc-fitter-threading.md).
+
+## Looking at results
+
+Start ROOT from this directory, with `FISSION_DATA` set as it was when the study ran.
+
+**One fit:**
+
+```cpp
+.L plot_fit.C
+plot_fit("decay_angle", "90deg")     // [fit 90deg] of decay_angle.ini: fills and draws the Z histogram
+zHistDiff->Draw()                    // true Z minus fitted Z
+```
+
+Events the fitter skipped (no good Y-pattern) have no fit results and are left out of every plot. Only finished fit files are read: a fit that failed, is running or is queued is skipped with a warning.
+
+To plot specific files, give a list. Wildcards are allowed, and the files are read as they are, finished or not:
+
+```cpp
+plot_fit(std::vector<TString>{"data/decay_angle-90deg.fit*.root", "data/decay_angle-120deg.fit*.root"});
+```
+
+**Compare fits by a setting:**
+
+```cpp
+.L group_fit_plots.C
+group_fit_plots("decay_angle", "sim.decayAngle")   // writes ./groups_decay_angle/<plot>.root
+show_groups("Z", "./groups_decay_angle")           // side by side
+show_groups("Z", "./groups_decay_angle", true)     // overlaid
+```
+
+Fits with the same value of the setting are combined. The values come from the settings recorded in each fit file, which include its whole chain's settings and the fit macro's defaults. Only the `[fit <name>]` sections in `studies/<study>.ini` are used, so leftover files from renamed or removed fits are ignored. Start ROOT from this directory so it can find the study file.
+
+The histograms and plot names are listed in [Plots](#plots).
+
+## Running on a cluster
+
+```bash
+./fission.py studies/decay_angle.ini --slurm
+```
+
+This submits one `sbatch` job per section and chunk. Each job waits for the job that makes its input (`--dependency=afterok`). As with local runs, a job succeeds if the macro wrote its `.cfg`, whatever ROOT's exit code. Fit jobs request `fit.threads` CPUs, and other jobs request one. Logs go to the usual `.log` files. Each stage also requests a time limit and memory, which you can change in the study file (see [SLURM details](#slurm-details)).
+
+Before submitting:
+
+- Load the ATTPCROOT environment in the shell you submit from. Jobs inherit it.
+- Set `TPC_SHARED_INFO` and `FISSION_DATA` to paths the compute nodes can see.
+- Add a partition or account through the usual `SBATCH_*` environment variables (e.g. `export SBATCH_PARTITION=cs`).
+
+Check status with `squeue`. If a job fails, SLURM cancels the jobs waiting on it. To check progress, use `--status`: sections with jobs still in SLURM show as `queued`. When the jobs finish, every section shows `done`. If a job failed, the next run reruns only that section and what reads it.
+
+While jobs whose files a run would write or remove are still queued or running, the driver refuses to run. See [SLURM details](#slurm-details).
+
+## Running macros by hand
+
+Every stage is an ordinary ROOT macro and still runs on its own, which is the easy way to try out a change.
+
+**With built-in defaults:**
+
+```bash
+root -l -b -q run_simp_fiss.C    # writes $FISSION_DATA/manual.sim.root
+root -l -b -q run_digi_fiss.C    # reads manual.sim.root,  writes manual.digi.root
+root -l -b -q run_fit.C          # reads manual.digi.root, writes manual.fit.root
+```
+
+Each stage writes `manual.<stage>.cfg`, listing every setting and the seed it used. To try something, edit the default in the macro.
+
+**With a settings file:** write `key = value` lines, with the full `<stage>.` prefix, and pass the file:
+
+```bash
+cat > try.cfg <<EOF
+sim.events = 20
+sim.decayAngle = 120
+output = data/try.sim.root
+EOF
+root -l -b -q 'run_simp_fiss.C("try.cfg")'
+```
+
+`input` and `output` set the file paths. Without them, the `manual.*` names are used.
+
+Interactive viewers (`run_eve_*.C`) take file names directly and are not part of the driver.
 
 ## Settings reference
 
@@ -205,8 +280,8 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | Key | Default | Meaning |
 |---|---|---|
 | `<stage>.seed` | from study, name and stage (driver) | Random seed of the stage. Fixed for a given section, so sim and digi reruns reproduce. The fit does not (see [parallel running](#parallel-running)). |
-| `<stage>.input` | the section of the previous stage with the same name (driver) | The section's input. See [What a section reads](#what-a-section-reads). Not allowed for a sim. |
-| `<stage>.slurm.time`, `<stage>.slurm.mem` | per stage (driver) | `sbatch` request. See [Running on a cluster](#running-on-a-cluster). |
+| `<stage>.input` | the section of the previous stage with the same name (driver) | The section's input. See [What a section reads](#what-a-section-reads). Not allowed for a sim. Another study's sections and input files are never run, forced or removed from here. Input files must each have the `.cfg` their stage wrote next to them, which supplies their settings, and must agree on every setting except `*.events` and `*.seed`. |
+| `<stage>.slurm.time`, `<stage>.slurm.mem` | per stage (driver) | `sbatch` request. See [SLURM details](#slurm-details). |
 
 **Simulation (`sim.`)**
 
@@ -241,11 +316,9 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `fit.psaThreshold` | 25 | PSA threshold for the fit's simulated events. |
 | `fit.timeEvent` | 0 | 1 logs the time per round, for benchmarking. |
 
-To expose a new setting, read it in the macro with `cfg.Get("stage.name", default)`, `cfg.GetInt` or `cfg.GetStr`, and give it the prefix of the stage that reads it. A later stage that needs it (as the fit needs `sim.ions.*`) reads the same key, which it is passed through its input.
-
 Misspelled settings are errors. The driver rejects misplaced keys (no stage prefix in `[defaults]`, a prefix inside a section, `input` in a sim, `events` or `chunks` outside a sim, an unknown `slurm.` key). Each macro calls `cfg.CheckUnused(...)` before running and fails on any setting it was passed but never read, except for the earlier stages' prefixes it lists.
 
-## Running a study
+## Command-line options
 
 ```bash
 ./fission.py STUDY.ini [SECTION ...] [options]
@@ -262,7 +335,7 @@ Misspelled settings are errors. The driver rejects misplaced keys (no stage pref
 | `--force sim\|digi\|fit` | Rerun this stage and the later ones, even if up to date. Never reaches another study's files. |
 | `--slurm` | Submit to SLURM instead of running here. See [Running on a cluster](#running-on-a-cluster). |
 
-### What reruns
+## What reruns
 
 The driver only runs jobs that are out of date and gives the reason for each:
 
@@ -276,9 +349,13 @@ The driver only runs jobs that are out of date and gives the reason for each:
 
 A section depends on its own settings and on its input's, all the way back to the sim. Changing a `[fit]` setting refits only that fit. Changing a `[digi]` setting redoes the digi and every fit that reads it. Changing a `[sim]` setting redoes everything downstream of it.
 
-Outputs are overwritten in place. To keep an old result, give the new version a new name.
+Each stage's macro is passed its own settings plus every setting of its input, and of that input's input. A fit is therefore passed every `sim.*`, `digi.*` and `fit.*` setting of its chain, which is how a change anywhere in the chain reaches the fits that depend on it. `--show` prints what each section's macro is passed.
 
-### Files produced
+This is also how a fit learns about the simulation it is fitting: `fit.eloss` falls back to `sim.eloss`, and the fit uses the sim's `sim.ions.*`.
+
+The driver compares the `.cfg` with what it would pass now to decide what to rerun. It does not see macro defaults, so changing a default in a macro reruns nothing (use `--force`).
+
+## Files produced
 
 All files go in `$FISSION_DATA`:
 
@@ -293,71 +370,23 @@ All files go in `$FISSION_DATA`:
 
 With `sim.chunks`, each name gets `.cNN` before the extension.
 
-The driver compares the `.cfg` with what it would pass now to decide what to rerun. It does not see macro defaults, so changing a default in a macro reruns nothing (use `--force`).
-
 Each ROOT file also records every setting the stage ran with, including the macro defaults it used, as a `TNamed` called `RunConfig`:
 
 ```cpp
 TFile f("data/smoke-base.fit.root"); cout << f.Get<TNamed>("RunConfig")->GetTitle();
 ```
 
-### Parallel running
+## Chunks and seeds
 
-There are two independent levers:
+`sim.chunks = N` splits a sim's events into N independent pieces (`.c00`, `.c01`, …) that can run in parallel. Chunk k gets its share of `sim.events`. The digis and fits that read a chunked sim have one job per chunk too. A digi or fit has as many chunks as its input: one per chunk of the section it reads, or one per matched file.
 
-- **`-j N`** runs separate jobs at once, such as different sections, or a fit while another sim runs.
-- **`sim.chunks = N`** splits a sim into N pieces (`.c00`, `.c01`, …), each with its own seeds. Each piece goes through digi and fit on its own. Plots combine the pieces automatically.
-
-Every fit job also uses `fit.threads` threads. Keep `-j × fit.threads` near your core count.
-
-Prefer more chunks over more threads. The fitter's threads wait on a shared lock, so speed does not grow with thread count, and they draw from one shared random-number generator. Separate processes avoid both. `studies/bench.ini` measures how fit time scales with threads on a given machine.
-
-No fit is reproducible, even with one thread: the fitter seeds its parameter sampling randomly and `fit.seed` does not reach it. See bug 2 in [mc-fitter-threading.md](../../../docs/development/mc-fitter-threading.md).
+Every stage has its own seed: `sim.seed`, `digi.seed` and `fit.seed`. Each defaults to a value derived from `<study>-<name>.<stage>`, so it is fixed for a given section, and chunk k uses seed + k.
 
 Changing `sim.chunks` renames the files, so the sim is redone and its old files are removed. So are the old files of every section in the study that reads it, directly or through a digi, even with `--stage sim`, so no plot can mix chunk counts. `--dry-run` lists the files it would remove.
 
-## Looking at results
+## SLURM details
 
-Start ROOT from this directory, with `FISSION_DATA` set as it was when the study ran.
-
-**One fit:**
-
-```cpp
-.L plot_fit.C
-plot_fit("decay_angle", "90deg")     // [fit 90deg] of decay_angle.ini: fills and draws the Z histogram
-zHistDiff->Draw()                    // true Z minus fitted Z
-```
-
-Events the fitter skipped (no good Y-pattern) have no fit results and are left out of every plot. Only finished fit files are read: a fit that failed, is running or is queued is skipped with a warning.
-
-The histograms are globals in `plot_fit.C`: `zHist`, `aHist`, `hMR`, `hAmp`, `hObj`, `hObjPos`, `hObjQ`, `hBeam`, `hZvsObj`, `hZvsAmp`, `hAmpvsPosObj`, `hAmpvsObj`, `hAmpvsLoc`, `zHistSim`, `hZvsObjSim`, `zHistDiff`. `FillPlots(...)` refills them with different cuts.
-
-To plot specific files, give a list. Wildcards are allowed, and the files are read as they are, finished or not:
-
-```cpp
-plot_fit(std::vector<TString>{"data/decay_angle-90deg.fit*.root", "data/decay_angle-120deg.fit*.root"});
-```
-
-**Compare fits by a setting:**
-
-```cpp
-.L group_fit_plots.C
-group_fit_plots("decay_angle", "sim.decayAngle")   // writes ./groups_decay_angle/<plot>.root
-show_groups("Z", "./groups_decay_angle")           // side by side
-show_groups("Z", "./groups_decay_angle", true)     // overlaid
-```
-
-Fits with the same value of the setting are combined. The values come from the settings recorded in each fit file, which include its whole chain's settings and the fit macro's defaults. Only the `[fit <name>]` sections in `studies/<study>.ini` are used, so leftover files from renamed or removed fits are ignored. Start ROOT from this directory so it can find the study file. The plot names are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `MR`, `Beam`, `ZvsObj`, `ZvsAmp`, `AmpvsPosObj`, `AmpvsObj`, `AmpvsLoc`, `ZvsObjSim`, `ZSim` and `ZDiff`.
-
-## Running on a cluster
-
-```bash
-./fission.py studies/decay_angle.ini --slurm
-```
-
-This submits one `sbatch` job per section and chunk. Each job waits for the job that makes its input (`--dependency=afterok`). As with local runs, a job succeeds if the macro wrote its `.cfg`, whatever ROOT's exit code. Fit jobs request `fit.threads` CPUs, and other jobs request one. Logs go to the usual `.log` files.
-
-Each stage also requests a time limit and memory:
+Each stage requests a time limit and memory:
 
 | Stage | `--time` | `--mem` |
 |---|---|---|
@@ -367,44 +396,13 @@ Each stage also requests a time limit and memory:
 
 These are rough upper bounds for a 500-event chunk, not measurements. Override them in the study file, in `[defaults]` with `<stage>.slurm.time` and `<stage>.slurm.mem` (e.g. `fit.slurm.time = 12:00:00`), or in one section with `slurm.time` and `slurm.mem`. They only change the `sbatch` request and are never passed to a macro, so changing them never reruns anything. `--show` prints what each section would request. They take precedence over `SBATCH_TIMELIMIT` and similar environment variables.
 
-Before submitting:
+While any job of a section whose files it would write or remove is queued or running, the driver refuses to run, with or without `--slurm`. Those sections are the ones it would rerun, plus every section of the study that reads them. Jobs are matched by name (`<study>-<name>.<stage>`, with or without `.cNN`), so this covers jobs from an old chunk count too, even ones that haven't started. Their files are never removed or written over while they are still pending. Wait for them, or `scancel` them first. On a machine without `squeue` the check is skipped. Sections in other studies that read them are not checked: don't rerun a section while another study's jobs that read it are queued or running.
 
-- Load the ATTPCROOT environment in the shell you submit from. Jobs inherit it.
-- Set `TPC_SHARED_INFO` and `FISSION_DATA` to paths the compute nodes can see.
-- Add a partition or account through the usual `SBATCH_*` environment variables (e.g. `export SBATCH_PARTITION=cs`).
+## Plots
 
-Check status with `squeue`. If a job fails, SLURM cancels the jobs waiting on it. To check progress, use `--status`: sections with jobs still in SLURM show as `queued`. When the jobs finish, every section shows `done`. If a job failed, the next run reruns only that section and what reads it.
+The histograms are globals in `plot_fit.C`: `zHist`, `aHist`, `hMR`, `hAmp`, `hObj`, `hObjPos`, `hObjQ`, `hBeam`, `hZvsObj`, `hZvsAmp`, `hAmpvsPosObj`, `hAmpvsObj`, `hAmpvsLoc`, `zHistSim`, `hZvsObjSim`, `zHistDiff`. `FillPlots(...)` refills them with different cuts.
 
-While any job of a section whose files it would write or remove is queued or running, the driver refuses to run, with or without `--slurm`. Those sections are the ones it would rerun, plus every section of the study that reads them. Jobs are matched by name (`<study>-<name>.<stage>`, with or without `.cNN`), so this covers jobs from an old chunk count too, even ones that haven't started. Their files are never removed or written over while they are still pending. Wait for them, or `scancel` them first. On a machine without `squeue` the check is skipped.
-
-## Running macros by hand
-
-Every stage is an ordinary ROOT macro and still runs on its own, which is the easy way to try out a change.
-
-**With built-in defaults:**
-
-```bash
-root -l -b -q run_simp_fiss.C    # writes $FISSION_DATA/manual.sim.root
-root -l -b -q run_digi_fiss.C    # reads manual.sim.root,  writes manual.digi.root
-root -l -b -q run_fit.C          # reads manual.digi.root, writes manual.fit.root
-```
-
-Each stage writes `manual.<stage>.cfg`, listing every setting and the seed it used. To try something, edit the default in the macro.
-
-**With a settings file:** write `key = value` lines, with the full `<stage>.` prefix, and pass the file:
-
-```bash
-cat > try.cfg <<EOF
-sim.events = 20
-sim.decayAngle = 120
-output = data/try.sim.root
-EOF
-root -l -b -q 'run_simp_fiss.C("try.cfg")'
-```
-
-`input` and `output` set the file paths. Without them, the `manual.*` names are used.
-
-Interactive viewers (`run_eve_*.C`) take file names directly and are not part of the driver.
+The plot names for `show_groups` are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `MR`, `Beam`, `ZvsObj`, `ZvsAmp`, `AmpvsPosObj`, `AmpvsObj`, `AmpvsLoc`, `ZvsObjSim`, `ZSim` and `ZDiff`.
 
 ## Troubleshooting
 
@@ -421,6 +419,10 @@ Interactive viewers (`run_eve_*.C`) take file names directly and are not part of
 **`unknown section`, `needs a stage prefix`, `have no stage prefix`.** The study file is in the wrong shape, often an old one with `[run <name>]` sections, unprefixed `events`/`seed`, or `upstream`. Rewrite it as `[sim|digi|fit <name>]` sections (see [Writing a study](#writing-a-study)).
 
 **`[fit x] reads [digi x] by default, but there is none`.** A digi or fit has no `input` and no same-named section of the previous stage. Add that section, or set `input`.
+
+**`has no .cfg next to it`.** An `input` file is unfinished or was not made by a stage macro. Each file needs the `.cfg` its stage writes when it finishes.
+
+**`was made with different settings than`.** The files an `input` glob matches must agree on every setting except `*.events` and `*.seed`. Narrow the glob.
 
 **`was made before study files had stage sections`.** An `input` file's `.cfg` uses the old unprefixed keys. Rerun the file's study, or make the file again.
 
@@ -441,6 +443,10 @@ Interactive viewers (`run_eve_*.C`) take file names directly and are not part of
 - `Hits that are points (sig_z = 0) are not supported yet!`
 
 **Old files (`output_fitNN.root`).** Files made before this driver don't plot with the current `plot_fit.C`. Use the version from git history.
+
+## Adding a setting
+
+To expose a new setting, read it in the macro with `cfg.Get("stage.name", default)`, `cfg.GetInt` or `cfg.GetStr`, and give it the prefix of the stage that reads it. A later stage that needs it (as the fit needs `sim.ions.*`) reads the same key, which it is passed through its input.
 
 ## Appendix: Known Paths by Machine
 
