@@ -154,12 +154,10 @@ class Study:
         for header in parser.sections():
             values = dict(parser[header])
             match = SECTION.fullmatch(header)
-            if header == "study":
-                continue
-            elif header == "defaults":
+            if header == "defaults":
                 defaults = values
             elif not match:
-                sys.exit(f"{self.where(header)}: unknown section (use [study], [defaults] or"
+                sys.exit(f"{self.where(header)}: unknown section (use [defaults] or"
                          f" [{'|'.join(STAGES)} <name>])")
             elif not re.fullmatch(NAME, match[2]):
                 sys.exit(f"{self.where(header)}: name {match[2]!r} may only use letters, digits, _ and -")
@@ -173,6 +171,8 @@ class Study:
         self.defaults = {stage: {} for stage in STAGES}  # stage -> [defaults] of that stage, without prefix
         for key, val in defaults.items():
             stage, _, rest = key.partition(".")
+            if rest and stage not in STAGES and stage != "slurm":
+                sys.exit(f"{self.where('defaults')}: {key}: unknown stage {stage!r} (use {', '.join(STAGES)})")
             if stage not in STAGES or not rest:
                 sys.exit(f"{self.where('defaults')}: {key} needs a stage prefix ({', '.join(STAGES)}),"
                          f" e.g. sim.{key}")
