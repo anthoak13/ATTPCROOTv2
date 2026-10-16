@@ -74,6 +74,8 @@ SECTION = re.compile(rf"({'|'.join(STAGES)})\s+(.*)")
 # A stage's files are <study>-<name>.<stage>[.cNN] plus an extension from OUTPUT_EXTS. The name without
 # extension is also the stage's SLURM job name.
 JOB_NAME = re.compile(rf"(?P<study>{STUDY_NAME})-(?P<name>{NAME})\.(?P<stage>{'|'.join(STAGES)})(?:\.c\d\d)?")
+# Chunks are numbered with two digits (.c00-.c99): JOB_NAME and plot_fit.C's IsFitFile rely on it.
+MAX_CHUNKS = 100
 OUTPUT_EXTS = (".root", ".cfg", ".cfg.in", ".log")
 
 
@@ -260,6 +262,9 @@ class Section:
         self.input = None
         if stage == "sim":
             self.nchunks = int(self.settings["chunks"])
+            if self.nchunks > MAX_CHUNKS:
+                sys.exit(f"[sim {name}] chunks = {self.nchunks}: at most {MAX_CHUNKS}"
+                         f" (chunk files are numbered c00-c{MAX_CHUNKS - 1})")
         else:
             spec, origin = self.settings.get("input", name), self.origins.get("input", "same name")
             self.input_origin = origin
@@ -317,6 +322,9 @@ class InputFiles:
         paths = sorted(glob.glob(os.path.join(DATA, pattern)))  # An absolute pattern ignores DATA
         if not paths:
             sys.exit(f"{where}: no files match in {DATA}")
+        if len(paths) > MAX_CHUNKS:
+            sys.exit(f"{where}: {len(paths)} files match, at most {MAX_CHUNKS} (one chunk per file,"
+                     f" numbered c00-c{MAX_CHUNKS - 1})")
         self.chunks = []
         for path in paths:
             if not (path.endswith(".root") and os.path.exists(sidecar(path))):

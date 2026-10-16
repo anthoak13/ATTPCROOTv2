@@ -12,7 +12,8 @@
  * written after the stage finished.
  *
  * Paths come from the environment:
- *   FISSION_DATA     directory for all run files (default ./data)
+ *   FISSION_DATA     directory for all run files (default ./data). A relative path is relative to the
+ *                    directory ROOT was started in.
  *   TPC_SHARED_INFO  directory holding eLoss/, respAvg.root and e12014_zap.csv
  */
 #include "AtCSVReader.h"
@@ -104,6 +105,8 @@ public:
    {
       auto env = gSystem->Getenv("FISSION_DATA");
       TString dir = env ? env : "./data";
+      if (!gSystem->IsAbsoluteFileName(dir))
+         gSystem->PrependPathName(gSystem->WorkingDirectory(), dir); // So messages show where it looked
       gSystem->mkdir(dir, true);
       return dir;
    }

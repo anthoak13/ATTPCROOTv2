@@ -49,7 +49,7 @@ export TPC_SHARED_INFO=/path/to/shared/info
 export FISSION_DATA=/path/to/data   # optional, default: data/ next to these macros
 ```
 
-`FISSION_DATA` is where every output file goes. Put it on a disk with plenty of room. Digi files store raw traces, and fit files store the 10 best simulated events per event, so each costs roughly 20–25 MB per event. A 500-event sim with one digi and one fit is about 20–25 GB.
+`FISSION_DATA` is where every output file goes. A relative path is relative to the directory you start `fission.py` or ROOT in, so start both from the same place, or use an absolute path. Put it on a disk with plenty of room. Digi files store raw traces, and fit files store the 10 best simulated events per event, so each costs roughly 20–25 MB per event. A 500-event sim with one digi and one fit is about 20–25 GB.
 
 ## Quick start
 
@@ -288,7 +288,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | Key | Default | Meaning |
 |---|---|---|
 | `sim.events` | 500 (driver) | Events to simulate. Digi and fit process every event they receive. |
-| `sim.chunks` | 1 (driver) | Split the sim, and everything that reads it, into this many independent pieces. See [chunks and seeds](#chunks-and-seeds). |
+| `sim.chunks` | 1 (driver) | Split the sim, and everything that reads it, into this many independent pieces, at most 100. See [chunks and seeds](#chunks-and-seeds). |
 | `sim.ions.zmin`, `sim.ions.zmax` | 26, 59 | Fragment Z range that can be simulated and fit. Every Z needs tables. Both fragments of a split must be in range, so `zmin + zmax` must equal `zcn`, or every stage stops with an error. |
 | `sim.ions.zcn`, `sim.ions.acn` | 85, 204 | Compound nucleus (²⁰⁴At). The simulation fissions it, the fit assumes it, and `plot_fit` scales its ranges by it. A fragment's A is `round(Z / zcn * acn)`. The fit takes these from its sim, so it can only assume the sim's nucleus. |
 | `sim.zToSim` | 50 | Sets the mean fragment mass, as the fraction `zToSim / zcn` of the compound nucleus. That mass must belong to a Z in `sim.ions.zmin`–`sim.ions.zmax`, or the sim stops with an error. |
@@ -378,7 +378,7 @@ TFile f("data/smoke-base.fit.root"); cout << f.Get<TNamed>("RunConfig")->GetTitl
 
 ## Chunks and seeds
 
-`sim.chunks = N` splits a sim's events into N independent pieces (`.c00`, `.c01`, …) that can run in parallel. Chunk k gets its share of `sim.events`. The digis and fits that read a chunked sim have one job per chunk too. A digi or fit has as many chunks as its input: one per chunk of the section it reads, or one per matched file.
+`sim.chunks = N` splits a sim's events into N independent pieces (`.c00`, `.c01`, … up to `.c99`) that can run in parallel. Chunk k gets its share of `sim.events`. The digis and fits that read a chunked sim have one job per chunk too. A digi or fit has as many chunks as its input: one per chunk of the section it reads, or one per matched file, so an `input` may match at most 100 files.
 
 Every stage has its own seed: `sim.seed`, `digi.seed` and `fit.seed`. Each defaults to a value derived from `<study>-<name>.<stage>`, so it is fixed for a given section, and chunk k uses seed + k.
 
@@ -434,7 +434,7 @@ The plot names for `show_groups` are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `
 
 **Nothing reruns after I edited a macro.** The driver tracks settings, not code. Use `--force <stage>`.
 
-**The plot has no files.** `plot_fit` looks in `$FISSION_DATA` relative to where ROOT started. Start ROOT from this directory with the same `FISSION_DATA`, or pass full paths.
+**The plot has no files.** The error names the directory `plot_fit` searched. A relative `FISSION_DATA` is relative to where ROOT started, so start ROOT where you ran `fission.py`, with the same `FISSION_DATA`, or use an absolute path.
 
 **Log errors that are normal.** These appear in every run and are not failures:
 
