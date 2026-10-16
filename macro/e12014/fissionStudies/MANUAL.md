@@ -32,8 +32,6 @@ $TPC_SHARED_INFO/
 └── e12014_zap.csv           # low-gain pads: digi turns them down, the fit skips them
 ```
 
-The fragment tables (Z 26–59) are in the repo at `macro/e12014/adam/determineZ/eLoss/`. `respAvg.root` is at `macro/e12014/curtis/viewer/respAvg.root`. The ²⁰⁰Bi beam table (`83_200.txt`) and the zap file are not in the repo. Simulation cannot run without the beam table, and digi and fit stop if the zap file is missing or lists no pads. See the [appendix](#appendix-known-paths-by-machine) for where copies were last seen.
-
 Set the environment:
 
 ```bash
@@ -49,7 +47,7 @@ From this directory:
 
 ```bash
 ./fission.py studies/smoke.ini --dry-run   # list what would run
-./fission.py studies/smoke.ini -j 2        # run it (a few minutes)
+./fission.py studies/smoke.ini -j 2        # run using two jobs using 4 threads per job (a few minutes)
 ```
 
 Output:
@@ -86,23 +84,22 @@ plot_fit("smoke", "base")
 
 ## Writing a study
 
-`studies/` holds:
+A study is one `.ini` file in `studies/`. The file name (without `.ini`) is the study name. It holds the outputs to make and their settings. It is the record of what was done, so commit it.
 
-- `smoke.ini`: a quick end-to-end check.
-- `smoke_refit.ini`: refits smoke's digi from another study.
-- `digi_scan.ini` and `fit_scan.ini`: digitize smoke's sim several ways, then fit each digi from a third study.
-- `bench.ini`: fit time vs. threads.
-- `decay_angle.ini`, `mass_dev.ini` and `eloss_mismatch.ini`: rebuilt from Skyler's results. Their settings are approximate.
+The studies already in `studies/`:
 
-A study is one `.ini` file in `studies/`. The file name (without `.ini`) is the study name. It holds the question, the outputs to make and their settings, and the result once you have it. It is the record of what was done, so commit it.
+- `smoke.ini`: 5 events through sim, digi and fit, plus a second fit of the same digi with SRIM tables. 
+- `smoke_refit.ini`: one more fit (20 iterations) of `smoke.ini`'s digi. An example of a study that reads another study's output (see [Reading another study](#reading-another-study)).
+- `digi_scan.ini`: digitize `smoke.ini`'s sim with three different sets of parameters.
+- `fit_scan.ini`: one fit of each `digi_scan.ini` digitization. 
+- `bench.ini`: one sim and digi, fit with 1, 2, 4 and 8 threads, to time the fit.
+- `decay_angle.ini` (decay angle 90° vs. 120°), `mass_dev.ini` (`massDev` 0 vs. 2) and `eloss_mismatch.ini` Guessed implementations of skyler's previous results
 
-Each section makes exactly one output: a simulation `[sim <name>]`, a digitization `[digi <name>]` or a fit `[fit <name>]`.
+Each section makes exactly one output called `<name>`. By default, the stage looks for a proper input of the same name, but that can be overwritten using `input`.
+
+There are three stages: a simulation `[sim <name>]`, a digitization `[digi <name>]` and a fit `[fit <name>]`.
 
 ```ini
-[study]
-question = Does fixing the decay angle improve Z resolution?
-result   =                    ; fill in when done
-
 [defaults]                    ; <stage>.<key>, applies to every section of that stage
 sim.events = 500
 sim.zToSim = 50
@@ -116,7 +113,7 @@ decayAngle = 90
 
 [fit 90deg]                   ; fits [digi 90deg]
 
-[fit 90deg-srim]              ; fits [digi 90deg] again, with SRIM tables
+[fit 90deg-srim]              ; fits [digi 90deg], with SRIM tables
 input = 90deg
 eloss = SRIM
 ```
@@ -124,31 +121,31 @@ eloss = SRIM
 Rules:
 
 - A key `k` in a `[<stage> <name>]` section is the setting `<stage>.k`. In `[defaults]`, write the full `<stage>.k`. This holds for every setting, including `sim.events`, `sim.chunks`, `<stage>.seed`, `<stage>.input` and `<stage>.slurm.*` (see the [reference](#settings-reference)).
-- A section's settings are the `[defaults]` keys of its stage, overridden by the section. Other stages' defaults never reach it: `fit.iter` in `[defaults]` changes the fits only.
+- A section's settings are the `[defaults]` keys of its *stage*, overridden by the section.
 - Anything not set uses the macro's built-in default.
 - Comments start with `;` or `#`.
 - Section names may use letters, digits, `_` and `-`, and are unique per stage (a sim and a fit may share a name). Study names (the file name) may use letters, digits and `_`, so `<study>-<name>` splits only one way.
-- Any section header other than `[study]`, `[defaults]` and `[sim|digi|fit <name>]` is an error, as is a key with a stage prefix inside a stage's section.
+- Any section header other than `[defaults]` and `[sim|digi|fit <name>]` will error, as will a key with a stage prefix inside a stage's section.
 
 ### What a section reads
 
-A digi reads a sim, and a fit reads a digi: always an output of the stage just before it. Which one is set by `input`, looked up in this order:
+A digitization's input is a simulation output, and a fit's input is a digitization output. The input is chosen in this order:
 
-1. `input` in the section.
-2. `<stage>.input` in `[defaults]`, e.g. `fit.input = t1` to fit one digi several ways.
-3. The section of the previous stage with the same name: `[fit 90deg]` reads `[digi 90deg]`. If there is none, the driver stops and names the section it looked for.
+1. `input` key listed in the section in the section.
+2. `<stage>.input` in `[defaults]`, e.g. `fit.input = t1` to fit one digitization several ways.
+3. The output of the previous stage with the same name: `[fit 90deg]` fits the output of `[digi 90deg]`. If there is no such section, the driver stops and names the section it looked for.
 
-`input` takes three forms:
+The `input` key has three forms for chaining different studies. For example, for a fit:
 
-| Form | Reads |
+| Form | Input |
 |---|---|
-| `input = 90deg` | `[digi 90deg]` (for a fit) in this study |
-| `input = decay_angle:90deg` | `[digi 90deg]` in `studies/decay_angle.ini` |
-| `input = try.digi.root`, `input = a-b.digi.c*.root` | existing files: a path or glob (anything containing `/` or ending in `.root`), absolute or relative to `$FISSION_DATA` |
+| `input = 90deg` | the output of `[digi 90deg]` from this study |
+| `input = decay_angle:90deg` | the output of `[digi 90deg]` in the same folder as this study |
+| `input = manualDigi.root` | a digitization file made outside the driver by running `run_digi_fiss.C` [by hand](#running-macros-by-hand).|
 
-A sim has no input.
+An `input` containing `/` or ending in `.root` is a file path which is treated as relative to `$FISSION_DATA` unless it's an absolute path. It may be a glob that matches several files. See [Reading files](#reading-files).
 
-Selecting a section also brings its inputs in this study up to date: running a fit runs its digi and sim first if they are missing or stale.
+Running a section also brings its inputs in this study up to date: running a fit first runs its digitization and simulation if they are missing or suspected to be out of date.
 
 ### What a stage is passed
 
@@ -186,8 +183,8 @@ The other study can't see the sections here. Don't rerun its outputs while secti
 `input` may also be a path or glob for files, such as ones made [by hand](#running-macros-by-hand):
 
 ```ini
-[fit mytry]
-input = try.digi.root           ; or other-study-name.digi.c*.root, /elsewhere/x.digi.root
+[fit byhand]
+input = manual.digi.root        ; made by run_digi_fiss.C run by hand
 iter = 200
 ```
 
@@ -208,7 +205,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | Key | Default | Meaning |
 |---|---|---|
 | `<stage>.seed` | from study, name and stage (driver) | Random seed of the stage. Fixed for a given section, so sim and digi reruns reproduce. The fit does not (see [parallel running](#parallel-running)). |
-| `<stage>.input` | the section of the previous stage with the same name (driver) | What a digi or fit reads. See [What a section reads](#what-a-section-reads). Not allowed for a sim. |
+| `<stage>.input` | the section of the previous stage with the same name (driver) | The section's input. See [What a section reads](#what-a-section-reads). Not allowed for a sim. |
 | `<stage>.slurm.time`, `<stage>.slurm.mem` | per stage (driver) | `sbatch` request. See [Running on a cluster](#running-on-a-cluster). |
 
 **Simulation (`sim.`)**
@@ -352,8 +349,6 @@ show_groups("Z", "./groups_decay_angle", true)     // overlaid
 
 Fits with the same value of the setting are combined. The values come from the settings recorded in each fit file, which include its whole chain's settings and the fit macro's defaults. Only the `[fit <name>]` sections in `studies/<study>.ini` are used, so leftover files from renamed or removed fits are ignored. Start ROOT from this directory so it can find the study file. The plot names are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `MR`, `Beam`, `ZvsObj`, `ZvsAmp`, `AmpvsPosObj`, `AmpvsObj`, `AmpvsLoc`, `ZvsObjSim`, `ZSim` and `ZDiff`.
 
-When the study is done, write the answer in its `result =` line and commit the study file.
-
 ## Running on a cluster
 
 ```bash
@@ -421,6 +416,8 @@ Interactive viewers (`run_eve_*.C`) take file names directly and are not part of
 
 **`Settings never read by this stage (typo?)`.** A misspelled key in the study file. Fix the spelling.
 
+**`unknown stage`.** A misspelled stage prefix in `[defaults]`, such as `simm.events`. Fix the spelling.
+
 **`unknown section`, `needs a stage prefix`, `have no stage prefix`.** The study file is in the wrong shape, often an old one with `[run <name>]` sections, unprefixed `events`/`seed`, or `upstream`. Rewrite it as `[sim|digi|fit <name>]` sections (see [Writing a study](#writing-a-study)).
 
 **`[fit x] reads [digi x] by default, but there is none`.** A digi or fit has no `input` and no same-named section of the previous stage. Add that section, or set `input`.
@@ -448,18 +445,11 @@ Interactive viewers (`run_eve_*.C`) take file names directly and are not part of
 ## Appendix: Known Paths by Machine
 
 Paths seen in this code's history or found by searching, as of 2026-09. Each is specific to one machine and may be stale. Entries marked "from history" were never checked.
+**Adam's laptop (WSL)** (checked 2026-10)
+- Shared info: `/home/adam/fair_install/tpcSharedInfo/`. Complete, including `eLoss/LISE/83_200.txt`. The LISE and SRIM sets list different fragments, and SRIM has no `83_200.txt`.
 
-**Adam's laptop (WSL)**
-- eLoss tables (fragments only): `<repo>/macro/e12014/adam/determineZ/eLoss/`
-- `respAvg.root`: `<repo>/macro/e12014/curtis/viewer/respAvg.root`
-- `e12014_zap.csv`: `/mnt/e/Users/Adam/Dropbox/MSU/fission/e12014_zap.csv`
-- Raw SRIM outputs: `/mnt/e/Users/Adam/Dropbox/MSU/fission/SRIM/`, `/mnt/e/Users/Adam/Documents/SRIM/SRIM Outputs/`
-- `83_200.txt`: not found on any drive
-- Old shared info `/home/adam/fair_install/tpcSharedInfo/`: from history, gone now
-
-**Skyler's machine** (from history; the `physics` and `skyler` users are the same machine)
-- Shared info: `/home/skyler/fission/tpcSharedInfo/`. This is the only known complete set, including `83_200.txt`.
-- Shared info, older (2024): `/home/physics/fair_install/tpcSharedInfo/`
+**Faculty lab machine** (from history; the `physics` and `skyler` users are the same machine)
+- Shared info: `/home/skyler/fission/tpcSharedInfo/`. Includes `83_200.txt`.
 - Data: `/mnt/tpc-data/`
 
 **Faculty cluster, `aanthony`** (from history; SLURM, `cs` partition)
