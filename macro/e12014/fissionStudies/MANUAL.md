@@ -229,6 +229,7 @@ The histograms and plot names are listed in [Plots](#plots).
 From your own machine, with the cluster `hpc` defined in `remotes.ini` (below):
 
 ```bash
+./fission.py --remote hpc --sync                            # bring the cluster's checkout to this commit, built
 ./fission.py studies/decay_angle.ini --remote hpc --slurm    # submit the study on the cluster
 ./fission.py studies/decay_angle.ini --remote hpc --status   # check on it
 ./fission.py studies/decay_angle.ini --remote hpc --fetch    # copy the finished fits' results here
@@ -241,15 +242,36 @@ root -l -e '.L plot_fit.C' -e 'plot_fit("hpc:decay_angle", "90deg")'   # plot th
 Prerequisites:
 
 - `ssh <host>` works without a prompt (a key, or an agent). Put any port, user or key for the host in `~/.ssh/config`.
-- A built ATTPCROOT checkout on the cluster, on the same branch, with `build/config.sh`.
 - `remotes.ini` next to `fission.py` (not committed). Copy `remotes.ini.example` and fill it in:
 
 | Key | Meaning |
 |---|---|
 | `host` | ssh host or alias (from `~/.ssh/config`). |
-| `repo` | The ATTPCROOT checkout on the cluster. The driver runs from the same directory in it as here. |
-| `env.<VAR>` | Exported on the cluster before running, e.g. `env.TPC_SHARED_INFO` and `env.FISSION_DATA` (paths the compute nodes can see). Used as written: no `~` or `$VAR` expansion. |
+| `repo` | The ATTPCROOT checkout on the cluster, used only by this driver (`--sync` creates it if missing). The driver runs from the same directory in it as here. |
+| `env.<VAR>` | Exported on the cluster before running, configuring and building, e.g. `env.TPC_SHARED_INFO` and `env.FISSION_DATA` (paths the compute nodes can see), and `env.SIMPATH` and `env.FAIRROOTPATH` for a new checkout. Used as written: no `~` or `$VAR` expansion. |
+| `cmake.<VAR>` | Passed as `-D<VAR>=<value>` when `--sync` configures a new checkout, e.g. `cmake.CMAKE_PREFIX_PATH` (the HDF5 prefix, plus any other prefix the machine needs, `;`-separated). An existing build keeps its cache, so these matter only for a first configure. |
 | `[<stage>.]slurm.<key>` | Values for `slurm_job.sh` for every study run on this cluster (see [SLURM details](#slurm-details)). The study's settings override them. |
+
+**The cluster's checkout.** The code a study runs on the cluster (`fission.py`, the macros, the libraries) is the checkout at `repo`, not what is on your machine. It belongs to the driver, not to your daily work on the cluster: `./fission.py --remote hpc --sync` brings it to your current branch and commit and builds it. For a new cluster, set `env.SIMPATH`, `env.FAIRROOTPATH` and `cmake.CMAKE_PREFIX_PATH` (the values of the [first configure](../../../docs/tooling/installation.md), the HDF5 prefix included), pick a `repo` that doesn't exist yet, and run `--sync`. It:
+
+1. Sends the commits the cluster doesn't have, as a git bundle over ssh: the whole branch the first time (about 80 MB), later only the new commits. The cluster needs no GitHub access.
+2. Clones the checkout from it, or fast-forwards the existing one to your commit and checks out your branch. Changes to `studies/` there are uploaded copies, so they're discarded (the next command uploads them again).
+3. Configures the build if `build/config.sh` doesn't exist, with the `env.*` and `cmake.*` values.
+4. Builds it (`cmake --build`, half the login node's cores) unless the last `--sync` build is of this commit, and records the commit in `build/.fission_built`. Output goes to `<repo>/build/fission-sync.log`. It runs in the foreground: if the connection drops, run `--sync` again (the build is incremental).
+
+`--sync` runs alone (no study, no other action) and refuses when:
+
+- `repo` exists but isn't a git checkout;
+- the checkout has changes to tracked files outside `studies/` (someone edited it by hand: commit or discard them there);
+- any of your SLURM jobs there is a fission job (its name is `<study>-<name>.<stage>`), since queued jobs read the checkout when they start;
+- the cluster's copy of your branch has commits yours doesn't (it only fast-forwards);
+- a checkout without `build/config.sh` would be configured, but `env.SIMPATH`, `env.FAIRROOTPATH` or `cmake.CMAKE_PREFIX_PATH` isn't set. This is checked before anything is sent.
+
+Uncommitted changes on your machine are not sent: `--sync` and every `--remote` command warn `not on hpc: uncommitted changes in …` when tracked files outside `studies/` differ from your commit.
+
+**The sync check.** Every other `--remote` command checks that the cluster's checkout is at your commit, has no changes outside `studies/`, and was built by `--sync` at that commit. If not, it lists the differences (`hpc is at cc09f002, you are at 44fcc59d`, `hpc's build is from …`, `hpc has local changes: …`). `--slurm` then stops before submitting anything; add `--no-sync-check` to submit anyway. `--status`, `--show`, `--dry-run`, `--fetch` and `--fetch-logs` print the differences as warnings and go on.
+
+**Several versions on one cluster.** Each checkout is its own `remotes.ini` entry: the same `host`, a different `repo` (each a full clone with its own build), and usually the same `env.FISSION_DATA`. `--sync` each entry from the branch it should run. Fetched results stay apart, in `$FISSION_DATA/remote/<entry>/`, and `plot_fit("<entry>:<study>", …)` reads each entry's.
 
 **Results files.** Fits run through `--remote` also write `<fit>.results.root` (and its `.results.cfg`) in the same job, with `slim_fit.C`. It holds what `plot_fit.C` reads: per event, the fit results (`AtMCResult`), the truth (`SimInfo`), the best simulated event (`SimEvent`, 1 instead of 10) and the digi's hits (`AtEvent`) and Y-pattern (`AtFissionEvent`), with the same branch names, but no raw traces. That is about 70 kB per event, against about 35 MB for the digi and fit files. If writing it fails, the fit job fails.
 
@@ -363,7 +385,9 @@ Misspelled settings are errors. The driver rejects misplaced keys (no stage pref
 | `--slurm` | Submit to SLURM instead of running here. See [Running on a cluster](#running-on-a-cluster). |
 | `--slurm-set [STAGE.]slurm.KEY=VALUE` | A value for `slurm_job.sh` (repeatable; without `STAGE`, for every stage). Lowest priority: the study overrides it. |
 | `--results` | Fits also write a results file (`slim_fit.C`). `--remote` passes it. |
-| `--remote NAME` | Copy the study files to the cluster `NAME` of `remotes.ini` and run the command there. See [Running on a cluster](#running-on-a-cluster). |
+| `--remote NAME` | Copy the study files to the cluster `NAME` of `remotes.ini` and run the command there, after checking its checkout is at this commit. See [Running on a cluster](#running-on-a-cluster). |
+| `--sync` | With `--remote NAME`, alone (no study): bring the cluster's checkout to this branch and commit, creating it if missing, and build it. |
+| `--no-sync-check` | With `--remote NAME --slurm`: submit even if the cluster's checkout isn't at this commit, built. |
 | `--fetch` | With `--remote`: copy the selected fits' finished results files to `$FISSION_DATA/remote/NAME/`. |
 | `--fetch-logs` | With `--remote`: copy the selected sections' logs to `$FISSION_DATA/remote/NAME/`. |
 
@@ -486,6 +510,20 @@ The plot names for `show_groups` are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `
 **`slurm_job.sh uses @time@, but slurm.time is not set`.** No value for a placeholder of `slurm_job.sh`. Set it in `remotes.ini`, with `--slurm-set`, or in the study (see [SLURM details](#slurm-details)).
 
 **`slurm_job.sh never uses @foo@`.** A `slurm.foo` value with no `@foo@` in the template. Fix the spelling, or add a line using it to `slurm_job.sh`.
+
+**`hpc is at …, you are at …` / `hpc's build is …` / `--slurm` stops with `Run ./fission.py --remote hpc --sync`.** The cluster's checkout isn't at your commit, or wasn't built there by `--sync`, so the study would run other code than yours. Run `./fission.py --remote hpc --sync`, or add `--no-sync-check` to submit anyway. `hpc's build is not from a finished --sync` also follows a failed `--sync` build.
+
+**`hpc has no checkout at …`.** `repo` doesn't exist yet. Create it with `./fission.py --remote hpc --sync`.
+
+**`hpc has local changes`.** A tracked file outside `studies/` was edited in the cluster's checkout. Commit it there (and bring it into your branch) or discard it (`git -C <repo> checkout -- <file>`), then `--sync`.
+
+**`hpc has fission jobs in SLURM`.** `--sync` won't change the code under queued or running jobs. Wait for them, or `scancel` them.
+
+**`hpc's <branch> is at …, which has commits yours doesn't`.** Someone committed on the cluster's branch. Bring those commits into your branch (or reset the cluster's branch to one of yours), then `--sync`.
+
+**`has no configured build (build/config.sh), and … doesn't set`.** A new (or never configured) checkout needs `env.SIMPATH`, `env.FAIRROOTPATH` and `cmake.CMAKE_PREFIX_PATH` in `remotes.ini` (see [Running on a cluster](#running-on-a-cluster)).
+
+**`hpc: configure failed` / `hpc: build failed, see <repo>/build/fission-sync.log`.** The end of the log is printed. Fix the cause (often a `cmake.*` or `env.*` value) and run `--sync` again: it configures again only if `build/config.sh` is still missing, and the build picks up where it stopped. To configure from scratch, remove `<repo>/build` on the cluster first.
 
 **`ssh: connect to host … Connection timed out` / `Permission denied`.** The driver runs ssh with `BatchMode=yes` and a 30 s connection timeout, so it fails instead of prompting or hanging. Check that `ssh <host>` works without a prompt, and that the VPN is up if the cluster needs one.
 

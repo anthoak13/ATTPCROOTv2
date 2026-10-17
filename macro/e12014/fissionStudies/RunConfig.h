@@ -16,20 +16,6 @@
  *                    directory ROOT was started in.
  *   TPC_SHARED_INFO  directory holding eLoss/, respAvg.root and e12014_zap.csv
  */
-#include <TFile.h>
-#include <TNamed.h>
-#include <TString.h>
-#include <TSystem.h>
-
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <sstream>
-#include <stdexcept>
-#include <string>
-#include <vector>
 
 class RunConfig {
    std::map<std::string, std::string> fValues; // From the config file

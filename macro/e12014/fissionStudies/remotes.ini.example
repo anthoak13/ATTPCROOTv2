@@ -1,12 +1,30 @@
-; Clusters for fission.py --remote NAME, one section per cluster. Copy to remotes.ini (not committed)
-; and fill in. Values are used as written: no ~ or $VAR expansion.
+; Clusters for fission.py --remote NAME, one section per cluster checkout. Copy to remotes.ini (not
+; committed) and fill in. Values are used as written: no ~ or $VAR expansion.
 [hpc]
 host = hpc                          ; ssh host or alias (ports, keys etc. go in ~/.ssh/config)
-repo = /home/me/ATTPCROOTv2         ; ATTPCROOT checkout on the cluster, built (build/config.sh)
+repo = /home/me/attpcroot-fission   ; ATTPCROOT checkout used only by fission.py (--sync creates it)
 env.TPC_SHARED_INFO = /home/me/tpcSharedInfo
 env.FISSION_DATA = /scratch/me/fission
+; Only to configure a new checkout (--sync): the first-configure values of docs/tooling/installation.md.
+; ; separates CMake list items (a ; is a comment only after whitespace)
+env.SIMPATH = /home/me/fair_install/FairSoftInst
+env.FAIRROOTPATH = /home/me/fair_install/FairRootInst
+cmake.CMAKE_PREFIX_PATH = /home/me/fair_install/hdf5;/home/me/fair_install/HiRAEVTInst
 ; [<stage>.]slurm.<key>: values for slurm_job.sh's @<key>@, for every study run here
 slurm.time = 1-00:00:00
 slurm.mem = 4G
 fit.slurm.mem = 8G
 ; slurm.partition = cs              ; needs a line #SBATCH --partition=@partition@ in slurm_job.sh
+
+; Another code version on the same cluster: its own checkout (and build), the same data directory.
+; ./fission.py --remote hpc-dev --sync from the branch it should run.
+[hpc-dev]
+host = hpc
+repo = /home/me/attpcroot-fission-dev
+env.TPC_SHARED_INFO = /home/me/tpcSharedInfo
+env.FISSION_DATA = /scratch/me/fission
+env.SIMPATH = /home/me/fair_install/FairSoftInst
+env.FAIRROOTPATH = /home/me/fair_install/FairRootInst
+cmake.CMAKE_PREFIX_PATH = /home/me/fair_install/hdf5;/home/me/fair_install/HiRAEVTInst
+slurm.time = 1-00:00:00
+slurm.mem = 4G

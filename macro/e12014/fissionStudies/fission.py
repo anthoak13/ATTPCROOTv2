@@ -44,6 +44,7 @@ From your own machine, on a cluster defined in remotes.ini (see remotes.ini.exam
     ./fission.py studies/smoke.ini --remote hpc --slurm   # send the study files, submit it there
     ./fission.py studies/smoke.ini --remote hpc --status  # any command, run there
     ./fission.py studies/smoke.ini --remote hpc --fetch   # copy results files to $FISSION_DATA/remote/hpc
+    ./fission.py --remote hpc --sync                      # bring the cluster's checkout to this commit, built
 
 SLURM jobs are slurm_job.sh filled in, with values set in remotes.ini or the study (slurm.<key>).
 
@@ -59,6 +60,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import zlib
 from collections import Counter
@@ -73,8 +75,14 @@ MACROS = {"sim": "run_simp_fiss.C", "digi": "run_digi_fiss.C", "fit": "run_fit.C
 FIT_THREADS_DEFAULT = "4"  # run_fit.C's default for fit.threads, so SLURM requests what the fit uses
 SLURM_TEMPLATE = os.path.join(HERE, "slurm_job.sh")
 REMOTES = os.path.join(HERE, "remotes.ini")
-SSH = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=30"]  # Fail rather than prompt or hang
+# Fail rather than prompt or hang, and keep a silent connection (a --sync build) open
+SSH = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=30", "-o", "ServerAliveInterval=60"]
 LIST_MARKER = "fission.py file list"  # Starts --list-results/--list-logs output, after any login noise
+STATE_MARKER = "fission.py checkout state"  # Starts the cluster checkout's state, after any login noise
+BUILT = "build/.fission_built"  # In a cluster checkout: the commit --sync last built
+BUILD_LOCK = "build/.fission-sync.lock"  # Held by a --sync configure or build, and every process it starts
+BUILD_JOBS = 10  # Most parallel jobs for a --sync build: it runs on a shared login node
+SYNC_SETUP = ("env.SIMPATH", "env.FAIRROOTPATH", "cmake.CMAKE_PREFIX_PATH")  # Needed to configure a new checkout
 PLACEHOLDER = re.compile(r"@([A-Za-z0-9_]+)@")
 SLURM_KEY = re.compile(rf"(?:({'|'.join(STAGES)})\.)?slurm\.([A-Za-z0-9_]+)")  # [<stage>.]slurm.<key>
 DRIVER_VALUES = ("job", "log", "dir", "cpus", "command")  # Placeholders fission.py fills itself
@@ -796,9 +804,18 @@ def list_files(study, sections, logs):
         print(os.path.getsize(path), os.path.relpath(path, DATA))
 
 
+def git(*args):
+    """Run git in this checkout: (its exit code, its stdout without the final newline)."""
+    result = subprocess.run(["git", "-C", HERE, *args], capture_output=True, text=True)
+    return result.returncode, result.stdout.rstrip("\n")
+
+
 class Remote:
     """A cluster from remotes.ini: how to reach it (host), where its checkout is (repo), and the
-    env.* and slurm values every study run there gets."""
+    env.*, cmake.* and slurm values every study run there gets.
+
+    The checkout belongs to this driver: --sync creates it, moves it to this checkout's commit and builds
+    it, and every other --remote command checks that it is there."""
 
     def __init__(self, name):
         self.name = name
@@ -821,38 +838,262 @@ class Remote:
             if not values.get(key):
                 sys.exit(f"{where}: {key} is not set (see {example})")
         self.host, self.repo = values.pop("host"), values.pop("repo").rstrip("/")
-        self.env, self.slurm_set = {}, []
+        self.env, self.cmake, self.slurm_set = {}, {}, []
         for key, val in values.items():
-            if key.startswith("env.") and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", key[len("env."):]):
-                self.env[key[len("env."):]] = val
+            prefix, _, var = key.partition(".")
+            if prefix in ("env", "cmake") and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", var):
+                (self.env if prefix == "env" else self.cmake)[var] = val
             elif SLURM_KEY.fullmatch(key):
                 self.slurm_set.append(f"{key}={val}")
             else:
-                sys.exit(f"{where}: unknown key {key} (use host, repo, env.<VAR> or [<stage>.]slurm.<key>)")
+                sys.exit(f"{where}: unknown key {key} (use host, repo, env.<VAR>, cmake.<VAR> or"
+                         f" [<stage>.]slurm.<key>)")
         # The cluster's copy of this directory, at the same place in its checkout
-        top = subprocess.run(["git", "-C", HERE, "rev-parse", "--show-toplevel"], capture_output=True, text=True)
-        if top.returncode != 0:
+        code, top = git("rev-parse", "--show-toplevel")
+        if code != 0:
             sys.exit(f"{HERE} is not in a git checkout, so its place in the cluster's checkout is unknown")
-        self.dir = self.repo + "/" + os.path.relpath(HERE, top.stdout.strip())
+        self.top, here = top, os.path.relpath(HERE, top)
+        self.dir = self.repo + "/" + here
+        # Uploaded study files differ from the commit by design, so changes there don't count
+        self.studies = here + "/studies"
 
     def run(self, command, **kwargs):
         """Run a command on the cluster (a string for its login shell), as subprocess.run."""
         sys.stdout.flush()  # Print what came before the command's output
         return subprocess.run(SSH + [self.host, command], **kwargs)
 
+    def state_script(self, head=None, branch=None):
+        """Shell commands (one per line, no !, so they also work joined by ; for any login shell) printing
+        STATE_MARKER, then the checkout's state as "<key> <value>" lines: git (a checkout) or exists (not
+        one), head, branch, change (per tracked change outside the studies), built (BUILT's commit) and
+        config (build/config.sh exists). With head and branch, for --sync, also: has (it has the commit
+        head), ref (its refs/heads/<branch>), building (an earlier --sync's configure or build still
+        holds BUILD_LOCK) and job (per SLURM job of yours)."""
+        q = shlex.quote
+        lines = [f"r={q(self.repo)}", f"echo {q(STATE_MARKER)}",
+                 'if [ -e "$r/.git" ]; then echo git; elif [ -e "$r" ]; then echo exists; fi',
+                 'cd "$r" 2>/dev/null && [ -e .git ] && { echo "head $(git rev-parse -q --verify HEAD)";'
+                 ' echo "branch $(git symbolic-ref -q --short HEAD)";'
+                 f" git status --porcelain -uno -- . {q(':(exclude)' + self.studies)} | sed 's/^/change /';"
+                 f' echo "built $(cat {BUILT} 2>/dev/null)"; [ -f build/config.sh ] && echo config;'
+                 + (f" git cat-file -e {q(head + '^{commit}')} 2>/dev/null && echo has;"
+                    f' echo "ref $(git rev-parse -q --verify {q("refs/heads/" + branch)})";'
+                    f" [ -e {BUILD_LOCK} ] && {{ flock -n {BUILD_LOCK} true || echo building; }};" if head else "")
+                 + " }"]
+        if head:
+            lines.append("command -v squeue >/dev/null && squeue -h --me -o %j | sed 's/^/job /'")
+        return lines + ["true"]
+
+    @staticmethod
+    def parse_state(output):
+        """The state printed by state_script(), as a dict (change and job: lists), or None if missing."""
+        lines = output.splitlines()
+        if STATE_MARKER not in lines:
+            return None
+        state = {"change": [], "job": []}
+        for line in lines[lines.index(STATE_MARKER) + 1:]:
+            key, _, val = line.partition(" ")
+            if key in ("change", "job"):
+                state[key].append(val)
+            else:
+                state[key] = val.strip()
+        return state
+
+    def state(self, head=None, branch=None):
+        """The checkout's state (see state_script()), for --sync."""
+        result = self.run("bash -l -s", input="\n".join(self.state_script(head, branch)) + "\n",
+                          text=True, stdout=subprocess.PIPE)
+        state = self.parse_state(result.stdout)
+        if result.returncode != 0 or state is None:
+            sys.exit(f"Could not read the state of {self.name}:{self.repo}\n{result.stdout}")
+        return state
+
     def upload(self, paths):
-        """Copy files below HERE to the same place in the cluster's checkout, overwriting its copies."""
+        """Copy files below HERE to the same place in the cluster's checkout, overwriting its copies.
+        Returns the checkout's state (see state_script()), read in the same ssh call."""
         rel = [os.path.relpath(p, HERE) for p in paths]
         for path, r in zip(paths, rel):
             if r.startswith(".."):
                 sys.exit(f"{short_path(path)} is not below {short_path(HERE)}, so it can't be sent to {self.name}")
         tar = subprocess.Popen(["tar", "-C", HERE, "-cf", "-", "--", *rel], stdout=subprocess.PIPE)
-        result = self.run(f"cd {shlex.quote(self.dir)} && tar -xf -", stdin=tar.stdout)
+        script = f"cd {shlex.quote(self.dir)} 2>/dev/null && tar -xf - || ok=1; " \
+            + "; ".join(self.state_script()) + "; exit ${ok:-0}"
+        result = self.run("bash -lc " + shlex.quote(script), stdin=tar.stdout, stdout=subprocess.PIPE, text=True)
         tar.stdout.close()
-        if tar.wait() != 0 or result.returncode != 0:
-            sys.exit(f"Could not copy study files to {self.name}:{self.dir}")
+        state = self.parse_state(result.stdout)
+        if state is not None and "git" not in state:
+            sys.exit(f"{self.name} has no checkout at {self.repo}: create it with ./fission.py --remote"
+                     f" {self.name} --sync" if "exists" not in state else
+                     f"{self.name}:{self.repo} is not a git checkout (see remotes.ini.example)")
+        if tar.wait() != 0 or result.returncode != 0 or state is None:
+            problems = self.differences(state or {})
+            sys.exit("\n".join(problems + [f"Could not copy study files to {self.name}:{self.dir}"]) + (
+                f" (./fission.py --remote {self.name} --sync updates the checkout)" if problems else
+                "" if state else f"\n{result.stdout}"))
         for r in rel:
             print(f"uploaded {r} to {self.name}")
+        return state
+
+    def local_changes(self):
+        """Tracked files changed in this checkout, outside the studies (which are uploaded)."""
+        code, out = git("-C", self.top, "status", "--porcelain", "-uno", "--", ".", ":(exclude)" + self.studies)
+        return [line[3:] for line in out.splitlines()] if code == 0 else []
+
+    def differences(self, state):
+        """How the cluster's checkout, with this state, differs from this checkout's commit, as messages."""
+        if "head" not in state:
+            return []
+        _, head = git("rev-parse", "HEAD")
+        _, branch = git("symbolic-ref", "-q", "--short", "HEAD")
+        messages = []
+        if state["head"] != head:
+            on = (f" (on {state['branch'] or 'a detached HEAD'})", f" (on {branch or 'a detached HEAD'})") \
+                if state.get("branch") != branch else ("", "")
+            messages.append(f"{self.name} is at {state['head'][:8]}{on[0]}, you are at {head[:8]}{on[1]}")
+        if state.get("built") != state["head"]:
+            messages.append(f"{self.name}'s build is from {state['built'][:8]}" if state.get("built") else
+                            f"{self.name}'s build is not from a finished --sync")
+        if state["change"]:
+            messages.append(f"{self.name} has local changes: {', '.join(c[3:] for c in state['change'])}")
+        return messages
+
+    def check(self, state, refuse):
+        """Warn when the cluster's checkout isn't this commit, built, or with refuse, stop."""
+        sys.stdout.flush()
+        changes = self.local_changes()
+        if changes:
+            print(f"warning: not on {self.name}: uncommitted changes in {', '.join(changes)}", file=sys.stderr)
+        problems = self.differences(state)
+        fix = ("Discard the changes there, then run" if state["change"] else "Run") \
+            + f" ./fission.py --remote {self.name} --sync to update it"
+        if problems and refuse:
+            sys.exit("\n".join(problems) + f"\n{fix} (or add --no-sync-check to run anyway)")
+        for problem in problems + [fix] * bool(problems):
+            print(f"warning: {problem}", file=sys.stderr)
+
+    def sync(self):
+        """--sync: bring the cluster's checkout to this checkout's branch and commit, creating it if
+        needed, and build it. Fast-forward only, and never with changes or fission jobs there."""
+        name, q = self.name, shlex.quote
+        code, branch = git("symbolic-ref", "-q", "--short", "HEAD")
+        if code != 0:
+            sys.exit("--sync needs a branch checked out here, not a detached HEAD")
+        _, head = git("rev-parse", "HEAD")
+        changes = self.local_changes()
+        if changes:
+            print(f"warning: not sent to {name}: uncommitted changes in {', '.join(changes)}", file=sys.stderr)
+
+        state = self.state(head, branch)
+        new = "git" not in state
+        if "exists" in state:
+            sys.exit(f"{name}:{self.repo} exists but is not a git checkout: set repo to a new path (--sync"
+                     " creates it) or remove it")
+        if state["change"]:
+            sys.exit(f"{name} has local changes in {self.repo}: {', '.join(c[3:] for c in state['change'])}\n"
+                     "--sync won't overwrite them: commit or discard them there, then rerun it")
+        jobs = sorted(j for j in state["job"] if JOB_NAME.fullmatch(j))
+        if jobs:
+            sys.exit(f"{name} has fission jobs in SLURM, which read the checkout when they start:"
+                     f" {', '.join(jobs)}\nWait for them to finish (or scancel them), then rerun --sync")
+        if "building" in state:
+            sys.exit(f"An earlier --sync is still configuring or building {name}:{self.repo} (it keeps running"
+                     f" after a dropped connection; see {self.repo}/build/fission-sync.log). Wait for it to"
+                     " finish, then rerun --sync")
+        missing = [key for key in SYNC_SETUP if not (self.env if key.startswith("env.") else self.cmake)
+                   .get(key.partition(".")[2])]
+        if "config" not in state and missing:
+            sys.exit(f"{name}:{self.repo} has no configured build (build/config.sh), and {short_path(REMOTES)}:"
+                     f" [{name}] doesn't set {', '.join(missing)}, which configuring it needs (see"
+                     " remotes.ini.example)")
+        ref = state.get("ref")
+        if ref and (git("cat-file", "-e", ref + "^{commit}")[0] != 0
+                    or git("merge-base", "--is-ancestor", ref, head)[0] != 0):
+            sys.exit(f"{name}'s {branch} is at {ref[:8]}, which has commits yours doesn't: bring them into your"
+                     f" branch (or move the cluster's {branch} back), then rerun --sync")
+
+        # Send the commits it doesn't have, as a bundle over ssh
+        bundle = f"{self.repo}.fission-sync.bundle" if new else f"{self.repo}/.git/fission-sync.bundle"
+        if "has" not in state:
+            basis = [] if new else [f"^{c}" for c in dict.fromkeys((state.get("head"), ref))
+                                    if c and git("cat-file", "-e", c + "^{commit}")[0] == 0]
+            _, count = git("rev-list", "--count", branch, *basis)
+            with tempfile.TemporaryDirectory() as tmp:
+                local = os.path.join(tmp, "sync.bundle")
+                if subprocess.run(["git", "-C", HERE, "bundle", "create", local, branch, *basis]).returncode != 0:
+                    sys.exit("git bundle failed")
+                print(f"{name}: sending {count} commit{'s' if count != '1' else ''} of {branch}"
+                      f" ({os.path.getsize(local) / 1e6:.1f} MB)")
+                with open(local, "rb") as f:
+                    sent = self.run(f"mkdir -p {q(os.path.dirname(bundle))} && cat > {q(bundle)}", stdin=f)
+                if sent.returncode != 0:
+                    sys.exit(f"Could not send the commits to {name}:{bundle}")
+
+        # Move the checkout to the commit (fast-forward only), or create it
+        if new:
+            _, origin = git("remote", "get-url", "origin")
+            script = [f"trap 'rm -f {q(bundle)}' EXIT",
+                      f"git clone -q -b {q(branch)} {q(bundle)} {q(self.repo)} < /dev/null || exit 1",
+                      f"cd {q(self.repo)} || exit 1",
+                      f"git remote set-url origin {q(origin)}" if origin else "git remote remove origin"]
+            done = f"{name}: cloned {branch} at {head[:8]} into {self.repo}"
+        elif state.get("head") == head and state.get("branch") == branch:
+            script, done = None, f"{name}: already at {head[:8]}"
+        else:
+            script = [
+                f"cd {q(self.repo)} || exit 1",
+                *([f"trap 'rm -f {q(bundle)}' EXIT",
+                   f"git fetch -q {q(bundle)} {q('refs/heads/' + branch)} < /dev/null || exit 1"]
+                  if "has" not in state else []),
+                f"new={head}",
+                # Uploaded study files: the tracked ones go back to the commit, and untracked ones the new
+                # commit tracks are removed, so they don't block the checkout. They're uploaded again.
+                f"git diff --quiet -- {q(self.studies)} || git checkout -q -- {q(self.studies)} || exit 1",
+                f"git ls-files -o -- {q(self.studies)} | while read -r f; do"
+                ' git cat-file -e "$new:$f" 2>/dev/null && rm -f "$f"; done',
+                f"old=$(git rev-parse -q --verify {q('refs/heads/' + branch)})",
+                'if [ -n "$old" ] && ! git merge-base --is-ancestor "$old" "$new"; then echo'
+                f" {q(f'{name} has commits on {branch} yours does not, bring them into your branch')}"
+                " >&2; exit 1; fi",
+                f'if [ "$(git symbolic-ref -q --short HEAD)" = {q(branch)} ]; then'
+                ' git merge -q --ff-only "$new" || exit 1;'
+                f' else git branch -f {q(branch)} "$new" && git checkout -q {q(branch)} || exit 1; fi',
+            ]
+            old = state.get("head", "")[:8]
+            done = f"{name}: fast-forward {old} -> {head[:8]}" if state.get("branch") == branch else \
+                f"{name}: checked out {branch} at {head[:8]}" \
+                f" (was {old} on {state.get('branch') or 'a detached HEAD'})"
+        if script:
+            script.append(f"git rev-parse -q --verify refs/remotes/origin/{q(branch)} >/dev/null &&"
+                          f" git branch -q --set-upstream-to=origin/{q(branch)} {q(branch)}; true")
+            if self.run("bash -l -s", input="\n".join(script) + "\n", text=True).returncode != 0:
+                sys.exit(f"Updating {name}:{self.repo} failed")
+        print(done)
+
+        # Configure (once: build/config.sh is written at the end of a successful configure) and build.
+        # cmake and the compilers inherit the lock, so a build left running by a dropped connection
+        # still holds it.
+        log = f"{self.repo}/build/fission-sync.log"
+        def fail(step):
+            return f"{{ echo {q(f'{name}: {step} failed, see {log}:')} >&2; tail -n 40 {q(log)} >&2; exit 1; }}"
+        script = [
+            *(f"export {var}={q(val)}" for var, val in self.env.items()),
+            f"cd {q(self.repo)} || exit 1", "mkdir -p build || exit 1",
+            f"exec 9>> {BUILD_LOCK} && flock -n 9 || {{ echo"
+            f" {q(f'{name}: another --sync is configuring or building there, see {log}')} >&2; exit 1; }}",
+            f": > {q(log)}",
+            "if [ ! -f build/config.sh ]; then"
+            f" cmake -S {q(self.repo)} -B {q(self.repo + '/build')}"
+            + "".join(f" {q(f'-D{var}={val}')}" for var, val in self.cmake.items())
+            + f" < /dev/null >> {q(log)} 2>&1 || {fail('configure')}; echo {q(name + ': configured')}; fi",
+            f'if [ "$(cat {BUILT} 2>/dev/null)" != {head} ]; then rm -f {BUILT};'
+            f' n=$(( $(nproc) / 2 )); [ "$n" -le {BUILD_JOBS} ] || n={BUILD_JOBS}; [ "$n" -ge 1 ] || n=1;'
+            f" echo {q(name + ': building ' + head[:8] + ' (log: ' + log + ')')};"
+            f' cmake --build build -j "$n" < /dev/null >> {q(log)} 2>&1 || {fail("build")};'
+            f" echo {head} > {BUILT}; echo {q(name + ': built ' + head[:8])};"
+            f" else echo {q(name + ': build already at ' + head[:8])}; fi",
+        ]
+        if self.run("bash -l -s", input="\n".join(script) + "\n", text=True).returncode != 0:
+            sys.exit(1)
 
     def driver(self, args, **kwargs):
         """Run fission.py on the cluster, in its environment, with the remote's settings and args."""
@@ -902,17 +1143,27 @@ def remote_args(args, study):
 
 
 def run_remote(study, args):
-    """--remote: send the study files to the cluster, then run fission.py there, or with --fetch or
-    --fetch-logs copy its results or logs here."""
+    """--remote: send the study files to the cluster, check its checkout is this commit, then run fission.py
+    there, or with --fetch or --fetch-logs copy its results or logs here. Or with --sync, update the
+    cluster's checkout."""
     remote = Remote(args.remote)
     fetch = args.fetch or args.fetch_logs
+    if args.sync:
+        if study or args.selectors or args.stage or args.force or args.j != 1 or args.slurm_set or fetch \
+                or args.slurm or args.status or args.show or args.dry_run or args.no_sync_check:
+            sys.exit("--sync runs alone: ./fission.py --remote NAME --sync")
+        remote.sync()
+        return
+    if study is None:
+        sys.exit("--remote needs a study file (or --sync)")
     if not (fetch or args.slurm or args.status or args.show or args.dry_run):
         sys.exit("With --remote, add --slurm, --status, --show, --dry-run, --fetch or --fetch-logs (jobs"
                  " don't run on the cluster's login node)")
     if fetch and (args.slurm or args.status or args.show or args.force or args.j != 1):
         sys.exit("--fetch and --fetch-logs only copy files: run them without --slurm, --status, --show,"
                  " --force and -j")
-    remote.upload([s.path for s in referenced_studies(study)])
+    state = remote.upload([s.path for s in referenced_studies(study)])
+    remote.check(state, refuse=args.slurm and not args.no_sync_check)
     cluster_args = remote_args(args, study)
     if not fetch:
         sys.exit(remote.driver(cluster_args).returncode)
@@ -994,7 +1245,7 @@ def parse_slurm_set(values):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("study", help="study file (.ini)")
+    parser.add_argument("study", nargs="?", help="study file (.ini). Not with --sync")
     parser.add_argument("selectors", nargs="*", metavar="SECTION",
                         help="NAME (every section with that name) or NAME.STAGE (one section). Default: all")
     parser.add_argument("--stage", choices=STAGES, action="append",
@@ -1021,17 +1272,24 @@ def main():
                         help="with --remote: copy the finished fits' results files to $FISSION_DATA/remote/NAME")
     parser.add_argument("--fetch-logs", action="store_true",
                         help="with --remote: copy the sections' logs to $FISSION_DATA/remote/NAME")
+    parser.add_argument("--sync", action="store_true",
+                        help="with --remote, alone: bring the cluster's checkout to this branch and commit"
+                             " (creating it if missing), and build it")
+    parser.add_argument("--no-sync-check", action="store_true",
+                        help="with --remote --slurm: submit even if the cluster's checkout isn't this commit, built")
     parser.add_argument("--list-results", action="store_true", help=argparse.SUPPRESS)  # Used by --fetch
     parser.add_argument("--list-logs", action="store_true", help=argparse.SUPPRESS)  # Used by --fetch-logs
     args = parser.parse_intermixed_args()
 
     parse_slurm_set(args.slurm_set)
-    study = load_study(args.study)
     if args.remote:
-        run_remote(study, args)
+        run_remote(args.study and load_study(args.study), args)
         return
-    if args.fetch or args.fetch_logs:
-        sys.exit("--fetch and --fetch-logs need --remote NAME")
+    if args.fetch or args.fetch_logs or args.sync or args.no_sync_check:
+        sys.exit("--fetch, --fetch-logs, --sync and --no-sync-check need --remote NAME")
+    if args.study is None:
+        parser.error("the following arguments are required: study")
+    study = load_study(args.study)
     sections = select(study, args.selectors, args.stage)
     if args.list_results or args.list_logs:
         list_files(study, sections, args.list_logs)
