@@ -6,7 +6,6 @@
 
 #include "RunConfig.h"
 
-#include <algorithm>
 #include <cctype>
 #include <fstream>
 #include <map>
@@ -95,28 +94,18 @@ void group_fit_plots(TString study, TString key, TString outputDir = "")
    if (fits.empty())
       return;
    std::map<std::string, std::vector<TString>> groups;
-   auto dataDir = source.dir;
-   auto dir = gSystem->OpenDirectory(dataDir);
-   while (auto entry = dir ? gSystem->GetDirEntry(dir) : nullptr) {
-      TString name = entry;
-      if (std::none_of(fits.begin(), fits.end(),
-                       [&](const TString &fit) { return IsFitFile(name, source.study, fit, source.results); }))
-         continue;
-      if (!IsFinished(dataDir + "/" + name))
-         continue;
-      auto cfg = RunConfig::FromOutput(dataDir + "/" + name);
-      auto value = cfg.GetStr(key.Data(), "");
-      if (value.empty()) {
-         Warning("group_fit_plots", "%s has no %s, skipping", name.Data(), key.Data());
-         continue;
+   for (auto &fit : fits)
+      for (auto &file : FitFiles(study, fit)) {
+         auto value = RunConfig::FromOutput(file).GetStr(key.Data(), "");
+         if (value.empty()) {
+            Warning("group_fit_plots", "%s has no %s, skipping", file.Data(), key.Data());
+            continue;
+         }
+         groups[value].push_back(file);
       }
-      groups[value].push_back(dataDir + "/" + name);
-   }
-   if (dir)
-      gSystem->FreeDirectory(dir);
 
    if (groups.empty()) {
-      Error("group_fit_plots", "No fit files for study %s in %s", study.Data(), dataDir.Data());
+      Error("group_fit_plots", "No fit files for study %s in %s", study.Data(), source.dir.Data());
       return;
    }
 

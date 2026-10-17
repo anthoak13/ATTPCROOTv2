@@ -212,7 +212,9 @@ struct FitSource {
    TString study;  // The study's name
    TString remote; // The remote's name, or "" for local fit files
    TString dir;    // Directory holding the files
-   bool results{}; // Files are results files (<fit>.results.root, see slim_fit.C) rather than fit files
+
+   /// Files are results files (<fit>.results.root, see slim_fit.C) rather than fit files
+   bool Results() const { return !remote.IsNull(); }
 };
 
 FitSource GetFitSource(TString study)
@@ -223,7 +225,6 @@ FitSource GetFitSource(TString study)
       source.remote = study(0, colon);
       source.study = study(colon + 1, study.Length());
       source.dir += "/remote/" + source.remote;
-      source.results = true;
    }
    return source;
 }
@@ -262,7 +263,7 @@ std::vector<TString> FitFiles(TString study, TString name)
    auto dir = gSystem->OpenDirectory(dataDir);
    while (auto entry = dir ? gSystem->GetDirEntry(dir) : nullptr) {
       TString file = entry;
-      if (!IsFitFile(file, source.study, name, source.results))
+      if (!IsFitFile(file, source.study, name, source.Results()))
          continue;
       if (IsFinished(dataDir + "/" + file))
          files.push_back(dataDir + "/" + file);

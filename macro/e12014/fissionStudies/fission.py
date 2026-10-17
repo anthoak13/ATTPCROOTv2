@@ -137,6 +137,26 @@ def read_cfg(path):
     return values
 
 
+def read_ini(path):
+    """Parse a study file or remotes.ini. No interpolation, so % is plain text. Any [DEFAULT] is an
+    ordinary (unknown) section, rather than one whose keys configparser copies into every other section."""
+    parser = configparser.ConfigParser(inline_comment_prefixes=(";", "#"), interpolation=None,
+                                       default_section="\0")
+    parser.optionxform = str  # Keep key case (decayAngle)
+    try:
+        parser.read(path)
+    except configparser.Error as error:
+        sys.exit(str(error))
+    return parser
+
+
+def other_study_path(study, spec):
+    """The study file an input = <study>:<name> reads from, or None if spec isn't one."""
+    if re.fullmatch(f"{STUDY_NAME}:{NAME}", spec):
+        return os.path.join(os.path.dirname(study.path), spec.split(":")[0] + ".ini")
+    return None
+
+
 _studies = {}
 
 
@@ -161,15 +181,7 @@ class Study:
         # Names end up in file names (<study>-<name>.<stage>), SLURM job names and ROOT command lines
         if not re.fullmatch(STUDY_NAME, self.name):
             sys.exit(f"{short_path(path)}: study name {self.name!r} may only use letters, digits and _")
-        # No interpolation, so % is plain text. Any [DEFAULT] is an ordinary (unknown) section, rather
-        # than one whose keys configparser copies into every other section.
-        parser = configparser.ConfigParser(inline_comment_prefixes=(";", "#"), interpolation=None,
-                                           default_section="\0")
-        parser.optionxform = str  # Keep key case (decayAngle)
-        try:
-            parser.read(path)
-        except configparser.Error as error:
-            sys.exit(str(error))
+        parser = read_ini(path)
 
         defaults = {}
         self.raw = {}  # (stage, name) -> the section's keys as written, in file order
@@ -240,9 +252,9 @@ class Study:
         if is_input_file(spec):
             return InputFiles(spec, prev, where)
         study, name = self, spec
-        if re.fullmatch(f"{STUDY_NAME}:{NAME}", spec):
-            other, name = spec.split(":")
-            path = os.path.join(os.path.dirname(self.path), other + ".ini")
+        path = other_study_path(self, spec)
+        if path:
+            name = spec.split(":")[1]
             if not os.path.isfile(path):
                 sys.exit(f"{where}, but there is no {short_path(path)}")
             study = load_study(path)
@@ -435,13 +447,11 @@ class Job:
         the job fails, and the fit counts as not done."""
         sidecar = shlex.quote(self.sidecar)
         root = ["root", "-l", "-b", "-q", f'{MACROS[self.stage]}("{self.cfg_in}")']
-        if self.stage != "fit":
-            return f"rm -f {sidecar}; {shlex.join(root)}; test -f {sidecar}"
-        results_cfg = shlex.quote(self.results_cfg)
-        script = f"rm -f {sidecar} {shlex.quote(self.results)} {results_cfg}; {shlex.join(root)}; test -f {sidecar}"
-        if results:
+        old = [self.sidecar] + ([self.results, self.results_cfg] if self.stage == "fit" else [])
+        script = f"rm -f {shlex.join(old)}; {shlex.join(root)}; test -f {sidecar}"
+        if results and self.stage == "fit":
             slim = ["root", "-l", "-b", "-q", f'slim_fit.C("{self.output}", "{self.results}")']
-            script += f" && {shlex.join(slim)} && test -f {results_cfg} || {{ rm -f {sidecar}; false; }}"
+            script += f" && {shlex.join(slim)} && test -f {shlex.quote(self.results_cfg)} || {{ rm -f {sidecar}; false; }}"
         return script
 
     def run_local(self, results=False):
@@ -804,6 +814,12 @@ def list_files(study, sections, logs):
         print(os.path.getsize(path), os.path.relpath(path, DATA))
 
 
+def after_marker(output, marker):
+    """The lines of output after the line marker (skipping any login noise before it), or None."""
+    lines = output.splitlines()
+    return lines[lines.index(marker) + 1:] if marker in lines else None
+
+
 def git(*args):
     """Run git in this checkout: (its exit code, its stdout without the final newline)."""
     result = subprocess.run(["git", "-C", HERE, *args], capture_output=True, text=True)
@@ -823,13 +839,7 @@ class Remote:
         example = short_path(REMOTES + ".example")
         if not os.path.isfile(REMOTES):
             sys.exit(f"No {short_path(REMOTES)}: copy {example} to it and fill in your cluster")
-        parser = configparser.ConfigParser(inline_comment_prefixes=(";", "#"), interpolation=None,
-                                           default_section="\0")
-        parser.optionxform = str
-        try:
-            parser.read(REMOTES)
-        except configparser.Error as error:
-            sys.exit(str(error))
+        parser = read_ini(REMOTES)
         if name not in parser:
             sys.exit(f"{short_path(REMOTES)} has no [{name}] (it has: {', '.join(parser.sections()) or 'none'};"
                      f" see {example})")
@@ -862,6 +872,10 @@ class Remote:
         sys.stdout.flush()  # Print what came before the command's output
         return subprocess.run(SSH + [self.host, command], **kwargs)
 
+    def script(self, lines, **kwargs):
+        """Run lines as a script in a bash login shell on the cluster, as subprocess.run."""
+        return self.run("bash -l -s", input="\n".join(lines) + "\n", text=True, **kwargs)
+
     def state_script(self, head=None, branch=None):
         """Shell commands (one per line, no !, so they also work joined by ; for any login shell) printing
         STATE_MARKER, then the checkout's state as "<key> <value>" lines: git (a checkout) or exists (not
@@ -886,14 +900,17 @@ class Remote:
 
     @staticmethod
     def parse_state(output):
-        """The state printed by state_script(), as a dict (change and job: lists), or None if missing."""
-        lines = output.splitlines()
-        if STATE_MARKER not in lines:
+        """The state printed by state_script(), as a dict (change: changed paths, job: names), or None if
+        missing."""
+        lines = after_marker(output, STATE_MARKER)
+        if lines is None:
             return None
         state = {"change": [], "job": []}
-        for line in lines[lines.index(STATE_MARKER) + 1:]:
+        for line in lines:
             key, _, val = line.partition(" ")
-            if key in ("change", "job"):
+            if key == "change":
+                state[key].append(val[3:])  # Without git status's XY prefix
+            elif key == "job":
                 state[key].append(val)
             else:
                 state[key] = val.strip()
@@ -901,8 +918,7 @@ class Remote:
 
     def state(self, head=None, branch=None):
         """The checkout's state (see state_script()), for --sync."""
-        result = self.run("bash -l -s", input="\n".join(self.state_script(head, branch)) + "\n",
-                          text=True, stdout=subprocess.PIPE)
+        result = self.script(self.state_script(head, branch), stdout=subprocess.PIPE)
         state = self.parse_state(result.stdout)
         if result.returncode != 0 or state is None:
             sys.exit(f"Could not read the state of {self.name}:{self.repo}\n{result.stdout}")
@@ -954,7 +970,7 @@ class Remote:
             messages.append(f"{self.name}'s build is from {state['built'][:8]}" if state.get("built") else
                             f"{self.name}'s build is not from a finished --sync")
         if state["change"]:
-            messages.append(f"{self.name} has local changes: {', '.join(c[3:] for c in state['change'])}")
+            messages.append(f"{self.name} has local changes: {', '.join(state['change'])}")
         return messages
 
     def check(self, state, refuse):
@@ -989,7 +1005,7 @@ class Remote:
             sys.exit(f"{name}:{self.repo} exists but is not a git checkout: set repo to a new path (--sync"
                      " creates it) or remove it")
         if state["change"]:
-            sys.exit(f"{name} has local changes in {self.repo}: {', '.join(c[3:] for c in state['change'])}\n"
+            sys.exit(f"{name} has local changes in {self.repo}: {', '.join(state['change'])}\n"
                      "--sync won't overwrite them: commit or discard them there, then rerun it")
         jobs = sorted(j for j in state["job"] if JOB_NAME.fullmatch(j))
         if jobs:
@@ -1065,9 +1081,12 @@ class Remote:
         if script:
             script.append(f"git rev-parse -q --verify refs/remotes/origin/{q(branch)} >/dev/null &&"
                           f" git branch -q --set-upstream-to=origin/{q(branch)} {q(branch)}; true")
-            if self.run("bash -l -s", input="\n".join(script) + "\n", text=True).returncode != 0:
+            if self.script(script).returncode != 0:
                 sys.exit(f"Updating {name}:{self.repo} failed")
         print(done)
+        if "config" in state and state.get("built") == head:  # What the build script would find
+            print(f"{name}: build already at {head[:8]}")
+            return
 
         # Configure (once: build/config.sh is written at the end of a successful configure) and build.
         # cmake and the compilers inherit the lock, so a build left running by a dropped connection
@@ -1092,12 +1111,12 @@ class Remote:
             f" echo {head} > {BUILT}; echo {q(name + ': built ' + head[:8])};"
             f" else echo {q(name + ': build already at ' + head[:8])}; fi",
         ]
-        if self.run("bash -l -s", input="\n".join(script) + "\n", text=True).returncode != 0:
+        if self.script(script).returncode != 0:
             sys.exit(1)
 
     def driver(self, args, **kwargs):
         """Run fission.py on the cluster, in its environment, with the remote's settings and args."""
-        script = "\n".join([
+        return self.script([
             f"source {shlex.quote(self.repo + '/build/config.sh')} >/dev/null || exit 1",
             *(f"export {var}={shlex.quote(val)}" for var, val in self.env.items()),
             f"cd {shlex.quote(self.dir)} || exit 1",
@@ -1106,8 +1125,7 @@ class Remote:
             " command -v $py >/dev/null && break; done",
             "exec $py ./fission.py " + shlex.join(
                 ["--results"] + [a for v in self.slurm_set for a in ("--slurm-set", v)] + args),
-        ]) + "\n"
-        return self.run("bash -l -s", input=script, text=True, **kwargs)
+        ], **kwargs)
 
 
 def referenced_studies(study):
@@ -1119,38 +1137,38 @@ def referenced_studies(study):
         if current in found:
             continue
         found.append(current)
-        values = list(current.raw.values()) + [current.defaults["digi"], current.defaults["fit"]]
+        values = list(current.raw.values()) + [current.defaults[stage] for stage in STAGES[1:]]
         for spec in {v["input"] for v in values if "input" in v}:
-            if re.fullmatch(f"{STUDY_NAME}:{NAME}", spec):
-                path = os.path.join(os.path.dirname(current.path), spec.split(":")[0] + ".ini")
-                if os.path.isfile(path):  # If not, the cluster's driver says so
-                    todo.append(load_study(path))
+            path = other_study_path(current, spec)
+            if path and os.path.isfile(path):  # If not, the cluster's driver says so
+                todo.append(load_study(path))
     return found
 
 
 def remote_args(args, study):
-    """The command line for the cluster's fission.py: args without --remote and --fetch*."""
+    """The command line for the cluster's fission.py: args without --remote and --fetch* (and --dry-run
+    with them, which applies to the copy)."""
+    fetch = args.fetch or args.fetch_logs
     out = [os.path.relpath(study.path, HERE)] + args.selectors
     for stage in args.stage or []:
         out += ["--stage", stage]
     out += ["--force", args.force] if args.force else []
-    out += [flag for flag, on in (("--dry-run", args.dry_run), ("--show", args.show), ("--status", args.status),
-                                  ("--slurm", args.slurm)) if on]
+    out += [flag for flag, on in (("--dry-run", args.dry_run and not fetch), ("--show", args.show),
+                                  ("--status", args.status), ("--slurm", args.slurm)) if on]
     out += ["-j", str(args.j)] if args.j != 1 else []
     for value in args.slurm_set or []:
         out += ["--slurm-set", value]
     return out
 
 
-def run_remote(study, args):
+def run_remote(study, args, defaults):
     """--remote: send the study files to the cluster, check its checkout is this commit, then run fission.py
     there, or with --fetch or --fetch-logs copy its results or logs here. Or with --sync, update the
-    cluster's checkout."""
+    cluster's checkout. defaults holds each option's value when not given."""
     remote = Remote(args.remote)
     fetch = args.fetch or args.fetch_logs
     if args.sync:
-        if study or args.selectors or args.stage or args.force or args.j != 1 or args.slurm_set or fetch \
-                or args.slurm or args.status or args.show or args.dry_run or args.no_sync_check:
+        if any(val not in (defaults[key], []) for key, val in vars(args).items() if key not in ("remote", "sync")):
             sys.exit("--sync runs alone: ./fission.py --remote NAME --sync")
         remote.sync()
         return
@@ -1169,15 +1187,13 @@ def run_remote(study, args):
         sys.exit(remote.driver(cluster_args).returncode)
 
     # Ask the cluster's driver which files to copy: only it knows its files, queue and file names
-    cluster_args = [a for a in cluster_args if a != "--dry-run"]
     listing = remote.driver(cluster_args + ["--list-logs" if args.fetch_logs else "--list-results"],
                             stdout=subprocess.PIPE)
     if listing.returncode != 0:
         sys.exit(listing.returncode)
-    lines = listing.stdout.splitlines()
-    if LIST_MARKER not in lines:
+    lines = after_marker(listing.stdout, LIST_MARKER)
+    if not lines:
         sys.exit(f"Unexpected output from fission.py on {remote.name}:\n{listing.stdout}")
-    lines = lines[lines.index(LIST_MARKER) + 1:]
     remote_data, stems, files = lines[0], [], []
     for line in lines[1:]:
         first, _, rest = line.partition(" ")
@@ -1283,7 +1299,7 @@ def main():
 
     parse_slurm_set(args.slurm_set)
     if args.remote:
-        run_remote(args.study and load_study(args.study), args)
+        run_remote(args.study and load_study(args.study), args, {key: parser.get_default(key) for key in vars(args)})
         return
     if args.fetch or args.fetch_logs or args.sync or args.no_sync_check:
         sys.exit("--fetch, --fetch-logs, --sync and --no-sync-check need --remote NAME")
