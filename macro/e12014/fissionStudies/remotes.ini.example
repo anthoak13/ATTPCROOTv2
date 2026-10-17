@@ -1,0 +1,12 @@
+; Clusters for fission.py --remote NAME, one section per cluster. Copy to remotes.ini (not committed)
+; and fill in. Values are used as written: no ~ or $VAR expansion.
+[hpc]
+host = hpc                          ; ssh host or alias (ports, keys etc. go in ~/.ssh/config)
+repo = /home/me/ATTPCROOTv2         ; ATTPCROOT checkout on the cluster, built (build/config.sh)
+env.TPC_SHARED_INFO = /home/me/tpcSharedInfo
+env.FISSION_DATA = /scratch/me/fission
+; [<stage>.]slurm.<key>: values for slurm_job.sh's @<key>@, for every study run here
+slurm.time = 1-00:00:00
+slurm.mem = 4G
+fit.slurm.mem = 8G
+; slurm.partition = cs              ; needs a line #SBATCH --partition=@partition@ in slurm_job.sh

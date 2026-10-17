@@ -30,7 +30,7 @@ Reference:
 You need:
 
 - A built ATTPCROOT with its environment loaded (`source build/config.sh`). See [docs/tooling/installation.md](../../../docs/tooling/installation.md).
-- Python 3 (standard library only).
+- Python 3.8 or newer (standard library only). If `python3` is older, as on some clusters, run `python3.11 fission.py` (or whichever newer one there is) instead of `./fission.py`.
 - The shared inputs, in one directory pointed to by `TPC_SHARED_INFO`:
 
 ```
@@ -215,9 +215,9 @@ plot_fit(std::vector<TString>{"data/decay_angle-90deg.fit*.root", "data/decay_an
 
 ```cpp
 .L group_fit_plots.C
-group_fit_plots("decay_angle", "sim.decayAngle")   // writes ./groups_decay_angle/<plot>.root
-show_groups("Z", "./groups_decay_angle")           // side by side
-show_groups("Z", "./groups_decay_angle", true)     // overlaid
+group_fit_plots("decay_angle", "sim.decayAngle")   // writes ./.groups/decay_angle/<plot>.root
+show_groups("Z", "./.groups/decay_angle")          // side by side
+show_groups("Z", "./.groups/decay_angle", true)    // overlaid
 ```
 
 Fits with the same value of the setting are combined. The values come from the settings recorded in each fit file, which include its whole chain's settings and the fit macro's defaults. Only the `[fit <name>]` sections in `studies/<study>.ini` are used, so leftover files from renamed or removed fits are ignored. Start ROOT from this directory so it can find the study file.
@@ -226,17 +226,44 @@ The histograms and plot names are listed in [Plots](#plots).
 
 ## Running on a cluster
 
+From your own machine, with the cluster `hpc` defined in `remotes.ini` (below):
+
 ```bash
-./fission.py studies/decay_angle.ini --slurm
+./fission.py studies/decay_angle.ini --remote hpc --slurm    # submit the study on the cluster
+./fission.py studies/decay_angle.ini --remote hpc --status   # check on it
+./fission.py studies/decay_angle.ini --remote hpc --fetch    # copy the finished fits' results here
+root -l -e '.L plot_fit.C' -e 'plot_fit("hpc:decay_angle", "90deg")'   # plot them
+./fission.py studies/decay_angle.ini --remote hpc 90deg.fit --fetch-logs   # copy logs, if needed
 ```
 
-This submits one `sbatch` job per section and chunk. Each job waits for the job that makes its input (`--dependency=afterok`). As with local runs, a job succeeds if the macro wrote its `.cfg`, whatever ROOT's exit code. Fit jobs request `fit.threads` CPUs, and other jobs request one. Logs go to the usual `.log` files. Each stage also requests a time limit and memory, which you can change in the study file (see [SLURM details](#slurm-details)).
+`--remote hpc` first copies the study file, and every study it reads from (`input = <study>:<name>`), to the cluster's checkout, overwriting the cluster's copies. Then it runs the same command there, in the cluster's environment, so `--slurm`, `--status`, `--dry-run`, `--show`, `--force` and section selections all act on the cluster. Jobs don't run on the cluster's login node: give `--slurm` to run anything.
 
-Before submitting:
+Prerequisites:
 
-- Load the ATTPCROOT environment in the shell you submit from. Jobs inherit it.
-- Set `TPC_SHARED_INFO` and `FISSION_DATA` to paths the compute nodes can see.
-- Add a partition or account through the usual `SBATCH_*` environment variables (e.g. `export SBATCH_PARTITION=cs`).
+- `ssh <host>` works without a prompt (a key, or an agent). Put any port, user or key for the host in `~/.ssh/config`.
+- A built ATTPCROOT checkout on the cluster, on the same branch, with `build/config.sh`.
+- `remotes.ini` next to `fission.py` (not committed). Copy `remotes.ini.example` and fill it in:
+
+| Key | Meaning |
+|---|---|
+| `host` | ssh host or alias (from `~/.ssh/config`). |
+| `repo` | The ATTPCROOT checkout on the cluster. The driver runs from the same directory in it as here. |
+| `env.<VAR>` | Exported on the cluster before running, e.g. `env.TPC_SHARED_INFO` and `env.FISSION_DATA` (paths the compute nodes can see). Used as written: no `~` or `$VAR` expansion. |
+| `[<stage>.]slurm.<key>` | Values for `slurm_job.sh` for every study run on this cluster (see [SLURM details](#slurm-details)). The study's settings override them. |
+
+**Results files.** Fits run through `--remote` also write `<fit>.results.root` (and its `.results.cfg`) in the same job, with `slim_fit.C`. It holds what `plot_fit.C` reads: per event, the fit results (`AtMCResult`), the truth (`SimInfo`), the best simulated event (`SimEvent`, 1 instead of 10) and the digi's hits (`AtEvent`) and Y-pattern (`AtFissionEvent`), with the same branch names, but no raw traces. That is about 70 kB per event, against about 35 MB for the digi and fit files. If writing it fails, the fit job fails.
+
+`--fetch` copies the results files of the selected fits whose job finished and isn't queued, to `$FISSION_DATA/remote/<remote>/`, with the same names as on the cluster. It overwrites that remote's copies and never deletes anything. `--fetch-logs` copies the `.log` of every job of the selected sections the same way; it can be large (about 1.25 MB per fit event). Both list the files and total size first, and with `--dry-run` only list them. A study argument `"<remote>:<study>"` to `plot_fit` and `group_fit_plots` reads these copies (see [Plots](#plots)).
+
+### Running on the cluster directly
+
+Logged in on the cluster, with the ATTPCROOT environment loaded and `TPC_SHARED_INFO` and `FISSION_DATA` set to paths the compute nodes can see:
+
+```bash
+./fission.py studies/decay_angle.ini --slurm --slurm-set slurm.time=1-00:00:00 --slurm-set slurm.mem=8G
+```
+
+This is what `--remote` runs (with the newest `python3.N` there), plus `--results` (write results files) and the remote's `slurm` values as `--slurm-set`. It submits one `sbatch` job per section and chunk. Each job waits for the job that makes its input (`--dependency=afterok`). As with local runs, a job succeeds if the macro wrote its `.cfg`, whatever ROOT's exit code. Fit jobs request `fit.threads` CPUs, and other jobs request one. Logs go to the usual `.log` files. Jobs inherit the environment of the shell you submit from.
 
 Check status with `squeue`. If a job fails, SLURM cancels the jobs waiting on it. To check progress, use `--status`: sections with jobs still in SLURM show as `queued`. When the jobs finish, every section shows `done`. If a job failed, the next run reruns only that section and what reads it.
 
@@ -281,7 +308,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 |---|---|---|
 | `<stage>.seed` | from study, name and stage (driver) | Random seed of the stage. Fixed for a given section, so sim and digi reruns reproduce. The fit does not (see [parallel running](#parallel-running)). |
 | `<stage>.input` | the section of the previous stage with the same name (driver) | The section's input. See [What a section reads](#what-a-section-reads). Not allowed for a sim. Another study's sections and input files are never run, forced or removed from here. Input files must each have the `.cfg` their stage wrote next to them, which supplies their settings, and must agree on every setting except `*.events` and `*.seed`. |
-| `<stage>.slurm.time`, `<stage>.slurm.mem` | per stage (driver) | `sbatch` request. See [SLURM details](#slurm-details). |
+| `<stage>.slurm.<key>` | none (driver) | The value of `@<key>@` in `slurm_job.sh`, e.g. `fit.slurm.time`. See [SLURM details](#slurm-details). |
 
 **Simulation (`sim.`)**
 
@@ -316,7 +343,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `fit.psaThreshold` | 25 | PSA threshold for the fit's simulated events. |
 | `fit.timeEvent` | 0 | 1 logs the time per round, for benchmarking. |
 
-Misspelled settings are errors. The driver rejects misplaced keys (no stage prefix in `[defaults]`, a prefix inside a section, `input` in a sim, `events` or `chunks` outside a sim, an unknown `slurm.` key). Each macro calls `cfg.CheckUnused(...)` before running and fails on any setting it was passed but never read, except for the earlier stages' prefixes it lists.
+Misspelled settings are errors. The driver rejects misplaced keys (no stage prefix in `[defaults]`, a prefix inside a section, `input` in a sim, `events` or `chunks` outside a sim, a `slurm.` key that isn't `slurm.<letters, digits, _>`). Each macro calls `cfg.CheckUnused(...)` before running and fails on any setting it was passed but never read, except for the earlier stages' prefixes it lists.
 
 ## Command-line options
 
@@ -330,10 +357,15 @@ Misspelled settings are errors. The driver rejects misplaced keys (no stage pref
 | `--stage sim\|digi\|fit` | Only sections of this stage (repeatable). A filter on the selection: `--stage sim` runs only the sims, and `--stage digi` the digis and the sims they read. |
 | `--dry-run` | Show what would run and why, then stop. |
 | `--status` | Show one row per section: its input and its state, `done` or how many chunks are `missing`, `changed`, `input is newer`, `upstream rerun` or `queued` in SLURM, then stop. |
-| `--show` | Print each section's settings, with where each comes from (`section`, `defaults`, or a driver default), what it reads (and what that reads), and what its macro would be passed (chunk 0's `.cfg.in`) and request from SLURM, then stop. |
+| `--show` | Print each section's settings, with where each comes from (`section`, `defaults`, or a driver default), what it reads (and what that reads), what its macro would be passed (chunk 0's `.cfg.in`), and its `slurm_job.sh` values with where each comes from, then stop. |
 | `-j N` | Run up to N jobs at once (default 1). |
 | `--force sim\|digi\|fit` | Rerun this stage and the later ones, even if up to date. Never reaches another study's files. |
 | `--slurm` | Submit to SLURM instead of running here. See [Running on a cluster](#running-on-a-cluster). |
+| `--slurm-set [STAGE.]slurm.KEY=VALUE` | A value for `slurm_job.sh` (repeatable; without `STAGE`, for every stage). Lowest priority: the study overrides it. |
+| `--results` | Fits also write a results file (`slim_fit.C`). `--remote` passes it. |
+| `--remote NAME` | Copy the study files to the cluster `NAME` of `remotes.ini` and run the command there. See [Running on a cluster](#running-on-a-cluster). |
+| `--fetch` | With `--remote`: copy the selected fits' finished results files to `$FISSION_DATA/remote/NAME/`. |
+| `--fetch-logs` | With `--remote`: copy the selected sections' logs to `$FISSION_DATA/remote/NAME/`. |
 
 ## What reruns
 
@@ -366,9 +398,12 @@ All files go in `$FISSION_DATA`:
 <study>-<name>.<stage>.cfg     copy of the .cfg.in, written only on success
 <study>-<name>.<stage>.cfg.in  settings passed to the macro
 <study>-<name>.<stage>.log     full ROOT output
+<study>-<name>.fit.results.root  small copy of the fit for plotting (--results, see Running on a cluster)
+<study>-<name>.fit.results.cfg   copy of the fit's .cfg, written when the results file is complete
+remote/<remote>/               results files (and logs) fetched from a cluster, same names
 ```
 
-With `sim.chunks`, each name gets `.cNN` before the extension.
+With `sim.chunks`, each name gets `.cNN` before the extension (`.fit.c03.results.root`). A fit always removes its old results file when it starts, so a results file never outlives its fit.
 
 Each ROOT file also records every setting the stage ran with, including the macro defaults it used, as a `TNamed` called `RunConfig`:
 
@@ -386,21 +421,37 @@ Changing `sim.chunks` renames the files, so the sim is redone and its old files 
 
 ## SLURM details
 
-Each stage requests a time limit and memory:
+Each job is `slurm_job.sh` with every `@name@` replaced, passed to `sbatch` on stdin (`scontrol write batch_script <id>` shows a submitted one). Edit the template freely. The driver fills in:
 
-| Stage | `--time` | `--mem` |
-|---|---|---|
-| sim | 0:10:00 | 4G |
-| digi | 8:00:00 | 8G |
-| fit | 3-00:00:00 | 8G |
+| Placeholder | Value |
+|---|---|
+| `@job@` | job name, `<study>-<name>.<stage>[.cNN]` |
+| `@log@` | the job's `.log` |
+| `@dir@` | this directory, where the job runs |
+| `@cpus@` | `fit.threads` for a fit (default 4), 1 otherwise |
+| `@command@` | the commands that run the stage (keep it) |
 
-These are rough upper bounds for a 500-event chunk, not measurements. Override them in the study file, in `[defaults]` with `<stage>.slurm.time` and `<stage>.slurm.mem` (e.g. `fit.slurm.time = 12:00:00`), or in one section with `slurm.time` and `slurm.mem`. They only change the `sbatch` request and are never passed to a macro, so changing them never reruns anything. `--show` prints what each section would request. They take precedence over `SBATCH_TIMELIMIT` and similar environment variables.
+Every other `@key@` is the job's `slurm.<key>` value. There are no defaults: each must be set by you, from lowest to highest priority:
+
+1. the remote's `[<stage>.]slurm.<key>` in `remotes.ini`, or `--slurm-set` on the cluster,
+2. the study's `[defaults]`, as `<stage>.slurm.<key>`,
+3. the section, as `slurm.<key>`.
+
+So a study can give one section more time. The values only change the job script and are never passed to a macro, so changing them never reruns anything. `--show` prints each section's values and where each comes from. Before the first `sbatch`, the driver checks every job: it stops if the template uses a value a section doesn't set, or a section has a `slurm.<key>` value the template never uses (usually a typo). Nothing is submitted until all jobs pass.
+
+To add an `sbatch` option, add a line to the template, e.g. `#SBATCH --partition=@partition@`, and set `slurm.partition` in `remotes.ini` or the study. Comment lines (starting with `#` but not `#SBATCH`, so also `##SBATCH`) are left as they are, so a placeholder there needs no value. Jobs that wait for another job get `--dependency=afterok:<id> --kill-on-invalid-dep=yes` on the `sbatch` command line.
+
+The studies in `studies/` set no `slurm` values: those belong to you and the cluster, in `remotes.ini`.
 
 While any job of a section whose files it would write or remove is queued or running, the driver refuses to run, with or without `--slurm`. Those sections are the ones it would rerun, plus every section of the study that reads them. Jobs are matched by name (`<study>-<name>.<stage>`, with or without `.cNN`), so this covers jobs from an old chunk count too, even ones that haven't started. Their files are never removed or written over while they are still pending. Wait for them, or `scancel` them first. On a machine without `squeue` the check is skipped. Sections in other studies that read them are not checked: don't rerun a section while another study's jobs that read it are queued or running.
 
 ## Plots
 
 The histograms are globals in `plot_fit.C`: `zHist`, `aHist`, `hMR`, `hAmp`, `hObj`, `hObjPos`, `hObjQ`, `hBeam`, `hZvsObj`, `hZvsAmp`, `hAmpvsPosObj`, `hAmpvsObj`, `hAmpvsLoc`, `zHistSim`, `hZvsObjSim`, `zHistDiff`. `FillPlots(...)` refills them with different cuts.
+
+A study argument `"<remote>:<study>"`, e.g. `plot_fit("hpc:decay_angle", "90deg")`, reads the results files fetched from that remote (`$FISSION_DATA/remote/<remote>/<study>-<name>.fit[.cNN].results.root`) instead of the fit files. The fits are still taken from `studies/<study>.ini` here, and `group_fit_plots` writes to `./.groups/<remote>/<study>/`. The histograms are the same, since results files have the fit file's branch names.
+
+`group_fit_plots` output is temporary and rewritten on every call, so it goes to the hidden `./.groups/` (not committed).
 
 The plot names for `show_groups` are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `MR`, `Beam`, `ZvsObj`, `ZvsAmp`, `AmpvsPosObj`, `AmpvsObj`, `AmpvsLoc`, `ZvsObjSim`, `ZSim` and `ZDiff`.
 
@@ -429,6 +480,14 @@ The plot names for `show_groups` are `Z`, `A`, `Amp`, `Obj`, `ObjPos`, `ObjQ`, `
 **`Still queued or running in SLURM`.** Jobs from an earlier `--slurm` submission are still in `squeue`. Wait for them, or `scancel` them.
 
 **`Bring other studies' sections up to date first`.** A section reads another study's section (`input = <study>:<name>`), and that section or something it reads is missing, queued, or out of date with its study file. Run the printed commands, wait for them to finish, then run this study again.
+
+**`No remotes.ini` / `remotes.ini has no [NAME]`.** Copy `remotes.ini.example` to `remotes.ini` and fill in a section for the cluster.
+
+**`slurm_job.sh uses @time@, but slurm.time is not set`.** No value for a placeholder of `slurm_job.sh`. Set it in `remotes.ini`, with `--slurm-set`, or in the study (see [SLURM details](#slurm-details)).
+
+**`slurm_job.sh never uses @foo@`.** A `slurm.foo` value with no `@foo@` in the template. Fix the spelling, or add a line using it to `slurm_job.sh`.
+
+**`ssh: connect to host … Connection timed out` / `Permission denied`.** The driver runs ssh with `BatchMode=yes` and a 30 s connection timeout, so it fails instead of prompting or hanging. Check that `ssh <host>` works without a prompt, and that the VPN is up if the cluster needs one.
 
 **Everything reruns when I didn't expect it.** Run `--dry-run` and read the reason. `--show NAME` shows where each of the section's settings comes from. Changing `[defaults]` affects every section of that stage, and a sim change redoes everything that reads it.
 

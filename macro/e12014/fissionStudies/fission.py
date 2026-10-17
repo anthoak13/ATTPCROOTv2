@@ -39,6 +39,14 @@ it depends on (its own or one of its input's) changed, or when its input reran.
     ./fission.py studies/smoke.ini --stage sim        # only the sims
     ./fission.py studies/smoke.ini --force fit        # redo the fits even if up to date
 
+From your own machine, on a cluster defined in remotes.ini (see remotes.ini.example):
+
+    ./fission.py studies/smoke.ini --remote hpc --slurm   # send the study files, submit it there
+    ./fission.py studies/smoke.ini --remote hpc --status  # any command, run there
+    ./fission.py studies/smoke.ini --remote hpc --fetch   # copy results files to $FISSION_DATA/remote/hpc
+
+SLURM jobs are slurm_job.sh filled in, with values set in remotes.ini or the study (slurm.<key>).
+
 Needs the ATTPCROOT environment (source build/config.sh) and TPC_SHARED_INFO set to the directory
 of shared inputs (energy-loss tables, pad response, low-gain pad list). See MANUAL.md.
 """
@@ -56,17 +64,22 @@ import zlib
 from collections import Counter
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 
+if sys.version_info < (3, 8):  # shlex.join
+    sys.exit(f"fission.py needs Python 3.8 or newer, this is {sys.version.split()[0]}"
+             " (run it with a newer one, e.g. python3.11 fission.py)")
 HERE = os.path.dirname(os.path.abspath(__file__))
 STAGES = ["sim", "digi", "fit"]
 MACROS = {"sim": "run_simp_fiss.C", "digi": "run_digi_fiss.C", "fit": "run_fit.C"}
 FIT_THREADS_DEFAULT = "4"  # run_fit.C's default for fit.threads, so SLURM requests what the fit uses
-# SLURM time limit and memory per stage, overridable with <stage>.slurm.time / <stage>.slurm.mem. Rough
-# upper bounds for a 500-event chunk, not measurements: lower them once bench.ini has timings.
-SLURM_DEFAULTS = {
-    "sim": {"time": "0:10:00", "mem": "4G"},
-    "digi": {"time": "8:00:00", "mem": "8G"},
-    "fit": {"time": "3-00:00:00", "mem": "8G"},
-}
+SLURM_TEMPLATE = os.path.join(HERE, "slurm_job.sh")
+REMOTES = os.path.join(HERE, "remotes.ini")
+SSH = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=30"]  # Fail rather than prompt or hang
+LIST_MARKER = "fission.py file list"  # Starts --list-results/--list-logs output, after any login noise
+PLACEHOLDER = re.compile(r"@([A-Za-z0-9_]+)@")
+SLURM_KEY = re.compile(rf"(?:({'|'.join(STAGES)})\.)?slurm\.([A-Za-z0-9_]+)")  # [<stage>.]slurm.<key>
+DRIVER_VALUES = ("job", "log", "dir", "cpus", "command")  # Placeholders fission.py fills itself
+# slurm.<key> values from --slurm-set: stage -> {key: value}. Lowest priority, below the study.
+SLURM_SET = {stage: {} for stage in STAGES}
 DATA = os.path.abspath(os.environ.get("FISSION_DATA", os.path.join(HERE, "data")))
 NAME = r"[A-Za-z0-9_-]+"
 STUDY_NAME = r"[A-Za-z0-9_]+"  # No - in study names, so <study>-<name> splits only one way
@@ -76,7 +89,7 @@ SECTION = re.compile(rf"({'|'.join(STAGES)})\s+(.*)")
 JOB_NAME = re.compile(rf"(?P<study>{STUDY_NAME})-(?P<name>{NAME})\.(?P<stage>{'|'.join(STAGES)})(?:\.c\d\d)?")
 # Chunks are numbered with two digits (.c00-.c99): JOB_NAME and plot_fit.C's IsFitFile rely on it.
 MAX_CHUNKS = 100
-OUTPUT_EXTS = (".root", ".cfg", ".cfg.in", ".log")
+OUTPUT_EXTS = (".root", ".cfg", ".cfg.in", ".log", ".results.root", ".results.cfg")
 
 
 def driver_key(key):
@@ -195,8 +208,8 @@ class Study:
         problem = (f"keys in a [{stage} <name>] section have no stage prefix" if first in STAGES and header != "defaults"
                    else "only a digi or fit has an input" if key == "input" and stage == "sim"
                    else f"{key} is a sim setting (sim.{key})" if key in ("events", "chunks") and stage != "sim"
-                   else f"unknown slurm setting (use {stage}.slurm.time or .mem)"
-                   if first == "slurm" and key not in ("slurm.time", "slurm.mem")
+                   else "a slurm setting is slurm.<key>, <key> of letters, digits and _"
+                   if first == "slurm" and not SLURM_KEY.fullmatch(key)
                    else None)
         if problem:
             sys.exit(f"{self.where(header)}: {written}: {problem}")
@@ -270,8 +283,11 @@ class Section:
             self.input_origin = origin
             self.input = study.resolve_input(self, spec, origin)
             self.nchunks = self.input.nchunks
-        self.slurm = {opt: self.settings.get(f"slurm.{opt}", default)
-                      for opt, default in SLURM_DEFAULTS[stage].items()}
+        # slurm.<key> values for slurm_job.sh, as key -> (value, origin)
+        self.slurm = {key: (val, "--slurm-set") for key, val in SLURM_SET[stage].items()}
+        for key, val in self.settings.items():
+            if key.startswith("slurm."):
+                self.slurm[key[len("slurm."):]] = (val, self.origins[key])
 
     def ref(self, study):
         """How study names this section in messages: '<stage> <name>', with <study>: if in another study."""
@@ -368,9 +384,10 @@ class Job:
         self.sidecar = sidecar(self.output)
         self.cfg_in = self.base + ".cfg.in"
         self.log = self.base + ".log"
+        self.results = self.base + ".results.root"  # A fit's results file (--results), see slim_fit.C
+        self.results_cfg = self.base + ".results.cfg"
         self.deps = []
         self.external = None  # The other Study this job belongs to, if any. Such jobs never run from here.
-        self.slurm = section.slurm
 
         cfg = {k: v for k, v in prev.cfg.items() if k not in ("input", "output")} if prev else {}
         cfg.update(section.cfg(chunk))
@@ -401,19 +418,31 @@ class Job:
         with open(self.cfg_in, "w") as f:
             f.write("".join(f"{k} = {v}\n" for k, v in self.cfg.items()))
 
-    def script(self):
+    def script(self, results=False):
         """The shell command that runs the macro, here or in SLURM. It succeeds only if the macro reached
-        the end and wrote a new .cfg (RunConfig::Finish), whatever ROOT's exit code."""
+        the end and wrote a new .cfg (RunConfig::Finish), whatever ROOT's exit code.
+
+        A fit always removes its old results file first, so it never outlives the fit it came from. With
+        results, the fit then writes a new one (slim_fit.C), and if that fails the fit's .cfg is removed:
+        the job fails, and the fit counts as not done."""
         sidecar = shlex.quote(self.sidecar)
         root = ["root", "-l", "-b", "-q", f'{MACROS[self.stage]}("{self.cfg_in}")']
-        return f"rm -f {sidecar}; {shlex.join(root)}; test -f {sidecar}"
+        if self.stage != "fit":
+            return f"rm -f {sidecar}; {shlex.join(root)}; test -f {sidecar}"
+        results_cfg = shlex.quote(self.results_cfg)
+        script = f"rm -f {sidecar} {shlex.quote(self.results)} {results_cfg}; {shlex.join(root)}; test -f {sidecar}"
+        if results:
+            slim = ["root", "-l", "-b", "-q", f'slim_fit.C("{self.output}", "{self.results}")']
+            script += f" && {shlex.join(slim)} && test -f {results_cfg} || {{ rm -f {sidecar}; false; }}"
+        return script
 
-    def run_local(self):
+    def run_local(self, results=False):
         """Run the macro here, and return whether it succeeded."""
         self.write_cfg()
         start = time.time()
         with open(self.log, "w") as log:
-            result = subprocess.run(self.script(), shell=True, cwd=HERE, stdout=log, stderr=subprocess.STDOUT)
+            result = subprocess.run(self.script(results), shell=True, cwd=HERE, stdout=log,
+                                    stderr=subprocess.STDOUT)
         ok = result.returncode == 0
         print(f"{'done' if ok else 'FAILED':6} {self} ({time.time() - start:.0f} s)"
               + ("" if ok else f", see {self.log}"), flush=True)
@@ -517,7 +546,7 @@ def show(study, sections):
         if section.input is not None:
             origin = section.input_origin
             print(f"  reads {section.chain(study)}  ; " + (origin if origin == "same name" else f"input in {origin}"))
-        own = {k: v for k, v in section.settings.items() if k != "input"}
+        own = {k: v for k, v in section.settings.items() if k != "input" and not k.startswith("slurm.")}
         width = max(len(f"{section.stage}.{k} = {v}") for k, v in own.items())
         for key in sorted(own):
             print(f"  {f'{section.stage}.{key} = {own[key]}':{width}}  ; {section.origins[key]}")
@@ -528,7 +557,13 @@ def show(study, sections):
                                     if n > 1 else ""))
         for key, val in job.cfg.items():
             print(f"    {key} = {val}")
-        print(f"  (--slurm: --time={section.slurm['time']} --mem={section.slurm['mem']})")
+        if section.slurm:
+            print("  slurm_job.sh values (--slurm)")
+            width = max(len(f"@{k}@ = {v}") for k, (v, _) in section.slurm.items())
+            for key, (val, origin) in sorted(section.slurm.items()):
+                print(f"    {f'@{key}@ = {val}':{width}}  ; {origin}")
+        else:
+            print("  no slurm values set (--slurm needs those slurm_job.sh uses)")
         print()
     print("Settings not passed to a stage use the macro's built-in default.")
 
@@ -560,7 +595,7 @@ def old_chunking(sections):
     return old
 
 
-def run_local(todo, n_jobs):
+def run_local(todo, n_jobs, results):
     """Run jobs in dependency order, up to n_jobs at a time. Dependents of failed jobs are skipped."""
     pending, running, finished, failed = list(todo), {}, set(), set()
     with ThreadPoolExecutor(n_jobs) as pool:
@@ -573,7 +608,7 @@ def run_local(todo, n_jobs):
                 elif all(d in finished for d in job.deps) and len(running) < n_jobs:
                     pending.remove(job)
                     print(f"start  {job}", flush=True)
-                    running[pool.submit(job.run_local)] = job
+                    running[pool.submit(job.run_local, results)] = job
             done, _ = wait(running, return_when=FIRST_COMPLETED)
             for future in done:
                 job = running.pop(future)
@@ -598,28 +633,80 @@ def slurm_jobs():
     return set(result.stdout.split())
 
 
-def run_slurm(todo):
+def read_template():
+    """slurm_job.sh, as (its text, the placeholders it uses). Comment lines (# but not #SBATCH) don't count."""
+    with open(SLURM_TEMPLATE) as f:
+        text = f.read()
+    used = {name for line in text.splitlines() if not is_comment(line) for name in PLACEHOLDER.findall(line)}
+    return text, used
+
+
+def is_comment(line):
+    """True for a template line left as it is: a comment, but not an #SBATCH line."""
+    line = line.lstrip()
+    return line.startswith("#") and not line.startswith("#SBATCH")
+
+
+def template_problems(todo):
+    """Why slurm_job.sh can't be filled for the jobs, as messages: values it uses that a section doesn't
+    set, and slurm values a section sets that it never uses (usually a typo)."""
+    _, used = read_template()
+    messages = []
+    missing, unused = {}, {}
+    for section in dict.fromkeys(job.section for job in todo):
+        where = section.study.where(f"{section.stage} {section.name}")
+        for key in sorted(used - set(DRIVER_VALUES) - set(section.slurm)):
+            missing.setdefault(key, []).append(f"[{section.stage} {section.name}]")
+        for key, (_, origin) in sorted(section.slurm.items()):
+            if key in DRIVER_VALUES:
+                messages.append(f"{where}: slurm.{key} ({origin}): @{key}@ is set by fission.py")
+            elif key not in used:
+                unused.setdefault((key, origin), []).append(f"[{section.stage} {section.name}]")
+    for key, sections in missing.items():
+        stages = sorted({s.split()[0][1:] for s in sections}, key=STAGES.index)
+        messages.append(f"slurm_job.sh uses @{key}@, but slurm.{key} is not set for {', '.join(sections)}. Set"
+                        f" it in remotes.ini or with --slurm-set, in [defaults] as"
+                        f" {'/'.join(stages)}.slurm.{key}, or in the section as slurm.{key}.")
+    for (key, origin), sections in unused.items():
+        messages.append(f"slurm.{key} ({origin}) is set for {', '.join(sections)}, but slurm_job.sh never"
+                        f" uses @{key}@ (typo? or add a line using it to slurm_job.sh)")
+    return messages
+
+
+def job_script(job, results):
+    """slurm_job.sh filled in for job. template_problems() must have found nothing."""
+    text, _ = read_template()
+    threads = job.cfg.get("fit.threads", FIT_THREADS_DEFAULT) if job.stage == "fit" else "1"
+    values = {key: val for key, (val, _) in job.section.slurm.items()}
+    values.update({"job": str(job), "log": job.log, "dir": HERE, "cpus": threads, "command": job.script(results)})
+    return "".join(line if is_comment(line) else PLACEHOLDER.sub(lambda m: values[m[1]], line)
+                   for line in text.splitlines(keepends=True))
+
+
+def run_slurm(todo, results):
     """Submit each job with sbatch, to start once the jobs it depends on succeed.
 
-    Each job runs Job.script(). The old .cfg is also removed at submission, so a queued job never looks
-    up to date. SLURM cancels a job whose dependency failed rather than leaving it pending.
+    Each job is slurm_job.sh filled in by job_script(), passed on stdin, so it runs Job.script(). The old
+    .cfg is also removed at submission, so a queued job never looks up to date. SLURM cancels a job
+    whose dependency failed rather than leaving it pending.
     """
     if shutil.which("sbatch") is None:
         sys.exit("sbatch not found")
     ids = {}
     for job in todo:  # plan() returns jobs in dependency order
-        threads = job.cfg.get("fit.threads", FIT_THREADS_DEFAULT) if job.stage == "fit" else "1"
-        cmd = ["sbatch", "--parsable", f"--job-name={job}", f"--output={job.log}",
-               f"--cpus-per-task={threads}", f"--time={job.slurm['time']}", f"--mem={job.slurm['mem']}",
-               f"--chdir={HERE}"]
+        cmd = ["sbatch", "--parsable"]
         if job.deps:
             cmd.append("--dependency=afterok:" + ":".join(ids[d] for d in job.deps))
             cmd.append("--kill-on-invalid-dep=yes")
-        if os.path.exists(job.sidecar):
-            os.remove(job.sidecar)
+        for path in (job.sidecar, job.results_cfg):
+            if os.path.exists(path):
+                os.remove(path)
         job.write_cfg()
-        cmd.append(f"--wrap={job.script()}")
-        ids[job] = subprocess.run(cmd, check=True, capture_output=True, text=True).stdout.strip().split(";")[0]
+        result = subprocess.run(cmd, input=job_script(job, results), capture_output=True, text=True)
+        if result.returncode != 0:
+            sys.exit(f"sbatch failed for {job}: {result.stderr.strip()}"
+                     + (f"\nAlready submitted: {', '.join(map(str, ids))}" if ids else ""))
+        ids[job] = result.stdout.strip().split(";")[0]
         print(f"submitted {job} as {ids[job]}")
 
 
@@ -664,6 +751,8 @@ def update(study, sections, args):
     affected = affected_sections(study, todo)
     old = old_chunking(affected)  # Removed so plots don't pick them up
     messages = blockers(study, external, affected, queued)
+    if args.slurm:
+        messages += template_problems(todo)  # Checked for every job before the first sbatch
     print_plan(external + todo, old, queued, remove=not (args.dry_run or messages))
     if args.dry_run:
         for message in messages:
@@ -676,9 +765,231 @@ def update(study, sections, args):
     for path in old:
         os.remove(path)
     if args.slurm:
-        run_slurm(todo)
-    elif not run_local(todo, args.j):
+        run_slurm(todo, args.results)
+    elif not run_local(todo, args.j, args.results):
         sys.exit(1)
+
+
+def list_files(study, sections, logs):
+    """Print the files --fetch (or with logs, --fetch-logs) copies, for the driver that runs it from
+    another machine: LIST_MARKER, DATA, "section <stem relative to DATA>" per section listed, then
+    <size> <path relative to DATA> per file. Fetched copies of a listed section's files that aren't
+    listed are out of date, and the fetching driver removes them.
+
+    Results: those of each chunk of the fits whose fit and results file finished and whose job isn't in
+    SLURM. Logs: every job's log that exists."""
+    queued = slurm_jobs()
+    planned = plan_all(study, sections, None)
+    listed = [s for s in sections if logs or s.stage == "fit"]
+    files = []
+    for section in listed:
+        for job in planned[section]:
+            if logs:
+                files += [job.log] if os.path.exists(job.log) else []
+            elif str(job) not in queued and all(map(os.path.exists, (job.sidecar, job.results, job.results_cfg))):
+                files += [job.results, job.results_cfg]
+    print(LIST_MARKER)
+    print(DATA)
+    for section in listed:
+        print("section", os.path.relpath(section.stem(), DATA))
+    for path in files:
+        print(os.path.getsize(path), os.path.relpath(path, DATA))
+
+
+class Remote:
+    """A cluster from remotes.ini: how to reach it (host), where its checkout is (repo), and the
+    env.* and slurm values every study run there gets."""
+
+    def __init__(self, name):
+        self.name = name
+        where = f"{short_path(REMOTES)}: [{name}]"
+        example = short_path(REMOTES + ".example")
+        if not os.path.isfile(REMOTES):
+            sys.exit(f"No {short_path(REMOTES)}: copy {example} to it and fill in your cluster")
+        parser = configparser.ConfigParser(inline_comment_prefixes=(";", "#"), interpolation=None,
+                                           default_section="\0")
+        parser.optionxform = str
+        try:
+            parser.read(REMOTES)
+        except configparser.Error as error:
+            sys.exit(str(error))
+        if name not in parser:
+            sys.exit(f"{short_path(REMOTES)} has no [{name}] (it has: {', '.join(parser.sections()) or 'none'};"
+                     f" see {example})")
+        values = dict(parser[name])
+        for key in ("host", "repo"):
+            if not values.get(key):
+                sys.exit(f"{where}: {key} is not set (see {example})")
+        self.host, self.repo = values.pop("host"), values.pop("repo").rstrip("/")
+        self.env, self.slurm_set = {}, []
+        for key, val in values.items():
+            if key.startswith("env.") and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", key[len("env."):]):
+                self.env[key[len("env."):]] = val
+            elif SLURM_KEY.fullmatch(key):
+                self.slurm_set.append(f"{key}={val}")
+            else:
+                sys.exit(f"{where}: unknown key {key} (use host, repo, env.<VAR> or [<stage>.]slurm.<key>)")
+        # The cluster's copy of this directory, at the same place in its checkout
+        top = subprocess.run(["git", "-C", HERE, "rev-parse", "--show-toplevel"], capture_output=True, text=True)
+        if top.returncode != 0:
+            sys.exit(f"{HERE} is not in a git checkout, so its place in the cluster's checkout is unknown")
+        self.dir = self.repo + "/" + os.path.relpath(HERE, top.stdout.strip())
+
+    def run(self, command, **kwargs):
+        """Run a command on the cluster (a string for its login shell), as subprocess.run."""
+        sys.stdout.flush()  # Print what came before the command's output
+        return subprocess.run(SSH + [self.host, command], **kwargs)
+
+    def upload(self, paths):
+        """Copy files below HERE to the same place in the cluster's checkout, overwriting its copies."""
+        rel = [os.path.relpath(p, HERE) for p in paths]
+        for path, r in zip(paths, rel):
+            if r.startswith(".."):
+                sys.exit(f"{short_path(path)} is not below {short_path(HERE)}, so it can't be sent to {self.name}")
+        tar = subprocess.Popen(["tar", "-C", HERE, "-cf", "-", "--", *rel], stdout=subprocess.PIPE)
+        result = self.run(f"cd {shlex.quote(self.dir)} && tar -xf -", stdin=tar.stdout)
+        tar.stdout.close()
+        if tar.wait() != 0 or result.returncode != 0:
+            sys.exit(f"Could not copy study files to {self.name}:{self.dir}")
+        for r in rel:
+            print(f"uploaded {r} to {self.name}")
+
+    def driver(self, args, **kwargs):
+        """Run fission.py on the cluster, in its environment, with the remote's settings and args."""
+        script = "\n".join([
+            f"source {shlex.quote(self.repo + '/build/config.sh')} >/dev/null || exit 1",
+            *(f"export {var}={shlex.quote(val)}" for var, val in self.env.items()),
+            f"cd {shlex.quote(self.dir)} || exit 1",
+            # The newest python3.N: a cluster's python3 may be older than the 3.8 this needs
+            "for py in python3.13 python3.12 python3.11 python3.10 python3.9 python3.8 python3; do"
+            " command -v $py >/dev/null && break; done",
+            "exec $py ./fission.py " + shlex.join(
+                ["--results"] + [a for v in self.slurm_set for a in ("--slurm-set", v)] + args),
+        ]) + "\n"
+        return self.run("bash -l -s", input=script, text=True, **kwargs)
+
+
+def referenced_studies(study):
+    """study and every study it reads from (input = <study>:<name>), loaded without resolving sections,
+    so nothing is looked up in this machine's FISSION_DATA."""
+    found, todo = [], [study]
+    while todo:
+        current = todo.pop()
+        if current in found:
+            continue
+        found.append(current)
+        values = list(current.raw.values()) + [current.defaults["digi"], current.defaults["fit"]]
+        for spec in {v["input"] for v in values if "input" in v}:
+            if re.fullmatch(f"{STUDY_NAME}:{NAME}", spec):
+                path = os.path.join(os.path.dirname(current.path), spec.split(":")[0] + ".ini")
+                if os.path.isfile(path):  # If not, the cluster's driver says so
+                    todo.append(load_study(path))
+    return found
+
+
+def remote_args(args, study):
+    """The command line for the cluster's fission.py: args without --remote and --fetch*."""
+    out = [os.path.relpath(study.path, HERE)] + args.selectors
+    for stage in args.stage or []:
+        out += ["--stage", stage]
+    out += ["--force", args.force] if args.force else []
+    out += [flag for flag, on in (("--dry-run", args.dry_run), ("--show", args.show), ("--status", args.status),
+                                  ("--slurm", args.slurm)) if on]
+    out += ["-j", str(args.j)] if args.j != 1 else []
+    for value in args.slurm_set or []:
+        out += ["--slurm-set", value]
+    return out
+
+
+def run_remote(study, args):
+    """--remote: send the study files to the cluster, then run fission.py there, or with --fetch or
+    --fetch-logs copy its results or logs here."""
+    remote = Remote(args.remote)
+    fetch = args.fetch or args.fetch_logs
+    if not (fetch or args.slurm or args.status or args.show or args.dry_run):
+        sys.exit("With --remote, add --slurm, --status, --show, --dry-run, --fetch or --fetch-logs (jobs"
+                 " don't run on the cluster's login node)")
+    if fetch and (args.slurm or args.status or args.show or args.force or args.j != 1):
+        sys.exit("--fetch and --fetch-logs only copy files: run them without --slurm, --status, --show,"
+                 " --force and -j")
+    remote.upload([s.path for s in referenced_studies(study)])
+    cluster_args = remote_args(args, study)
+    if not fetch:
+        sys.exit(remote.driver(cluster_args).returncode)
+
+    # Ask the cluster's driver which files to copy: only it knows its files, queue and file names
+    cluster_args = [a for a in cluster_args if a != "--dry-run"]
+    listing = remote.driver(cluster_args + ["--list-logs" if args.fetch_logs else "--list-results"],
+                            stdout=subprocess.PIPE)
+    if listing.returncode != 0:
+        sys.exit(listing.returncode)
+    lines = listing.stdout.splitlines()
+    if LIST_MARKER not in lines:
+        sys.exit(f"Unexpected output from fission.py on {remote.name}:\n{listing.stdout}")
+    lines = lines[lines.index(LIST_MARKER) + 1:]
+    remote_data, stems, files = lines[0], [], []
+    for line in lines[1:]:
+        first, _, rest = line.partition(" ")
+        if first == "section":
+            stems.append(rest)
+        else:
+            files.append((first, rest))
+    what = "log" if args.fetch_logs else "results file"
+    dest = os.path.join(DATA, "remote", remote.name)
+
+    # Earlier copies of the sections' files that the cluster doesn't list (a refit is queued or failed, or
+    # the chunk count changed) are out of date: remove them, so no plot mixes them with the new ones
+    exts = (".log",) if args.fetch_logs else (".results.root", ".results.cfg")
+    fetched = {path for _, path in files}
+    stale = []
+    for stem in stems:
+        for path in sorted(glob.glob(glob.escape(os.path.join(dest, stem)) + "*")):
+            ext = next((e for e in exts if path.endswith(e)), None)
+            if ext and JOB_NAME.fullmatch(os.path.basename(path)[: -len(ext)]) \
+                    and os.path.relpath(path, dest) not in fetched:
+                stale.append(path)
+    for path in stale:
+        print(f"{'would remove' if args.dry_run else 'remove'} {os.path.relpath(path, dest)}"
+              f" ({'not' if args.fetch_logs else 'not finished'} on {remote.name})")
+        if not args.dry_run:
+            os.remove(path)
+
+    if not files:
+        print(f"No finished {what}s on {remote.name} for the selected sections.")
+        return
+    total = sum(int(size) for size, _ in files)
+    for size, path in files:
+        print(f"{int(size) / 1e6:10.2f} MB  {path}")
+    print(f"{len(files)} {what}{'s' if len(files) > 1 else ''}, {total / 1e6:.2f} MB, from {remote.name}:{remote_data}"
+          + (f" (--dry-run: not copied to {dest})" if args.dry_run else f" to {dest}"))
+    if args.dry_run:
+        return
+    os.makedirs(dest, exist_ok=True)
+    # The file list goes on stdin, so a long list can't exceed the command-line length limit
+    ssh = subprocess.Popen(SSH + [remote.host, f"cd {shlex.quote(remote_data)} && tar -cf - -T -"],
+                           stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    untar = subprocess.Popen(["tar", "-xf", "-", "-C", dest], stdin=ssh.stdout)
+    ssh.stdout.close()
+    ssh.stdin.write("".join(path + "\n" for _, path in files).encode())
+    ssh.stdin.close()
+    if ssh.wait() != 0 or untar.wait() != 0:
+        sys.exit(f"Copying from {remote.name} failed")
+
+
+def parse_slurm_set(values):
+    """Fill SLURM_SET from --slurm-set [<stage>.]slurm.<key>=VALUE. A value for one stage wins over one for
+    every stage, whatever the order."""
+    general, specific = {}, {}
+    for value in values or []:
+        setting, eq, val = value.partition("=")
+        match = SLURM_KEY.fullmatch(setting.strip())
+        if not eq or not match:
+            sys.exit(f"--slurm-set {value}: use [<stage>.]slurm.<key>=VALUE, e.g. fit.slurm.mem=8G")
+        stage, key = match.groups()
+        for s in [stage] if stage else STAGES:
+            (specific if stage else general).setdefault(s, {})[key] = val.strip()
+    for stage in STAGES:
+        SLURM_SET[stage] = {**general.get(stage, {}), **specific.get(stage, {})}
 
 
 def main():
@@ -697,12 +1008,34 @@ def main():
     parser.add_argument("--status", action="store_true",
                         help="print which sections are done, missing, stale or in SLURM, then exit")
     parser.add_argument("-j", type=int, default=1, help="jobs to run at once (default: 1)")
-    parser.add_argument("--slurm", action="store_true", help="submit jobs with sbatch")
+    parser.add_argument("--slurm", action="store_true", help="submit jobs with sbatch (each is slurm_job.sh filled in)")
+    parser.add_argument("--slurm-set", action="append", metavar="[STAGE.]slurm.KEY=VALUE",
+                        help="a value for slurm_job.sh (repeatable; without STAGE for every stage). Lowest"
+                             " priority: the study's [defaults] and sections override it")
+    parser.add_argument("--results", action="store_true",
+                        help="fits also write a small results file (slim_fit.C). --remote passes it")
+    parser.add_argument("--remote", metavar="NAME",
+                        help="act on the cluster NAME of remotes.ini: send it the study files, then run"
+                             " this command there")
+    parser.add_argument("--fetch", action="store_true",
+                        help="with --remote: copy the finished fits' results files to $FISSION_DATA/remote/NAME")
+    parser.add_argument("--fetch-logs", action="store_true",
+                        help="with --remote: copy the sections' logs to $FISSION_DATA/remote/NAME")
+    parser.add_argument("--list-results", action="store_true", help=argparse.SUPPRESS)  # Used by --fetch
+    parser.add_argument("--list-logs", action="store_true", help=argparse.SUPPRESS)  # Used by --fetch-logs
     args = parser.parse_intermixed_args()
 
+    parse_slurm_set(args.slurm_set)
     study = load_study(args.study)
+    if args.remote:
+        run_remote(study, args)
+        return
+    if args.fetch or args.fetch_logs:
+        sys.exit("--fetch and --fetch-logs need --remote NAME")
     sections = select(study, args.selectors, args.stage)
-    if args.show:
+    if args.list_results or args.list_logs:
+        list_files(study, sections, args.list_logs)
+    elif args.show:
         show(study, sections)
     elif args.status:
         status(study, sections)
