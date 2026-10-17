@@ -5,7 +5,6 @@
 #include <Math/Point3Dfwd.h> // for XYZPoint
 #include <Math/Vector3D.h>
 #include <Math/Vector3Dfwd.h>
-#include <TF1.h> //Needed for unique_ptr<TF1>
 #include <TH1.h> //Needed for unique_ptr<TH1F>
 
 #include <functional> // for function
@@ -14,6 +13,7 @@
 #include <type_traits> // for add_pointer_t
 #include <vector>      // for vector
 class AtMap;
+class TRandom;
 class AtSimulatedPoint;
 class AtRawEvent;
 class AtDigiPar;
@@ -50,8 +50,8 @@ protected:
    std::vector<std::unique_ptr<TH1F>> fPadCharge; //!<
    std::set<int> fPadsWithCharge;                 //!<
 
-   std::unique_ptr<TF1> fGainFunc; //!<
-   double fAvgGainDeviation{};
+   /// Shape b of the Polya single-electron gain: the gain is Gamma-distributed with shape b+1 and mean fGain.
+   double fPolyaB{1}; //!
 
 public:
    AtPulse(AtMapPtr map, ResponseFunc response = nullptr);
@@ -65,6 +65,9 @@ public:
    void SetDoConvolution(bool val) { fDoConvolution = val; }
    void SetLowGain(double val) { fLowGainFactor = val; }
 
+   /// Draw the mean gain of numElectrons electrons, each with an independent Polya gain of mean meanGain and shape b.
+   static double MeanPolyaGain(double meanGain, double b, int numElectrons, TRandom &rand);
+
    AtRawEvent GenerateEvent(std::vector<SimPointPtr> &vec);
    virtual AtRawEvent GenerateEvent(std::vector<AtSimulatedPoint *> &vec);
 
@@ -74,6 +77,9 @@ protected:
    void Reset();
    virtual bool AssignElectronsToPad(AtSimulatedPoint *point);
    double GetGain(int padNum, int numElectrons);
+   /// Gain for a pad whose inhibition is already known: lowGainFactor is 1, or fLowGainFactor for a kLowGain pad.
+   /// Does not check for kTotal.
+   double ThrowGain(int numElectrons, double lowGainFactor);
    void GenerateTraceFromElectrons();
    void FillPad(AtPad &pad, TH1F &hist);
    void ApplyNoise(AtPad &pad);
