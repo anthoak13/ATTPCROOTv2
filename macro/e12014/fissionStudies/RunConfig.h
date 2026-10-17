@@ -16,10 +16,6 @@
  *                    directory ROOT was started in.
  *   TPC_SHARED_INFO  directory holding eLoss/, respAvg.root and e12014_zap.csv
  */
-#include "AtCSVReader.h"
-
-#include <FairRootManager.h>
-
 #include <TFile.h>
 #include <TNamed.h>
 #include <TString.h>

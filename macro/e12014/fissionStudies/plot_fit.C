@@ -203,15 +203,42 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    }
 }
 
-/// True if file is an output of [fit <name>] in study: <study>-<name>.fit.root or <study>-<name>.fit.cNN.root
-bool IsFitFile(TString file, TString study, TString name)
+/**
+ * Where the fit files of a study argument are. "<study>" means the fit files in FISSION_DATA, and
+ * "<remote>:<study>" the results files fetched from a cluster with fission.py --remote <remote> --fetch,
+ * in FISSION_DATA/remote/<remote>.
+ */
+struct FitSource {
+   TString study;  // The study's name
+   TString remote; // The remote's name, or "" for local fit files
+   TString dir;    // Directory holding the files
+   bool results{}; // Files are results files (<fit>.results.root, see slim_fit.C) rather than fit files
+};
+
+FitSource GetFitSource(TString study)
+{
+   FitSource source{study, "", RunConfig::DataDir()};
+   auto colon = study.Index(":");
+   if (colon >= 0) {
+      source.remote = study(0, colon);
+      source.study = study(colon + 1, study.Length());
+      source.dir += "/remote/" + source.remote;
+      source.results = true;
+   }
+   return source;
+}
+
+/// True if file is an output of [fit <name>] in study: <study>-<name>.fit[.cNN].root, or with results
+/// <study>-<name>.fit[.cNN].results.root
+bool IsFitFile(TString file, TString study, TString name, bool results = false)
 {
    TString prefix = study + "-" + name + ".fit.";
-   if (!file.BeginsWith(prefix))
+   TString suffix = results ? "results.root" : "root";
+   if (!file.BeginsWith(prefix) || !file.EndsWith(suffix))
       return false;
-   TString rest = file(prefix.Length(), file.Length());
-   return rest == "root" ||
-          (rest.Length() == 8 && rest.EndsWith(".root") && rest[0] == 'c' && isdigit(rest[1]) && isdigit(rest[2]));
+   TString chunk = file(prefix.Length(), file.Length() - prefix.Length() - suffix.Length());
+   return chunk == "" ||
+          (chunk.Length() == 4 && chunk[0] == 'c' && isdigit(chunk[1]) && isdigit(chunk[2]) && chunk[3] == '.');
 }
 
 /**
@@ -225,25 +252,28 @@ bool IsFinished(TString path)
    return !gSystem->AccessPathName(cfgFile) && !RunConfig::FromOutput(path).Empty();
 }
 
-/// Finished files of [fit <name>] in study (one file, or one per chunk). Unfinished ones are skipped with a warning.
+/// Finished files of [fit <name>] in study (one file, or one per chunk). Unfinished ones are skipped with a
+/// warning. study may be <remote>:<study>, see GetFitSource.
 std::vector<TString> FitFiles(TString study, TString name)
 {
    std::vector<TString> files;
-   auto dataDir = RunConfig::DataDir();
+   auto source = GetFitSource(study);
+   auto dataDir = source.dir;
    auto dir = gSystem->OpenDirectory(dataDir);
-   while (auto entry = gSystem->GetDirEntry(dir)) {
+   while (auto entry = dir ? gSystem->GetDirEntry(dir) : nullptr) {
       TString file = entry;
-      if (!IsFitFile(file, study, name))
+      if (!IsFitFile(file, source.study, name, source.results))
          continue;
       if (IsFinished(dataDir + "/" + file))
          files.push_back(dataDir + "/" + file);
       else
          Warning("FitFiles", "Skipping %s: the fit failed, is running or is queued", file.Data());
    }
-   gSystem->FreeDirectory(dir);
+   if (dir)
+      gSystem->FreeDirectory(dir);
    std::sort(files.begin(), files.end());
    if (files.empty())
-      Error("FitFiles", "No finished fit files for %s-%s in %s", study.Data(), name.Data(), dataDir.Data());
+      Error("FitFiles", "No finished fit files for %s-%s in %s", source.study.Data(), name.Data(), dataDir.Data());
    return files;
 }
 
@@ -293,7 +323,8 @@ void plot_fit(std::vector<TString> files, bool draw = true)
       zHist->Draw();
 }
 
-/// Plot [fit <name>] of a study, e.g. plot_fit("decay_angle", "90deg")
+/// Plot [fit <name>] of a study, e.g. plot_fit("decay_angle", "90deg"), or of a study run on a cluster from
+/// the results files fetched from it, e.g. plot_fit("hpc:decay_angle", "90deg")
 void plot_fit(TString study, TString name, bool draw = true)
 {
    plot_fit(FitFiles(study, name), draw);

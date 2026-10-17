@@ -78,26 +78,29 @@ std::vector<TString> StudyFits(TString study)
  * to <outputDir>/<plot>.root. Values are read from the settings recorded in every fit file, which
  * include the macro defaults, so they are what was actually run. Fits (and chunks) sharing a value
  * are combined. Only the [fit <name>] sections of studies/<study>.ini are used, so files of removed or
- * renamed fits are ignored.
+ * renamed fits are ignored. study may be <remote>:<study> for the results files fetched from a cluster
+ * (see GetFitSource). The default outputDir is ./.groups/<study>, or ./.groups/<remote>/<study>.
  *
  *    group_fit_plots("angle_scan", "sim.decayAngle")
- *    show_groups("Z", "./groups_angle_scan")
+ *    show_groups("Z", "./.groups/angle_scan")
  */
 void group_fit_plots(TString study, TString key, TString outputDir = "")
 {
+   auto source = GetFitSource(study);
    if (outputDir.IsNull())
-      outputDir = "./groups_" + study;
+      outputDir = "./.groups/" + (source.remote.IsNull() ? "" : source.remote + "/") + source.study;
 
    // Collect fit files of the study's current fits by the value of key
-   auto fits = StudyFits(study);
+   auto fits = StudyFits(source.study);
    if (fits.empty())
       return;
    std::map<std::string, std::vector<TString>> groups;
-   auto dataDir = RunConfig::DataDir();
+   auto dataDir = source.dir;
    auto dir = gSystem->OpenDirectory(dataDir);
-   while (auto entry = gSystem->GetDirEntry(dir)) {
+   while (auto entry = dir ? gSystem->GetDirEntry(dir) : nullptr) {
       TString name = entry;
-      if (std::none_of(fits.begin(), fits.end(), [&](const TString &fit) { return IsFitFile(name, study, fit); }))
+      if (std::none_of(fits.begin(), fits.end(),
+                       [&](const TString &fit) { return IsFitFile(name, source.study, fit, source.results); }))
          continue;
       if (!IsFinished(dataDir + "/" + name))
          continue;
@@ -109,7 +112,8 @@ void group_fit_plots(TString study, TString key, TString outputDir = "")
       }
       groups[value].push_back(dataDir + "/" + name);
    }
-   gSystem->FreeDirectory(dir);
+   if (dir)
+      gSystem->FreeDirectory(dir);
 
    if (groups.empty()) {
       Error("group_fit_plots", "No fit files for study %s in %s", study.Data(), dataDir.Data());
