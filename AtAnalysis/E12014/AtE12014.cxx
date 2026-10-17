@@ -13,7 +13,6 @@
 
 #include <FairLogger.h>
 
-#include <TF1.h>
 #include <TH1.h>
 #include <TString.h>
 
@@ -128,8 +127,8 @@ int E12014::FillHitSums(std::vector<double> &exp, std::vector<double> &sim, cons
       if (fMap->GetPadSize(expHit->GetPadNum()) != 0)
          continue;
 
-      auto funcExp = AtTools::GetHitFunctionTB(*expHit, fPar);
-      if (funcExp == nullptr)
+      auto expGauss = AtTools::GetHitGaussianTB(*expHit, fPar);
+      if (!expGauss)
          continue;
 
       // We have a hit we want to save for both exp and fisison.
@@ -143,8 +142,8 @@ int E12014::FillHitSums(std::vector<double> &exp, std::vector<double> &sim, cons
       }
       if (simHit == nullptr)
          continue;
-      auto funcSim = AtTools::GetHitFunctionTB(*simHit, fPar);
-      if (funcSim == nullptr)
+      auto simGauss = AtTools::GetHitGaussianTB(*simHit, fPar);
+      if (!simGauss)
          continue;
 
       AtPad *pad = nullptr;
@@ -156,10 +155,10 @@ int E12014::FillHitSums(std::vector<double> &exp, std::vector<double> &sim, cons
       //  We now have the sim and exp hits. Fill the arrays
       for (int tb = fTBMin; tb < 512; ++tb) {
 
-         auto val = funcExp->Eval(tb);
+         auto val = (*expGauss)(tb);
          if (val > threshold) {
             exp[tb] += val;
-            sim[tb] += funcSim->Eval(tb);
+            sim[tb] += (*simGauss)(tb);
             if (pad && expADC)
                (*expADC)[tb] += pad->GetADC(tb);
          }
@@ -179,12 +178,12 @@ void E12014::FillSimSum(std::vector<double> &sim, const std::vector<AtHit *> &si
 
    for (auto &expHit : simHits) {
 
-      auto funcExp = AtTools::GetHitFunctionTB(*expHit);
-      if (funcExp == nullptr)
+      auto expGauss = AtTools::GetHitGaussianTB(*expHit);
+      if (!expGauss)
          continue;
 
       for (int tb = fTBMin; tb < 512; ++tb) {
-         sim[tb] += funcExp->Eval(tb);
+         sim[tb] += (*expGauss)(tb);
       }
    }
 }
@@ -269,13 +268,13 @@ E12014::FillHitSum(std::vector<double> &vec, const std::vector<AtHit *> &hits, i
       if (hit->GetCharge() > satThresh)
          continue;
 
-      auto func = AtTools::GetHitFunctionTB(*hit);
-      if (func == nullptr)
+      auto gauss = AtTools::GetHitGaussianTB(*hit);
+      if (!gauss)
          continue;
 
       // Add the charge to the array
       for (int tb = 0; tb < vec.size(); ++tb) {
-         auto val = func->Eval(tb);
+         auto val = (*gauss)(tb);
          if (val > threshold)
             vec[tb] += val;
       }
@@ -309,15 +308,15 @@ void E12014::FillSimHitSum(std::vector<double> &vec, const std::vector<AtHit *> 
       if (hit->GetCharge() > satThresh)
          continue;
 
-      auto func = AtTools::GetHitFunctionTB(*hit);
-      if (func == nullptr)
+      auto gauss = AtTools::GetHitGaussianTB(*hit);
+      if (!gauss)
          continue;
 
       // Add the charge to the array
       LOG(debug) << "Adding pad " << hit->GetPadNum();
 
       for (int tb = 0; tb < vec.size(); ++tb) {
-         auto val = func->Eval(tb) * amp;
+         auto val = amp * (*gauss)(tb);
          if (val > threshold)
             vec[tb] += val;
       }
