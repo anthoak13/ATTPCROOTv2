@@ -36,6 +36,7 @@ Agent-facing docs for the current branch state of ATTPCROOT.
 - MC truth design (under discussion): [development/mc-truth.md](development/mc-truth.md)
 - MC fitter threading (how it parallelizes, known bugs, where the time goes): [development/mc-fitter-threading.md](development/mc-fitter-threading.md)
 - simulation, digitization and MC fit speed (2026-10 study): [development/fit-speed-study.md](development/fit-speed-study.md)
+- full record of that study (every change tried, reproducing it, Geant4 timing): [development/fit-speed-study-record.md](development/fit-speed-study-record.md)
 - units and conventions: [development/units-and-conventions.md](development/units-and-conventions.md)
 
 ## Scope Notes
