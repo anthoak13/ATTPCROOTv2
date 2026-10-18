@@ -7,9 +7,10 @@ void run_fit(TString cfgFile = "")
 {
    RunConfig cfg(cfgFile);
 
+   int seed = cfg.GetInt("fit.seed", std::random_device{}() & 0x7fffffff);
    delete gRandom;
    gRandom = new TRandom3;
-   gRandom->SetSeed(cfg.GetInt("fit.seed", std::random_device{}() & 0x7fffffff));
+   gRandom->SetSeed(seed);
 
    TString InputDataFile = cfg.File("input", "digi");
    TString OutputDataFile = cfg.File("output", "fit");
@@ -60,8 +61,9 @@ void run_fit(TString cfgFile = "")
    auto cluster = std::make_shared<AtClusterizeLine>();
    auto pulse = std::make_shared<AtPulseLine>(fMap);
    pulse->SetSaveCharge(true);
+   pulse->SetDoConvolution(false); // The PSA reads the charge, so the traces are left empty
    auto psa2 = std::make_shared<AtPSADeconvFit>();
-   psa2->SetUseSimCharge(true);
+   psa2->SetUseSimCharge(true); // Needed by SetDoConvolution(false)
    psa2->SetThreshold(cfg.Get("fit.psaThreshold", 25));
 
    auto fitter = std::make_shared<MCFitter::AtMCFission>(sim, cluster, pulse);
@@ -72,7 +74,9 @@ void run_fit(TString cfgFile = "")
    fitter->SetNumIter(cfg.GetInt("fit.iter", 100));
    fitter->SetNumThreads(cfg.GetInt("fit.threads", 4)); // Keep in sync with FIT_THREADS_DEFAULT in fission.py
    fitter->SetNumRounds(cfg.GetInt("fit.rounds", 2));
+   fitter->SetNumEventsToSave(cfg.GetInt("fit.saveEvents", 10)); // Simulated events kept per event, best first
    fitter->SetTimeEvent(cfg.GetInt("fit.timeEvent", 0));
+   fitter->SetSeed(seed); // With the event number, round and thread, fixes every draw of the fit
 
    AtMCFitterTask *fitTask = new AtMCFitterTask(fitter);
    fitTask->SetPatternBranchName("AtFissionEvent");
@@ -88,6 +92,8 @@ void run_fit(TString cfgFile = "")
 
    cfg.CheckUnused({"sim.", "digi."}); // Earlier stages' settings, passed on to describe the input
    fRun->Init();
+   // The fit reads only the hits. Skipping the 16 MB/event traces saves main-thread time while the workers wait.
+   source->GetInChain()->SetBranchStatus("AtRawEvent*", 0);
 
    TStopwatch timer;
 

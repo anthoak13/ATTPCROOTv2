@@ -51,7 +51,7 @@ export TPC_SHARED_INFO=/path/to/shared/info
 export FISSION_DATA=/path/to/data   # optional, default: data/ next to these macros
 ```
 
-`FISSION_DATA` is where every output file goes. A relative path is relative to the directory you start `fission.py` or ROOT in, so start both from the same place, or use an absolute path. Put it on a disk with plenty of room. Digi files store raw traces, and fit files store the 10 best simulated events per event, so each costs roughly 20–25 MB per event. A 500-event sim with one digi and one fit is about 20–25 GB.
+`FISSION_DATA` is where every output file goes. A relative path is relative to the directory you start `fission.py` or ROOT in, so start both from the same place, or use an absolute path. Put it on a disk with plenty of room. Digi files store raw traces, roughly 15–20 MB per event. Fit files store the 10 best simulated events per event without traces, about 3–4 MB per event. A 500-event sim with one digi and one fit is about 10 GB.
 
 ## Quick start
 
@@ -189,9 +189,9 @@ There are two independent levers:
 
 Every fit job also uses `fit.threads` threads. Keep `-j × fit.threads` near your core count.
 
-Prefer more chunks over more threads. The fitter's threads wait on a shared lock, so speed does not grow with thread count, and they draw from one shared random-number generator. Separate processes avoid both. `studies/bench.ini` measures how fit time scales with threads on a given machine.
+For throughput, prefer more chunks over more threads: two threads per allocated core get the most events per core (see [fit-speed-study.md](../../../docs/development/fit-speed-study.md#thread-scaling)). `studies/bench.ini` measures how fit time scales with threads on a given machine.
 
-No fit is reproducible, even with one thread: the fitter seeds its parameter sampling randomly and `fit.seed` does not reach it. See bug 2 in [mc-fitter-threading.md](../../../docs/development/mc-fitter-threading.md).
+A fit rerun with the same input and settings, `fit.seed` included, reproduces exactly, except for which of several results with the same objective is kept when `fit.threads` is more than 1 (see bug 2 in [mc-fitter-threading.md](../../../docs/development/mc-fitter-threading.md)). Each fit thread draws its own random numbers, so changing `fit.threads` changes the results within their statistics.
 
 ## Looking at results
 
@@ -308,7 +308,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 
 | Key | Default | Meaning |
 |---|---|---|
-| `<stage>.seed` | from study, name and stage (driver) | Random seed of the stage. Fixed for a given section, so sim and digi reruns reproduce. The fit does not (see [parallel running](#parallel-running)). |
+| `<stage>.seed` | from study, name and stage (driver) | Random seed of the stage. Fixed for a given section, so reruns reproduce (for a fit, with the same `fit.threads`; see [parallel running](#parallel-running)), except a digi on a busy machine, whose FFTW "measure" plans move hits in the last bits. |
 | `<stage>.input` | the section of the previous stage with the same name (driver) | The section's input. See [What a section reads](#what-a-section-reads). Not allowed for a sim. Input files need the `.cfg` their stage wrote next to them, and a glob's files must agree on every setting except `*.events` and `*.seed`. Another study's sections and input files are never run or removed from here. |
 | `<stage>.slurm.<key>` | none (driver) | The value of `@<key>@` in `slurm_job.sh`, e.g. `fit.slurm.time`. See [SLURM details](#slurm-details). |
 
@@ -344,6 +344,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `fit.threads` | 4 | Threads per fit job. |
 | `fit.psaThreshold` | 25 | PSA threshold for the fit's simulated events. |
 | `fit.timeEvent` | 0 | 1 logs the time per round, for benchmarking. |
+| `fit.saveEvents` | 10 | Simulated events (and their traces) saved per event in the fit file, best chi2 first. 0 saves none, which speeds up the main thread at high thread counts. |
 
 Misspelled settings are errors. The driver rejects misplaced keys (no stage prefix in `[defaults]`, a prefix inside a section, `input` in a sim, `events` or `chunks` outside a sim, a `slurm.` key that isn't `slurm.<letters, digits, _>`). Each macro calls `cfg.CheckUnused(...)` before running and fails on any setting it was passed but never read, except for the earlier stages' prefixes it lists.
 
@@ -396,7 +397,7 @@ All files go in `$FISSION_DATA`:
 ```
 <study>-<name>.sim.root    simulated energy deposits + truth
 <study>-<name>.digi.root   traces, hits, Y-pattern fits + truth
-<study>-<name>.fit.root    fit results (AtMCResult), best simulated events + truth
+<study>-<name>.fit.root    fit results (AtMCResult), best simulated events (charge, no ADC traces) + truth
 <study>-<name>.<stage>.cfg     copy of the .cfg.in, written only on success
 <study>-<name>.<stage>.cfg.in  settings passed to the macro
 <study>-<name>.<stage>.log     full ROOT output
@@ -407,7 +408,7 @@ remote/<remote>/               results files (and logs) fetched from a cluster, 
 
 With `sim.chunks`, each name gets `.cNN` before the extension (`.fit.c03.results.root`). A fit removes its old results file when it starts, so a results file never outlives its fit.
 
-A results file (`slim_fit.C`) holds what `plot_fit.C` reads, with the fit file's branch names: per event, the fit results (`AtMCResult`), the truth (`SimInfo`), the best simulated event (`SimEvent`, 1 instead of 10), and the digi's hits (`AtEvent`) and Y-pattern (`AtFissionEvent`), but no raw traces. That is about 70 kB per event, against about 35 MB for the digi and fit files. If writing it fails, the fit job fails.
+A results file (`slim_fit.C`) holds what `plot_fit.C` reads, with the fit file's branch names: per event, the fit results (`AtMCResult`), the truth (`SimInfo`), the best simulated event (`SimEvent`, 1 instead of 10), and the digi's hits (`AtEvent`) and Y-pattern (`AtFissionEvent`), but no raw traces. That is about 70 kB per event, against about 20 MB for the digi and fit files. If writing it fails, the fit job fails.
 
 `--fetch` copies the results files of fits whose job finished and isn't queued; `--fetch-logs` copies the `.log` of every job of the selected sections (about 1.25 MB per fit event). Both overwrite that remote's earlier copies, and remove the earlier copies of the selected sections' files that the cluster doesn't list: those of a refit that is queued or failed, and of an old chunk count. So a plot never mixes them with the new ones. `--dry-run` lists what it would remove.
 
