@@ -50,6 +50,10 @@ double beamM = 199.9332;
 int cnZ = 85; // Compound nucleus that fissions
 int cnA = 204;
 float massFrac = 0.56;
+// If zToSimMax > zToSimMin, each event draws the heavy fragment's mean Z uniformly in [zToSimMin, zToSimMax] and uses
+// massFrac = Z / cnZ for that event instead of the fixed massFrac above.
+int zToSimMin = 0;
+int zToSimMax = 0;
 float massDev = 6;
 float decayAngle =
    0; // Angle of the fission fragments in the CoM frame in radians. If 0, then sample from the angular distribution
@@ -123,7 +127,8 @@ vecInt getProductChargeDist(Int_t Z, const vecInt &masses);
 // Return the four momenta of the products in the center of mass frame
 std::vector<VecXYZE> getProductMomenta(const vecInt &fragA, const vecInt &fragZ, TRandom *rand, VecPolar &decayAng);
 
-// Throw unless the mean fragment mass (from massFrac) belongs to an ion in `ions`
+// Throw unless the mean fragment mass (from massFrac, or from every Z in [zToSimMin, zToSimMax]) belongs to an ion in
+// `ions`
 void CheckMassFrac();
 
 // Generate and simulate a fission event (end result is energy deposition in space in the TPC)
@@ -250,11 +255,16 @@ bool generateEvent()
    vecInt fragZ = {0, 0};
    vecInt fragA = {0, 0};
 
+   // Mean mass of the heavy fragment for this event
+   float eventMassFrac = massFrac;
+   if (zToSimMax > zToSimMin)
+      eventMassFrac = (float)(zToSimMin + gRandom->Integer(zToSimMax - zToSimMin + 1)) / cnZ;
+
    // Generate the masses and charges of the fission fragments, until one has an ion in the list
    for (int tries = 0; fragZ[0] == 0; ++tries) {
       if (tries == 10000)
          LOG(fatal) << "No fragment mass in the ion list after " << tries << " tries";
-      fragA = getProducMasses(cnA, massFrac, massDev, gRandom);
+      fragA = getProducMasses(cnA, eventMassFrac, massDev, gRandom);
       fragZ = getProductChargeDist(cnZ, fragA);
       std::cout << "Trying " << fragA[0] << " " << fragZ[0] << std::endl;
    }
@@ -410,14 +420,22 @@ vecInt getProducMasses(Int_t A, Float_t massFrac, Float_t massDev, TRandom *rand
 
 void CheckMassFrac()
 {
-   // The mean heavy-fragment mass, as getProducMasses samples it
-   int A1 = TMath::Nint(cnA * massFrac);
-   if (A1 < cnA / 2)
-      A1 = cnA - A1;
-   bool found = std::any_of(ions.begin(), ions.end(), [A1](auto &ion) { return ion.second == A1; });
-   if (!found)
-      throw std::invalid_argument("Mean fragment mass " + std::to_string(A1) +
-                                  " (sim.zToSim) has no ion in sim.ions.zmin-zmax");
+   // The mean heavy-fragment mass of every Z that can be drawn, as getProducMasses samples it
+   std::vector<float> fracs{massFrac};
+   if (zToSimMax > zToSimMin) {
+      fracs.clear();
+      for (int z = zToSimMin; z <= zToSimMax; ++z)
+         fracs.push_back((float)z / cnZ);
+   }
+   for (auto frac : fracs) {
+      int A1 = TMath::Nint(cnA * frac);
+      if (A1 < cnA / 2)
+         A1 = cnA - A1;
+      bool found = std::any_of(ions.begin(), ions.end(), [A1](auto &ion) { return ion.second == A1; });
+      if (!found)
+         throw std::invalid_argument("Mean fragment mass " + std::to_string(A1) +
+                                     " (sim.zToSim to sim.zToSimMax) has no ion in sim.ions.zmin-zmax");
+   }
 }
 
 void Exec()

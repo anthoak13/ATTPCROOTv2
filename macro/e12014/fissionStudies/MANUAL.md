@@ -372,8 +372,10 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `sim.ions.zmin`, `sim.ions.zmax` | 26, 59 | Fragment Z range that can be simulated and fit. Every Z needs tables. Both fragments of a split must be in range, so `zmin + zmax` must equal `zcn`, or every stage stops with an error. |
 | `sim.ions.zcn`, `sim.ions.acn` | 85, 204 | Compound nucleus (²⁰⁴At). The simulation fissions it, the fit assumes it, and `plot_fit` scales its ranges by it. A fragment's A is `round(Z / zcn * acn)`. The fit takes these from its sim, so it can only assume the sim's nucleus. |
 | `sim.zToSim` | 50 | Sets the mean fragment mass, as the fraction `zToSim / zcn` of the compound nucleus. That mass must belong to a Z in `sim.ions.zmin`–`sim.ions.zmax`, or the sim stops with an error. |
+| `sim.zToSimMax` | same as `sim.zToSim` | Above `sim.zToSim`: each event draws the mean fragment Z uniformly from `sim.zToSim`–`sim.zToSimMax`. Every Z in that range needs a table, as for `sim.zToSim`. |
 | `sim.massDev` | 0 | Width of the fragment mass distribution (amu). 0 gives a single split. |
 | `sim.decayAngle` | 90 | CoM decay angle in degrees. 0 samples the measured angular distribution. |
+| `sim.step` | 1 | Step along the simulated tracks (mm). |
 | `sim.eloss` | LISE | Energy-loss tables used in simulation: `LISE` or `SRIM`. |
 | `sim.beamE`, `sim.beamEsig` | 2700.13, 128.122 | Beam energy and spread at the window (MeV). |
 | `sim.zCutoff` | 300 | Vertices are simulated from the window up to this distance from the pad plane (mm). |
@@ -384,6 +386,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 |---|---|---|
 | `digi.lowGain` | 0.19 | Gain factor for the zapped low-gain pads. |
 | `digi.respScale` | 0.0075 | Scaling applied to the measured pad response. |
+| `digi.intPoints` | 1000 | Random points sampling the transverse diffusion of each track segment. |
 
 **Fit (`fit.`)**
 
@@ -394,6 +397,11 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `fit.rounds` | 2 | Rounds. Each round narrows the parameter distributions around the best result. |
 | `fit.threads` | 4 | Threads per fit job. |
 | `fit.psaThreshold` | 25 | PSA threshold for the fit's simulated events. |
+| `fit.step` | 1 | Step along the fit's simulated tracks (mm). Larger is faster and coarser. |
+| `fit.intPoints` | 1000 | Points sampling the transverse diffusion of each track segment in the fit's digitization. Fewer is faster and noisier. |
+| `fit.zSigma` | 3 | Longitudinal diffusion range (in sigma) integrated for each track segment in the fit's digitization. |
+| `fit.fixedPattern` | 0 | 1 samples the diffusion with a fixed pattern of `fit.intPoints` points (one random rotation per segment) instead of random points: less noise per point. |
+| `fit.gainFluct` | 1 | 0 gives every deposit the mean gain, with no random gain fluctuations, in the fit's digitization. |
 | `fit.timeEvent` | 0 | 1 logs the Monte Carlo time per round (`Simulation of N events took X ms`), for benchmarking. |
 | `fit.saveEvents` | 10 | Simulated events (and their traces) saved per event in the fit file, best chi2 first. 0 saves none, which speeds up the main thread at high thread counts. |
 

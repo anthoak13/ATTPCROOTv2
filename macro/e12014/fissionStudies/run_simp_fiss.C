@@ -18,6 +18,7 @@ void run_simp_fiss(TString cfgFile = "")
    int num_events = cfg.GetInt("sim.events", 500);
    auto [Zcn, Acn] = CompoundNucleus(cfg); // The nucleus that fissions
    int zToSim = cfg.GetInt("sim.zToSim", 50);
+   int zToSimMax = cfg.GetInt("sim.zToSimMax", zToSim);     // Above zToSim: draw the mean Z per event in [zToSim, this]
    std::string elossType = cfg.GetStr("sim.eloss", "LISE"); // LISE or SRIM
 
    fissionSim::beamZ = 83;       // Number of protons in the beam
@@ -26,6 +27,8 @@ void run_simp_fiss(TString cfgFile = "")
    fissionSim::cnZ = Zcn;
    fissionSim::cnA = Acn;
    fissionSim::massFrac = (float)zToSim / Zcn; // Mean of the FF mass distribution (as a fraction of Acn).
+   fissionSim::zToSimMin = zToSim;
+   fissionSim::zToSimMax = zToSimMax;
    // Standard deviation of the FF mass distribution in amu. Set to 0 for single mass splitting.
    fissionSim::massDev = cfg.Get("sim.massDev", 0);
    // Angle of the decay in CoM frame in degrees (0 means sample the distribution)
@@ -67,7 +70,7 @@ void run_simp_fiss(TString cfgFile = "")
 
    // Create the simulation object and set the distance step (how far should the particles move in each step)
    auto sim = std::make_unique<AtSimpleSimulation>(GeoDataPath.Data());
-   sim->SetDistanceStep(1); // Units for distance are mm
+   sim->SetDistanceStep(cfg.Get("sim.step", 1)); // Units for distance are mm
 
    // Create the space charge model that we use to deform the tracks
    auto scModel = std::make_shared<AtLineChargeModel>();
