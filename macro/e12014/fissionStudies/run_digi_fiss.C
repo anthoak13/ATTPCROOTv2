@@ -74,6 +74,7 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    auto pulse = std::make_shared<AtPulseLine>(mapping, response);
    pulse->SetSaveCharge(saveRawEvent);
    pulse->SetLowGain(cfg.Get("digi.lowGain", 0.19));
+   pulse->SetNumIntegrationPoints(cfg.GetInt("digi.intPoints", 1000)); // Points sampling each line's diffusion
    AtPulseTask *pulseTask = new AtPulseTask(pulse);
    pulseTask->SetPersistence(saveRawEvent);
 

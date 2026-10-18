@@ -47,6 +47,7 @@ void run_fit(TString cfgFile = "")
 
    // Create underlying simulation class
    auto sim = std::make_shared<AtSimpleSimulation>(GeoDataPath.Data());
+   sim->SetDistanceStep(cfg.Get("fit.step", 1)); // Step along the tracks (mm)
 
    auto scModel = std::make_shared<AtRadialChargeModel>(nullptr);
    scModel->SetStepSize(0.1);
@@ -62,6 +63,10 @@ void run_fit(TString cfgFile = "")
    auto pulse = std::make_shared<AtPulseLine>(fMap);
    pulse->SetSaveCharge(true);
    pulse->SetDoConvolution(false); // The PSA reads the charge, so the traces are left empty
+   pulse->SetNumIntegrationPoints(cfg.GetInt("fit.intPoints", 1000)); // Points sampling each line's diffusion
+   pulse->SetNumSigmaToIntegrateZ(cfg.GetInt("fit.zSigma", 3));       // Longitudinal diffusion range integrated
+   pulse->SetUseFixedSample(cfg.GetInt("fit.fixedPattern", 0));      // 1: fixed diffusion pattern, not random points
+   pulse->SetGainFluctuations(cfg.GetInt("fit.gainFluct", 1));        // 0: every deposit gets the mean gain
    auto psa2 = std::make_shared<AtPSADeconvFit>();
    psa2->SetUseSimCharge(true); // Needed by SetDoConvolution(false)
    psa2->SetThreshold(cfg.Get("fit.psaThreshold", 25));
