@@ -17,5 +17,6 @@
 #SBATCH --cpus-per-task=@cpus@
 #SBATCH --time=@time@
 #SBATCH --mem=@mem@
+#SBATCH --partition=@partition@
 
 @command@
