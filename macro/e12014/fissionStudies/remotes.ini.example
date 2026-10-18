@@ -14,7 +14,7 @@ cmake.CMAKE_PREFIX_PATH = /home/me/fair_install/hdf5;/home/me/fair_install/HiRAE
 slurm.time = 1-00:00:00
 slurm.mem = 4G
 fit.slurm.mem = 8G
-; slurm.partition = cs              ; needs a line #SBATCH --partition=@partition@ in slurm_job.sh
+slurm.partition = cs                ; required, like time and mem (a cluster without a default partition)
 
 ; Another code version on the same cluster: its own checkout (and build), the same data directory.
 ; ./fission.py --remote hpc-dev --sync from the branch it should run.
@@ -28,3 +28,4 @@ env.FAIRROOTPATH = /home/me/fair_install/FairRootInst
 cmake.CMAKE_PREFIX_PATH = /home/me/fair_install/hdf5;/home/me/fair_install/HiRAEVTInst
 slurm.time = 1-00:00:00
 slurm.mem = 4G
+slurm.partition = cs
