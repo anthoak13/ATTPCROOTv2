@@ -212,14 +212,15 @@ struct FitSource {
    TString study;  // The study's name
    TString remote; // The remote's name, or "" for local fit files
    TString dir;    // Directory holding the files
+   bool results;   // Local results files wanted (a remote's are always results files)
 
    /// Files are results files (<fit>.results.root, see slim_fit.C) rather than fit files
-   bool Results() const { return !remote.IsNull(); }
+   bool Results() const { return results || !remote.IsNull(); }
 };
 
-FitSource GetFitSource(TString study)
+FitSource GetFitSource(TString study, bool results = false)
 {
-   FitSource source{study, "", RunConfig::DataDir()};
+   FitSource source{study, "", RunConfig::DataDir(), results};
    auto colon = study.Index(":");
    if (colon >= 0) {
       source.remote = study(0, colon);
@@ -254,11 +255,11 @@ bool IsFinished(TString path)
 }
 
 /// Finished files of [fit <name>] in study (one file, or one per chunk). Unfinished ones are skipped with a
-/// warning. study may be <remote>:<study>, see GetFitSource.
-std::vector<TString> FitFiles(TString study, TString name)
+/// warning. study may be <remote>:<study>, see GetFitSource. results reads a local study's results files.
+std::vector<TString> FitFiles(TString study, TString name, bool results = false)
 {
    std::vector<TString> files;
-   auto source = GetFitSource(study);
+   auto source = GetFitSource(study, results);
    auto dataDir = source.dir;
    auto dir = gSystem->OpenDirectory(dataDir);
    while (auto entry = dir ? gSystem->GetDirEntry(dir) : nullptr) {

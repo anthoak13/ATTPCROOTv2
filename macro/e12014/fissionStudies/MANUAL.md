@@ -105,6 +105,8 @@ The studies already in `studies/`:
 - `digi_scan.ini`: digitize `smoke.ini`'s sim with three different sets of parameters.
 - `fit_scan.ini`: one fit of each `digi_scan.ini` digitization. 
 - `bench.ini`: one sim and digi, fit with 1, 2, 4 and 8 threads, to time the fit.
+- `speed_ref.ini`, `speed_fit_ref.ini`, `speed_fit_TEMPLATE.ini`: the fitter speed study, see [Benchmarking fitter changes](#benchmarking-fitter-changes).
+- `thread_scan.ini`: fit time against `fit.threads` (1 to 64) on the cluster, on the `speed_ref.ini` digitization.
 - `decay_angle.ini` (decay angle 90° vs. 120°), `mass_dev.ini` (`massDev` 0 vs. 2) and `eloss_mismatch.ini` (LISE vs. SRIM sims, fit with LISE): approximate reconstructions of Skyler's earlier studies.
 
 Each section makes one output, named after the section. By default it reads the previous stage's output of the same name; `input` changes that.
@@ -189,7 +191,7 @@ There are two independent levers:
 
 Every fit job also uses `fit.threads` threads. Keep `-j × fit.threads` near your core count.
 
-For throughput, prefer more chunks over more threads: two threads per allocated core get the most events per core (see [fit-speed-study.md](../../../docs/development/fit-speed-study.md#thread-scaling)). `studies/bench.ini` measures how fit time scales with threads on a given machine.
+For throughput, prefer more chunks over more threads: two threads per allocated core get the most events per core (see [Choosing `fit.threads`](#choosing-fitthreads)). `studies/bench.ini` measures how fit time scales with threads on a given machine.
 
 A fit rerun with the same input and settings, `fit.seed` included, reproduces exactly, except for which of several results with the same objective is kept when `fit.threads` is more than 1 (see bug 2 in [mc-fitter-threading.md](../../../docs/development/mc-fitter-threading.md)). Each fit thread draws its own random numbers, so changing `fit.threads` changes the results within their statistics.
 
@@ -245,7 +247,8 @@ root -l -e '.L plot_fit.C' -e 'plot_fit("hpc:decay_angle", "90deg")'   # plot th
 
 1. Make `ssh <host>` work without a prompt (a key or an agent). Put the port, user or key in `~/.ssh/config`.
 2. Copy `remotes.ini.example` to `remotes.ini` (not committed) and fill in a section for the cluster. Every key is in [Cluster settings](#cluster-settings). For a new cluster, set `env.SIMPATH`, `env.FAIRROOTPATH` and `cmake.CMAKE_PREFIX_PATH` to the values of the first configure in [installation.md](../../../docs/tooling/installation.md), and pick a `repo` that doesn't exist yet.
-3. Run `./fission.py --remote hpc --sync`. It sends your branch, clones it into `repo`, configures and builds it. This takes a few minutes.
+3. Run `./fission.py --remote hpc --sync`. It sends your branch, clones it into `repo`, configures and builds it, and makes `geometry/ATTPC_v1.1_geomanager.root`, which the fission macros need and git ignores. This takes a few minutes.
+4. Set `slurm.time`, `slurm.mem` and `slurm.partition` for the cluster ([Cluster settings](#cluster-settings)). `slurm.partition` is required because some clusters have no default partition.
 
 ### Keeping the cluster's code current
 
@@ -257,7 +260,7 @@ To run several code versions on one cluster, give each its own `remotes.ini` sec
 
 ### Fetching results
 
-Fits run through `--remote` also write a small `<fit>.results.root` (about 70 kB per event), which `plot_fit.C` reads. `--fetch` copies the finished ones to `$FISSION_DATA/remote/<remote>/`, and `--fetch-logs` copies the logs. Both list the files and total size first, and with `--dry-run` only list them. `plot_fit("hpc:<study>", …)` and `group_fit_plots` read the fetched copies (see [Plots](#plots)).
+Fits run through `--remote` also write a small `<fit>.results.root` (about 70 kB per event), which `plot_fit.C` reads. `--fetch` copies the finished ones, with each job's `.time` file (its CPU time, see [Benchmarking fitter changes](#benchmarking-fitter-changes)), to `$FISSION_DATA/remote/<remote>/`, and `--fetch-logs` copies the logs and `.time` files. Both list the files and total size first, and with `--dry-run` only list them. `plot_fit("hpc:<study>", …)` and `group_fit_plots` read the fetched copies (see [Plots](#plots)).
 
 ### Running on the cluster directly
 
@@ -270,6 +273,54 @@ Logged in on the cluster, with the ATTPCROOT environment loaded and `TPC_SHARED_
 This is what `--remote` runs, plus `--results` and the remote's `slurm` values. It submits one `sbatch` job per section and chunk. Each job waits for the job that makes its input, and if a job fails, SLURM cancels the jobs waiting on it. Fit jobs request `fit.threads` CPUs, others one. Jobs inherit the environment of the shell you submit from.
 
 `--status` shows sections with jobs still in SLURM as `queued`. After a failure, the next run reruns only the failed section and what reads it.
+
+### Benchmarking fitter changes
+
+To compare the cost per event of several code versions of the fitter on the same events, with a check that they still fit the same physics:
+
+```bash
+./fission.py studies/speed_ref.ini --remote speed-ref --slurm                      # once: the shared sim and digi
+cp studies/speed_fit_TEMPLATE.ini studies/speed_fit_v1.ini                         # one copy per variant
+./fission.py --remote speed-v1 --sync                                              # variant's checkout, from the branch with its code
+./fission.py studies/speed_fit_ref.ini --remote speed-ref --slurm                  # reference: fits a and b, identical
+./fission.py studies/speed_fit_v1.ini  --remote speed-v1  --slurm                  # same for each variant
+./fission.py studies/speed_fit_ref.ini --remote speed-ref --fetch                  # when finished: results and .time files
+./fission.py studies/speed_fit_v1.ini  --remote speed-v1  --fetch
+./speed_report.py --ref speed-ref:speed_fit_ref speed-v1:speed_fit_v1 --csv speed.csv
+```
+
+Each `remotes.ini` section (`speed-ref`, `speed-v1`, …) is its own checkout with the same `env.FISSION_DATA`, so every variant fits the one digitization. Run the report in an environment with ROOT loaded (`source build/config.sh`), from anywhere, with `FISSION_DATA` as for `fission.py`. Local studies work too, without a remote prefix; add `--results` to read their results files instead of fit files.
+
+`speed_report.py` prints one row per `[fit]` section of each study, `--ref` first. The reference sample is the first fit of `--ref` (`a`); the second (`b`) is the same fit again, so its row shows the run-to-run spread the variants should match.
+
+| Column | Meaning |
+|---|---|
+| `events`, `fitted`, `frac` | Events in the files, events the fitter produced a result for, and their ratio. |
+| `cpu-s/ev` | User + system CPU seconds of the fit jobs per fitted event, and the spread (standard deviation) of that over chunks. Includes ROOT start-up and file I/O. |
+| `wall-s/ev` | The jobs' wall seconds per fitted event (chunks run in parallel, so this is not elapsed time). |
+| `mc-s/ev` | Wall seconds in the Monte Carlo rounds per fitted event, from the `fit.timeEvent` lines of the fetched `.log`. `-` without the logs. |
+| `speedup` | `cpu-s/ev` of all of the reference study's fits over the row's. |
+| `dZ mean`, `dZ sigma` | Mean and standard deviation of true minus fitted Z of the lighter fragment, with their standard errors. Only events passing `plot_fit`'s cuts, as in `zHistDiff` (`--all`: every fitted event). |
+| `obj med`, `obj mean` | Median and mean of the best fit's objective for the same events. |
+| `KS dZ`, `KS obj` | Two-sample Kolmogorov-Smirnov p-values against the reference sample, for dZ and the objective. |
+| `gate` | `PASS` if the row's dZ mean, dZ sigma and fitted fraction are within `--sigma` (2) standard errors of the reference sample, and both KS p-values are above `--ks` (0.05). Failed checks are listed under the table. |
+
+Times are read from `<job>.time` next to the fit files (`$FISSION_DATA/remote/<remote>/` for a cluster), and `mc-s/ev` from `<job>.log` there (`--fetch-logs`). `fission.py` writes the `.time` file in every job, here or in SLURM, from GNU `time` (or bash's `time` if the node has none, which has no memory figure); a file has the line `fission-time: user=… sys=… wall=… maxrss_kb=…`. Rows with a missing `.time` file show `-`.
+
+To time the fit against its thread count on the cluster (after `speed_ref.ini`; edit the node names in its `slurm.partition` values first):
+
+```bash
+./fission.py studies/thread_scan.ini --remote speed-v1 --slurm
+./fission.py studies/thread_scan.ini --remote speed-v1 --fetch        # results and .time files
+./fission.py studies/thread_scan.ini --remote speed-v1 --fetch-logs   # logs, for mc-s/ev
+./speed_report.py --ref speed-v1:thread_scan                           # one row per thread count
+```
+
+Its sections `t<N>` run N threads as the driver submits them, `t<N>n` one thread per core, and `p01`–`p16` sixteen 1-thread fits at once as a control. Outputs are named after the study, so for a second checkout on the same `FISSION_DATA` use a copy under another name.
+
+#### Choosing `fit.threads`
+
+The cluster's SLURM allocates whole cores (`CR_CORE`): a job asking for N CPUs gets N/2 cores, and the fit's N threads share them in pairs; `--hint=nomultithread` in `slurm.partition` gives N cores instead. Two threads on one core get 1.4 times the events per core of one thread (48 against 68 core-seconds per event), so for production use `fit.threads = 2` or `4` with many chunks, and `fit.iter` a multiple of `fit.threads`. For quick turnaround on one chunk, 32–50 threads on a whole node (`--exclusive`) take 5.2–3.7 s per event, at 5–7 times the core-seconds of `fit.threads = 2`. Details: [fit-speed-study.md](../../../docs/development/fit-speed-study.md#thread-scaling).
 
 ## Running macros by hand
 
@@ -343,7 +394,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `fit.rounds` | 2 | Rounds. Each round narrows the parameter distributions around the best result. |
 | `fit.threads` | 4 | Threads per fit job. |
 | `fit.psaThreshold` | 25 | PSA threshold for the fit's simulated events. |
-| `fit.timeEvent` | 0 | 1 logs the time per round, for benchmarking. |
+| `fit.timeEvent` | 0 | 1 logs the Monte Carlo time per round (`Simulation of N events took X ms`), for benchmarking. |
 | `fit.saveEvents` | 10 | Simulated events (and their traces) saved per event in the fit file, best chi2 first. 0 saves none, which speeds up the main thread at high thread counts. |
 
 Misspelled settings are errors. The driver rejects misplaced keys (no stage prefix in `[defaults]`, a prefix inside a section, `input` in a sim, `events` or `chunks` outside a sim, a `slurm.` key that isn't `slurm.<letters, digits, _>`). Each macro calls `cfg.CheckUnused(...)` before running and fails on any setting it was passed but never read, except for the earlier stages' prefixes it lists.
@@ -369,8 +420,8 @@ Misspelled settings are errors. The driver rejects misplaced keys (no stage pref
 | `--remote NAME` | Copy the study files to the cluster `NAME` of `remotes.ini` and run the command there. See [Running on a cluster](#running-on-a-cluster). |
 | `--sync` | With `--remote NAME` and no study: bring the cluster's code to this branch and commit, and build it. |
 | `--no-sync-check` | With `--remote NAME --slurm`: submit even if the cluster's code isn't at this commit. |
-| `--fetch` | With `--remote`: copy the selected fits' finished results files to `$FISSION_DATA/remote/NAME/`. |
-| `--fetch-logs` | With `--remote`: copy the selected sections' logs to `$FISSION_DATA/remote/NAME/`. |
+| `--fetch` | With `--remote`: copy the selected fits' finished results files, and their `.time` files, to `$FISSION_DATA/remote/NAME/`. |
+| `--fetch-logs` | With `--remote`: copy the selected sections' logs and `.time` files to `$FISSION_DATA/remote/NAME/`. |
 
 ## What reruns
 
@@ -401,6 +452,7 @@ All files go in `$FISSION_DATA`:
 <study>-<name>.<stage>.cfg     copy of the .cfg.in, written only on success
 <study>-<name>.<stage>.cfg.in  settings passed to the macro
 <study>-<name>.<stage>.log     full ROOT output
+<study>-<name>.<stage>.time    the macro's CPU time, wall time and peak memory, one line (see Benchmarking fitter changes)
 <study>-<name>.fit.results.root  small copy of the fit for plotting (--results, see Running on a cluster)
 <study>-<name>.fit.results.cfg   copy of the fit's .cfg, written when the results file is complete
 remote/<remote>/               results files (and logs) fetched from a cluster, same names
@@ -410,7 +462,7 @@ With `sim.chunks`, each name gets `.cNN` before the extension (`.fit.c03.results
 
 A results file (`slim_fit.C`) holds what `plot_fit.C` reads, with the fit file's branch names: per event, the fit results (`AtMCResult`), the truth (`SimInfo`), the best simulated event (`SimEvent`, 1 instead of 10), and the digi's hits (`AtEvent`) and Y-pattern (`AtFissionEvent`), but no raw traces. That is about 70 kB per event, against about 20 MB for the digi and fit files. If writing it fails, the fit job fails.
 
-`--fetch` copies the results files of fits whose job finished and isn't queued; `--fetch-logs` copies the `.log` of every job of the selected sections (about 1.25 MB per fit event). Both overwrite that remote's earlier copies, and remove the earlier copies of the selected sections' files that the cluster doesn't list: those of a refit that is queued or failed, and of an old chunk count. So a plot never mixes them with the new ones. `--dry-run` lists what it would remove.
+`--fetch` copies the results files of fits whose job finished and isn't queued; `--fetch-logs` copies the `.log` and `.time` of every job of the selected sections (about 1.25 MB per fit event). Both overwrite that remote's earlier copies, and remove the earlier copies of the selected sections' files that the cluster doesn't list: those of a refit that is queued or failed, and of an old chunk count. So a plot never mixes them with the new ones. `--dry-run` lists what it would remove.
 
 Each ROOT file also records every setting the stage ran with, including the macro defaults it used, as a `TNamed` called `RunConfig`:
 
@@ -436,7 +488,7 @@ Each section of `remotes.ini` (see `remotes.ini.example`) is one checkout on a c
 | `repo` | The driver's ATTPCROOT checkout on the cluster. `--sync` creates it if missing. Don't work in it yourself: `--sync` refuses to touch hand edits. The driver runs from the same directory in it as here. |
 | `env.<VAR>` | Exported on the cluster before every command, including the configure and build: `TPC_SHARED_INFO` and `FISSION_DATA` (paths the compute nodes can see), and `SIMPATH` and `FAIRROOTPATH` for a new checkout. |
 | `cmake.<VAR>` | Passed as `-D<VAR>=<value>` when `--sync` configures a new checkout, e.g. `CMAKE_PREFIX_PATH` (the HDF5 prefix, plus any other prefix the machine needs, `;`-separated). An existing build keeps its CMake cache, so these only matter for a first configure. |
-| `[<stage>.]slurm.<key>` | Values for `slurm_job.sh` for every study run on this cluster (see [SLURM details](#slurm-details)). The study's settings override them. |
+| `[<stage>.]slurm.<key>` | Values for `slurm_job.sh` for every study run on this cluster (see [SLURM details](#slurm-details)). The study's settings override them. `slurm.time`, `slurm.mem` and `slurm.partition` are required. |
 
 `--remote` runs `fission.py` on the cluster with the newest `python3.N` there, after sourcing `<repo>/build/config.sh` and exporting the `env.*` values. It passes `--results` and the `slurm` values as `--slurm-set`, so `fission.py --show` there shows the same values.
 
@@ -448,12 +500,13 @@ Each section of `remotes.ini` (see `remotes.ini.example`) is one checkout on a c
 2. Clones a new checkout from the bundle (and sets its `origin` to yours), or fast-forwards the existing one to your commit and checks out your branch. Changes to `studies/` there are uploaded copies, so they're discarded first; the next command uploads them again.
 3. Configures, if `<repo>/build/config.sh` doesn't exist (a new checkout, or an earlier configure that failed), with the `env.*` and `cmake.*` values.
 4. Builds with `cmake --build` on half the login node's cores, at most 10, unless `<repo>/build/.fission_built` already names this commit, and writes the commit there when the build succeeds. Configure and build output go to `<repo>/build/fission-sync.log`, and the end of it is printed on failure. The build runs in the foreground. If the connection drops, it may keep running on the cluster: `--sync` refuses until it finishes, then run it again (the build is incremental).
+5. Makes `geometry/ATTPC_v1.1_geomanager.root` if it is missing (`root -l -b -q ATTPC_v1_1.C` in `<repo>/geometry`; git ignores the file, and the fission macros crash without it), also when the build is already current. Its output goes to the same `build/fission-sync.log`.
 
 It refuses, before changing anything, when:
 
 - `repo` exists but isn't a git checkout;
 - the checkout has changes to tracked files outside `studies/`;
-- any of your SLURM jobs there has a fission job name (`<study>-<name>.<stage>[.cNN]`), since queued jobs read the checkout when they start;
+- any of your SLURM jobs that runs from `repo` has a fission job name (`<study>-<name>.<stage>[.cNN]`), since queued jobs read the checkout when they start (jobs of other checkouts on the cluster don't count);
 - an earlier `--sync` is still configuring or building there (it holds `build/.fission-sync.lock`);
 - the cluster's copy of your branch has commits yours doesn't;
 - the checkout would be configured, but `env.SIMPATH`, `env.FAIRROOTPATH` or `cmake.CMAKE_PREFIX_PATH` isn't set (checked before anything is sent).
@@ -472,7 +525,7 @@ Each job is `slurm_job.sh` with every `@name@` replaced, passed to `sbatch` on s
 | `@cpus@` | `fit.threads` for a fit (default 4), 1 otherwise |
 | `@command@` | the commands that run the stage (keep it) |
 
-Every other `@key@` is the job's `slurm.<key>` value. There are no defaults: each must be set by you, from lowest to highest priority:
+Every other `@key@` is the job's `slurm.<key>` value (the template uses `time`, `mem` and `partition`). There are no defaults: each must be set by you, from lowest to highest priority:
 
 1. the remote's `[<stage>.]slurm.<key>` in `remotes.ini`, or `--slurm-set` on the cluster,
 2. the study's `[defaults]`, as `<stage>.slurm.<key>`,
@@ -480,7 +533,7 @@ Every other `@key@` is the job's `slurm.<key>` value. There are no defaults: eac
 
 So a study can give one section more time. The values only change the job script and are never passed to a macro, so changing them never reruns anything. `--show` prints each section's values and where each comes from. Before the first `sbatch`, the driver checks every job: it stops if the template uses a value a section doesn't set, or a section has a `slurm.<key>` value the template never uses (usually a typo). Nothing is submitted until all jobs pass.
 
-To add an `sbatch` option, add a line to the template, e.g. `#SBATCH --partition=@partition@`, and set `slurm.partition` in `remotes.ini` or the study. Comment lines (starting with `#` but not `#SBATCH`, so also `##SBATCH`) are left as they are, so a placeholder there needs no value. Jobs that wait for another job get `--dependency=afterok:<id> --kill-on-invalid-dep=yes` on the `sbatch` command line. A job succeeds if its macro wrote the `.cfg`, whatever ROOT's exit code.
+To add an `sbatch` option, add a line to the template, e.g. `#SBATCH --account=@account@`, and set `slurm.account` in `remotes.ini` or the study. Comment lines (starting with `#` but not `#SBATCH`, so also `##SBATCH`) are left as they are, so a placeholder there needs no value. Jobs that wait for another job get `--dependency=afterok:<id> --kill-on-invalid-dep=yes` on the `sbatch` command line. A job succeeds if its macro wrote the `.cfg`, whatever ROOT's exit code.
 
 The studies in `studies/` set no `slurm` values: those belong to you and the cluster, in `remotes.ini`.
 

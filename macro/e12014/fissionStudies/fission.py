@@ -97,7 +97,12 @@ SECTION = re.compile(rf"({'|'.join(STAGES)})\s+(.*)")
 JOB_NAME = re.compile(rf"(?P<study>{STUDY_NAME})-(?P<name>{NAME})\.(?P<stage>{'|'.join(STAGES)})(?:\.c\d\d)?")
 # Chunks are numbered with two digits (.c00-.c99): JOB_NAME and plot_fit.C's IsFitFile rely on it.
 MAX_CHUNKS = 100
-OUTPUT_EXTS = (".root", ".cfg", ".cfg.in", ".log", ".results.root", ".results.cfg")
+# A job's CPU time, wall time and peak memory go to its <job>.time file, in this format (GNU time's, with
+# bash's TIMEFORMAT as a fallback that has no peak memory: -1). speed_report.py reads it.
+TIME_FORMAT = "fission-time: user=%U sys=%S wall=%e maxrss_kb=%M"
+BASH_TIME_FORMAT = "fission-time: user=%U sys=%S wall=%R maxrss_kb=-1"
+OUTPUT_EXTS = (".root", ".cfg", ".cfg.in", ".log", ".time", ".results.root", ".results.cfg")
+GEOMETRY = "geometry/ATTPC_v1.1_geomanager.root"  # Git-ignored and made by geometry/ATTPC_v1_1.C: the macros need it
 
 
 def driver_key(key):
@@ -404,6 +409,7 @@ class Job:
         self.sidecar = sidecar(self.output)
         self.cfg_in = self.base + ".cfg.in"
         self.log = self.base + ".log"
+        self.time = self.base + ".time"  # The macro's CPU and wall time, see TIME_FORMAT
         self.results = self.base + ".results.root"  # A fit's results file (--results), see slim_fit.C
         self.results_cfg = self.base + ".results.cfg"
         self.deps = []
@@ -447,8 +453,16 @@ class Job:
         the job fails, and the fit counts as not done."""
         sidecar = shlex.quote(self.sidecar)
         root = ["root", "-l", "-b", "-q", f'{MACROS[self.stage]}("{self.cfg_in}")']
-        old = [self.sidecar] + ([self.results, self.results_cfg] if self.stage == "fit" else [])
-        script = f"rm -f {shlex.join(old)}; {shlex.join(root)}; test -f {sidecar}"
+        old = [self.sidecar, self.time] + ([self.results, self.results_cfg] if self.stage == "fit" else [])
+        # The macro (not the slim step) runs under GNU time if the node has it, else under bash's time, and
+        # its CPU, wall time and peak memory go to <job>.time. sacct keeps no accounting on some clusters.
+        # Either wrapper passes on the macro's exit status, and without bash the macro runs untimed.
+        gnu = shlex.join(["/usr/bin/time", "-o", self.time, "-f", TIME_FORMAT] + root)
+        fallback = shlex.join(["bash", "-c", f"f=$1; shift; TIMEFORMAT={shlex.quote(BASH_TIME_FORMAT)};"
+                               ' { time "$@" 2>&3; } 3>&2 2>"$f"', "bash", self.time] + root)
+        timed = (f"if /usr/bin/time -f x true >/dev/null 2>&1; then {gnu};"
+                 f" elif command -v bash >/dev/null 2>&1; then {fallback}; else {shlex.join(root)}; fi")
+        script = f"rm -f {shlex.join(old)}; {timed}; test -f {sidecar}"
         if results and self.stage == "fit":
             slim = ["root", "-l", "-b", "-q", f'slim_fit.C("{self.output}", "{self.results}")']
             script += f" && {shlex.join(slim)} && test -f {shlex.quote(self.results_cfg)} || {{ rm -f {sidecar}; false; }}"
@@ -795,7 +809,7 @@ def list_files(study, sections, logs):
     listed are out of date, and the fetching driver removes them.
 
     Results: those of each chunk of the fits whose fit and results file finished and whose job isn't in
-    SLURM. Logs: every job's log that exists."""
+    SLURM, with its .time file. Logs: every job's log that exists, with its .time file."""
     queued = slurm_jobs()
     planned = plan_all(study, sections, None)
     listed = [s for s in sections if logs or s.stage == "fit"]
@@ -803,9 +817,9 @@ def list_files(study, sections, logs):
     for section in listed:
         for job in planned[section]:
             if logs:
-                files += [job.log] if os.path.exists(job.log) else []
+                files += [p for p in (job.log, job.time) if os.path.exists(p)]
             elif str(job) not in queued and all(map(os.path.exists, (job.sidecar, job.results, job.results_cfg))):
-                files += [job.results, job.results_cfg]
+                files += [job.results, job.results_cfg] + ([job.time] if os.path.exists(job.time) else [])
     print(LIST_MARKER)
     print(DATA)
     for section in listed:
@@ -894,8 +908,9 @@ class Remote:
                     f' echo "ref $(git rev-parse -q --verify {q("refs/heads/" + branch)})";'
                     f" [ -e {BUILD_LOCK} ] && {{ flock -n {BUILD_LOCK} true || echo building; }};" if head else "")
                  + " }"]
-        if head:
-            lines.append("command -v squeue >/dev/null && squeue -h --me -o %j | sed 's/^/job /'")
+        if head:  # Only jobs that run from this checkout (squeue prints the physical path): other checkouts
+            lines.append('command -v squeue >/dev/null && p=$(cd "$r" 2>/dev/null && pwd -P) && [ -n "$p" ]'
+                         ' && squeue -h --me -o "%Z %j" | awk -v r="$p/" \'index($1, r) == 1 { print "job", $2 }\'')
         return lines + ["true"]
 
     @staticmethod
@@ -1009,7 +1024,7 @@ class Remote:
                      "--sync won't overwrite them: commit or discard them there, then rerun it")
         jobs = sorted(j for j in state["job"] if JOB_NAME.fullmatch(j))
         if jobs:
-            sys.exit(f"{name} has fission jobs in SLURM, which read the checkout when they start:"
+            sys.exit(f"{name} has fission jobs in SLURM that run from {self.repo} and read it when they start:"
                      f" {', '.join(jobs)}\nWait for them to finish (or scancel them), then rerun --sync")
         if "building" in state:
             sys.exit(f"An earlier --sync is still configuring or building {name}:{self.repo} (it keeps running"
@@ -1086,8 +1101,14 @@ class Remote:
         print(done)
         if "config" in state and state.get("built") == head:  # What the build script would find
             print(f"{name}: build already at {head[:8]}")
-            return
+        elif not self.build(head):
+            sys.exit(1)
+        if self.script(self.geometry_script()).returncode != 0:
+            sys.exit(1)
 
+    def build(self, head):
+        """Configure the checkout if needed and build it at head, as --sync does. Return whether it worked."""
+        name, q = self.name, shlex.quote
         # Configure (once: build/config.sh is written at the end of a successful configure) and build.
         # cmake and the compilers inherit the lock, so a build left running by a dropped connection
         # still holds it.
@@ -1111,8 +1132,25 @@ class Remote:
             f" echo {head} > {BUILT}; echo {q(name + ': built ' + head[:8])};"
             f" else echo {q(name + ': build already at ' + head[:8])}; fi",
         ]
-        if self.script(script).returncode != 0:
-            sys.exit(1)
+        return self.script(script).returncode == 0
+
+    def geometry_script(self, log=None):
+        """Shell lines that make GEOMETRY in the checkout if it is missing (a fresh checkout has none, and the
+        fission macros crash without it), printing one line either way. ATTPC_v1_1.C writes its files to the
+        directory it runs in, then its Draw("ogl") crashes in batch mode after the files are written, so the
+        crash is ignored (and its stack trace skipped, which can hang) and the files are checked. Its output
+        goes to the sync log."""
+        name, q = self.name, shlex.quote
+        log = log or f"{self.repo}/build/fission-sync.log"
+        return [
+            f"cd {q(self.repo)} || exit 1",
+            f"if [ -f {q(GEOMETRY)} ]; then echo {q(f'{name}: {GEOMETRY} already exists')}; else",
+            f"  echo {q(f'{name}: generating {GEOMETRY}')}",
+            f"  ( source build/config.sh && cd geometry && timeout 300 root -l -b -q -e 'gEnv->SetValue(\"Root.Stacktrace\", 0)' ATTPC_v1_1.C ) < /dev/null >> {q(log)} 2>&1",
+            f"  [ -f {q(GEOMETRY)} ] || {{ echo {q(f'{name}: generating {GEOMETRY} failed, see {log}:')} >&2;"
+            f" tail -n 40 {q(log)} >&2; exit 1; }}",
+            "fi",
+        ]
 
     def driver(self, args, **kwargs):
         """Run fission.py on the cluster, in its environment, with the remote's settings and args."""
@@ -1206,7 +1244,7 @@ def run_remote(study, args, defaults):
 
     # Earlier copies of the sections' files that the cluster doesn't list (a refit is queued or failed, or
     # the chunk count changed) are out of date: remove them, so no plot mixes them with the new ones
-    exts = (".log",) if args.fetch_logs else (".results.root", ".results.cfg")
+    exts = (".log", ".time") if args.fetch_logs else (".results.root", ".results.cfg", ".time")
     fetched = {path for _, path in files}
     stale = []
     for stem in stems:
