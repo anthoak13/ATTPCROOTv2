@@ -88,7 +88,9 @@ void run_simp_fiss(TString cfgFile = "")
 
    // Load the energy loss table for the beam
    std::cout << "Loading beam energy loss tables" << std::endl;
-   sim->AddModel(fissionSim::beamZ, fissionSim::beamA, LoadELoss(elossType, fissionSim::beamZ, fissionSim::beamA));
+   // The beam's table type can differ from the fragments' (e.g. there is no SRIM table for the beam)
+   auto beamElossType = cfg.GetStr("sim.beamEloss", elossType);
+   sim->AddModel(fissionSim::beamZ, fissionSim::beamA, LoadELoss(beamElossType, fissionSim::beamZ, fissionSim::beamA));
 
    /**  At this point, the simulation object is fully constructed and ready to be used. **/
    fissionSim::fSimulation = std::move(sim);

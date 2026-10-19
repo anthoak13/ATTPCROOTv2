@@ -377,6 +377,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `sim.decayAngle` | 90 | CoM decay angle in degrees. 0 samples the measured angular distribution. |
 | `sim.step` | 1 | Step along the simulated tracks (mm). |
 | `sim.eloss` | LISE | Energy-loss tables used in simulation: `LISE` or `SRIM`. |
+| `sim.beamEloss` | `sim.eloss` | Energy-loss table type for the beam, when it must differ from the fragments' (there is no SRIM beam table). |
 | `sim.beamE`, `sim.beamEsig` | 2700.13, 128.122 | Beam energy and spread at the window (MeV). |
 | `sim.zCutoff` | 300 | Vertices are simulated from the window up to this distance from the pad plane (mm). |
 
