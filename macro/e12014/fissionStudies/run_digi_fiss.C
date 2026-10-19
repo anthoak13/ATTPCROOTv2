@@ -64,11 +64,17 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    // AtPulseLineTask *pulse = new AtPulseLineTask();
 
    // AtPulseTask *pulse = new AtPulseTask(std::make_shared<AtPulse>(mapping));
-   auto pulse = std::make_shared<AtPulseLine>(mapping, Response::GetResponse);
+   // 0: the nominal GET response (the one the fit's own pulse uses) instead of the measured trace
+   bool measuredResp = cfg.GetInt("digi.respMeasured", 1);
+   auto pulse = measuredResp ? std::make_shared<AtPulseLine>(mapping, Response::GetResponse)
+                             : std::make_shared<AtPulseLine>(mapping);
    pulse->SetSaveCharge(saveRawEvent);
    pulse->SetLowGain(cfg.Get("digi.lowGain", 0.19));
    pulse->SetNumIntegrationPoints(cfg.GetInt("digi.intPoints", 1000)); // Points sampling each line's diffusion
    Response::scaling = cfg.Get("digi.respScale", 0.01 * 0.75);
+   // 1: read the measured response trace per time bucket, as it was sampled. 0: per microsecond, which stretches
+   // it 3.1 times in time against the response the PSA deconvolves with
+   Response::timeInTB = cfg.GetInt("digi.respTB", 0);
    AtPulseTask *pulseTask = new AtPulseTask(pulse);
    pulseTask->SetPersistence(saveRawEvent);
 
@@ -90,9 +96,16 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    psa->SetThreshold(15); // Threshold in charge units
    psa->SetFilterOrder(6);
    psa->SetCutoffFreq(75);
-   psa->SetThreshold(10);
+   psa->SetThreshold(cfg.GetInt("digi.psaThreshold", 10));
+   // 1: hits off the beam axis are fit to the simulated charge ("Q"), as the fit makes its hits, instead of to the
+   // deconvolved traces. With digi.respMeasured = 0 and digi.psaThreshold = 25 they are made exactly as the fit's.
+   if (cfg.GetInt("digi.simChargeHits", 0)) {
+      if (!saveRawEvent)
+         throw std::invalid_argument("digi.simChargeHits needs the simulated charge (saveRawEvent)");
+      psa->SetUseSimCharge(true);
+   }
    auto psaBeam = std::make_unique<AtPSATBAvg>();
-   psaBeam->SetThreshold(45);
+   psaBeam->SetThreshold(cfg.GetInt("digi.beamThreshold", 45));
    auto psaComp = std::make_unique<AtPSAComposite>(std::move(psaBeam), std::move(psa), 20);
    AtPSAtask *psaTask = new AtPSAtask(std::move(psaComp));
    psaTask->SetInputBranch("AtRawEvent");
@@ -133,6 +146,22 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    AtMacroTask *infoTask = new AtMacroTask();
    infoTask->AddInitFunction([] { digiSimInfo::Forward("Info", "SimInfo"); });
 
+   // 0: drop the beam's energy deposits (track 1 of each simulated event) before digitizing
+   if (!cfg.GetInt("digi.beamCharge", 1)) {
+      auto *beamCut = new AtMacroTask();
+      static TClonesArray *mcPoints = nullptr;
+      beamCut->AddInitFunction(
+         [] { mcPoints = dynamic_cast<TClonesArray *>(FairRootManager::Instance()->GetObject("AtTpcPoint")); });
+      beamCut->AddFunction([] {
+         for (int i = 0; i < mcPoints->GetEntriesFast(); ++i) {
+            auto *point = dynamic_cast<AtMCPoint *>(mcPoints->At(i));
+            if (point && point->GetTrackID() == 1)
+               mcPoints->RemoveAt(i);
+         }
+         mcPoints->Compress();
+      });
+      fRun->AddTask(beamCut);
+   }
    fRun->AddTask(clusterizer); // This task turns energy into electons in the gas
    fRun->AddTask(pulseTask);   // This task turns electorns in gas to traces on the pad plabe
    fRun->AddTask(psaTask);     // This turns waveforms on pads into hits in space
@@ -143,6 +172,9 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    Response::Init(sharedInfoDir);
    cfg.CheckUnused({"sim."}); // The sim's settings, passed on to describe the input
    fRun->Init();
+
+   auto digiPar = dynamic_cast<AtDigiPar *>(rtdb->getContainer("AtDigiPar"));
+   Response::tbTime = digiPar->GetTBTime() / 1000.; // us, for digi.respTB
 
    timer.Start();
    fRun->Run(); // All events in the input file
