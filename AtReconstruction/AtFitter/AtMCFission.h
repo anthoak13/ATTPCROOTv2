@@ -15,6 +15,9 @@
 
 #include <array>      // for array
 #include <functional> // for function
+#include <map>        // for map
+#include <string>     // for string
+#include <utility>    // for move
 #include <vector>     // for vector
 class AtFissionEvent;
 namespace MCFitter {
@@ -46,12 +49,20 @@ protected:
    float fAmp = 1;
    bool fFitAmp = true;
 
+   /// Means that replace the Y-pattern's for the next event only (see SetNextEventMeans)
+   std::map<std::string, double> fNextMeans;
+
 public:
    AtMCFission(SimPtr sim, ClusterPtr cluster, PulsePtr pulse) : AtMCFitter(sim, cluster, pulse) {}
    virtual ~AtMCFission() = default;
    void SetCN(Ion cn) { fCN = cn; }
    void SetChargeObjective(ObjectiveFuncCharge obj) { fObjCharge = obj; }
    void SetAmp(float amp);
+   /**
+    * For diagnostics: replace the means the next event's Y-pattern gives these parameters ("th0", "ph0", "th1",
+    * "ph1", "vX", "vY", "vZ", ...), for that event only. Without it every mean comes from the event.
+    */
+   void SetNextEventMeans(std::map<std::string, double> means) { fNextMeans = std::move(means); }
    void SetZRange(int Zmin, int Zmax)
    {
       fZmin = Zmin;

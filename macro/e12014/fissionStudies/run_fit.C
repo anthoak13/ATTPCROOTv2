@@ -83,6 +83,61 @@ void run_fit(TString cfgFile = "")
    fitter->SetTimeEvent(cfg.GetInt("fit.timeEvent", 0));
    fitter->SetSeed(seed); // With the event number, round and thread, fixes every draw of the fit
 
+   // 1: give the fit the true fragment directions and vertex (from the simulation the digitization read) in place
+   // of the Y-pattern's, to separate the pattern's errors from the rest of the fit. Diagnostics only.
+   if (cfg.GetInt("fit.truePattern", 0)) {
+      auto simFile = RunConfig::FromOutput(InputDataFile).GetStr("input", "");
+      if (simFile.empty())
+         throw std::runtime_error("fit.truePattern: no simulation file recorded in " + std::string(InputDataFile));
+      auto *truthTask = new AtMacroTask();
+      static std::unique_ptr<TFile> truthFile;
+      static TTree *truthTree = nullptr;
+      static TClonesArray *truthPoints = nullptr, *fissionArray = nullptr;
+      static TH1D *truthInfo = nullptr;
+      static long truthEntry = 0;
+      static std::shared_ptr<MCFitter::AtMCFission> truthFitter;
+      truthFitter = fitter;
+      truthFile.reset(TFile::Open(simFile.c_str()));
+      truthTree = truthFile->Get<TTree>("cbmsim");
+      truthTree->SetBranchAddress("AtTpcPoint", &truthPoints);
+      truthTree->SetBranchAddress("Info", &truthInfo);
+      truthTask->AddInitFunction(
+         [] { fissionArray = dynamic_cast<TClonesArray *>(FairRootManager::Instance()->GetObject("AtFissionEvent")); });
+      truthTask->AddFunction([] {
+         truthTree->GetEntry(truthEntry++);
+         auto *event = fissionArray->GetEntriesFast() ? dynamic_cast<AtFissionEvent *>(fissionArray->At(0)) : nullptr;
+         auto *pat = event ? event->GetYPattern() : nullptr;
+         if (!pat)
+            return;
+         ROOT::Math::XYZVector dir[2];
+         bool found[2] = {false, false};
+         for (int i = 0; i < truthPoints->GetEntriesFast(); ++i) {
+            auto *point = dynamic_cast<AtMCPoint *>(truthPoints->At(i));
+            int frag = point->GetTrackID() - 2; // Track 1 is the beam
+            if (frag >= 0 && frag < 2 && !found[frag]) {
+               dir[frag] = {point->GetPx(), point->GetPy(), point->GetPz()};
+               found[frag] = true;
+            }
+         }
+         if (!found[0] || !found[1])
+            return;
+         // Pattern fragment 0 is the true fragment whose azimuth is closer
+         auto gap = [](double a, double b) { return std::abs(TVector2::Phi_mpi_pi(a - b)); };
+         double ph0 = pat->GetFragmentDirection(0).Phi(), ph1 = pat->GetFragmentDirection(1).Phi();
+         bool direct = gap(ph0, dir[0].Phi()) + gap(ph1, dir[1].Phi()) < gap(ph0, dir[1].Phi()) + gap(ph1, dir[0].Phi());
+         auto &d0 = direct ? dir[0] : dir[1];
+         auto &d1 = direct ? dir[1] : dir[0];
+         truthFitter->SetNextEventMeans({{"th0", d0.Theta()},
+                                         {"ph0", d0.Phi()},
+                                         {"th1", d1.Theta()},
+                                         {"ph1", d1.Phi()},
+                                         {"vX", truthInfo->GetBinContent(1)},
+                                         {"vY", truthInfo->GetBinContent(2)},
+                                         {"vZ", truthInfo->GetBinContent(3)}});
+      });
+      fRun->AddTask(truthTask);
+   }
+
    AtMCFitterTask *fitTask = new AtMCFitterTask(fitter);
    fitTask->SetPatternBranchName("AtFissionEvent");
    fitTask->SetSaveEvent(true);

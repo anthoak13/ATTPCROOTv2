@@ -104,6 +104,10 @@ void AtMCFission::SetParamDistributions(const AtPatternEvent &event)
    fParameters["Z"]->SetMean(fCN.Z / 2);
    fParameters["Z"]->SetSpread(3);
    fParameters["lambda"]->SetMean(fissionEvent.GetLambda());
+
+   for (auto &[name, mean] : fNextMeans)
+      fParameters.at(name)->SetMean(mean);
+   fNextMeans.clear();
 }
 
 double AtMCFission::ObjectiveFunction(const AtBaseEvent &expEvent, int SimEventID, AtMCResult &definition)
