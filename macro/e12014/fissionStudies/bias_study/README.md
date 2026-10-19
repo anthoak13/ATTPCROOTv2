@@ -40,6 +40,17 @@ and the Y-pattern are ruled out (below).
 
 ![bias per Z](figures/fix_by_z.png)
 
+## Consequences
+
+- Every fit of the `tune_data*` pseudo-data (the tuning study's step, diffusion-point, gain, search-length and
+  energy-loss tables) was measured against mis-digitized pseudo-data. Their biases, widths and failure rates
+  mostly measure this bug; the paired cost-versus-fidelity comparisons may also change on fixed data.
+- The same `response.h` is in `macro/e12014/skyler/` and `macro/e12014/skyler/hpc/`, so the earlier
+  validation studies made there have the same problem.
+- Real data is not digitized, so this bug does not touch fits of real events. It does mean the fit has not
+  yet been validated against pseudo-data whose electronics match the real detector's.
+- `digi.respTB` defaults to the old behaviour. Pseudo-data meant to be realistic needs `digi.respTB = 1`.
+
 ## Evidence
 
 ### The bias is in the objective, not in the search
@@ -47,19 +58,26 @@ and the Y-pattern are ruled out (below).
 The fit's only free parameter is the fragment Z: the fragment directions and the vertex are fixed to the
 Y-pattern found in the event (their sampling width is zero). So the 200 simulations the fit runs per event
 are repeated draws of the objective at a few Z values, and averaging them per Z gives the event's mean
-objective as a function of Z. On today's fit of the 3000 events:
+objective as a function of Z. On today's fit of the 3000 events (2801 with a valid fit and an unambiguous match):
 
 - the Z with the lowest single draw (what the fit returns) has a bias of +0.401 ± 0.010;
 - the Z with the lowest mean objective has +0.399 ± 0.011;
 - the minimum of a parabola through the mean objective at the three Z around it, +0.401 ± 0.008.
 
-They agree for every true Z as well (figure `search_vs_model.png`). The mean objective, relative to its value
-at the true Z, rises by only 0.14 one unit below the true light Z and by 1.42 one unit above it
-(`landscape.png`): its minimum sits 0.4 below the truth. The noise of single draws (0.6–0.8) is similar on
-both sides. So the search finds the minimum it is given; the minimum itself is in the wrong place. This also
-explains the search-length table: shorter searches sample mostly near the starting Z (42), which pulls the
-answer toward symmetric splits and partly hides the bias (+0.17 at 40 × 1); once the search reaches the
-minimum the bias settles at +0.40.
+They agree for every true Z as well.
+
+![lowest draw and mean-objective minimum per Z](figures/search_vs_model.png)
+
+The mean objective, relative to its value at the true Z, rises by only 0.14 one unit below the true light Z
+and by 1.42 one unit above it: its minimum sits 0.4 below the truth. The noise of single draws (0.6–0.8) is
+similar on both sides. So the search finds the minimum it is given; the minimum itself is in the wrong place.
+
+![mean objective around the true Z](figures/landscape.png)
+
+This also explains why shorter searches show less bias. The first round draws Z around the symmetric split,
+so a short search often never tries the Z below the true light Z where the objective is lowest: with 40
+iterations in one round, 601 of 1408 events never sampled it, and the bias is +0.18. Once the search reaches
+that Z the bias settles at +0.40.
 
 The same holds for every other fit setting looked at (step 0.5 mm, 10 diffusion points, no gain
 fluctuations, fixed diffusion patterns of 10 and 300 points): the lowest-draw and the mean-objective biases
@@ -72,7 +90,9 @@ The Y-pattern vertex found in the pseudo-data is 19.7 mm farther from the pad pl
 at every drift distance (median offset −19.6 to −19.8 mm in each 100 mm slice of vertex position, spread
 1–6 mm). A shift that does not depend on drift distance is a timing offset in the pulses, not a drift
 velocity error. Re-digitized with the response read per time bucket, the offset is +1.8 mm (spread 2.4 mm);
-with hits made from the simulated charge, +1.7 mm (`vertex.png`).
+with hits made from the simulated charge, +1.7 mm.
+
+![vertex offset](figures/vertex.png)
 
 ### The response is stretched 3.1 times
 
@@ -80,9 +100,13 @@ with hits made from the simulated charge, +1.7 mm (`vertex.png`).
 `AtVectorResponse` expects (it divides by the bucket width). `Response::GetResponse` instead uses the time
 directly as an index into the per-bucket trace, so bucket *i* of the measured response is used for a time of
 *i* µs, i.e. 3.1 buckets. The measured response peaks 2 buckets after the charge; stretched, 6–9 buckets
-after. One pad of one event (`trace.png`): the pulse made as before peaks 10 buckets after the charge
+after. One pad of one event: the pulse made as before peaks 10 buckets after the charge
 arriving on the pad and is wider; read per time bucket it peaks 4 buckets after, as the measured response
-does. The expected leftover shift after deconvolving with the unstretched response is the difference of the
+does.
+
+![one pad's pulse](figures/trace.png)
+
+The expected leftover shift after deconvolving with the unstretched response is the difference of the
 two responses' centroids, about 8 buckets, or 21 mm: what the vertex shows.
 
 ### Fixing it removes the bias
@@ -109,7 +133,12 @@ the same in both.)
 Fitting the as-made data with the fit's simulation at the data's own fidelity (0.25 mm steps, 4000 diffusion
 points; 461 events) lowers the bias by 0.12 ± 0.02 (paired, lowest draw; the parabola minimum moves by
 0.075 ± 0.010). That is a quarter of the bias, from the fit's coarser simulation, measured on the as-made
-data. MATCH_PLACEHOLDER
+data.
+
+On the fixed data (first 500 events), the fit at the data's fidelity leaves the fitted Z unchanged (paired
+change −0.004 ± 0.009; bias +0.027 ± 0.009 against +0.019 ± 0.009) and moves the minimum of the mean
+objective by −0.055 ± 0.007, from +0.15 to +0.10. At ten times the cost (1080 against 111 CPU s per event)
+it buys nothing in the fitted Z.
 
 ## What remains
 
@@ -120,7 +149,10 @@ data. MATCH_PLACEHOLDER
   pulse-shape analysis is its source. Two more candidates are ruled out: simulating the decay at 90° to the
   beam's direction, as the fit assumes, instead of to the z axis (about 1° off the beam; 200 new events,
   minimum +0.18 ± 0.03), and removing the beam's energy deposits from the pseudo-data (100 events, paired
-  change +0.02 ± 0.03). The candidate left is the fit's coarser simulation (above). MATCH_RESIDUAL
+  change +0.02 ± 0.03). The fit's coarser simulation accounts for −0.055 ± 0.007 of it (above). About +0.1
+  is left unexplained. Not tested: whether the objective itself prefers lower Z, for example through its
+  weighting of each time bucket by the pseudo-data's own charge, or its single amplitude for both fragments.
+  At the level of the fitted (integer) Z this residual is +0.02.
 - **Events with the vertex near the window.** In today's fits 159 of 3000 events (5%) had no simulation that
   produced any charge to compare (every objective at its maximum value): 154 because the Y-pattern vertex,
   20 mm upstream of the truth because of the bug, lay outside the drift volume. `tune_report.py --all` and
@@ -165,6 +197,8 @@ Settings added (all default to the old behaviour):
 | `tune_iter90-match` | the fit at the data's fidelity, first 10 chunks, as-made data |
 | `tune_bias_det-asis`, `-resp`, `-qhits` | local re-digitizations of chunks 0–3 (0–1 for asis): as made, response per time bucket, hits as the fit makes them; each fit with today's fit |
 | `tune_bias_det-truepat` | today's fit of `-resp` with the true directions and vertex |
+| `tune_bias_det-nobeam` | `-resp` without the beam's deposits (chunks 1 and 3; the fits of 0 and 2 crashed) |
+| `tune_bias_kin-beam` | 200 new events with the decay angle measured from the beam's direction, response per time bucket, today's fit |
 | `tune_bias_resp-fix`, `-base`, `-match` | cluster: all 3000 events re-digitized with the response per time bucket; today's fit of them; the fit at the data's fidelity on the first 10 chunks |
 
 ### Paths

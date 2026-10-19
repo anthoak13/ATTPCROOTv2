@@ -38,3 +38,5 @@ Terse, dated, append-only. Decisions and events; results live in README.md.
 - 09:40 decayToBeam (200 new events, response per TB): parabola +0.18 +- 0.03, not smaller. nobeam: paired
   +0.02 +- 0.03 on 100 events; its fits of chunks c00 and c02 crashed silently mid-run (no beam in the pattern),
   not followed up.
+- 09:55 Cluster match on fixed data (500 events): fitted Z unchanged (paired -0.004 +- 0.009), parabola -0.055
+  +- 0.007 to +0.095. About +0.1 of the sub-integer shift unexplained.
