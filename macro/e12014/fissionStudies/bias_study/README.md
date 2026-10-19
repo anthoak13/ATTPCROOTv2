@@ -15,7 +15,7 @@ hits straight from the simulated charge, so its picture of an event never matche
 closest match is at a lower light-fragment Z.
 
 Re-digitizing the same 3000 simulated events with the response read per time bucket (`digi.respTB = 1`),
-and fitting them with today's fit unchanged, removes the bias:
+and fitting them with today's fit unchanged, brings the bias from +0.40 to +0.02:
 
 | pseudo-data (3000 events) | bias | spread | exact Z | off by 3 or more | unfittable |
 |---|---|---|---|---|---|
@@ -148,7 +148,8 @@ it buys nothing in the fitted Z.
   making the pseudo-data's hits as the fit makes them by −0.03 ± 0.02, so neither the pattern nor the
   pulse-shape analysis is its source. Two more candidates are ruled out: simulating the decay at 90° to the
   beam's direction, as the fit assumes, instead of to the z axis (about 1° off the beam; 200 new events,
-  minimum +0.18 ± 0.03), and removing the beam's energy deposits from the pseudo-data (100 events, paired
+  minimum +0.18 ± 0.03; the change took effect: the beam energy the fit infers from the fragments' angles
+  scatters 15 MeV about the truth instead of 28 MeV), and removing the beam's energy deposits from the pseudo-data (100 events, paired
   change +0.02 ± 0.03). The fit's coarser simulation accounts for −0.055 ± 0.007 of it (above). About +0.1
   is left unexplained. Not tested: whether the objective itself prefers lower Z, for example through its
   weighting of each time bucket by the pseudo-data's own charge, or its single amplitude for both fragments.
@@ -161,6 +162,9 @@ it buys nothing in the fitted Z.
   vertex within 25 mm of the window are off by 3 or more (50 of 163), against 4% at 25–100 mm and 0.1–0.3%
   beyond 100 mm; 67 failures in all. In the few such events looked at, the mean objective is nearly the same
   at every Z. Why is not looked into.
+
+- **Decay angles away from 90°.** The fit's large failure rate off 90° (70–86% off by 3 or more beyond 15°)
+  was measured on the mis-digitized pseudo-data and has not been measured since the fix.
 
 ## Reproducing
 

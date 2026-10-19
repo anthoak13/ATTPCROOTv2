@@ -40,3 +40,6 @@ Terse, dated, append-only. Decisions and events; results live in README.md.
   not followed up.
 - 09:55 Cluster match on fixed data (500 events): fitted Z unchanged (paired -0.004 +- 0.009), parabola -0.055
   +- 0.007 to +0.095. About +0.1 of the sub-integer shift unexplained.
+- 10:05 Correction to 09:40: the cause of the two nobeam fit crashes is not known. ctest passes (65/65).
+  decayToBeam took effect (fit's inferred beam energy scatter 28 -> 15 MeV). No bias jobs left on the cluster;
+  tune_bias_resp files take 37 GB in the shared data directory.
