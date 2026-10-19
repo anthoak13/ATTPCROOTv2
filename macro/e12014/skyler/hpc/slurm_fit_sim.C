@@ -1,7 +1,6 @@
 // Code to take MC tracks and digitize
 // #include "eventCombine.h"
 #include "DigiSimInfo.h"
-#include "response.h"
 
 bool reduceFunc(AtRawEvent *evt);
 
@@ -76,11 +75,18 @@ void slurm_fit_sim(int runNum, int numThreads, bool saveRawEvent)
    // AtPulseLineTask *pulse = new AtPulseLineTask();
 
    // AtPulseTask *pulse = new AtPulseTask(std::make_shared<AtPulse>(mapping));
-   auto pulse = std::make_shared<AtPulseLine>(mapping, Response::GetResponse);
+   AtRawEvent *respAvgEvent;
+   TFile *f2 = new TFile(sharedInfoDir + "respAvg.root");
+   f2->GetObject("avgResp", respAvgEvent);
+   f2->Close();
+   auto respPad = respAvgEvent->GetPad(0);
+   // The measured response, one sample per 320 ns time bucket
+   ElectronicResponse::AtVectorResponse response(0.32, {respPad->GetADC().begin(), respPad->GetADC().end()}); // us
+   response.SetScale(0.01 * 0.75);
+   auto pulse = std::make_shared<AtPulseLine>(mapping, response);
    pulse->SetSaveCharge(saveRawEvent);
    pulse->SetLowGain(0.19);
    // pulse->SetLowGain(1);
-   Response::scaling = 0.01 * 0.75;
    AtPulseTask *pulseTask = new AtPulseTask(pulse);
    pulseTask->SetPersistence(saveRawEvent);
 
@@ -89,11 +95,6 @@ void slurm_fit_sim(int runNum, int numThreads, bool saveRawEvent)
    combTask->AddFunction(eventComb::combine);*/
 
    /**** PSA Task ****/
-   AtRawEvent *respAvgEvent;
-   TFile *f2 = new TFile(sharedInfoDir + "respAvg.root");
-   f2->GetObject("avgResp", respAvgEvent);
-   f2->Close();
-
    auto threshold = 50;
    auto maxThreshold = 1500;
 
@@ -206,7 +207,6 @@ void slurm_fit_sim(int runNum, int numThreads, bool saveRawEvent)
    fitTask->SetSaveRawEvent(true);
    fRun->AddTask(fitTask);
 
-   Response::Init();
    fRun->Init();
 
    timer.Start();

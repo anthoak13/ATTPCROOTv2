@@ -2,7 +2,6 @@
 // #include "eventCombine.h"
 #include "DigiSimInfo.h"
 #include "RunConfig.h"
-#include "response.h"
 
 #include <random>
 
@@ -64,10 +63,17 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    // AtPulseLineTask *pulse = new AtPulseLineTask();
 
    // AtPulseTask *pulse = new AtPulseTask(std::make_shared<AtPulse>(mapping));
-   auto pulse = std::make_shared<AtPulseLine>(mapping, Response::GetResponse);
+   AtRawEvent *respAvgEvent;
+   TFile *f2 = new TFile(sharedInfoDir + "respAvg.root");
+   f2->GetObject("avgResp", respAvgEvent);
+   f2->Close();
+   auto respPad = respAvgEvent->GetPad(0);
+   // The measured response, one sample per 320 ns time bucket
+   ElectronicResponse::AtVectorResponse response(0.32, {respPad->GetADC().begin(), respPad->GetADC().end()}); // us
+   response.SetScale(cfg.Get("digi.respScale", 0.01 * 0.75));
+   auto pulse = std::make_shared<AtPulseLine>(mapping, response);
    pulse->SetSaveCharge(saveRawEvent);
    pulse->SetLowGain(cfg.Get("digi.lowGain", 0.19));
-   Response::scaling = cfg.Get("digi.respScale", 0.01 * 0.75);
    AtPulseTask *pulseTask = new AtPulseTask(pulse);
    pulseTask->SetPersistence(saveRawEvent);
 
@@ -76,11 +82,6 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    combTask->AddFunction(eventComb::combine);*/
 
    /**** PSA Task ****/
-   AtRawEvent *respAvgEvent;
-   TFile *f2 = new TFile(sharedInfoDir + "respAvg.root");
-   f2->GetObject("avgResp", respAvgEvent);
-   f2->Close();
-
    auto threshold = 50;
    auto maxThreshold = 1500;
 
@@ -139,7 +140,6 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    fRun->AddTask(fissionTask); // This task assembles the fisison events
    fRun->AddTask(infoTask);    //
 
-   Response::Init(sharedInfoDir);
    cfg.CheckUnused({"sim."}); // The sim's settings, passed on to describe the input
    fRun->Init();
 
