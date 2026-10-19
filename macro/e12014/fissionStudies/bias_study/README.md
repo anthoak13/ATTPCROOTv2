@@ -117,9 +117,10 @@ data. MATCH_PLACEHOLDER
   +0.13 below the true light Z, growing toward asymmetric splits. Giving the fit the true fragment directions
   and vertex in place of the Y-pattern's moves it by only −0.03 ± 0.02 (200 events, to +0.10 ± 0.02), and
   making the pseudo-data's hits as the fit makes them by −0.03 ± 0.02, so neither the pattern nor the
-  pulse-shape analysis is its source. Candidates not yet separated: the fit's coarser simulation (above), and
-  the kinematics (the simulation decays the compound nucleus at 90° to the z axis in its rest frame; the fit
-  assumes 90° to the beam, which is about 1° off the z axis).
+  pulse-shape analysis is its source. Two more candidates are ruled out: simulating the decay at 90° to the
+  beam's direction, as the fit assumes, instead of to the z axis (about 1° off the beam; 200 new events,
+  minimum +0.18 ± 0.03), and removing the beam's energy deposits from the pseudo-data (100 events, paired
+  change +0.02 ± 0.03). The candidate left is the fit's coarser simulation (above). MATCH_RESIDUAL
 - **Events with the vertex near the window.** In today's fits 159 of 3000 events (5%) had no simulation that
   produced any charge to compare (every objective at its maximum value): 154 because the Y-pattern vertex,
   20 mm upstream of the truth because of the bug, lay outside the drift volume. `tune_report.py --all` and
