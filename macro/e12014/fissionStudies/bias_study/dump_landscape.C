@@ -37,9 +37,9 @@ void dump_landscape(TString glob, TString csv)
             auto &p = r->fParameters;
             out << chunk << "," << reader.GetCurrentEntry() << "," << info->GetBinContent(6) << ","
                 << info->GetBinContent(1) << "," << info->GetBinContent(2) << "," << info->GetBinContent(3) << ","
-                << info->GetBinContent(4) << "," << p["ph0"] << "," << p["ph1"] << "," << p["th0"] << ","
-                << p["th1"] << "," << p["vX"] << "," << p["vY"] << "," << p["vZ"] << "," << r->fIterNum << ","
-                << p["Z0"] << "," << r->fObjective << "," << p["Amp"] << "," << p["EBeam"] << "\n";
+                << info->GetBinContent(4) << "," << p["ph0"] << "," << p["ph1"] << "," << p["th0"] << "," << p["th1"]
+                << "," << p["vX"] << "," << p["vY"] << "," << p["vZ"] << "," << r->fIterNum << "," << p["Z0"] << ","
+                << r->fObjective << "," << p["Amp"] << "," << p["EBeam"] << "\n";
          }
       }
    }

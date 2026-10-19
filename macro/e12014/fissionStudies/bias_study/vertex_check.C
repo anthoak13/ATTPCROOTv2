@@ -27,8 +27,8 @@ void vertex_check(TString glob, TString csv)
       while (reader.Next()) {
          auto *ev = fission->GetEntriesFast() ? dynamic_cast<AtFissionEvent *>(fission->At(0)) : nullptr;
          auto pat = ev ? ev->GetYPattern() : nullptr;
-         out << name << "," << reader.GetCurrentEntry() << "," << info->GetBinContent(1) << "," << info->GetBinContent(2)
-             << "," << info->GetBinContent(3);
+         out << name << "," << reader.GetCurrentEntry() << "," << info->GetBinContent(1) << ","
+             << info->GetBinContent(2) << "," << info->GetBinContent(3);
          if (!pat) {
             out << ",,,,,,,\n";
             continue;

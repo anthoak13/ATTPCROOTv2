@@ -14,20 +14,31 @@ which leaves the charge smeared and shifted by about 8 time buckets (20 mm of dr
 hits straight from the simulated charge, so its picture of an event never matches the pseudo-data's, and the
 closest match is at a lower light-fragment Z.
 
-Re-digitizing the same simulated events with the response read per time bucket, and fitting them with
-today's fit, removes the bias:
+Re-digitizing the same 3000 simulated events with the response read per time bucket (`digi.respTB = 1`),
+and fitting them with today's fit unchanged, removes the bias:
 
-| pseudo-data (same 200 events) | bias | spread | exact Z | off by 3 or more | unfittable |
+| pseudo-data (3000 events) | bias | spread | exact Z | off by 3 or more | unfittable |
 |---|---|---|---|---|---|
-| as made | +0.46 ± 0.04 | 0.54 | 53% | 0.5% | 5% |
-| response read per time bucket | +0.03 ± 0.02 | 0.22 | 92% | 4.5% | 0 |
-| hits made as the fit makes them | +0.03 ± 0.01 | 0.20 | 96% | 1.5% | 0 |
+| as made | +0.401 ± 0.010 | 0.53 | 57% | 0.6% | 4.9% |
+| response read per time bucket | +0.019 ± 0.003 | 0.18 | 96% | 2.2% | 0.1% |
 
-Bias is the mean of true − fitted light Z over fits within 2, spread their standard deviation. "Unfittable"
-events are those where no simulation of the fit produced charge to compare (below); the other columns are
-over the rest.
+Bias is the mean of true − fitted light Z over fits within 2, and spread their standard deviation;
+fragments are matched to the true ones by azimuth (2% of the as-made events are dropped as ambiguous, none of
+the fixed ones). "Unfittable" events are those where no simulation of the fit produced any charge to compare
+(see [What remains](#what-remains)); the other columns are over the rest. `tune_report.py --truth --unfolded
+--all` on the fixed fit gives the same: bias +0.019 ± 0.003, width 0.18, 2.3% off by 3 or more.
 
-FULL_STATS_PLACEHOLDER
+The bias per true light Z is gone at every Z (`fix_by_z.png`): it was +0.82 at Z = 31 and is now +0.05; at
+Z = 36–42 it is 0.00–0.01. The resolution improves as much: 96% of events get exactly the right Z, against
+57%.
+
+A small part remains below one unit of Z. Where the mean objective has its minimum (a parabola through the
+three Z around it) is still +0.13 ± 0.005 below the true light Z, with the same dependence on Z as the old
+bias at a third of its size (+0.26 at Z = 31, +0.02 at Z = 42). Because the fit returns an integer Z, this
+shows up as only +0.02 in the fitted Z. Its source is not found yet; the pseudo-data's pulse-shape analysis
+and the Y-pattern are ruled out (below).
+
+![bias per Z](figures/fix_by_z.png)
 
 ## Evidence
 
@@ -76,32 +87,47 @@ two responses' centroids, about 8 buckets, or 21 mm: what the vertex shows.
 
 ### Fixing it removes the bias
 
-The table above: the first 200 events of the data set, re-digitized locally at the data's fidelity (0.25 mm
-steps, 4000 diffusion points) and fit with today's fit. The local re-digitization as made reproduces the
-cluster's result on the same events (paired change −0.01 ± 0.04). With the response fixed the bias falls by
-0.44 ± 0.04 (paired, same events). Making the pseudo-data's hits exactly as the fit makes its own (nominal
-response, hits fit to the simulated charge, the fit's threshold) gives the same result as only fixing the
-response (paired change +0.005 ± 0.022): the deconvolution, its filter and the PSA threshold add no
-measurable bias once the response is right. (The beam's deposits and its separate pulse-shape analysis are
+On the first 200 events, re-digitized locally three ways:
+
+| pseudo-data (same 200 events) | bias | spread | exact Z | off by 3 or more | unfittable |
+|---|---|---|---|---|---|
+| as made | +0.46 ± 0.04 | 0.54 | 53% | 0.5% | 5% |
+| response read per time bucket | +0.03 ± 0.02 | 0.22 | 92% | 4.5% | 0 |
+| hits made as the fit makes them | +0.03 ± 0.01 | 0.20 | 96% | 1.5% | 0 |
+
+Each is fit with today's fit; the first is the cluster's existing fit of these events, and a local
+re-digitization as made (first 100 of them) reproduces it (paired change −0.01 ± 0.04). With the response
+fixed the bias falls by 0.44 ± 0.04 (paired, same events; on all 3000 events by 0.38 ± 0.01). Making the
+pseudo-data's hits exactly as the fit makes its own (nominal response, hits fit to the simulated charge, the
+fit's threshold) gives the same result as only fixing the response (paired change +0.005 ± 0.022, and
+−0.03 ± 0.02 for the parabola minimum): the deconvolution, its filter and the PSA threshold add no measurable
+bias once the response is right. (The beam's deposits and the beam pads' separate pulse-shape analysis are
 the same in both.)
 
 ### The simulation's fidelity is a smaller effect
 
 Fitting the as-made data with the fit's simulation at the data's own fidelity (0.25 mm steps, 4000 diffusion
 points; 461 events) lowers the bias by 0.12 ± 0.02 (paired, lowest draw; the parabola minimum moves by
-0.075 ± 0.010). That is a quarter of the bias, from the fit's coarser simulation, measured on the buggy data.
+0.075 ± 0.010). That is a quarter of the bias, from the fit's coarser simulation, measured on the as-made
+data. MATCH_PLACEHOLDER
 
 ## What remains
 
-- **A residual shift below one unit of Z.** With the response fixed, the integer fit is right for 94% of
-  events, but the parabola through the mean objective still has its minimum 0.12–0.14 below the true light Z
-  (both fixed data sets). TRUEPAT_PLACEHOLDER
-- **Unfittable events.** About 5% of events in today's fits had no simulation that produced any charge to
-  compare (every objective at its maximum): 154 of 159 because the pattern vertex, shifted by the bug, lay
-  upstream of the window, outside the drift volume. `tune_report.py --all` counts them as fits with an
-  arbitrary Z, and they are most of the "5% off by 3 or more". With the response fixed these events are fit,
-  but those with vertices within about 20 mm of the window have an almost flat objective (too little charge
-  compared) and fail.
+- **A shift below one unit of Z.** With the response fixed, the minimum of the mean objective is still
+  +0.13 below the true light Z, growing toward asymmetric splits. Giving the fit the true fragment directions
+  and vertex in place of the Y-pattern's moves it by only −0.03 ± 0.02 (200 events, to +0.10 ± 0.02), and
+  making the pseudo-data's hits as the fit makes them by −0.03 ± 0.02, so neither the pattern nor the
+  pulse-shape analysis is its source. Candidates not yet separated: the fit's coarser simulation (above), and
+  the kinematics (the simulation decays the compound nucleus at 90° to the z axis in its rest frame; the fit
+  assumes 90° to the beam, which is about 1° off the z axis).
+- **Events with the vertex near the window.** In today's fits 159 of 3000 events (5%) had no simulation that
+  produced any charge to compare (every objective at its maximum value): 154 because the Y-pattern vertex,
+  20 mm upstream of the truth because of the bug, lay outside the drift volume. `tune_report.py --all` and
+  `dump_fit.C` count them as fits with an arbitrary Z, and they are most of the "5% off by 3 or more" (of the
+  others, 0.6% are). With the response fixed only 2 events are unfittable, but 31% of events with the true
+  vertex within 25 mm of the window are off by 3 or more (50 of 163), against 4% at 25–100 mm and 0.1–0.3%
+  beyond 100 mm; 67 failures in all. In the few such events looked at, the mean objective is nearly the same
+  at every Z. Why is not looked into.
 
 ## Reproducing
 

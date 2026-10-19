@@ -28,3 +28,10 @@ Terse, dated, append-only. Decisions and events; results live in README.md.
 - 08:26 Cluster tune_bias_resp digis done, 60 fits running. Submitted [fit match] on corrected data (10 chunks).
 - 08:28 Added AtMCFission::SetNextEventMeans and fit.truePattern (true directions and vertex) to split the
   residual; local fit truepat on resp c00-c03 started.
+- 08:47 truepat (true directions and vertex, resp data, 200 events): bias +0.000 +- 0.007, 95.5% exact, parabola
+  +0.103 vs +0.137 with the pattern (paired -0.03 +- 0.02). Pattern errors are not the residual.
+- 08:55 Cluster tune_bias_resp base (3000 events, response per TB): bias +0.019 +- 0.003, spread 0.18, 95.6%
+  exact, 2.2% off by >=3 (31% of events with true vertex < 25 mm from the window). Parabola minimum +0.13 with
+  the old Z trend at a third of the size.
+- 09:00 Added sim.decayToBeam (decay angle from the beam direction, as the fit assumes). Local tune_bias_kin.ini
+  (200 new events) and tune_bias_det nobeam (resp without beam deposits) started to split the +0.13.

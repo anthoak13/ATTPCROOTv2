@@ -34,6 +34,8 @@ void run_simp_fiss(TString cfgFile = "")
    // Angle of the decay in CoM frame in degrees (0 means sample the distribution)
    fissionSim::decayAngle = cfg.Get("sim.decayAngle", 90) * TMath::DegToRad();
    fissionSim::zCutoff = cfg.Get("sim.zCutoff", 300); // Only simulate vertices from the window to here (mm)
+   // 1: the decay angle is measured from the beam's direction at the vertex, as the fit assumes; 0: from the z axis
+   fissionSim::decayToBeam = cfg.GetInt("sim.decayToBeam", 0);
 
    fissionSim::beamE = cfg.Get("sim.beamE", 2.70013e+03); // Get from LISE, beam energy in MeV
    // Spread in the beam energy from strageling. Either set to 0 or maintain the same ratio with beamE

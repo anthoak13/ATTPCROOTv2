@@ -124,7 +124,8 @@ void run_fit(TString cfgFile = "")
          // Pattern fragment 0 is the true fragment whose azimuth is closer
          auto gap = [](double a, double b) { return std::abs(TVector2::Phi_mpi_pi(a - b)); };
          double ph0 = pat->GetFragmentDirection(0).Phi(), ph1 = pat->GetFragmentDirection(1).Phi();
-         bool direct = gap(ph0, dir[0].Phi()) + gap(ph1, dir[1].Phi()) < gap(ph0, dir[1].Phi()) + gap(ph1, dir[0].Phi());
+         bool direct =
+            gap(ph0, dir[0].Phi()) + gap(ph1, dir[1].Phi()) < gap(ph0, dir[1].Phi()) + gap(ph1, dir[0].Phi());
          auto &d0 = direct ? dir[0] : dir[1];
          auto &d1 = direct ? dir[1] : dir[0];
          truthFitter->SetNextEventMeans({{"th0", d0.Theta()},

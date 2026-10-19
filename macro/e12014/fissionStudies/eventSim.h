@@ -3,6 +3,8 @@
  * It mostly is responsible for generating fission events based on
  *
  */
+#include "AtVectorUtil.h"
+
 #include "TCanvas.h"
 #include "TChain.h"
 #include "TFile.h"
@@ -58,6 +60,9 @@ float massDev = 6;
 float decayAngle =
    0; // Angle of the fission fragments in the CoM frame in radians. If 0, then sample from the angular distribution
 float zCutoff = 300; // Only simulate events from the window to here (dist from pad plane)
+// true: decayAngle is measured from the beam's direction at the vertex (what the fit assumes). false (old): from
+// the z axis, which is about 1 deg off the beam
+bool decayToBeam = false;
 
 // double beamOffsetX = -7.03043e+00;
 // double beamOffsetXsig = 1.62047e+01;
@@ -274,6 +279,14 @@ bool generateEvent()
    VecPolar decayDir(1, decayAngle, 0); // r, theta, phi
 
    auto decayMomenta = getProductMomenta(fragA, fragZ, gRandom, decayDir);
+   if (decayToBeam) {
+      // Turn the rest-frame momenta so the z axis they were drawn about becomes the beam's direction
+      auto toBeam = AtTools::GetRotationToZ(XYZVector(beamPos.second.Vect())).Inverse();
+      for (auto &mom : decayMomenta) {
+         auto p = toBeam(XYZVector(mom.Px(), mom.Py(), mom.Pz()));
+         mom.SetPxPyPzE(p.X(), p.Y(), p.Z(), mom.E());
+      }
+   }
 
    simInfo->Fill(A0, fragA[0]);
    simInfo->Fill(Z0, fragZ[0]);
