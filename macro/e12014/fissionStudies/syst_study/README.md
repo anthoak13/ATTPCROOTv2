@@ -346,6 +346,23 @@ The pads are read out by AGET chips of 64 pads each, four to an AsAd board (256 
 - **Gain factors common to an AsAd or an AGET widen the distribution of dZ; the mean dZ of all fits moves by at most 0.05 Z.** A gain error common to an AsAd (256 pads) or an AGET (64 pads) makes a step in a fragment's charge curve where its track crosses into another AsAd or AGET, as a change of stopping power would. Independent factors per pad partly average out over the many pads in each time bucket: σ = 10% per pad costs 4.4 pp of fits within one Z, against 15 pp for σ = 10% per AGET. Each sample draws its gain factors once (about 40 AsAds), so the sizes in the table hold for that one draw.
 - **Noise raises dZ, most for asymmetric splits.** The fit's simulation has no noise. With noise on the pseudo-data, the fit gives the light fragment a lower Z. At σ = 5 ADC, the mean dZ of all fits shifts by +0.06 to +0.34 Z in the 2° bands of θ_CM − 90°. Within 4° of 90°, the mean dZ within 2 shifts by +0.26 to +0.35 Z for a light-fragment Z of 31–35 and by +0.05 to +0.08 Z for Z = 40–42. The shift roughly doubles from 5 to 10 ADC. Its cause is not traced here. The noise is added only to traces with charge: pads without a simulated signal have no trace, and so no noise.
 
+#### The measured fragment-Z distribution
+
+The distribution of fission fragments in Z is measured from the split each fit gives: the lighter of the two fitted Z, whichever track it is on. A fit that exchanges the two fragments' Z therefore does not change it. `split_distribution.py` compares that distribution between two fits of the same events. The true light Z is uniform over 31–42 (mean 36.44, standard deviation 3.49); with every pad working, the fitted light Z has mean 36.37 and standard deviation 3.58.
+
+| variation | mean fitted light Z (change, event by event) | standard deviation of the fitted light Z | fitted light Z below 31 |
+|---|---|---|---|
+| every pad working | 36.37 | 3.58 | 3.6% |
+| dead AsAd (CoBo 2, AsAd 3) | −0.031 ± 0.026 | 3.63 | 4.1% |
+| dead AsAd, events with 10% or more of their pads on it (323) | −0.31 ± 0.21 | 4.03 (3.58 with every pad working) | 10.8% (5.9%) |
+| dead AsAd + 10% of the pads the fit uses, in patches of 16 | −0.014 ± 0.029 | 3.66 | 4.3% |
+| gain per AsAd, σ = 10% | −0.035 ± 0.031 | 3.67 | 5.6% |
+| noise, σ = 5 ADC | −0.203 ± 0.017 | 3.70 | 5.6% |
+
+- **Dead pads broaden the measured distribution; they do not shift it measurably.** Over the whole sample, the dead AsAd changes the mean fitted light Z by −0.031 ± 0.026 and widens the distribution from 3.58 to 3.63, which a Gaussian smearing of 0.6 Z would also do. For the events with 10% or more of their pads on the AsAd, the widening corresponds to a smearing of 1.9 Z, and the mean moves by −0.31 ± 0.21, toward more asymmetric splits, not significantly.
+- **The broadening shows up on the asymmetric side.** The measured split is folded at the symmetric split (42.5): a fit that overshoots symmetry comes back as a lighter fragment. Fitted light Z of 26–29, where no true event is, hold 35 events with the dead AsAd against 13 with every pad working. In a measured yield that falls toward asymmetric splits, such a tail adds false yield where the true yield is smallest.
+- **Noise, unlike dead pads and gain offsets, shifts the measured distribution.** At 5 ADC the mean fitted light Z falls by 0.203 ± 0.017: the fragments look more asymmetric. Gain offsets of 10% per AsAd broaden it about as much as the dead AsAd and do not shift it.
+
 ### Drift velocity and diffusion of the gas (probes A5, A6)
 
 Each variation digitizes the baseline's simulation again with the electrons drifting or diffusing differently from the parameter file. The hits (pulse-shape analysis) and the fit keep the parameter file's drift velocity (0.815 cm/µs) and diffusion coefficients (transverse 0.0038 cm²/µs, longitudinal 0.0055 cm²/µs), as the analysis of the experimental data does. Charge from the window stays at the time bucket the experimental data fix for it (`TBEntrance`, 457), so a different drift velocity moves the pad plane in time. The changes are paired event by event with the baseline.
