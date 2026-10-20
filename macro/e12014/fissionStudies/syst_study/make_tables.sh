@@ -40,3 +40,9 @@ done
 # Gas (A5, A6): digitizations of the baseline's simulation, so paired
 run "$BASE" $(for n in vdm2 vdm1 vdp1 vdp2 tm20 tp20 lm20 lp20; do echo "hpc-syst3:syst_gas:$n@${T}_base-base.csv"; done) \
    --base rec $BY
+
+# Ziegler stopping powers (B1): against the baseline, and Ziegler data fitted with LISE against the same fitted with Ziegler
+run "$BASE" "hpc-syst4:syst_ziegler:zieg_lise@${T}_ziegler-zieg.csv" "hpc-syst4:syst_ziegler:zieg_zieg@${T}_ziegler-zieg.csv" \
+   "hpc-syst4:syst_ziegler:lise_zieg@${T}_base-base.csv" --base rec --paired $BY
+run "hpc-syst4:syst_ziegler:zieg_zieg@${T}_ziegler-zieg.csv" "hpc-syst4:syst_ziegler:zieg_lise@${T}_ziegler-zieg.csv" \
+   --base zieg_zieg $BY

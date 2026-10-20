@@ -1,6 +1,6 @@
 # Systematic Uncertainties of the Fitted Fragment Z: Results
 
-**Status (2026-10-20).** Done: the prerequisites, the baseline, the energy-loss probes (B1 with SRIM, B2), the space-charge probes (A1–A4), the kinematics probes (C2, C3, C5), and the dead-pad, pad-gain and noise probes (D1, D3, D4) and the gas probes (A5, A6) of the [plan](PLAN.md). Running: B1 with Ziegler stopping powers. Not done: D2, the electronics response of each individual pad, because these responses are not available. All results are from simulated events (pseudo-data). Decision log: [LOG.md](LOG.md).
+**Status (2026-10-20).** Done: the prerequisites, the baseline, the energy-loss probes (B1 with SRIM and Ziegler stopping powers, B2), the space-charge probes (A1–A4), the gas probes (A5, A6), the kinematics probes (C2, C3, C5), and the dead-pad, pad-gain and noise probes (D1, D3, D4) of the [plan](PLAN.md). Not done: D2, the electronics response of each individual pad, because these responses are not available. All results are from simulated events (pseudo-data). Decision log: [LOG.md](LOG.md).
 
 **Notation.**
 - **dZ** = true Z − fitted Z of the light fragment. A positive dZ means the fit gives the light fragment too low a Z.
@@ -17,7 +17,7 @@
 - **The recommended settings give the same results as the reference settings on the baseline sample, except just above 90°.** Against the reference fit of the same events, the recommended fit changes the fraction with the correct Z by −0.4 ± 0.4 pp, the mean dZ within 2 by +0.015 ± 0.005 Z and the fraction off by 3 or more by +0.1 ± 0.1 pp. The recommended fit takes 10.4 CPU-s per event, the reference fit 109.6. The exception: between 90° and 92° the recommended fit has 5.8 ± 1.5 pp fewer fits with the correct Z.
 - **The fit's own random scatter is small.** Fitting the same events with another seed changes the fraction with the correct Z by +0.4 ± 0.5 pp and the mean dZ within 2 by −0.001 ± 0.005 Z.
 - **The mass unit used in the simulation does not change the fit (probe C4 of the plan).** Simulating at 939.0 instead of 931.5 MeV per mass unit changes the fraction with the correct Z by +0.8 ± 0.7 pp, the mean dZ within 2 by +0.008 ± 0.008 Z and the folding angle (between the two fragment tracks) by +0.001 ± 0.001°. The simulation starts from kinetic energies, so scaling every mass leaves every lab kinetic energy unchanged to a relative 10⁻⁵. The energy-loss tables depend only on kinetic energy.
-- **The difference between the LISE and SRIM stopping powers shifts the fitted Z by about 0.6 Z, more for asymmetric splits.** Pseudo-data made with SRIM and fitted with LISE give a mean dZ within 2 that is 0.60 ± 0.01 Z higher than LISE pseudo-data fitted with LISE. LISE pseudo-data fitted with SRIM change it by −0.55 ± 0.01 Z. The shift is about the same at every decay angle within 10° of 90°. Within 4° of 90°, it falls from about 1 Z for a light-fragment true Z of 31–32 to 0.15 Z for Z = 42. SRIM pseudo-data fitted with SRIM give the same mean dZ within 2 as LISE pseudo-data fitted with LISE (difference +0.007 ± 0.009 Z).
+- **The difference between the LISE and SRIM stopping powers shifts the fitted Z by about 0.6 Z, more for asymmetric splits; the difference between LISE and Ziegler, by about 0.05 Z.** Pseudo-data made with SRIM and fitted with LISE give a mean dZ within 2 that is 0.60 ± 0.01 Z higher than LISE pseudo-data fitted with LISE. LISE pseudo-data fitted with SRIM change it by −0.55 ± 0.01 Z. The shift is about the same at every decay angle within 10° of 90°. Within 4° of 90°, it falls from about 1 Z for a light-fragment true Z of 31–32 to 0.15 Z for Z = 42. SRIM pseudo-data fitted with SRIM give the same mean dZ within 2 as LISE pseudo-data fitted with LISE (difference +0.007 ± 0.009 Z). Ziegler pseudo-data fitted with LISE shift it by +0.055 ± 0.008 Z and LISE pseudo-data fitted with Ziegler by −0.039 ± 0.006 Z; Ziegler differs from LISE mostly below 200 MeV, which only long tracks reach.
 - **Scaling every fragment's stopping power by the same factor changes the fitted Z little.** Scaling dE/dx by 0.95 to 1.05 changes the mean dZ within 2 by at most 0.014 Z (+0.0025 ± 0.0008 Z per percent). The fit's shared amplitude absorbs the scale. Only for vertices within 200 mm of the window, whose fragments stop in the gas, does the mean dZ within 2 move, by ±0.05 Z for ±5%.
 - **An error in the line charge λ that the space-charge correction assumes shifts the mean dZ within 2 by 0.12 Z per 10⁻⁸ C/m.** The correction and the fit assume λ = 1.54 × 10⁻⁸ C/m. Pseudo-data with half and twice that λ shift the mean dZ within 2 by −0.105 ± 0.008 and +0.165 ± 0.011 Z. The wrong correction changes the folding angle by −0.7° and +1.2°, and the fit infers the beam velocity from the folding angle. When the correction uses the pseudo-data's own λ, it removes the effect of the space charge: the mean dZ within 2 differs from that of pseudo-data without space charge by +0.005 ± 0.006 Z.
 - **How the space charge is distributed along the beam matters; its radial shape and the beam position matter only for vertices near the window.** The same total charge spread evenly from the pad plane to the window, instead of growing toward the window as the correction assumes, shifts the mean dZ within 2 by +0.146 ± 0.010 Z and the mean dZ of all fits by +0.09 to +0.16 Z for vertices 100–600 mm from the window; over the whole sample, extra failures near the window cancel the mean dZ of all fits (−0.010 ± 0.045 Z). Spreading the charge over the 20 mm beam radius, or moving the beam line by 5 mm or onto the simulated beam's mean track, shifts it by at most 0.015 Z, but adds 2–12 pp of fits off by 3 or more for vertices within 100 mm of the window. Without any correction, the mean dZ within 2 shifts by +0.095 ± 0.014 Z and 83.9% of the fits are within one Z, against 92.8% without space charge (see [Fitted Z against the decay angle](#fitted-z-against-the-decay-angle) for the latter).
@@ -28,6 +28,40 @@
 - **The drift velocity and the transverse diffusion in the gas shift the fitted Z a little.** A drift velocity 1% off the one the hits are reconstructed with shifts the mean dZ within 2 by 0.020 ± 0.002 Z per percent and the folding angle by about 0.31° per percent. A transverse diffusion coefficient 20% off the one the fit simulates shifts it by ∓0.11 Z (0.0055 ± 0.0003 Z per percent), most for vertices far from the pad plane and for asymmetric splits. A longitudinal diffusion coefficient 20% off shifts it by at most 0.04 Z.
 
 ![The fitted light-fragment Z against the true decay angle](figures/angle.png)
+
+## Size of each shift
+
+Every variation, over the whole ±10° sample (3000 events). Each is compared with the baseline, except the space-charge variations other than "no correction", which are compared with pseudo-data at λ = 1.54 × 10⁻⁸ C/m corrected with the same λ. The sizes of most variations are chosen by hand, since the uncertainties of the inputs are not known yet; the last column gives the slope where an input is continuous, so the shift can be scaled to the input's uncertainty once it is known. The shifts per decay angle and per true Z are in the sections under [Systematic shifts](#systematic-shifts). Once the selection of the experimental data in decay angle and depth is defined, the shifts are to be averaged over the events it keeps.
+
+| input (probe) | variation | Δ mean dZ within 2 (Z) | Δ mean dZ of all fits (Z) | Δ off ≥ 3 (pp) | scaling or dependence |
+|---|---|---|---|---|---|
+| Stopping power (B1) | SRIM data fitted with LISE | +0.602 ± 0.011 | +0.657 ± 0.027 | +1.2 ± 0.3 | within 4° of 90°: about 1 Z for light Z 31–32, 0.15 Z for Z 42 |
+|  | LISE data fitted with SRIM | −0.553 ± 0.010 | −0.555 ± 0.026 | +0.2 ± 0.1 | as above, opposite sign |
+|  | Ziegler data fitted with LISE | +0.055 ± 0.008 | +0.085 ± 0.026 | −0.1 ± 0.2 |  |
+|  | LISE data fitted with Ziegler | −0.039 ± 0.006 | −0.003 ± 0.021 | −0.1 ± 0.1 |  |
+| Stopping-power scale (B2) | LISE dE/dx × 1.05 | +0.013 ± 0.006 | +0.047 ± 0.023 | −0.2 ± 0.2 | +0.0025 ± 0.0008 Z per percent |
+| Space charge: λ (A1) | 2λ in the data | +0.165 ± 0.011 | +0.252 ± 0.026 | +0.1 ± 0.2 | +0.117 ± 0.006 Z per 10⁻⁸ C/m of error in λ |
+|  | λ / 2 in the data | −0.105 ± 0.008 | −0.307 ± 0.048 | +1.1 ± 0.2 | no fit within 40 mm of the window for 72% of those events |
+| Space charge: shape (A2) | same charge, constant along the beam | +0.146 ± 0.010 | −0.010 ± 0.045 | +1.8 ± 0.3 | +0.09 to +0.16 Z (all fits) at 100–600 mm from the window |
+|  | charge spread over the 20 mm beam radius | +0.003 ± 0.006 | −0.175 ± 0.045 | +1.7 ± 0.3 | only within 100 mm of the window |
+| Space charge: beam line (A3) | beam line 5 mm off in y | −0.012 ± 0.006 | −0.138 ± 0.045 | +1.0 ± 0.3 | only within 100 mm of the window |
+| Space charge: no correction (A4) | no correction, no space charge in the fit | +0.095 ± 0.014 | +0.166 ± 0.034 | +0.9 ± 0.3 | folding angle +1.46° |
+| Drift velocity (A5) | × 1.02 | +0.045 ± 0.006 | +0.097 ± 0.026 | −0.2 ± 0.2 | +0.020 ± 0.002 Z per percent |
+| Transverse diffusion (A6) | × 1.2 | +0.106 ± 0.007 | +0.093 ± 0.028 | +0.6 ± 0.2 | +0.0055 ± 0.0003 Z per percent; largest for long drifts |
+| Longitudinal diffusion (A6) | × 1.2 | +0.019 ± 0.005 | +0.035 ± 0.024 | +0.1 ± 0.2 |  |
+| TKE (C2) | × 1.02 | +0.021 ± 0.006 | +0.040 ± 0.025 | −0.3 ± 0.2 | +0.011 ± 0.002 Z per percent |
+|  | 8% spread | +0.007 ± 0.024 | +0.024 ± 0.047 | +0.2 ± 0.3 | 2.3 pp fewer within 1 |
+| Mass number (C3) | light fragment's A + 1 | +0.016 ± 0.006 | +0.079 ± 0.028 | −0.2 ± 0.2 |  |
+| Beam spot and direction (C5) | beam spot spread × 2 | −0.002 ± 0.007 | +0.024 ± 0.038 | +1.2 ± 0.3 | the others smaller |
+| Dead pads (D1) | dead AsAd (CoBo 2, AsAd 3) | −0.016 ± 0.007 | −0.173 ± 0.045 | +3.1 ± 0.4 | 31.6% off by ≥ 3 in the 11% of events with ≥ 10% of their pads on it |
+|  | the dead AsAd + 10% of the pads the fit uses, in patches of 16 | −0.023 ± 0.008 | −0.187 ± 0.044 | +3.6 ± 0.4 |  |
+| Pad gains (D3) | per AsAd, σ = 10% | −0.041 ± 0.024 | −0.050 ± 0.036 | +13.7 ± 0.6 | 62% within 1 instead of 93% |
+|  | per AGET, σ = 10% | −0.015 ± 0.016 | −0.015 ± 0.032 | +2.6 ± 0.3 | 78% within 1 |
+|  | per pad, σ = 10% | +0.010 ± 0.010 | +0.004 ± 0.027 | −0.0 ± 0.2 | 88% within 1 |
+| Noise (D4) | σ = 5 ADC | +0.198 ± 0.008 | +0.250 ± 0.030 | −0.2 ± 0.2 | within 4° of 90°: +0.26 to +0.35 Z for light Z 31–35, +0.05 to +0.08 Z for Z 40–42 |
+|  | σ = 10 ADC | +0.418 ± 0.012 | +0.463 ± 0.042 | +2.2 ± 0.4 |  |
+
+![The change of both means for each variation](figures/shifts.png)
 
 ## The baseline
 
@@ -174,13 +208,16 @@ Each change is taken event by event against the baseline's recommended fit. Most
 
 ### Stopping-power model and scale (probes B1, B2)
 
-The fit gets Z from the shape of each fragment's charge along its track (its Bragg curve), with one amplitude shared by both fragments. It therefore depends on how the stopping power changes with the fragment's energy and Z. In this report, LISE means the ATIMA 1.2 column of the LISE files (`LISE` in the code); CATIMA reproduces it to 0.1% in dE/dx. The baseline uses LISE, and the beam uses LISE in every variation. SRIM's tables differ from LISE's by up to 13% in dE/dx, by an amount that depends on Z and energy. They are computed for a 2.6% lower gas density (1.752 × 10⁻⁴ against 1.7985 × 10⁻⁴ g/cm³).
+The fit gets Z from the shape of each fragment's charge along its track (its Bragg curve), with one amplitude shared by both fragments. It therefore depends on how the stopping power changes with the fragment's energy and Z. In this report, LISE means the ATIMA 1.2 column of the LISE files (`LISE` in the code); CATIMA reproduces it to 0.1% in dE/dx. The baseline uses LISE, and the beam uses LISE in every variation. SRIM's tables differ from LISE's by up to 13% in dE/dx, by an amount that depends on Z and energy; above 200 MeV they are 5–13% higher. They are computed for a 2.6% lower gas density (1.752 × 10⁻⁴ against 1.7985 × 10⁻⁴ g/cm³). The Ziegler tables are the Ziegler column of the same LISE files, the stopping powers of older SRIM versions. For light Z 31–45 they are 5–17% higher than LISE's at 50–200 MeV and within 1.5% of them above 400 MeV; their ranges from 300 and 700 MeV are 3–14% shorter.
 
 | variation | Δ correct (pp) | Δ mean dZ within 2 (Z) | Δ mean dZ of all fits (Z) | Δ off ≥ 3 (pp) |
 |---|---|---|---|---|
 | SRIM data, LISE fit | −3.0 ± 1.1 | +0.602 ± 0.011 | +0.657 ± 0.027 | +1.2 ± 0.3 |
 | LISE data, SRIM fit | +4.5 ± 1.1 | −0.553 ± 0.010 | −0.555 ± 0.026 | +0.2 ± 0.1 |
 | SRIM data, SRIM fit | +5.1 ± 0.7 | +0.007 ± 0.009 | +0.041 ± 0.027 | −0.2 ± 0.2 |
+| Ziegler data, LISE fit | −4.3 ± 0.5 | +0.055 ± 0.008 | +0.085 ± 0.026 | −0.1 ± 0.2 |
+| LISE data, Ziegler fit | −0.2 ± 0.5 | −0.039 ± 0.006 | −0.003 ± 0.021 | −0.1 ± 0.1 |
+| Ziegler data, Ziegler fit | −4.8 ± 0.5 | +0.002 ± 0.008 | +0.046 ± 0.025 | −0.1 ± 0.2 |
 | LISE dE/dx × 0.95 | +1.1 ± 0.5 | −0.014 ± 0.006 | +0.000 ± 0.028 | +0.2 ± 0.2 |
 | LISE dE/dx × 0.98 | −0.1 ± 0.4 | −0.001 ± 0.005 | +0.028 ± 0.023 | +0.1 ± 0.2 |
 | LISE dE/dx × 1.02 | −0.2 ± 0.4 | +0.004 ± 0.005 | +0.038 ± 0.026 | −0.1 ± 0.2 |
@@ -197,6 +234,8 @@ The folding angle changes by at most 0.003°. It comes from the Y-pattern, which
   | LISE data, SRIM fit | −0.98 | −0.89 | −0.69 | −0.64 | −0.61 | −0.61 | −0.59 | −0.37 | −0.40 | −0.58 | −0.36 | −0.13 |
 
   The values are changes in the mean dZ within 2; their errors are 0.04–0.06 Z. In a near-symmetric split both fragments have similar Z and velocity, so a change of model changes both Bragg curves alike. The fit keeps the two Z adding up to 85, so the fitted Z moves little. In an asymmetric split the two fragments sample different parts of the stopping-power curves.
+- **The Ziegler stopping powers shift Z ten times less than SRIM's, because they differ from LISE's mainly where the fragments are slow.** Ziegler data fitted with LISE shift the mean dZ within 2 by +0.055 ± 0.008 Z, and LISE data fitted with Ziegler by −0.039 ± 0.006 Z. The mismatch alone, Ziegler data fitted with LISE minus the same data fitted with Ziegler, is +0.053 ± 0.006 Z. Ziegler differs from LISE below 200 MeV, which a fragment reaches only on a long track: the shift is +0.09 to +0.13 Z for vertices 100–400 mm from the window and +0.01 to +0.04 Z for vertices 400–700 mm from it, which are closer to the pad plane. SRIM differs from LISE at high energies too, and its shift falls with depth less steeply, from +0.75 Z at 100–200 mm to +0.35 Z at 600–700 mm.
+- **The decay-angle dependence of the fitted Z depends on the stopping-power model.** Ziegler data fitted with Ziegler, against LISE data fitted with LISE, shift the mean dZ within 2 by −0.30 ± 0.03 Z at 8–10° below 90° and +0.35 ± 0.03 Z at 8–10° above it, with the same mean overall (+0.002 ± 0.008 Z): with Ziegler stopping powers, the fitted Z changes faster with the decay angle.
 - **The shared amplitude absorbs a stopping-power scale common to both fragments.** A uniform change of dE/dx changes the size of every charge curve, which the shared amplitude takes up, and the length of each track. The length is seen only where a fragment stops in the gas. For vertices within 200 mm of the window, dE/dx × 0.95 and × 1.05 shift the mean dZ within 2 by −0.05 ± 0.02 and +0.05 ± 0.02 Z; for deeper vertices, by at most 0.04 Z. A difference in overall scale between two models therefore moves Z little. A difference in how dE/dx changes with energy and Z moves it.
 
 ### Space charge of the beam (probes A1–A4)
@@ -318,18 +357,27 @@ Each variation digitizes the baseline's simulation again with the electrons drif
   - `sim.massUnit` sets the simulation's MeV per mass unit (default 931.5, the fit's value).
   - `sim.elossScale` multiplies every fragment's dE/dx (LISE tables only).
 
+  - Space charge: `sim.spaceCharge` (`line`, `lineNumeric`, `uniform`, `constant`), `sim.lambda`, `sim.scBeam`; the correction `digi.scCorrection`, `digi.lambda`, `digi.scBeam`; `fit.spaceCharge`.
+  - Stopping powers: `sim.eloss` and `fit.eloss` take `LISE`, `ZIEGLER` (the LISE files' Ziegler column) or `SRIM`.
+  - Kinematics: `sim.tkeScale`, `sim.tkeSigma`, `sim.massShift`, `sim.beamSpotScale`, `sim.beamDivScale`, `sim.beamTiltX`, `sim.beamTiltY`.
+  - Digitization: `digi.deadAsAd`, `digi.deadPads`, `digi.deadPatch`, `digi.deadSeed`; `digi.padGainSigma`, `digi.agetGainSigma`, `digi.asadGainSigma`, `digi.gainSeed`; `digi.noise`; `digi.driftVelocityScale`, `digi.coefTScale`, `digi.coefLScale`; `digi.saveTraces` (0 leaves the traces out of the file).
+
   See the [settings reference](../MANUAL.md#settings-reference).
+- **Space charge in the simulation and the fit.** `AtSimpleSimulation::AddHit` places distorted points at their own depth; `AtLineChargeModel` puts charge that the distortion carries past the beam line on the line, and its constant-in-z mode uses consistent units; `AtMCFission` sets the space charge once per event, before its threads start. Unit tests `AtSimpleSimulationTest.SpaceChargeKeepsZ`, `LineChargePullsTowardBeam`, `AtLineChargeModelTest.DistortionUnits`.
+- **`AtPulse::ApplyNoise`** adds Gaussian noise to each sample. Unit test `AtPulseTest.NoiseIsAdditive`.
+- **`AtDigiPar`** has setters for the drift velocity and the diffusion coefficients, which the digitization uses to drift electrons in a gas other than the one the reconstruction assumes.
 - **`AtELossTable::SetDensity`** works on tables without range variance, which includes every LISE table. Unit test `SetDensityWithoutRangeVariance`.
 - **`dump_fit.C`** writes, besides the fit results, the true vertex depth, the folding angle and vertex depth of the Y-pattern, and the fitted beam energy. Events without a fit are written with their true angle and depth.
-- **`syst_report.py`** computes the measures above, grouped by true Z, angle band, side of 90°, depth band, or true Z within an angle band, and the changes against a chosen base fit.
-- **`syst_study/make_figures.py`** makes the figure. **`truth_*.csv`** hold `sim_truth.C`'s output for every simulation.
+- **`syst_report.py`** computes the measures above, grouped by true Z, angle band, side of 90°, depth band, true Z near 90° (`z-near`) or the fraction of dead pads (`dead`), and the changes against a chosen base fit, written to a CSV with `--changes-csv`.
+- **`dead_cross.C`** gives, for each event, how many of its fragments' pads (in the baseline's hits) are in a set of dead pads made as the digitization makes it.
+- **`syst_study/make_tables.sh`** reruns every comparison of the systematic shifts into `syst_study/changes.csv`; **`syst_study/summary.py`** prints the report's tables from it. **`syst_study/make_figures.py`** makes the figures. **`truth_*.csv`** hold `sim_truth.C`'s output for every simulation, and **`dead/*.csv`** `dead_cross.C`'s for every dead-pad sample.
 - **The local shared inputs** (`TPC_SHARED_INFO`) agree with the cluster's, including the beam's LISE table `83_200.txt` (²⁰⁰Bi, prerequisite P6 of the plan).
 
 ## Appendix: machines and paths
 
-- Cluster checkout `/home/faculty/aanthony/fission/adam/syst/code` (remote `hpc-syst` in `remotes.ini`). Data directory `/home/faculty/aanthony/fission/adam/syst/data`. `throttle.sh` and its log in `/home/faculty/aanthony/fission/adam/syst/`; truth tables in `.../syst/truth/`.
-- Fetched results in `fissionStudies/data/remote/hpc-syst/`.
-- The tables come from:
+- Cluster checkouts `/home/faculty/aanthony/fission/adam/syst/code`, `code2`, `code3`, `code4` (remotes `hpc-syst` to `hpc-syst4` in `remotes.ini`): the baseline and the stopping-power scale and SRIM samples on the first, space charge on the second, kinematics, pads and gas on the third, Ziegler on the fourth. Data directory `/home/faculty/aanthony/fission/adam/syst/data`. `throttle.sh` and its log in `/home/faculty/aanthony/fission/adam/syst/`; truth tables in `.../syst/truth/`.
+- Fetched results in `fissionStudies/data/remote/hpc-syst*/`.
+- The tables of the systematic shifts come from `syst_study/make_tables.sh` and `syst_study/summary.py`, the figures from `./make_figures.py DUMPS figures --changes changes.csv`, run in `syst_study/` (`DUMPS` is `make_tables.sh`'s dump directory). The baseline's tables come from:
 
   ```
   ./syst_report.py hpc-syst:syst_base:rec@syst_study/truth_syst_base-base.csv \

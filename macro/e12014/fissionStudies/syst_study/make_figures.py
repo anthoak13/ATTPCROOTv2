@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Figures of the systematics study from dump_fit.C's per-event CSVs (syst_report.py --dump-dir DIR).
 
-    ./make_figures.py DIR figures
+    ./make_figures.py DIR figures [--changes changes.csv]
 
 Writes <out>/angle.png: the fitted light-fragment Z against the true decay angle, from the baseline's
 recommended fit (rec, 1 deg bins within 10 deg of 90) and the 10-30 deg sample (wide_lo, wide_hi, 2 deg
 bins). Top: mean dZ with its standard error and the straight line fitted within 8 deg of 90. Bottom: the
-fractions with the correct Z, within 1 and off by 3 or more. Run from fissionStudies/syst_study/.
+fractions with the correct Z, within 1 and off by 3 or more. With --changes (make_tables.sh's changes.csv):
+<out>/shifts.png, the change of the mean dZ within 2 and of the mean dZ of all fits for each variation of the study,
+grouped by input. Run from fissionStudies/syst_study/.
 """
 import argparse
 import csv
@@ -75,12 +77,86 @@ def style(ax, ylabel):
         ax.spines[side].set_color(MUTED)
 
 
+# (group, label, base, sample) of every variation in the shifts figure, top to bottom
+SHIFTS = [
+    ("Stopping power", "SRIM data, LISE fit", "rec", "srim_lise"),
+    ("Stopping power", "LISE data, SRIM fit", "rec", "lise_srim"),
+    ("Stopping power", "Ziegler data, LISE fit", "rec", "zieg_lise"),
+    ("Stopping power", "LISE data, Ziegler fit", "rec", "lise_zieg"),
+    ("Stopping power", "LISE dE/dx × 0.95", "rec", "s095"),
+    ("Stopping power", "LISE dE/dx × 1.05", "rec", "s105"),
+    ("Space charge", "λ / 2 in the data", "nom", "half"),
+    ("Space charge", "2λ in the data", "nom", "double"),
+    ("Space charge", "charge constant along the beam", "nom", "constant"),
+    ("Space charge", "charge spread over the beam radius", "nom", "uniform"),
+    ("Space charge", "beam line 5 mm off in y", "nom", "y5"),
+    ("Space charge", "no correction", "rec", "nocorr"),
+    ("Gas", "drift velocity × 0.98", "rec", "vdm2"),
+    ("Gas", "drift velocity × 1.02", "rec", "vdp2"),
+    ("Gas", "transverse diffusion × 0.8", "rec", "tm20"),
+    ("Gas", "transverse diffusion × 1.2", "rec", "tp20"),
+    ("Gas", "longitudinal diffusion × 1.2", "rec", "lp20"),
+    ("Kinematics", "TKE × 0.98", "rec", "tke098"),
+    ("Kinematics", "TKE × 1.02", "rec", "tke102"),
+    ("Kinematics", "light fragment's A + 1", "rec", "ap1"),
+    ("Kinematics", "beam spot × 2", "rec", "spot2"),
+    ("Pads and electronics", "dead AsAd (CoBo 2, AsAd 3)", "rec", "asad"),
+    ("Pads and electronics", "dead AsAd + 10% of pads in patches", "rec", "asad_p10"),
+    ("Pads and electronics", "gain per AsAd, σ = 10%", "rec", "asad10"),
+    ("Pads and electronics", "gain per pad, σ = 10%", "rec", "pad10"),
+    ("Pads and electronics", "noise, σ = 5 ADC", "rec", "noise5"),
+    ("Pads and electronics", "noise, σ = 10 ADC", "rec", "noise10"),
+]
+
+
+def shifts(changes, out):
+    """Horizontal dot plot of the whole-sample change of both means for every variation in SHIFTS."""
+    rows = {}
+    with open(changes) as f:
+        for r in csv.DictReader(f):
+            if r["binning"] == "all":
+                rows[(r["base"], r["sample"])] = r
+    items = [(g, label, rows[(b, smp)]) for g, label, b, smp in SHIFTS if (b, smp) in rows]
+    fig, ax = plt.subplots(figsize=(7.5, 0.27 * len(items) + 1.4))
+    ys = list(range(len(items)))[::-1]
+    for key, color, mfc, dy, label in (("bias", SERIES[0], SERIES[0], 0.14, "mean dZ within 2"),
+                                       ("meanall", SERIES[1], "white", -0.14, "mean dZ of all fits")):
+        ax.errorbar([float(r[key]) for _, _, r in items], [y + dy for y in ys],
+                    xerr=[float(r[key + "_err"]) for _, _, r in items], fmt="o", color=color, mfc=mfc,
+                    markersize=4.5, elinewidth=1, capsize=0, label=label)
+    ax.axvline(0, color=INK2, linewidth=0.8)
+    ax.set_yticks(ys)
+    ax.set_yticklabels([label for _, label, _ in items], fontsize=8.5, color=INK2)
+    group_prev = None
+    for y, (g, _, _) in zip(ys, items):
+        if g != group_prev:
+            ax.text(0.01, y + 0.42, g, transform=ax.get_yaxis_transform(), ha="left", va="bottom", fontsize=8,
+                    color=MUTED, fontweight="bold")
+            if group_prev is not None:
+                ax.axhline(y + 0.5, color=GRID, linewidth=0.8)
+            group_prev = g
+    ax.set_ylim(-0.7, len(items) - 0.05)
+    style(ax, "")
+    ax.grid(True, axis="x", color=GRID, linewidth=0.8)
+    ax.grid(False, axis="y")
+    ax.set_xlabel("change of dZ against the sample the variation is compared with (Z)\n"
+                  "positive: the fit gives the light fragment a lower Z", color=INK2, fontsize=9)
+    ax.legend(frameon=False, fontsize=8.5, loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2, labelcolor=INK2)
+    fig.suptitle("Shift of the fitted light-fragment Z for each variation", color=INK, fontsize=10.5, x=0.02,
+                 ha="left")
+    fig.tight_layout()
+    fig.savefig(os.path.join(out, "shifts.png"), dpi=150)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("dumps", help="syst_report.py's --dump-dir")
     parser.add_argument("out", help="directory for the figures")
+    parser.add_argument("--changes", help="make_tables.sh's changes.csv: also draw shifts.png")
     args = parser.parse_args()
     os.makedirs(args.out, exist_ok=True)
+    if args.changes:
+        shifts(args.changes, args.out)
 
     dump = lambda name: os.path.join(args.dumps, f"hpc-syst-syst_base-{name}.csv")
     base = load(dump("rec"), "truth_syst_base-base.csv")
