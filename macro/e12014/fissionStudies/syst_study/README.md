@@ -1,6 +1,6 @@
 # Systematic Uncertainties of the Fitted Fragment Z: Results
 
-**Status (2026-10-20).** Done: the prerequisite fixes and the baseline, and the energy-loss probes B1 and B2 of the [plan](PLAN.md). Running: the space-charge, kinematics, pad, electronics and gas probes. All results are from simulated events (pseudo-data). Decision log: [LOG.md](LOG.md).
+**Status (2026-10-20).** Done: the prerequisite fixes, the baseline, the energy-loss probes (B1 with SRIM, B2) and the space-charge probes (A1–A4) of the [plan](PLAN.md). Running: B1 with Ziegler stopping powers, and the kinematics, pad, electronics and gas probes. All results are from simulated events (pseudo-data). Decision log: [LOG.md](LOG.md).
 
 **Notation.**
 - **dZ** = true Z − fitted Z of the light fragment. A positive dZ means the fit gives the light fragment too low a Z.
@@ -17,8 +17,10 @@
 - **The recommended settings give the same results as the reference settings on this sample, except just above 90°.** Against the reference fit of the same events, the recommended fit changes the fraction with the correct Z by −0.4 ± 0.4 pp, the mean dZ within 2 by +0.015 ± 0.005 Z and the fraction off by 3 or more by +0.1 ± 0.1 pp. It costs 10.4 CPU-s per event against 109.6. The exception: between 90° and 92° it has 5.8 ± 1.5 pp fewer fits with the correct Z.
 - **The fit's own random scatter is small.** Fitting the same events with another seed changes the fraction with the correct Z by +0.4 ± 0.5 pp and the mean dZ within 2 by −0.001 ± 0.005 Z.
 - **The mass unit used in the simulation does not change the fit (probe C4 of the plan).** Simulating at 939.0 instead of 931.5 MeV per mass unit changes the fraction with the correct Z by +0.8 ± 0.7 pp, the mean dZ within 2 by +0.008 ± 0.008 Z and the folding angle (between the two fragment tracks) by +0.001 ± 0.001°. The simulation starts from kinetic energies, so scaling every mass leaves every lab kinetic energy unchanged to 10⁻⁵. The energy-loss tables depend only on kinetic energy.
-- **The difference between the LISE and SRIM stopping powers shifts the fitted Z by about 0.6 Z, more for asymmetric splits.** Pseudo-data made with SRIM and fitted with LISE give a mean dZ within 2 that is 0.60 ± 0.01 Z higher than LISE pseudo-data fitted with LISE. LISE pseudo-data fitted with SRIM give −0.55 ± 0.01 Z. The shift is the same at every decay angle within 10° of 90°. By the light fragment's true Z, it falls from about 1 Z at Z = 31–32 to 0.15 Z at Z = 42. SRIM pseudo-data fitted with SRIM have the baseline's bias (+0.007 ± 0.009 Z).
+- **The difference between the LISE and SRIM stopping powers shifts the fitted Z by about 0.6 Z, more for asymmetric splits.** Pseudo-data made with SRIM and fitted with LISE give a mean dZ within 2 that is 0.60 ± 0.01 Z higher than LISE pseudo-data fitted with LISE. LISE pseudo-data fitted with SRIM give −0.55 ± 0.01 Z. The shift is the same at every decay angle within 10° of 90°. By the light fragment's true Z, it falls from about 1 Z at Z = 31–32 to 0.15 Z at Z = 42. SRIM pseudo-data fitted with SRIM give the same mean dZ within 2 as LISE pseudo-data fitted with LISE (difference +0.007 ± 0.009 Z).
 - **Scaling every fragment's stopping power by the same factor changes the fitted Z little.** Scaling dE/dx by 0.95 to 1.05 changes the mean dZ within 2 by at most 0.014 Z (+0.0025 ± 0.0008 Z per percent). The fit's amplitude absorbs the scale. Only vertices within 200 mm of the window, whose fragments stop in the gas, move by ±0.05 Z for ±5%.
+- **A wrong line charge λ in the space-charge correction shifts the fitted Z by 0.12 Z per 10⁻⁸ C/m.** Pseudo-data with half and twice the λ the correction and the fit assume (1.54 × 10⁻⁸ C/m) shift the mean dZ within 2 by −0.105 ± 0.008 and +0.165 ± 0.011 Z. The wrong correction changes the folding angle by −0.7° and +1.2°, and the fit infers the beam velocity from it. With the right λ, the correction removes the effect of the space charge: the change against pseudo-data without space charge is +0.005 ± 0.006 Z.
+- **How the space charge is distributed along the beam matters; its radial shape and the beam position do not.** The same total charge spread evenly from the pad plane to the window, instead of growing toward the window as the correction assumes, shifts Z by +0.146 ± 0.010 Z. Spreading the charge over the 20 mm beam radius, or moving the beam line by 5 mm or onto the simulated beam's mean track, shifts it by at most 0.015 Z. Without any correction, Z shifts by +0.095 ± 0.014 Z and 9 pp fewer fits are within one Z.
 
 ![The fitted light-fragment Z against the true decay angle](figures/angle.png)
 
@@ -189,6 +191,43 @@ The folding angle changes by at most 0.003°. It comes from the Y-pattern, which
 
   The errors are 0.04–0.06 Z. In a near-symmetric split both fragments have similar Z and velocity, so a change of model changes both Bragg curves alike. The fit keeps the two Z adding up to 85, so it moves little. In an asymmetric split the two fragments sample different parts of the stopping-power curves.
 - **The shared amplitude absorbs a stopping-power scale common to both fragments.** A uniform change of dE/dx changes the size of every charge curve, which the shared amplitude takes up, and the length of each track. The length is seen only where a fragment stops in the gas. For vertices within 200 mm of the window, dE/dx × 0.95 and × 1.05 shift the mean dZ within 2 by −0.05 ± 0.02 and +0.05 ± 0.02 Z; for deeper vertices, by at most 0.04 Z. A difference in overall scale between two models therefore moves Z little. A difference in how dE/dx changes with energy and Z moves it.
+
+### Space charge of the beam (probes A1–A4)
+
+The beam ionizes the gas, and the positive ions drift slowly toward the window. Their charge pulls the drifting electrons of the fragment tracks toward the beam. The ions accumulate toward the window, so the line charge grows linearly from 0 at the pad plane to λ at the window, and the electrons' radius squared shrinks by an amount proportional to the square of their drift distance. At λ = 1.54 × 10⁻⁸ C/m, charge that starts within 50 mm of the beam 800 mm from the pad plane ends on the beam line.
+
+The experimental data are corrected with this model (`AtLineChargeModel`), with λ from the beam rate and the beam line from (0, −6) mm at the pad plane to (10, 0) mm at the window. The Y-pattern is found in the corrected hits, and the fit simulates the same space charge, with the same λ, and compares charge on the pads the uncorrected hits are on. The pseudo-data here are made and analyzed the same way. In the reference sample of this section, the pseudo-data have a line charge of λ = 1.54 × 10⁻⁸ C/m about the corrected line, and the correction and the fit use the same λ. The experimental data span about 0.5 to 2 × 10⁻⁸ C/m (1500–5000 beam particles per second).
+
+Against the baseline (no space charge):
+
+| variation | Δ correct (pp) | Δ mean dZ within 2 (Z) | Δ off ≥ 3 (pp) | Δ folding angle (deg) |
+|---|---|---|---|---|
+| λ = 1.54 × 10⁻⁸ C/m, corrected | −0.2 ± 0.5 | +0.005 ± 0.006 | −0.8 ± 0.3 | +0.029 ± 0.003 |
+| the same pseudo-data, no correction, no space charge in the fit | −1.1 ± 1.0 | +0.095 ± 0.014 | +0.9 ± 0.3 | +1.456 ± 0.023 |
+
+Against the reference sample of this section (λ = 1.54 × 10⁻⁸ C/m, corrected):
+
+| variation of the pseudo-data | Δ correct (pp) | Δ mean dZ within 2 (Z) | Δ off ≥ 3 (pp) | Δ folding angle (deg) |
+|---|---|---|---|---|
+| λ / 2 | +0.2 ± 0.6 | −0.105 ± 0.008 | +1.1 ± 0.2 | −0.705 ± 0.007 |
+| λ / 2, corrected and fitted with λ / 2 | −0.8 ± 0.5 | −0.005 ± 0.006 | +1.1 ± 0.2 | −0.013 ± 0.003 |
+| 2λ | −1.0 ± 0.9 | +0.165 ± 0.011 | +0.1 ± 0.2 | +1.218 ± 0.006 |
+| 2λ, corrected and fitted with 2λ | −0.1 ± 0.5 | +0.004 ± 0.006 | −0.3 ± 0.2 | +0.023 ± 0.002 |
+| line charge, electrons' drift integrated step by step | −0.8 ± 0.5 | −0.007 ± 0.006 | +1.6 ± 0.3 | +0.006 ± 0.017 |
+| charge spread uniformly over the 20 mm beam radius | −0.7 ± 0.5 | +0.003 ± 0.006 | +1.7 ± 0.3 | +0.068 ± 0.028 |
+| the same total charge, constant from pad plane to window | −1.5 ± 0.8 | +0.146 ± 0.010 | +1.8 ± 0.3 | +1.835 ± 0.020 |
+| beam line moved 5 mm in x | −0.7 ± 0.5 | −0.003 ± 0.006 | +0.3 ± 0.2 | −0.003 ± 0.004 |
+| beam line moved 5 mm in y | −0.3 ± 0.5 | −0.012 ± 0.006 | +1.0 ± 0.3 | −0.006 ± 0.008 |
+| beam line on the simulated beam's mean track | +0.4 ± 0.5 | −0.015 ± 0.007 | +0.5 ± 0.2 | +0.001 ± 0.005 |
+
+The simulated beam's mean track runs from (−0.31, −9.04) mm at the window to (18.29, −3.34) mm at the pad plane, 10–18 mm from the line the correction assumes.
+
+- **The correction with the right λ removes the space charge's effect on Z.** It also moves the folding angle by only 0.03°, while without a correction the folding angle is 1.46° larger.
+- **A wrong λ changes Z through the folding angle.** The distortion is largest near the vertex, which is farthest from the pad plane, and smallest near the pad plane. Too little correction leaves the start of each fragment track pulled toward the beam, which makes the track steeper and the folding angle larger. The fit infers the beam velocity, and from it the fragment velocities, from the folding angle. Both λ samples shift the mean dZ within 2 by 0.14–0.15 Z per degree of folding-angle change. A straight line through the reference sample gives +0.117 ± 0.006 Z per 10⁻⁸ C/m of error in λ. With matched λ in the pseudo-data, the correction and the fit, Z does not move, so the λ itself has no effect; only its error does.
+- **The shift from a wrong λ is about the same at every decay angle and larger for asymmetric splits.** In 2° bands within 10° of 90°, λ / 2 shifts the mean dZ within 2 by −0.02 to −0.23 Z and 2λ by +0.05 to +0.30 Z. Within 4° of 90°, 2λ shifts light Z 31–36 by +0.21 to +0.36 Z and Z 40–42 by −0.04 to +0.11 Z.
+- **Too much correction makes events near the window impossible to fit.** With λ / 2 in the pseudo-data and λ in the correction and the fit, 136 of the 151 events within 20 mm of the window and 33 of the 83 at 20–40 mm have no simulation of the fit that puts charge on the pads with a data hit. Beyond 40 mm, none. These events are left out of every measure above.
+- **The distribution of the charge along the beam matters as much as λ.** Spreading the same total charge evenly from the pad plane to the window distorts tracks near the pad plane more and near the window less than the correction assumes. It shifts Z by +0.146 ± 0.010 Z and the folding angle by +1.8°, as a λ error of about 1.3 × 10⁻⁸ C/m would.
+- **The charge's radial shape and the beam position hardly matter.** Charge spread over the beam radius, or electrons that stop at the 20 mm beam radius instead of on the line, change only charge close to the beam. Every pad within 30 mm of the beam is a low-gain pad, which the fit leaves out (and 175 of the 213 pads at 30–40 mm). Z moves by at most 0.007 Z. A 5 mm error in the beam line, or the 10–18 mm between the corrected line and the simulated beam, moves Z by at most 0.015 Z. These variations add 0.3–1.7 pp of fits off by 3 or more.
 
 ## Code and tools (branch `fit-syst`)
 
