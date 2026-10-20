@@ -57,7 +57,7 @@ Every fit uses 4 threads. The 10–30° and C4 samples are fitted with the recom
 Computed by `syst_report.py` over every event of a fit:
 
 - **dZ** compares the fitted Z with the true Z of the same fragment. Fitted and true fragments are matched by azimuth, as in the [tuning study](../tune_study/README.md). No event in any sample has fragments too close in azimuth to match.
-- **Correct Z**: dZ = 0. **Within 1**: |dZ| ≤ 1. **Off by 3 or more**: |dZ| ≥ 3. **Mean dZ within 2** and **spread**: the mean and the standard deviation of dZ over the fits within 2 of the true Z (|dZ| ≤ 2). Leaving out the fits off by 3 or more keeps the few events with the two fragments' Z exchanged from dominating. **Mean dZ of all fits**: the mean over every fit, used in the figure, the straight line in θ_CM and the 10–30° table.
+- **Correct Z**: dZ = 0. **Within 1**: |dZ| ≤ 1. **Off by 3 or more**: |dZ| ≥ 3. **Mean dZ within 2** and **spread**: the mean and the standard deviation of dZ over the fits within 2 of the true Z (|dZ| ≤ 2). Leaving out the fits off by 3 or more keeps the few events with the two fragments' Z exchanged from dominating. **Mean dZ of all fits**: the mean over every fit, used in the figure, the straight line in θ_CM and the 10–30° table, and next to the mean dZ within 2 for every systematic shift. The two differ when a change adds fits off by 3 or more, or widens dZ: fits that cross the |dZ| ≤ 2 window then pull the mean within 2 toward zero.
 - **Unfittable**: none of the fit's simulations puts charge on a pad that has a hit in the event. These events are counted, then left out of every other measure. The ±10° sample has 4 of them in 3000 events, all within 100 mm of the window.
 - **Folding angle**: the angle between the two fragment directions of the Y-pattern. The fit uses it to infer the beam velocity.
 - **Changes between two fits** are computed event by event and quoted with one standard error. Events can be paired when both fits are of the same simulated events. They can also be paired between the two C4 samples: their simulations use the same seeds, and all 1000 events have the same Z split and fragment directions in both.
@@ -173,15 +173,15 @@ Each change is taken event by event against the baseline's recommended fit. Most
 
 The fit gets Z from the shape of each fragment's charge along its track (its Bragg curve), with one amplitude shared by both fragments. It therefore depends on how the stopping power changes with the fragment's energy and Z. In this report, LISE means the ATIMA 1.2 column of the LISE files (`LISE` in the code); CATIMA reproduces it to 0.1% in dE/dx. The baseline uses LISE, and the beam uses LISE in every variation. SRIM's tables differ from LISE's by up to 13% in dE/dx, by an amount that depends on Z and energy. They are computed for a 2.6% lower gas density (1.752 × 10⁻⁴ against 1.7985 × 10⁻⁴ g/cm³).
 
-| variation | Δ correct (pp) | Δ mean dZ within 2 (Z) | Δ off ≥ 3 (pp) |
-|---|---|---|---|
-| SRIM data, LISE fit | −3.0 ± 1.1 | +0.602 ± 0.011 | +1.2 ± 0.3 |
-| LISE data, SRIM fit | +4.5 ± 1.1 | −0.553 ± 0.010 | +0.2 ± 0.1 |
-| SRIM data, SRIM fit | +5.1 ± 0.7 | +0.007 ± 0.009 | −0.2 ± 0.2 |
-| LISE dE/dx × 0.95 | +1.1 ± 0.5 | −0.014 ± 0.006 | +0.2 ± 0.2 |
-| LISE dE/dx × 0.98 | −0.1 ± 0.4 | −0.001 ± 0.005 | +0.1 ± 0.2 |
-| LISE dE/dx × 1.02 | −0.2 ± 0.4 | +0.004 ± 0.005 | −0.1 ± 0.2 |
-| LISE dE/dx × 1.05 | −0.4 ± 0.5 | +0.013 ± 0.006 | −0.2 ± 0.2 |
+| variation | Δ correct (pp) | Δ mean dZ within 2 (Z) | Δ mean dZ of all fits (Z) | Δ off ≥ 3 (pp) |
+|---|---|---|---|---|
+| SRIM data, LISE fit | −3.0 ± 1.1 | +0.602 ± 0.011 | +0.657 ± 0.027 | +1.2 ± 0.3 |
+| LISE data, SRIM fit | +4.5 ± 1.1 | −0.553 ± 0.010 | −0.555 ± 0.026 | +0.2 ± 0.1 |
+| SRIM data, SRIM fit | +5.1 ± 0.7 | +0.007 ± 0.009 | +0.041 ± 0.027 | −0.2 ± 0.2 |
+| LISE dE/dx × 0.95 | +1.1 ± 0.5 | −0.014 ± 0.006 | +0.000 ± 0.028 | +0.2 ± 0.2 |
+| LISE dE/dx × 0.98 | −0.1 ± 0.4 | −0.001 ± 0.005 | +0.028 ± 0.023 | +0.1 ± 0.2 |
+| LISE dE/dx × 1.02 | −0.2 ± 0.4 | +0.004 ± 0.005 | +0.038 ± 0.026 | −0.1 ± 0.2 |
+| LISE dE/dx × 1.05 | −0.4 ± 0.5 | +0.013 ± 0.006 | +0.047 ± 0.023 | −0.2 ± 0.2 |
 
 The folding angle changes by at most 0.003°. It comes from the Y-pattern, which the stopping power does not move.
 
@@ -241,16 +241,16 @@ The two means differ where a variation adds fits off by 3 or more. Those fits co
 
 The fit assumes the total kinetic energy (TKE) of Viola systematics and the mass number A = round(204 Z / 85) for each fragment. It takes the fragment directions and the vertex from the Y-pattern and infers the beam velocity from the folding angle. Each variation changes one property of the reaction in the pseudo-data only: the TKE (probe C2), the fragments' mass numbers (C3), or the beam's spot and direction (C5). The fit keeps its assumptions. The changes against the baseline:
 
-| variation of the pseudo-data | Δ correct (pp) | Δ mean dZ within 2 (Z) | Δ off ≥ 3 (pp) | Δ folding angle (deg) |
-|---|---|---|---|---|
-| TKE × 0.98 | +0.5 ± 0.5 | −0.023 ± 0.006 | −0.3 ± 0.2 | −0.300 ± 0.002 |
-| TKE × 1.02 | −0.8 ± 0.5 | +0.021 ± 0.006 | −0.3 ± 0.2 | +0.300 ± 0.002 |
+| variation of the pseudo-data | Δ correct (pp) | Δ mean dZ within 2 (Z) | Δ mean dZ of all fits (Z) | Δ off ≥ 3 (pp) | Δ folding angle (deg) |
+|---|---|---|---|---|---|
+| TKE × 0.98 | +0.5 ± 0.5 | −0.023 ± 0.006 | +0.025 ± 0.026 | −0.3 ± 0.2 | −0.300 ± 0.002 |
+| TKE × 1.02 | −0.8 ± 0.5 | +0.021 ± 0.006 | +0.040 ± 0.025 | −0.3 ± 0.2 | +0.300 ± 0.002 |
 | TKE spread, σ = 8% (compared as independent samples) | −0.3 ± 1.2 | +0.007 ± 0.024 | +0.2 ± 0.3 | +0.01 ± 0.11 |
-| light fragment's A − 1, heavy A + 1 | −0.1 ± 0.5 | −0.007 ± 0.006 | −0.1 ± 0.2 | +0.040 ± 0.002 |
-| light fragment's A + 1, heavy A − 1 | −0.8 ± 0.5 | +0.016 ± 0.006 | −0.2 ± 0.2 | −0.037 ± 0.002 |
-| beam spot spread × 2 | −0.9 ± 0.5 | −0.002 ± 0.007 | +1.2 ± 0.3 | −0.036 ± 0.017 |
-| beam angular spread × 3 (2.2 to 6.6 mrad) | −0.1 ± 0.5 | +0.009 ± 0.007 | +0.1 ± 0.2 | −0.001 ± 0.003 |
-| beam's mean direction tilted 10 mrad in x | −0.7 ± 0.5 | −0.005 ± 0.007 | +0.3 ± 0.2 | −0.006 ± 0.005 |
+| light fragment's A − 1, heavy A + 1 | −0.1 ± 0.5 | −0.007 ± 0.006 | +0.015 ± 0.023 | −0.1 ± 0.2 | +0.040 ± 0.002 |
+| light fragment's A + 1, heavy A − 1 | −0.8 ± 0.5 | +0.016 ± 0.006 | +0.079 ± 0.028 | −0.2 ± 0.2 | −0.037 ± 0.002 |
+| beam spot spread × 2 | −0.9 ± 0.5 | −0.002 ± 0.007 | +0.024 ± 0.038 | +1.2 ± 0.3 | −0.036 ± 0.017 |
+| beam angular spread × 3 (2.2 to 6.6 mrad) | −0.1 ± 0.5 | +0.009 ± 0.007 | +0.036 ± 0.029 | +0.1 ± 0.2 | −0.001 ± 0.003 |
+| beam's mean direction tilted 10 mrad in x | −0.7 ± 0.5 | −0.005 ± 0.007 | +0.007 ± 0.027 | +0.3 ± 0.2 | −0.006 ± 0.005 |
 
 - **A TKE 2% above or below Viola's shifts the mean dZ within 2 by only 0.011 ± 0.002 Z per percent of TKE.** A 2% higher TKE gives the fragments larger velocities in the center-of-mass frame. They leave the beam at larger angles, and the folding angle grows by 0.30°. The fit sets each fragment's lab momentum to the transverse momentum of a 90° decay at Viola's TKE, divided by the sine of the fragment's angle to the beam direction (`AtMCFission::SetMomMagnitude`; the directions come from the Y-pattern). A TKE 2% above Viola's therefore makes the fit's fragment momenta 1% and energies 2% too low, whatever the folding angle. The shift of the mean dZ within 2 is about the same at every decay angle: in 2° bands of θ_CM − 90° it is −0.05 to +0.01 Z for TKE × 0.98 and −0.02 to +0.07 Z for TKE × 1.02. For each true Z, within 4° of 90°, it is −0.11 to +0.09 Z for TKE × 0.98 and −0.03 to +0.08 Z for TKE × 1.02, with errors of 0.02–0.06 Z.
 - **A spread in the TKE with σ = 8% widens the distribution of dZ a little and does not shift it.** Against the baseline, 90.5% of the fits are within one Z instead of 92.8%, and the spread of dZ within 2 is 0.95 Z instead of 0.91 Z. The mean dZ within 2 changes by +0.007 ± 0.024 Z.
