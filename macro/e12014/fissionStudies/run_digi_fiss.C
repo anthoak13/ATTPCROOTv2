@@ -10,6 +10,8 @@ bool reduceFunc(AtRawEvent *evt);
 void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
 {
    RunConfig cfg(cfgFile);
+   // 0: don't write the traces (about 12 MB per event); no later stage reads them
+   saveRawEvent = cfg.GetInt("digi.saveTraces", saveRawEvent);
 
    delete gRandom;
    gRandom = new TRandom3;
@@ -72,7 +74,7 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    ElectronicResponse::AtVectorResponse response(0.32, {respPad->GetADC().begin(), respPad->GetADC().end()}); // us
    response.SetScale(cfg.Get("digi.respScale", 0.01 * 0.75));
    auto pulse = std::make_shared<AtPulseLine>(mapping, response);
-   pulse->SetSaveCharge(saveRawEvent);
+   pulse->SetSaveCharge(true);
    pulse->SetLowGain(cfg.Get("digi.lowGain", 0.19));
    pulse->SetNumIntegrationPoints(cfg.GetInt("digi.intPoints", 1000)); // Points sampling each line's diffusion
    AtPulseTask *pulseTask = new AtPulseTask(pulse);

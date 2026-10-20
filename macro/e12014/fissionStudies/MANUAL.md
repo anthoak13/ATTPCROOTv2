@@ -392,6 +392,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `digi.lowGain` | 0.19 | Gain factor for the zapped low-gain pads. |
 | `digi.respScale` | 0.0075 | Scaling applied to the measured pad response. |
 | `digi.intPoints` | 1000 | Random points sampling the transverse diffusion of each track segment. |
+| `digi.saveTraces` | 1 | 0 leaves the traces (`AtRawEvent`, about 12 MB per event) out of the digi file. No later stage reads them. |
 
 **Fit (`fit.`)**
 
