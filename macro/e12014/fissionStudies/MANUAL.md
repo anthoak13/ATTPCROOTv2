@@ -107,6 +107,7 @@ The studies already in `studies/`:
 - `bench.ini`: one sim and digi, fit with 1, 2, 4 and 8 threads, to time the fit.
 - `speed_ref.ini`, `speed_fit_ref.ini`, `speed_fit_TEMPLATE.ini`: the fitter speed study, see [Benchmarking fitter changes](#benchmarking-fitter-changes).
 - `thread_scan.ini`: fit time against `fit.threads` (1 to 64) on the cluster, on the `speed_ref.ini` digitization.
+- `syst_*.ini`: the fit systematics study, see [syst_study/PLAN.md](syst_study/PLAN.md). `syst_base.ini` is its baseline.
 - `decay_angle.ini` (decay angle 90° vs. 120°), `mass_dev.ini` (`massDev` 0 vs. 2) and `eloss_mismatch.ini` (LISE vs. SRIM sims, fit with LISE): approximate reconstructions of Skyler's earlier studies.
 
 Each section makes one output, named after the section. By default it reads the previous stage's output of the same name; `input` changes that.
@@ -375,9 +376,12 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `sim.zToSimMax` | same as `sim.zToSim` | Above `sim.zToSim`: each event draws the mean fragment Z uniformly from `sim.zToSim`–`sim.zToSimMax`. Every Z in that range needs a table, as for `sim.zToSim`. |
 | `sim.massDev` | 0 | Width of the fragment mass distribution (amu). 0 gives a single split. |
 | `sim.decayAngle` | 90 | CoM decay angle in degrees. 0 samples the measured angular distribution. |
+| `sim.decayAngleMin`, `sim.decayAngleMax` | 0, 0 | If max > min: each event draws the CoM decay angle uniformly between them (degrees), instead of `sim.decayAngle`. |
+| `sim.massUnit` | 931.5 | MeV per mass unit, for the beam and fragment masses. The default is the fit's own value (`AtKinematics`), so both agree. Before this setting the simulation used 939.0. |
 | `sim.step` | 1 | Step along the simulated tracks (mm). |
 | `sim.eloss` | LISE | Energy-loss tables used in simulation: `LISE` or `SRIM`. |
 | `sim.beamEloss` | `sim.eloss` | Energy-loss table type for the beam, when it must differ from the fragments' (there is no SRIM beam table). |
+| `sim.elossScale` | 1 | Multiplies every fragment's dE/dx (not the beam's) in the simulation. LISE tables only. |
 | `sim.beamE`, `sim.beamEsig` | 2700.13, 128.122 | Beam energy and spread at the window (MeV). |
 | `sim.zCutoff` | 300 | Vertices are simulated from the window up to this distance from the pad plane (mm). |
 

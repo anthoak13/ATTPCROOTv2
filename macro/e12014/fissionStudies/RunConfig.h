@@ -180,17 +180,26 @@ std::vector<std::pair<int, int>> IonList(RunConfig &cfg)
    return ions;
 }
 
-/// Load a LISE or SRIM energy-loss table for [Z, A] from TPC_SHARED_INFO/eLoss/.
-std::shared_ptr<AtTools::AtELossTable> LoadELoss(const std::string &type, int Z, int A)
+/**
+ * Load a LISE or SRIM energy-loss table for [Z, A] from TPC_SHARED_INFO/eLoss/, with every dE/dx multiplied
+ * by scale (LISE only). SetDensity scales a table by the ratio of the new to the old density, so the LISE
+ * tables (in MeV/um) are loaded with a nominal density of 1; a negative density keeps those units.
+ */
+std::shared_ptr<AtTools::AtELossTable> LoadELoss(const std::string &type, int Z, int A, double scale = 1)
 {
    auto eloss = std::make_shared<AtTools::AtELossTable>();
    auto file = TString::Format("%s/eLoss/%s/%d_%d.txt", RunConfig::SharedInfo().Data(), type.c_str(), Z, A);
    if (type == "LISE")
-      eloss->LoadLiseTable(file.Data(), A, 0);
+      eloss->LoadLiseTable(file.Data(), A, -1);
    else if (type == "SRIM")
       eloss->LoadSrimTable(file.Data());
    else
       throw std::invalid_argument("Unknown energy-loss table type " + type + " (use LISE or SRIM)");
+   if (scale != 1) {
+      if (type != "LISE")
+         throw std::invalid_argument("A dE/dx scale (sim.elossScale) is only supported for LISE tables");
+      eloss->SetDensity(scale);
+   }
    return eloss;
 }
 

@@ -24,7 +24,7 @@
 namespace fissionSim {
 
 // Define constants and short names for various classes.
-constexpr double AtoE = 939.0;
+double AtoE = 931.5;          // MeV per mass unit, for every mass in the simulation (sim.massUnit)
 constexpr double c = 2.998e8; // In m/s
 using VecXYZE = ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<>>;
 using PxPyPzEVector = ROOT::Math::PxPyPzEVector;
@@ -57,6 +57,9 @@ int zToSimMax = 0;
 float massDev = 6;
 float decayAngle =
    0; // Angle of the fission fragments in the CoM frame in radians. If 0, then sample from the angular distribution
+// If decayAngleMax > decayAngleMin (radians), each event draws the CoM decay angle uniformly between them instead
+float decayAngleMin = 0;
+float decayAngleMax = 0;
 float zCutoff = 300; // Only simulate events from the window to here (dist from pad plane)
 
 // double beamOffsetX = -7.03043e+00;
@@ -272,6 +275,8 @@ bool generateEvent()
    // Generate an array of products in the rest frame using the supplied angle
    // or a random angle if 0 was supplied
    VecPolar decayDir(1, decayAngle, 0); // r, theta, phi
+   if (decayAngleMax > decayAngleMin)
+      decayDir.SetTheta(gRandom->Uniform(decayAngleMin, decayAngleMax));
 
    auto decayMomenta = getProductMomenta(fragA, fragZ, gRandom, decayDir);
 

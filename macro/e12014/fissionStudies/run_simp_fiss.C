@@ -20,6 +20,7 @@ void run_simp_fiss(TString cfgFile = "")
    int zToSim = cfg.GetInt("sim.zToSim", 50);
    int zToSimMax = cfg.GetInt("sim.zToSimMax", zToSim);     // Above zToSim: draw the mean Z per event in [zToSim, this]
    std::string elossType = cfg.GetStr("sim.eloss", "LISE"); // LISE or SRIM
+   double elossScale = cfg.Get("sim.elossScale", 1);        // Scales every fragment's dE/dx (not the beam's)
 
    fissionSim::beamZ = 83;       // Number of protons in the beam
    fissionSim::beamA = 200;      // Number of nucleons in the beam
@@ -33,6 +34,11 @@ void run_simp_fiss(TString cfgFile = "")
    fissionSim::massDev = cfg.Get("sim.massDev", 0);
    // Angle of the decay in CoM frame in degrees (0 means sample the distribution)
    fissionSim::decayAngle = cfg.Get("sim.decayAngle", 90) * TMath::DegToRad();
+   // A range overrides decayAngle: each event draws the CoM decay angle uniformly in [min, max] (degrees)
+   fissionSim::decayAngleMin = cfg.Get("sim.decayAngleMin", 0) * TMath::DegToRad();
+   fissionSim::decayAngleMax = cfg.Get("sim.decayAngleMax", 0) * TMath::DegToRad();
+   // MeV per mass unit for the beam and fragment masses. Default: the fit's (AtKinematics), so both agree
+   fissionSim::AtoE = cfg.Get("sim.massUnit", AtTools::Kinematics::AtoE(1));
    fissionSim::zCutoff = cfg.Get("sim.zCutoff", 300); // Only simulate vertices from the window to here (mm)
 
    fissionSim::beamE = cfg.Get("sim.beamE", 2.70013e+03); // Get from LISE, beam energy in MeV
@@ -83,7 +89,7 @@ void run_simp_fiss(TString cfgFile = "")
    auto ions = IonList(cfg);
    for (auto [Z, A] : ions) {
       std::cout << "Loading " << elossType << " table for [Z,A]: [" << Z << "," << A << "]" << std::endl;
-      sim->AddModel(Z, A, LoadELoss(elossType, Z, A));
+      sim->AddModel(Z, A, LoadELoss(elossType, Z, A, elossScale));
    }
 
    // Load the energy loss table for the beam
