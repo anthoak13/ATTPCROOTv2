@@ -1,6 +1,6 @@
 # Systematic Uncertainties of the Fitted Fragment Z: Results
 
-**Status (2026-10-20).** Done: the prerequisites, the baseline, the energy-loss probes (B1 with SRIM, B2) the space-charge probes (A1–A4) and the kinematics probes (C2, C3, C5) of the [plan](PLAN.md). Running: B1 with Ziegler stopping powers, and the pad, electronics and gas probes. All results are from simulated events (pseudo-data). Decision log: [LOG.md](LOG.md).
+**Status (2026-10-20).** Done: the prerequisites, the baseline, the energy-loss probes (B1 with SRIM, B2), the space-charge probes (A1–A4) and the kinematics probes (C2, C3, C5) of the [plan](PLAN.md). Running: B1 with Ziegler stopping powers, and the pad, electronics and gas probes. All results are from simulated events (pseudo-data). Decision log: [LOG.md](LOG.md).
 
 **Notation.**
 - **dZ** = true Z − fitted Z of the light fragment. A positive dZ means the fit gives the light fragment too low a Z.
@@ -21,8 +21,8 @@
 - **Scaling every fragment's stopping power by the same factor changes the fitted Z little.** Scaling dE/dx by 0.95 to 1.05 changes the mean dZ within 2 by at most 0.014 Z (+0.0025 ± 0.0008 Z per percent). The fit's shared amplitude absorbs the scale. Only for vertices within 200 mm of the window, whose fragments stop in the gas, does the mean dZ within 2 move, by ±0.05 Z for ±5%.
 - **An error in the line charge λ that the space-charge correction assumes shifts the mean dZ within 2 by 0.12 Z per 10⁻⁸ C/m.** The correction and the fit assume λ = 1.54 × 10⁻⁸ C/m. Pseudo-data with half and twice that λ shift the mean dZ within 2 by −0.105 ± 0.008 and +0.165 ± 0.011 Z. The wrong correction changes the folding angle by −0.7° and +1.2°, and the fit infers the beam velocity from the folding angle. When the correction uses the pseudo-data's own λ, it removes the effect of the space charge: the mean dZ within 2 differs from that of pseudo-data without space charge by +0.005 ± 0.006 Z.
 - **How the space charge is distributed along the beam matters; its radial shape and the beam position do not.** The same total charge spread evenly from the pad plane to the window, instead of growing toward the window as the correction assumes, shifts the mean dZ within 2 by +0.146 ± 0.010 Z. Spreading the charge over the 20 mm beam radius, or moving the beam line by 5 mm or onto the simulated beam's mean track, shifts it by at most 0.015 Z. Without any correction, the mean dZ within 2 shifts by +0.095 ± 0.014 Z and 84% of the fits are within one Z, against 93% without space charge.
+- **Errors of plausible size in the reaction's kinematics hardly move the fitted Z.** A total kinetic energy (TKE) 2% above or below Viola systematics shifts the mean dZ within 2 by +0.021 ± 0.006 and −0.023 ± 0.006 Z. A spread around Viola's TKE with σ = 8% shifts it by +0.007 ± 0.024 Z and leaves 2.3 pp fewer fits within one Z. Shifting the light fragment's mass number by ±1 (the heavy fragment's by ∓1) shifts the mean dZ within 2 by at most 0.016 Z. Doubling the beam spot, tripling the beam's angular spread or tilting the beam by 10 mrad shifts it by at most 0.009 Z.
 
-- **The reaction's kinematics, within plausible errors, hardly move the fitted Z.** A total kinetic energy 2% above or below Viola systematics shifts the mean dZ within 2 by +0.021 ± 0.006 and −0.023 ± 0.006 Z; an 8% spread around Viola, by +0.007 ± 0.024 Z, with 2.3 pp fewer fits within one Z. Shifting the light fragment's mass number by ±1 shifts Z by at most 0.016 Z, and doubling the beam spot, tripling the beam's angular spread or tilting it by 10 mrad, by at most 0.009 Z.
 ![The fitted light-fragment Z against the true decay angle](figures/angle.png)
 
 ## The baseline
@@ -164,7 +164,7 @@ The C4 events simulated at 939.0 MeV per mass unit minus the same events simulat
 
 Each variation changes one input of the simulation or the digitization. It either simulates the baseline's 3000 events again with the same seeds, or digitizes the baseline's simulation again. It is fitted with the recommended settings and the baseline's model of the detector and reaction, which uses LISE stopping powers. Where the fit can also take the changed input, a second variation puts it in both the pseudo-data and the fit. Comparing the two separates the effect of the mismatch between pseudo-data and fit from the effect of the changed input itself.
 
-The changes are taken event by event against the baseline's recommended fit; most space-charge variations are compared with a space-charge sample instead (see below). In a changed simulation, at least 98.9% of the events start with the baseline's Z split and decay angle; the rest differ because a changed track causes an event to be redrawn, which shifts the later random draws. The event-by-event pairing therefore holds for nearly every event. The one exception is the sample with a spread in the total kinetic energy: it draws one more random number per event, so its events differ from the baseline's, and it is compared as an independent sample (difference of the two samples' values). Δ mean dZ within 2 is the change in the mean dZ over the events whose fits are within 2 of the true Z in both samples.
+Each change is taken event by event against the baseline's recommended fit. Most space-charge variations are compared with a space-charge sample instead (see below). In each changed simulation, at least 98.9% of the events have the baseline's Z split and decay angle. In the others, a changed track makes the simulation redraw an event, and the redraw shifts every later random draw. Pairing events therefore compares the same reaction in nearly every event. The sample with a spread in the total kinetic energy is the exception. It draws one more random number per event, so its events differ from the baseline's. It is compared as an independent sample: each change is the difference between the two samples' values. For paired samples, Δ mean dZ within 2 is the mean change of dZ over the events whose fits are within 2 of the true Z in both samples; for independent samples, it is the difference of each sample's mean dZ within 2.
 
 ### Stopping-power model and scale (probes B1, B2)
 
@@ -234,23 +234,23 @@ The simulated beam's mean track runs from (−0.31, −9.04) mm at the window to
 
 ### Kinematics of the reaction (probes C2, C3, C5)
 
-The fit assumes the total kinetic energy (TKE) of Viola systematics, the mass number A = round(204 Z / 85) for each fragment, and takes the fragment directions and the vertex from the Y-pattern. It infers the beam velocity from the folding angle. Each variation changes one of these in the pseudo-data only. Against the baseline:
+The fit assumes the total kinetic energy (TKE) of Viola systematics and the mass number A = round(204 Z / 85) for each fragment. It takes the fragment directions and the vertex from the Y-pattern and infers the beam velocity from the folding angle. Each variation changes one property of the reaction in the pseudo-data only: the TKE (probe C2), the fragments' mass numbers (C3), or the beam's spot and direction (C5). The fit keeps its assumptions. The changes against the baseline:
 
 | variation of the pseudo-data | Δ correct (pp) | Δ mean dZ within 2 (Z) | Δ off ≥ 3 (pp) | Δ folding angle (deg) |
 |---|---|---|---|---|
 | TKE × 0.98 | +0.5 ± 0.5 | −0.023 ± 0.006 | −0.3 ± 0.2 | −0.300 ± 0.002 |
 | TKE × 1.02 | −0.8 ± 0.5 | +0.021 ± 0.006 | −0.3 ± 0.2 | +0.300 ± 0.002 |
-| TKE spread, σ = 8% (independent samples) | −0.3 ± 1.2 | +0.007 ± 0.024 | +0.2 ± 0.3 | +0.01 ± 0.11 |
+| TKE spread, σ = 8% (compared as independent samples) | −0.3 ± 1.2 | +0.007 ± 0.024 | +0.2 ± 0.3 | +0.01 ± 0.11 |
 | light fragment's A − 1, heavy A + 1 | −0.1 ± 0.5 | −0.007 ± 0.006 | −0.1 ± 0.2 | +0.040 ± 0.002 |
 | light fragment's A + 1, heavy A − 1 | −0.8 ± 0.5 | +0.016 ± 0.006 | −0.2 ± 0.2 | −0.037 ± 0.002 |
 | beam spot spread × 2 | −0.9 ± 0.5 | −0.002 ± 0.007 | +1.2 ± 0.3 | −0.036 ± 0.017 |
 | beam angular spread × 3 (2.2 to 6.6 mrad) | −0.1 ± 0.5 | +0.009 ± 0.007 | +0.1 ± 0.2 | −0.001 ± 0.003 |
 | beam's mean direction tilted 10 mrad in x | −0.7 ± 0.5 | −0.005 ± 0.007 | +0.3 ± 0.2 | −0.006 ± 0.005 |
 
-- **A different TKE moves the folding angle and the fragment energies in ways that nearly cancel.** A 2% higher TKE gives the fragments larger velocities in the center-of-mass frame, so they leave the beam at larger angles and the folding angle grows by 0.30°. The fit, which assumes Viola's TKE, reads the larger folding angle as a slower beam. The two errors in the fragments' lab energies partly cancel, and the mean dZ within 2 moves by only 0.011 ± 0.002 Z per percent of TKE. The shift is about the same at every decay angle: in 2° bands of θ_CM − 90° it is −0.05 to +0.01 Z for TKE × 0.98 and −0.02 to +0.07 Z for TKE × 1.02. By true Z within 4° of 90°, it ranges from −0.11 to +0.09 Z for TKE × 0.98 and from −0.03 to +0.08 Z for TKE × 1.02, with errors of 0.02–0.06 Z.
-- **A spread in the TKE widens the distribution of dZ a little and does not shift it.** With σ = 8% of the TKE, 90.5% of the fits are within one Z against 92.8%, the standard deviation of dZ within 2 is 0.95 against 0.91 Z, and the mean dZ within 2 is unchanged within ±0.024 Z.
-- **A mass number one unit away from the fit's assumption shifts the mean dZ within 2 by at most 0.016 Z.** In 2° bands of θ_CM − 90° and by true Z near 90°, the shifts stay within 0.09 Z.
-- **The beam spot and direction do not matter.** The fit takes the directions and vertex from the Y-pattern of each event, not from an assumed beam. Doubling the beam spot adds 1.2 ± 0.3 pp of fits off by 3 or more.
+- **A TKE 2% above or below Viola's shifts the mean dZ within 2 by only 0.011 ± 0.002 Z per percent of TKE.** A 2% higher TKE gives the fragments larger velocities in the center-of-mass frame. They leave the beam at larger angles, and the folding angle grows by 0.30°. The fit sets each fragment's lab momentum to the transverse momentum of a 90° decay at Viola's TKE, divided by the sine of the fragment's measured lab angle. A TKE 2% above Viola's therefore makes the fit's fragment momenta 1% and energies 2% too low, whatever the folding angle. The shift of the mean dZ within 2 is about the same at every decay angle: in 2° bands of θ_CM − 90° it is −0.05 to +0.01 Z for TKE × 0.98 and −0.02 to +0.07 Z for TKE × 1.02. For each true Z, within 4° of 90°, it is −0.11 to +0.09 Z for TKE × 0.98 and −0.03 to +0.08 Z for TKE × 1.02, with errors of 0.02–0.06 Z.
+- **A spread in the TKE with σ = 8% widens the distribution of dZ a little and does not shift it.** Against the baseline, 90.5% of the fits are within one Z instead of 92.8%, and the spread of dZ within 2 is 0.95 Z instead of 0.91 Z. The mean dZ within 2 changes by +0.007 ± 0.024 Z.
+- **Mass numbers one unit away from the fit's assumption shift the mean dZ within 2 by at most 0.016 Z.** In each 2° band of θ_CM − 90°, and for each true Z within 4° of 90°, the shift is at most 0.09 Z.
+- **The beam spot and direction shift the mean dZ within 2 by at most 0.009 Z.** The fit takes the fragment directions and the vertex from each event's Y-pattern, not from an assumed beam. Doubling the beam spot adds 1.2 ± 0.3 pp of fits off by 3 or more.
 
 ## Code and tools (branch `fit-syst`)
 
