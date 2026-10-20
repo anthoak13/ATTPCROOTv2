@@ -181,25 +181,31 @@ std::vector<std::pair<int, int>> IonList(RunConfig &cfg)
 }
 
 /**
- * Load a LISE or SRIM energy-loss table for [Z, A] from TPC_SHARED_INFO/eLoss/, with every dE/dx multiplied
- * by scale (LISE only). A LISE table gives dE/dx against energy per nucleon, so massA != 0 loads it for the same Z
- * with mass massA. SetDensity scales a table by the ratio of the new to the old density, so the LISE
- * tables (in MeV/um) are loaded with a nominal density of 1; a negative density keeps those units.
+ * Load an energy-loss table for [Z, A] from TPC_SHARED_INFO/eLoss/, with every dE/dx multiplied by scale (LISE
+ * files only). type is
+ *   LISE:    the LISE file's ATIMA 1.2 column (column 2), the nominal model
+ *   ZIEGLER: the same file's Ziegler column (column 1, "H-base", the stopping powers of older SRIM versions)
+ *   SRIM:    the SRIM file
+ * A LISE file gives dE/dx against energy per nucleon, so massA != 0 loads it for the same Z with mass massA.
+ * SetDensity scales a table by the ratio of the new to the old density, so the LISE tables (in MeV/um) are loaded
+ * with a nominal density of 1; a negative density keeps those units.
  */
 std::shared_ptr<AtTools::AtELossTable> LoadELoss(const std::string &type, int Z, int A, double scale = 1, int massA = 0)
 {
+   bool liseFile = type == "LISE" || type == "ZIEGLER";
    auto eloss = std::make_shared<AtTools::AtELossTable>();
-   auto file = TString::Format("%s/eLoss/%s/%d_%d.txt", RunConfig::SharedInfo().Data(), type.c_str(), Z, A);
-   if (massA != 0 && massA != A && type != "LISE")
+   auto file =
+      TString::Format("%s/eLoss/%s/%d_%d.txt", RunConfig::SharedInfo().Data(), liseFile ? "LISE" : type.c_str(), Z, A);
+   if (massA != 0 && massA != A && !liseFile)
       throw std::invalid_argument("Only a LISE table can be used for another mass (sim.massShift)");
-   if (type == "LISE")
-      eloss->LoadLiseTable(file.Data(), massA ? massA : A, -1); // Table in MeV/u: the same Z at another mass
+   if (liseFile) // Table in MeV/u: the same Z at another mass
+      eloss->LoadLiseTable(file.Data(), massA ? massA : A, -1, type == "LISE" ? 2 : 1);
    else if (type == "SRIM")
       eloss->LoadSrimTable(file.Data());
    else
-      throw std::invalid_argument("Unknown energy-loss table type " + type + " (use LISE or SRIM)");
+      throw std::invalid_argument("Unknown energy-loss table type " + type + " (use LISE, ZIEGLER or SRIM)");
    if (scale != 1) {
-      if (type != "LISE")
+      if (!liseFile)
          throw std::invalid_argument("A dE/dx scale (sim.elossScale) is only supported for LISE tables");
       eloss->SetDensity(scale);
    }

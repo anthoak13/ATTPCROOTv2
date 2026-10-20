@@ -14,7 +14,7 @@ void run_fit(TString cfgFile = "")
 
    TString InputDataFile = cfg.File("input", "digi");
    TString OutputDataFile = cfg.File("output", "fit");
-   // LISE or SRIM. Defaults to the simulation's table; set it explicitly only to study a mismatch.
+   // LISE, ZIEGLER or SRIM. Defaults to the simulation's table; set it explicitly only to study a mismatch.
    std::string elossType = cfg.GetStr("fit.eloss", cfg.GetStr("sim.eloss", "LISE"));
 
    std::cout << "Opening: " << InputDataFile << std::endl;

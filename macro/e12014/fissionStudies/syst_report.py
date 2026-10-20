@@ -27,7 +27,8 @@ binomial.
 --by chooses the cells (repeatable): all (the whole sample, default), z (true light-fragment Z), angle
 (|90 - true decay angle in the CoM frame|, --angle-edges), side (true angle - 90, signed: below 0 the heavy
 fragment goes forward in the CoM frame), depth (true vertex depth from the window, --depth-edges), z-angle
-(true Z within each angle band). --csv DIR writes one CSV per sample and binning.
+(true Z within each angle band), z-near (true Z, events within --near degrees of 90 only). --csv DIR writes one
+CSV per sample and binning; --changes-csv FILE appends the changes against --base, one row per sample and cell.
 
 The events come from dump_fit.C through speed_report.py: run with the ATTPC environment loaded, after
 fission.py STUDY --remote NAME --fetch.
@@ -153,6 +154,9 @@ def binning(kind, args):
     if kind == "depth":
         edges = args.depth_edges
         return [(f"{lo:g}-{hi:g}", lambda e, lo=lo, hi=hi: lo <= e["vz"] < hi) for lo, hi in zip(edges, edges[1:])]
+    if kind == "z-near":
+        return [(f"Z={z} near", lambda e, z=z: e["zlight"] == z and abs(90 - e["thcm"]) < args.near)
+                for z in range(31, 43)]
     if kind == "z-angle":
         edges = args.angle_edges
         return [(f"{lo:g}-{hi:g} Z={z}", lambda e, lo=lo, hi=hi, z=z: lo <= abs(90 - e["thcm"]) < hi and e["zlight"] == z)
@@ -185,7 +189,9 @@ def main():
     parser.add_argument("--by", action="append", default=[], help="all, z, angle, side, depth, z-angle (repeatable)")
     parser.add_argument("--angle-edges", type=float, nargs="+", default=[0, 2, 4, 6, 8, 10])
     parser.add_argument("--depth-edges", type=float, nargs="+", default=[0, 100, 200, 300, 400, 500, 600, 700])
+    parser.add_argument("--near", type=float, default=4, help="z-near: events within this many degrees of 90")
     parser.add_argument("--csv", metavar="DIR", help="write one CSV per sample and binning here")
+    parser.add_argument("--changes-csv", metavar="FILE", help="append the changes against --base to this CSV")
     parser.add_argument("--dump-dir", metavar="DIR", help="keep dump_fit.C's per-event CSVs here")
     parser.add_argument("--reuse", action="store_true", help="with --dump-dir: use dumps already there")
     args = parser.parse_args()
@@ -225,7 +231,7 @@ def main():
         print_table(header, rows)
         if base:
             print(f"\nChange against {base['label']}\n")
-            crows = []
+            crows, cvals = [], []
             for s in samples:
                 if s is base:
                     continue
@@ -236,11 +242,22 @@ def main():
                     if not bst["n"]:
                         continue
                     c = change(s, base, bkeys, True) if paired else unpaired(st, bst)
+                    cvals.append(((s["label"], s["study"], label), c))
                     crows.append([s["label"], label, "paired" if paired else "independent", str(c["pairs"] or st["used"]),
                                   pm(c["correct"], "+.1f", 100), pm(c["bias"], "+.3f"), pm(c["off3"], "+.1f", 100),
                                   pm(c["fold"], "+.3f")])
             print_table(["sample", "cell", "comparison", "events", "Δ correct (pp)", "Δ bias (Z)", "Δ off ≥ 3 (pp)",
                          "Δ fold (deg)"], crows)
+            if args.changes_csv:
+                new = not os.path.exists(args.changes_csv)
+                with open(args.changes_csv, "a", newline="") as out:
+                    w = csv.writer(out)
+                    if new:
+                        w.writerow(["base", "sample", "study", "binning", "cell", "pairs", "correct", "correct_err",
+                                    "bias", "bias_err", "off3", "off3_err", "fold", "fold_err"])
+                    for row, c in cvals:
+                        w.writerow([base["label"], row[0], row[1], kind, row[2], c["pairs"], *c["correct"], *c["bias"],
+                                    *c["off3"], *c["fold"]])
         if args.csv:
             for s in samples:
                 path = os.path.join(args.csv, f"{s['study']}-{s['label'].split(':')[-1]}-{kind}.csv")

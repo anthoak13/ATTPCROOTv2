@@ -19,7 +19,7 @@ void run_simp_fiss(TString cfgFile = "")
    auto [Zcn, Acn] = CompoundNucleus(cfg); // The nucleus that fissions
    int zToSim = cfg.GetInt("sim.zToSim", 50);
    int zToSimMax = cfg.GetInt("sim.zToSimMax", zToSim);     // Above zToSim: draw the mean Z per event in [zToSim, this]
-   std::string elossType = cfg.GetStr("sim.eloss", "LISE"); // LISE or SRIM
+   std::string elossType = cfg.GetStr("sim.eloss", "LISE"); // LISE, ZIEGLER or SRIM
    double elossScale = cfg.Get("sim.elossScale", 1);        // Scales every fragment's dE/dx (not the beam's)
 
    fissionSim::beamZ = 83;       // Number of protons in the beam

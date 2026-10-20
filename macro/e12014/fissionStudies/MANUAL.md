@@ -379,7 +379,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `sim.decayAngleMin`, `sim.decayAngleMax` | 0, 0 | If max > min: each event draws the CoM decay angle uniformly between them (degrees), instead of `sim.decayAngle`. |
 | `sim.massUnit` | 931.5 | MeV per mass unit, for the beam and fragment masses. The default is the fit's own value (`AtKinematics`), so both agree. Before this setting the simulation used 939.0. |
 | `sim.step` | 1 | Step along the simulated tracks (mm). |
-| `sim.eloss` | LISE | Energy-loss tables used in simulation: `LISE` or `SRIM`. |
+| `sim.eloss` | LISE | Energy-loss tables used in simulation: `LISE` (the LISE files' ATIMA 1.2 column), `ZIEGLER` (the same files' Ziegler column) or `SRIM`. |
 | `sim.beamEloss` | `sim.eloss` | Energy-loss table type for the beam, when it must differ from the fragments' (there is no SRIM beam table). |
 | `sim.elossScale` | 1 | Multiplies every fragment's dE/dx (not the beam's) in the simulation. LISE tables only. |
 | `sim.beamE`, `sim.beamEsig` | 2700.13, 128.122 | Beam energy and spread at the window (MeV). |
