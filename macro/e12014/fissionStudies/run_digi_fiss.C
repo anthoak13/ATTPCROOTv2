@@ -57,6 +57,13 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
 
    InhibitZapPads(*mapping); // Same pads the fit skips
 
+   // Dead pads: no charge. The fit is not told; it compares charge only on pads with a hit.
+   auto deadPads = DeadPads(*mapping, cfg.GetStr("digi.deadAsAd", ""), cfg.GetInt("digi.deadPads", 0),
+                            cfg.GetInt("digi.deadPatch", 1), cfg.GetInt("digi.deadSeed", 1));
+   for (int pad : deadPads)
+      mapping->InhibitPad(pad, AtMap::InhibitType::kTotal);
+   std::cout << "Made " << deadPads.size() << " pads dead" << std::endl;
+
    // __ AT digi tasks___________________________________
    // AtClusterizeTask *clusterizer = new AtClusterizeTask(std::make_shared<AtClusterize>());
    AtClusterizeTask *clusterizer = new AtClusterizeTask(std::make_shared<AtClusterizeLine>());
@@ -77,6 +84,7 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    pulse->SetSaveCharge(true);
    pulse->SetLowGain(cfg.Get("digi.lowGain", 0.19));
    pulse->SetNumIntegrationPoints(cfg.GetInt("digi.intPoints", 1000)); // Points sampling each line's diffusion
+   pulse->SetNoiseSigma(cfg.Get("digi.noise", 0)); // Gaussian noise added to every sample of a trace (ADC)
    AtPulseTask *pulseTask = new AtPulseTask(pulse);
    pulseTask->SetPersistence(saveRawEvent);
 
@@ -139,11 +147,64 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    fissionTask->SetOutBranch("AtFissionEvent");
    fissionTask->SetPersistance(true);
 
+   /**** Gas of the pseudo-data ****/
+   // The electrons drift and diffuse with these, but the PSA (and the fit) reconstruct with the parameter file's.
+   // So the parameters are changed only while the clusterizer and the pulse initialize.
+   double vdScale = cfg.Get("digi.driftVelocityScale", 1);
+   double coefTScale = cfg.Get("digi.coefTScale", 1);
+   double coefLScale = cfg.Get("digi.coefLScale", 1);
+   auto gasPar = [] {
+      return dynamic_cast<AtDigiPar *>(FairRunAna::Instance()->GetRuntimeDb()->getContainer("AtDigiPar"));
+   };
+   AtMacroTask *gasTask = new AtMacroTask();
+   gasTask->AddInitFunction([=] {
+      auto par = gasPar();
+      par->SetDriftVelocity(par->GetDriftVelocity() * vdScale);
+      par->SetCoefDiffusionTrans(par->GetCoefDiffusionTrans() * coefTScale);
+      par->SetCoefDiffusionLong(par->GetCoefDiffusionLong() * coefLScale);
+   });
+   AtMacroTask *gasRestoreTask = new AtMacroTask();
+   gasRestoreTask->AddInitFunction([=] {
+      auto par = gasPar();
+      par->SetDriftVelocity(par->GetDriftVelocity() / vdScale);
+      par->SetCoefDiffusionTrans(par->GetCoefDiffusionTrans() / coefTScale);
+      par->SetCoefDiffusionLong(par->GetCoefDiffusionLong() / coefLScale);
+   });
+
+   /**** Pad gains ****/
+   // Each pad's trace is multiplied by a fixed factor (pad, AGET and AsAd spreads), before the PSA.
+   double padGainSigma = cfg.Get("digi.padGainSigma", 0);
+   double agetGainSigma = cfg.Get("digi.agetGainSigma", 0);
+   double asadGainSigma = cfg.Get("digi.asadGainSigma", 0);
+   int gainSeed = cfg.GetInt("digi.gainSeed", 1);
+   AtMacroTask *gainTask = nullptr;
+   if (padGainSigma > 0 || agetGainSigma > 0 || asadGainSigma > 0) {
+      auto gains = std::make_shared<std::unordered_map<int, double>>(
+         PadGains(*mapping, padGainSigma, agetGainSigma, asadGainSigma, gainSeed));
+      auto rawArray = std::make_shared<TClonesArray *>(nullptr);
+      gainTask = new AtMacroTask();
+      gainTask->AddInitFunction([rawArray] {
+         *rawArray = dynamic_cast<TClonesArray *>(FairRootManager::Instance()->GetObject("AtRawEvent"));
+      });
+      gainTask->AddFunction([rawArray, gains] {
+         auto event = dynamic_cast<AtRawEvent *>((*rawArray)->At(0));
+         for (auto &pad : event->GetPads()) {
+            double gain = gains->at(pad->GetPadNum());
+            for (int i = 0; i < (int)pad->GetADC().size(); ++i)
+               pad->SetADC(i, pad->GetADC(i) * gain);
+         }
+      });
+   }
+
    AtMacroTask *infoTask = new AtMacroTask();
    infoTask->AddInitFunction([] { digiSimInfo::Forward("Info", "SimInfo"); });
 
+   fRun->AddTask(gasTask);     // The pseudo-data's gas, for the clusterizer and the pulse
    fRun->AddTask(clusterizer); // This task turns energy into electons in the gas
    fRun->AddTask(pulseTask);   // This task turns electorns in gas to traces on the pad plabe
+   fRun->AddTask(gasRestoreTask);
+   if (gainTask)
+      fRun->AddTask(gainTask); // Pad gains
    fRun->AddTask(psaTask);     // This turns waveforms on pads into hits in space
    if (scTask)
       fRun->AddTask(scTask);   // Space charge correction

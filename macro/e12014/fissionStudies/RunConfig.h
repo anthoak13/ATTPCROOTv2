@@ -182,15 +182,18 @@ std::vector<std::pair<int, int>> IonList(RunConfig &cfg)
 
 /**
  * Load a LISE or SRIM energy-loss table for [Z, A] from TPC_SHARED_INFO/eLoss/, with every dE/dx multiplied
- * by scale (LISE only). SetDensity scales a table by the ratio of the new to the old density, so the LISE
+ * by scale (LISE only). A LISE table gives dE/dx against energy per nucleon, so massA != 0 loads it for the same Z
+ * with mass massA. SetDensity scales a table by the ratio of the new to the old density, so the LISE
  * tables (in MeV/um) are loaded with a nominal density of 1; a negative density keeps those units.
  */
-std::shared_ptr<AtTools::AtELossTable> LoadELoss(const std::string &type, int Z, int A, double scale = 1)
+std::shared_ptr<AtTools::AtELossTable> LoadELoss(const std::string &type, int Z, int A, double scale = 1, int massA = 0)
 {
    auto eloss = std::make_shared<AtTools::AtELossTable>();
    auto file = TString::Format("%s/eLoss/%s/%d_%d.txt", RunConfig::SharedInfo().Data(), type.c_str(), Z, A);
+   if (massA != 0 && massA != A && type != "LISE")
+      throw std::invalid_argument("Only a LISE table can be used for another mass (sim.massShift)");
    if (type == "LISE")
-      eloss->LoadLiseTable(file.Data(), A, -1);
+      eloss->LoadLiseTable(file.Data(), massA ? massA : A, -1); // Table in MeV/u: the same Z at another mass
    else if (type == "SRIM")
       eloss->LoadSrimTable(file.Data());
    else
@@ -321,6 +324,90 @@ void InhibitZapPads(AtMap &map)
    if (nPads == 0)
       throw std::runtime_error(std::string("No pads in smart zap file ") + path.Data());
    std::cout << "Marked " << nPads << " pads low-gain from " << path << std::endl;
+}
+
+/**** Pads and electronics of the digitization ****/
+
+/**
+ * Pads to make dead (no charge) in the digitization, in order:
+ *   deadAsAd: "<cobo> <asad>", every channel of that AsAd (the experimental data lack CoBo 2, AsAd 3), or ""
+ *   nRandom:  further pads, drawn from the small pads that are not already inhibited (the pads the fit can use)
+ *   patch:    the further pads come in patches of this many neighbors: each patch is a random pad and the
+ *             patch - 1 candidate pads nearest it. 1 scatters them.
+ * The draw uses its own generator (seed), so the pattern is fixed for a sample and leaves the events' draws alone.
+ */
+std::vector<int> DeadPads(AtMap &map, const std::string &deadAsAd, int nRandom, int patch, int seed)
+{
+   std::vector<int> dead;
+   if (!deadAsAd.empty()) {
+      std::istringstream ss(deadAsAd);
+      int cobo, asad;
+      if (!(ss >> cobo >> asad))
+         throw std::invalid_argument("digi.deadAsAd needs \"<cobo> <asad>\", got: " + deadAsAd);
+      for (int aget = 0; aget < 4; ++aget)
+         for (int ch = 0; ch < 68; ++ch) {
+            int pad = map.GetPadNum({cobo, asad, aget, ch});
+            if (pad >= 0)
+               dead.push_back(pad);
+         }
+   }
+   std::set<int> deadSet(dead.begin(), dead.end());
+
+   std::vector<int> candidates;
+   for (int pad = 0; pad < (int)map.GetNumPads(); ++pad)
+      if (map.GetPadSize(pad) == 0 && map.IsInhibited(pad) == AtMap::InhibitType::kNone && !deadSet.count(pad))
+         candidates.push_back(pad);
+   if (nRandom > (int)candidates.size())
+      throw std::invalid_argument("digi.deadPads (" + std::to_string(nRandom) + ") is more than the " +
+                                  std::to_string(candidates.size()) + " pads it is drawn from");
+
+   std::vector<ROOT::Math::XYPoint> centers;
+   for (int pad : candidates)
+      centers.push_back(map.CalcPadCenter(pad));
+
+   TRandom3 rand(seed);
+   int nAdded = 0;
+   while (nAdded < nRandom) {
+      int iCenter = rand.Integer(candidates.size());
+      if (deadSet.count(candidates[iCenter]))
+         continue;
+      std::vector<std::pair<double, int>> byDist;
+      for (size_t i = 0; i < candidates.size(); ++i)
+         if (!deadSet.count(candidates[i]))
+            byDist.emplace_back((centers[i] - centers[iCenter]).Mag2(), candidates[i]);
+      int n = std::min({patch, nRandom - nAdded, (int)byDist.size()});
+      std::partial_sort(byDist.begin(), byDist.begin() + n, byDist.end());
+      for (int i = 0; i < n; ++i) {
+         dead.push_back(byDist[i].second);
+         deadSet.insert(byDist[i].second);
+      }
+      nAdded += n;
+   }
+   return dead;
+}
+
+/**
+ * Gain factor of every pad: 1 + Gaus(0, padSigma) for the pad, times the same for its AGET (agetSigma) and its
+ * AsAd (asadSigma). Fixed for a sample: drawn from their own generator (seed). Factors are kept above 0.
+ */
+std::unordered_map<int, double> PadGains(AtMap &map, double padSigma, double agetSigma, double asadSigma, int seed)
+{
+   TRandom3 rand(seed);
+   auto draw = [&rand](double sigma) { return sigma > 0 ? std::max(0., 1 + rand.Gaus(0, sigma)) : 1.; };
+   std::map<std::tuple<int, int, int>, double> aget;
+   std::map<std::pair<int, int>, double> asad;
+   std::unordered_map<int, double> gains;
+   for (int pad = 0; pad < (int)map.GetNumPads(); ++pad) {
+      auto ref = map.GetPadRef(pad);
+      auto agetKey = std::make_tuple(ref.cobo, ref.asad, ref.aget);
+      auto asadKey = std::make_pair(ref.cobo, ref.asad);
+      if (!aget.count(agetKey))
+         aget[agetKey] = draw(agetSigma);
+      if (!asad.count(asadKey))
+         asad[asadKey] = draw(asadSigma);
+      gains[pad] = draw(padSigma) * aget[agetKey] * asad[asadKey];
+   }
+   return gains;
 }
 
 #endif

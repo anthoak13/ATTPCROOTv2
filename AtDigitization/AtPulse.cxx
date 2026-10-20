@@ -123,7 +123,7 @@ void AtPulse::ApplyNoise(AtPad &pad)
    for (int i = 0; i < fNumTbs; ++i) {
       pad.SetADC(i, pad.GetADC(i) * fGETGain);
       if (fNoiseSigma != 0)
-         pad.SetADC(i, pad.GetADC(i) * AtTools::Random::Get().Gaus(0, fNoiseSigma));
+         pad.SetADC(i, pad.GetADC(i) + AtTools::Random::Get().Gaus(0, fNoiseSigma));
    }
 }
 

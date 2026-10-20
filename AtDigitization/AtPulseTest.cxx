@@ -1,7 +1,9 @@
 #include "AtPulse.h"
 
 #include "AtDummyMap.h"
+#include "AtPad.h"
 #include "AtPulseLine.h"
+#include "AtRandom.h"
 
 #include <Math/SpecFuncMathCore.h> // for tgamma
 #include <TF1.h>
@@ -70,6 +72,17 @@ public:
    GainPulse(double gain) : AtPulse(std::make_shared<AtDummyMap>()) { fGain = gain; }
    using AtPulse::GetGain;
    using AtPulse::MeanPolyaGain;
+};
+
+/// Exposes the noise of AtPulse.
+class NoisePulse : public AtPulse {
+public:
+   NoisePulse(double getGain, double noise) : AtPulse(std::make_shared<AtDummyMap>())
+   {
+      fGETGain = getGain;
+      SetNoiseSigma(noise);
+   }
+   using AtPulse::ApplyNoise;
 };
 
 /// Exposes the unit pattern of AtPulseLine.
@@ -180,4 +193,30 @@ TEST(AtPulseLineTest, UnitPatternMatchesRandomPoints)
 
    for (int i = 1; i < n; ++i)
       EXPECT_GT(std::hypot(x[i], y[i]), std::hypot(x[i - 1], y[i - 1])) << "i = " << i;
+}
+
+// The noise is added to the amplified signal: the mean of each sample stays signal * GET gain, its spread is sigma
+TEST(AtPulseTest, NoiseIsAdditive)
+{
+   constexpr double signal = 3, getGain = 2, sigma = 5;
+   NoisePulse pulse(getGain, sigma);
+   AtTools::Random::ScopedGenerator scoped(17);
+
+   double sum = 0, sum2 = 0;
+   int n = 0;
+   for (int iPad = 0; iPad < 200; ++iPad) {
+      AtPad pad(iPad);
+      for (int i = 0; i < 512; ++i)
+         pad.SetADC(i, signal);
+      pulse.ApplyNoise(pad);
+      for (int i = 0; i < 512; ++i) {
+         double diff = pad.GetADC(i) - signal * getGain;
+         sum += diff;
+         sum2 += diff * diff;
+         ++n;
+      }
+   }
+   double mean = sum / n;
+   EXPECT_NEAR(mean, 0, 5 * sigma / std::sqrt(n));
+   EXPECT_NEAR(std::sqrt(sum2 / n - mean * mean), sigma, 0.02 * sigma);
 }

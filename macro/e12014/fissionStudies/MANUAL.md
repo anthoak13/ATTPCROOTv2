@@ -384,6 +384,11 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `sim.elossScale` | 1 | Multiplies every fragment's dE/dx (not the beam's) in the simulation. LISE tables only. |
 | `sim.beamE`, `sim.beamEsig` | 2700.13, 128.122 | Beam energy and spread at the window (MeV). |
 | `sim.zCutoff` | 300 | Vertices are simulated from the window up to this distance from the pad plane (mm). |
+| `sim.tkeScale` | 1 | Multiplies the fragments' total kinetic energy (Viola systematics; the fit always assumes Viola). |
+| `sim.tkeSigma` | 0 | Relative spread of the total kinetic energy: each event's is scaled by 1 + Gaus(0, `sim.tkeSigma`). |
+| `sim.massShift` | 0 | Added to the light fragment's A and taken from the heavy one's (the fit assumes A = round(`zcn`-scaled Z)). Each Z then also needs the shifted masses' tables, which are the same LISE table at the other mass (LISE tables only). |
+| `sim.beamSpotScale`, `sim.beamDivScale` | 1, 1 | Multiply the spread of the beam's position at the window and of its direction. |
+| `sim.beamTiltX`, `sim.beamTiltY` | 0, 0 | Added to the beam's mean direction (mrad). |
 | `sim.spaceCharge` | none | The beam's space charge, which moves each track's charge toward the beam as it drifts: `none`, `line` (`AtLineChargeModel`, the model the experimental data are corrected with), `lineNumeric` (the same charge with the electrons' drift integrated step by step, so they stop at the 20 mm beam radius), `uniform` (the charge spread uniformly over the beam radius) or `constant` (the same total charge spread evenly in z). Every model but `constant` grows linearly from the pad plane to the window. |
 | `sim.lambda` | 1.54e-8 | Line charge at the window (C/m). The experimental data range from about 5e-9 to 2e-8. |
 | `sim.scBeam` | `0 -6 10 0` | The beam line the space charge is centered on: x and y (mm) at the pad plane, then at the window. The default is the line the experimental data are corrected about. |
@@ -395,6 +400,14 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `digi.lowGain` | 0.19 | Gain factor for the zapped low-gain pads. |
 | `digi.respScale` | 0.0075 | Scaling applied to the measured pad response. |
 | `digi.intPoints` | 1000 | Random points sampling the transverse diffusion of each track segment. |
+| `digi.noise` | 0 | Gaussian noise (sigma, ADC) added to every sample of every trace with charge. |
+| `digi.deadAsAd` | "" | `<cobo> <asad>`: every pad of that AsAd is dead (no charge). The experimental data lack `2 3`. The fit is not told. |
+| `digi.deadPads` | 0 | Further dead pads, drawn from the small pads that are not inhibited (the pads the fit can use). |
+| `digi.deadPatch` | 1 | The further dead pads come in patches of this many neighboring pads (1 scatters them). |
+| `digi.deadSeed` | 1 | Seed of the dead-pad draw, which has its own generator: the pattern is fixed for a sample. |
+| `digi.padGainSigma`, `digi.agetGainSigma`, `digi.asadGainSigma` | 0 | Each pad's trace is multiplied by a fixed factor: 1 + Gaus(0, sigma) for the pad, times one for its AGET and one for its AsAd. |
+| `digi.gainSeed` | 1 | Seed of the gain factors (own generator). |
+| `digi.driftVelocityScale`, `digi.coefTScale`, `digi.coefLScale` | 1 | Multiply the drift velocity and the transverse and longitudinal diffusion coefficients the electrons drift with. The PSA and the fit keep the parameter file's values. The window stays at `TBEntrance`. |
 | `digi.scCorrection` | 0 | 1 corrects the hits for space charge as the experimental data are (`AtSpaceChargeCorrectionTask`, line-charge model), finds the Y-pattern in the corrected hits, and passes `digi.lambda` to the fit in the `AtFissionEvent`. |
 | `digi.lambda` | 1.54e-8 | Line charge (C/m) of the correction, with `digi.scCorrection`. |
 | `digi.scBeam` | `0 -6 10 0` | Beam line of the correction, as `sim.scBeam`. The fit's space charge uses it too. |

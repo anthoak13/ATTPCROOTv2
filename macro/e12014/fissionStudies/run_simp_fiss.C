@@ -41,6 +41,18 @@ void run_simp_fiss(TString cfgFile = "")
    fissionSim::AtoE = cfg.Get("sim.massUnit", AtTools::Kinematics::AtoE(1));
    fissionSim::zCutoff = cfg.Get("sim.zCutoff", 300); // Only simulate vertices from the window to here (mm)
 
+   fissionSim::tkeScale = cfg.Get("sim.tkeScale", 1);      // Multiplies Viola's total kinetic energy
+   fissionSim::tkeSigma = cfg.Get("sim.tkeSigma", 0);      // Relative spread of the total kinetic energy
+   fissionSim::massShift = cfg.GetInt("sim.massShift", 0); // Added to the light fragment's A, taken from the heavy's
+
+   // The beam at the window: spread of its position and direction, and the mean direction's tilt (mrad)
+   fissionSim::beamOffsetXsig *= cfg.Get("sim.beamSpotScale", 1);
+   fissionSim::beamOffsetYsig *= cfg.Get("sim.beamSpotScale", 1);
+   fissionSim::beamDirXsig *= cfg.Get("sim.beamDivScale", 1);
+   fissionSim::beamDirYsig *= cfg.Get("sim.beamDivScale", 1);
+   fissionSim::beamDirX += cfg.Get("sim.beamTiltX", 0) / 1000;
+   fissionSim::beamDirY += cfg.Get("sim.beamTiltY", 0) / 1000;
+
    fissionSim::beamE = cfg.Get("sim.beamE", 2.70013e+03); // Get from LISE, beam energy in MeV
    // Spread in the beam energy from strageling. Either set to 0 or maintain the same ratio with beamE
    fissionSim::beamEsig = cfg.Get("sim.beamEsig", 1.28122e+02);
@@ -89,6 +101,9 @@ void run_simp_fiss(TString cfgFile = "")
    for (auto [Z, A] : ions) {
       std::cout << "Loading " << elossType << " table for [Z,A]: [" << Z << "," << A << "]" << std::endl;
       sim->AddModel(Z, A, LoadELoss(elossType, Z, A, elossScale));
+      if (fissionSim::massShift != 0) // Each Z at its shifted masses (light fragment +shift, heavy -shift)
+         for (int dA : {fissionSim::massShift, -fissionSim::massShift})
+            sim->AddModel(Z, A + dA, LoadELoss(elossType, Z, A, elossScale, A + dA));
    }
 
    // Load the energy loss table for the beam

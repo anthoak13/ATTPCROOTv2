@@ -63,6 +63,11 @@ public:
    Int_t GetPeakingTime() const { return fPeakingTime; };
 
    // Setters
+   /// Override the gas properties read from the parameter file, e.g. to digitize with a different gas than the
+   /// reconstruction assumes. Takes effect for tasks initialized afterwards.
+   void SetDriftVelocity(Double_t v) { fDriftVelocity = v; }
+   void SetCoefDiffusionTrans(Double_t coef) { fCoefT = coef; }
+   void SetCoefDiffusionLong(Double_t coef) { fCoefL = coef; }
    virtual void putParams(FairParamList *paramList) override;
    virtual Bool_t getParams(FairParamList *paramList) override;
    // Main methods

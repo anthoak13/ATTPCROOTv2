@@ -61,6 +61,9 @@ float decayAngle =
 float decayAngleMin = 0;
 float decayAngleMax = 0;
 float zCutoff = 300; // Only simulate events from the window to here (dist from pad plane)
+double tkeScale = 1; // Multiplies the total kinetic energy from Viola systematics
+double tkeSigma = 0; // Relative spread of the total kinetic energy (each event scaled by 1 + Gaus(0, tkeSigma))
+int massShift = 0;   // Added to the light fragment's A and taken from the heavy one's (charge polarization)
 
 // double beamOffsetX = -7.03043e+00;
 // double beamOffsetXsig = 1.62047e+01;
@@ -274,6 +277,9 @@ bool generateEvent()
 
    // Generate an array of products in the rest frame using the supplied angle
    // or a random angle if 0 was supplied
+   fragA[1] += massShift; // fragA[1] is the light fragment
+   fragA[0] -= massShift;
+
    VecPolar decayDir(1, decayAngle, 0); // r, theta, phi
    if (decayAngleMax > decayAngleMin)
       decayDir.SetTheta(gRandom->Uniform(decayAngleMin, decayAngleMax));
@@ -385,7 +391,9 @@ std::vector<VecXYZE> getProductMomenta(const vecInt &fragA, const vecInt &fragZ,
       m[i] = fragA.at(i) * AtoE;
 
    // Get the KE of the products
-   double kE = violaEn(A, Z);
+   double kE = violaEn(A, Z) * tkeScale;
+   if (tkeSigma > 0)
+      kE *= 1 + rand->Gaus(0, tkeSigma);
 
    double gamma1 = AtTools::Kinematics::GetGamma(kE, m[0], m[1]);
    double p1 = AtTools::Kinematics::GetRelMom(gamma1, m[0]);

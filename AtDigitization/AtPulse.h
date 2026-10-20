@@ -45,7 +45,7 @@ protected:
    ResponseFunc fResponse; ///< Response function of the electronics
    bool fUseFastGain = true;
    bool fGainFluctuations = true; ///< Randomly sample the fluctuations around the mean gain on a pad.
-   double fNoiseSigma = 0;        ///< Sigma of random gaussian noise to apply to trace
+   double fNoiseSigma = 0;        ///< Sigma of gaussian noise added to each sample of a trace (ADC)
    bool fSaveCharge = true;
    bool fDoConvolution{true}; ///< Whether we should set the ADC by doing a convolution of the charge with the response
 

@@ -67,7 +67,6 @@ Ordered by impact on current runs.
 
 3. **Parameter spreads shrink from event to event.** `TruncateSpace` is never undone, and `AtMCFission::SetParamDistributions` resets only `Z`'s spread. Today this affects only `thBeam`, which is sampled but unused (`GetBeamDirSample` is never called), and the uniform spreads, which are 0. It will matter as soon as a macro sets nonzero spreads.
 4. **Smaller defects.**
-   - `AtPulse::ApplyNoise` multiplies the signal by `Gaus(0, fNoiseSigma)` instead of adding noise; with nonzero noise the signal is scrambled.
    - `AtClusterize::getNumberOfElectronsGenerated` returns a `Gaus` draw as `uint64_t`; a negative draw is undefined.
    - `RecenterParamDistributions` dereferences `fResults.begin()` on an empty set when `fNumIter == 0`.
 
