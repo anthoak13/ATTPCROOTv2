@@ -166,7 +166,7 @@ The changes are taken event by event against the baseline's fit (`rec`). A chang
 
 ### Energy loss (B1, B2)
 
-The fit gets Z from the shape of each fragment's charge along its track (its Bragg curve), with one amplitude shared by both fragments, so it depends on how the stopping power changes with the fragment's energy and Z. Neither model is preferred: the difference between them is the systematic. The baseline uses LISE: the ATIMA 1.2 column of the LISE files (`LISE` in the code), which ATIMA itself (CATIMA) reproduces to 0.1% in dE/dx. SRIM's tables differ from LISE's by up to 13% in dE/dx, in a way that depends on Z and energy, and were made for a 2.6% lower gas density (1.752 × 10⁻⁴ against 1.7985 × 10⁻⁴ g/cm³). The beam always uses LISE.
+The fit gets Z from the shape of each fragment's charge along its track (its Bragg curve), with one amplitude shared by both fragments, so it depends on how the stopping power changes with the fragment's energy and Z. LISE here is the ATIMA 1.2 column of the LISE files (`LISE` in the code), which CATIMA reproduces to 0.1% in dE/dx. The baseline uses LISE, and the beam always does. SRIM's tables differ from LISE's by up to 13% in dE/dx, in a way that depends on Z and energy, and are for a 2.6% lower gas density (1.752 × 10⁻⁴ against 1.7985 × 10⁻⁴ g/cm³).
 
 | variation | Δ correct (pp) | Δ bias (Z) | Δ off ≥ 3 (pp) |
 |---|---|---|---|
@@ -189,7 +189,7 @@ The folding angle changes by at most 0.003°: it comes from the Y-pattern, which
   | LISE data, SRIM fit | −0.98 | −0.89 | −0.69 | −0.64 | −0.61 | −0.61 | −0.59 | −0.37 | −0.40 | −0.58 | −0.36 | −0.13 |
 
   Errors 0.04–0.06 Z. In a near-symmetric split both fragments have similar Z and velocity, so a change of model changes both Bragg curves alike, and the fit, which keeps the two Z adding up to 85, moves little. In an asymmetric split the two fragments sample different parts of the stopping-power curves.
-- **A scale common to both fragments is absorbed by the amplitude.** A uniform change of dE/dx changes the size of every charge curve, which the shared amplitude takes up, and the length of each track. The length is seen only where a fragment stops in the gas: for vertices within 200 mm of the window, dE/dx × 0.95 and × 1.05 shift the bias by −0.05 ± 0.02 and +0.05 ± 0.02 Z; for deeper vertices, at most 0.04 Z. A shift of the scale between the models is therefore not a concern; the difference in shape is.
+- **A scale common to both fragments is absorbed by the amplitude.** A uniform change of dE/dx changes the size of every charge curve, which the shared amplitude takes up, and the length of each track. The length is seen only where a fragment stops in the gas: for vertices within 200 mm of the window, dE/dx × 0.95 and × 1.05 shift the bias by −0.05 ± 0.02 and +0.05 ± 0.02 Z; for deeper vertices, at most 0.04 Z. A difference in overall scale between two models therefore moves Z little; a difference in how dE/dx changes with energy and Z moves it.
 
 ## Code and tools (branch `fit-syst`)
 
@@ -199,11 +199,11 @@ The folding angle changes by at most 0.003°: it comes from the Y-pattern, which
   - `sim.elossScale` multiplies every fragment's dE/dx (LISE tables only).
 
   See the [settings reference](../MANUAL.md#settings-reference).
-- **`AtELossTable::SetDensity`** no longer crashes on a table without range variance, which includes every LISE table. Unit test `SetDensityWithoutRangeVariance`.
+- **`AtELossTable::SetDensity`** works on tables without range variance, which includes every LISE table. Unit test `SetDensityWithoutRangeVariance`.
 - **`dump_fit.C`** also writes the true vertex depth, the folding angle and vertex depth of the Y-pattern, and the fitted beam energy. Events without a fit are written with their true angle and depth.
 - **`syst_report.py`**: the measures above, grouped by true Z, angle band, side of 90°, depth band, or true Z within an angle band, and the changes against a chosen base fit.
 - **`syst_study/make_figures.py`**: the figure. **`truth_*.csv`**: `sim_truth.C`'s output for every simulation.
-- **The local copy of the beam's LISE table (`83_200.txt`)** was the ¹⁴²Pr table and has been replaced with the cluster's ²⁰⁰Bi table (prerequisite P6 of the plan). Every other shared input agrees with the cluster's copy.
+- **The local shared inputs** (`TPC_SHARED_INFO`) agree with the cluster's, including the beam's LISE table `83_200.txt` (²⁰⁰Bi, prerequisite P6 of the plan).
 
 ## Appendix: machines and paths
 
