@@ -15,14 +15,15 @@ constexpr double eps = 8.85418782E-12; // SI
 constexpr double pi = 3.14159265358979;
 } // namespace
 
-/// Units are m
+/// Change in rho^2 [mm^2] of charge drifting dZ [mm] to the pad plane
 double AtLineChargeModel::getDist2(double dZ)
 {
-   double prefactor = fLambda / pi / eps / fField;
-   double dist2 = prefactor * dZ;
+   double prefactor = fLambda / pi / eps / fField; // m
+   double dZm = dZ / 1000.;
+   double dist2 = prefactor * dZm; // m^2
    if (fLinearField)
-      dist2 *= dZ / 2 / fDetectorLength;
-   return dist2;
+      dist2 *= dZm / 2 / fDetectorLength;
+   return dist2 * 1e6;
 }
 
 XYZPoint AtLineChargeModel::CorrectSpaceCharge(const XYZPoint &directInputPosition)
@@ -48,11 +49,9 @@ XYZPoint AtLineChargeModel::ApplySpaceCharge(const XYZPoint &reverseInputPositio
 
    auto delZ = input.Z();         // in mm
    double dist2 = getDist2(delZ); // in mm;
-   double newRho = sqrt(input.Rho() * input.Rho() - dist2);
-   if (newRho < 0) {
-      // std::cout << "newRho is " << newRho << std::endl;
-      newRho = 0;
-   }
+   // Charge closer to the line than the distortion reaches ends on the line (sqrt of a negative is NaN)
+   double newRho2 = input.Rho() * input.Rho() - dist2;
+   double newRho = newRho2 > 0 ? sqrt(newRho2) : 0;
 
    XYZPoint output(RZPPoint(newRho, input.Z(), input.Phi()));
    return UndoOffsetForBeam(output);

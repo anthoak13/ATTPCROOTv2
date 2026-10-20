@@ -384,6 +384,9 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `sim.elossScale` | 1 | Multiplies every fragment's dE/dx (not the beam's) in the simulation. LISE tables only. |
 | `sim.beamE`, `sim.beamEsig` | 2700.13, 128.122 | Beam energy and spread at the window (MeV). |
 | `sim.zCutoff` | 300 | Vertices are simulated from the window up to this distance from the pad plane (mm). |
+| `sim.spaceCharge` | none | The beam's space charge, which moves each track's charge toward the beam as it drifts: `none`, `line` (`AtLineChargeModel`, the model the experimental data are corrected with), `lineNumeric` (the same charge with the electrons' drift integrated step by step, so they stop at the 20 mm beam radius), `uniform` (the charge spread uniformly over the beam radius) or `constant` (the same total charge spread evenly in z). Every model but `constant` grows linearly from the pad plane to the window. |
+| `sim.lambda` | 1.54e-8 | Line charge at the window (C/m). The experimental data range from about 5e-9 to 2e-8. |
+| `sim.scBeam` | `0 -6 10 0` | The beam line the space charge is centered on: x and y (mm) at the pad plane, then at the window. The default is the line the experimental data are corrected about. |
 
 **Digitization (`digi.`)**
 
@@ -392,6 +395,9 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `digi.lowGain` | 0.19 | Gain factor for the zapped low-gain pads. |
 | `digi.respScale` | 0.0075 | Scaling applied to the measured pad response. |
 | `digi.intPoints` | 1000 | Random points sampling the transverse diffusion of each track segment. |
+| `digi.scCorrection` | 0 | 1 corrects the hits for space charge as the experimental data are (`AtSpaceChargeCorrectionTask`, line-charge model), finds the Y-pattern in the corrected hits, and passes `digi.lambda` to the fit in the `AtFissionEvent`. |
+| `digi.lambda` | 1.54e-8 | Line charge (C/m) of the correction, with `digi.scCorrection`. |
+| `digi.scBeam` | `0 -6 10 0` | Beam line of the correction, as `sim.scBeam`. The fit's space charge uses it too. |
 | `digi.saveTraces` | 1 | 0 leaves the traces (`AtRawEvent`, about 12 MB per event) out of the digi file. No later stage reads them. |
 
 **Fit (`fit.`)**
@@ -408,6 +414,7 @@ Defaults are the macros' built-in values, except where marked as the driver's.
 | `fit.zSigma` | 3 | Longitudinal diffusion range (in sigma) integrated for each track segment in the fit's digitization. |
 | `fit.fixedPattern` | 0 | 1 samples the diffusion with a fixed pattern of `fit.intPoints` points (one random rotation per segment) instead of random points: less noise per point. |
 | `fit.gainFluct` | 1 | 0 gives every deposit the mean gain, with no random gain fluctuations, in the fit's digitization. |
+| `fit.spaceCharge` | 0 | 1 simulates the line-charge model in the fit, about `digi.scBeam`, with each event's lambda (`digi.lambda`, or 0 without `digi.scCorrection`), as the experimental-data fit does. |
 | `fit.timeEvent` | 0 | 1 logs the Monte Carlo time per round (`Simulation of N events took X ms`), for benchmarking. |
 | `fit.saveEvents` | 10 | Simulated events (and their traces) saved per event in the fit file, best chi2 first. 0 saves none, which speeds up the main thread at high thread counts. |
 

@@ -102,16 +102,22 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    psaTask->SetOutputBranch("AtEvent");
    psaTask->SetPersistence(true);
 
-   /**** Space charge correction ****/
-   // auto SCModel = std::make_unique<AtRadialChargeModel>(E12014SC(nsclRunNum));
-   auto SCModel = std::make_unique<AtLineChargeModel>();
-   // SCModel->SetLambda(E12014SC(nsclRunNum).GetLambda());
-   //  SCModel->SetStepSize(0.1);
-   // SCModel->SetBeamLocation({-7, 10, 0}, {0, 7, 1000});
-   SCModel->SetBeamLocation({0, -6, 0}, {10, 0, 1000});
-   auto scTask = new AtSpaceChargeCorrectionTask(std::move(SCModel));
-   scTask->SetInputBranch("AtEvent");
-   scTask->SetOutputBranch("AtEventCorr");
+   /**** Space charge correction, as on the experimental data ****/
+   // The hits are corrected with the line-charge model; the Y-pattern is found in the corrected hits, and the fit
+   // is told lambda through the AtFissionEvent. Without the correction, lambda is 0.
+   bool scCorrection = cfg.GetInt("digi.scCorrection", 0);
+   double scLambda = scCorrection ? cfg.Get("digi.lambda", kNominalLambda) : 0;
+   AtSpaceChargeCorrectionTask *scTask = nullptr;
+   if (scCorrection) {
+      auto scModel = std::make_unique<AtLineChargeModel>();
+      scModel->SetLambda(scLambda);
+      scModel->SetBeamRadius(kBeamRadius / 1000); // m
+      SetScBeam(*scModel, cfg.GetStr("digi.scBeam", "0 -6 10 0"));
+      scTask = new AtSpaceChargeCorrectionTask(std::move(scModel));
+      scTask->SetInputBranch("AtEvent");
+      scTask->SetOutputBranch("AtEventCorr");
+      scTask->SetPersistence(false);
+   }
 
    /**** Y-pattern fit ****/
    auto method = std::make_unique<SampleConsensus::AtSampleConsensus>(
@@ -123,11 +129,11 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    method->SetFitPattern(true);
    auto sacTask = new AtSampleConsensusTask(std::move(method));
    sacTask->SetPersistence(false);
-   sacTask->SetInputBranch("AtEvent");
+   sacTask->SetInputBranch(scCorrection ? "AtEventCorr" : "AtEvent");
    sacTask->SetOutputBranch("AtPatternEvent");
 
    /******** Create fission task ********/
-   AtFissionTask *fissionTask = new AtFissionTask(0);
+   AtFissionTask *fissionTask = new AtFissionTask(scLambda);
    fissionTask->SetUncorrectedEventBranch("AtEvent");
    fissionTask->SetPatternBranch("AtPatternEvent");
    fissionTask->SetOutBranch("AtFissionEvent");
@@ -139,6 +145,8 @@ void run_digi_fiss(TString cfgFile = "", bool saveRawEvent = true)
    fRun->AddTask(clusterizer); // This task turns energy into electons in the gas
    fRun->AddTask(pulseTask);   // This task turns electorns in gas to traces on the pad plabe
    fRun->AddTask(psaTask);     // This turns waveforms on pads into hits in space
+   if (scTask)
+      fRun->AddTask(scTask);   // Space charge correction
    fRun->AddTask(sacTask);     // This task finds the fisison Y-pattern
    fRun->AddTask(fissionTask); // This task assembles the fisison events
    fRun->AddTask(infoTask);    //

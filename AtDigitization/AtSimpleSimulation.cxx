@@ -191,7 +191,7 @@ void AtSimpleSimulation::AddHit(double ELoss, const XYZPoint &pos, const PxPyPzE
       auto posExpCoord = pos;
       posExpCoord.SetZ(1000 - pos.Z());
       auto corrExpCoord = fSCModel->ApplySpaceCharge(posExpCoord);
-      corrExpCoord.SetZ(1000 + corrExpCoord.Z());
+      corrExpCoord.SetZ(1000 - corrExpCoord.Z());
       mcPoint->SetPosition(corrExpCoord / 10.);
    } else
       mcPoint->SetPosition(pos / 10.);       // Convert to cm

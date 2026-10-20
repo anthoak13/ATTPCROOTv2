@@ -78,12 +78,11 @@ void run_simp_fiss(TString cfgFile = "")
    auto sim = std::make_unique<AtSimpleSimulation>(GeoDataPath.Data());
    sim->SetDistanceStep(cfg.Get("sim.step", 1)); // Units for distance are mm
 
-   // Create the space charge model that we use to deform the tracks
-   auto scModel = std::make_shared<AtLineChargeModel>();
-   scModel->SetBeamLocation({0, -6, 0},
-                            {10, 0, 1000}); // Set the beam location at two points (entrace window and pad plane)
-   scModel->SetBeamRadius(5);
-   // sim->SetSpaceChargeModel(scModel); // Add the space charge model to the simulation
+   // Space charge of the beam, which moves the charge of every track toward the beam as it drifts
+   auto scType = cfg.GetStr("sim.spaceCharge", "none"); // none, line, lineNumeric, uniform or constant
+   if (scType != "none")
+      sim->SetSpaceChargeModel(
+         MakeSpaceCharge(scType, cfg.Get("sim.lambda", kNominalLambda), cfg.GetStr("sim.scBeam", "0 -6 10 0")));
 
    // Create and load energy loss models
    auto ions = IonList(cfg);

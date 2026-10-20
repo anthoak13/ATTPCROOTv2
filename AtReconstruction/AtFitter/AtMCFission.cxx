@@ -104,6 +104,22 @@ void AtMCFission::SetParamDistributions(const AtPatternEvent &event)
    fParameters["Z"]->SetMean(fCN.Z / 2);
    fParameters["Z"]->SetSpread(3);
    fParameters["lambda"]->SetMean(fissionEvent.GetLambda());
+   SetSpaceCharge(fissionEvent.GetLambda());
+}
+
+/**
+ * Set the magnitude of the simulation's space charge. The model is shared by every thread, so this is done once
+ * per event, before the threads start; lambda has no spread within an event.
+ */
+void AtMCFission::SetSpaceCharge(double lambda)
+{
+   auto radialModel = dynamic_cast<AtRadialChargeModel *>(fSim->GetSpaceChargeModel().get());
+   auto lineModel = dynamic_cast<AtLineChargeModel *>(fSim->GetSpaceChargeModel().get());
+   if (radialModel)
+      radialModel->SetDistortionField(AtLineChargeZDep(lambda));
+   else if (lineModel)
+      lineModel->SetLambda(lambda);
+   LOG(debug) << "Setting Lambda: " << lambda;
 }
 
 double AtMCFission::ObjectiveFunction(const AtBaseEvent &expEvent, int SimEventID, AtMCResult &definition)
@@ -569,20 +585,7 @@ TClonesArray AtMCFission::SimulateEvent(AtMCResult &def)
    using namespace AtTools::Kinematics;
    fSim->NewEvent();
 
-   // Set the magnitude of the space charge for this event.
-   // TODO: Make this thread safe (deep copy simplesim, and once per thread)
-   auto radialModel = dynamic_cast<AtRadialChargeModel *>(fSim->GetSpaceChargeModel().get());
-   auto lineModel = dynamic_cast<AtLineChargeModel *>(fSim->GetSpaceChargeModel().get());
-   if (radialModel) {
-      radialModel->SetDistortionField(AtLineChargeZDep(def.fParameters["lambda"]));
-      LOG(debug) << "Setting Lambda: " << def.fParameters["lambda"];
-
-   } else if (lineModel) {
-      lineModel->SetLambda(def.fParameters["lambda"]);
-      LOG(debug) << "Setting Lambda: " << def.fParameters["lambda"];
-
-   } else
-      LOG(debug) << "No space charge to apply.";
+   // The space charge's magnitude was set for this event by SetParamDistributions
 
    auto vertex = GetVertex(def);
    LOG(debug) << "Setting vertex: " << vertex;

@@ -203,6 +203,91 @@ std::shared_ptr<AtTools::AtELossTable> LoadELoss(const std::string &type, int Z,
    return eloss;
 }
 
+/**** Space charge ****/
+
+/// Nominal line charge of the beam (C/m), the experimental data's range is about 5e-9 to 2e-8
+constexpr double kNominalLambda = 1.54e-8;
+/// Radius (mm) inside which the line-charge models leave charge where it is
+constexpr double kBeamRadius = 20;
+
+/**
+ * The beam line the space-charge models are centered on, from "<x> <y> at the pad plane, <x> <y> at the window"
+ * (mm). The models measure z from the pad plane, so their first point (SetBeamLocation's "window") is at the pad
+ * plane. The default is the line the experimental-data analysis assumes.
+ */
+void SetScBeam(AtSpaceChargeModel &model, const std::string &line)
+{
+   std::istringstream ss(line);
+   double xPad, yPad, xWin, yWin;
+   if (!(ss >> xPad >> yPad >> xWin >> yWin))
+      throw std::invalid_argument("A space-charge beam line needs four numbers, got: " + line);
+   model.SetBeamLocation({xPad, yPad, 0}, {xWin, yWin, 1000});
+}
+
+/**
+ * Radial field (V/cm) at rho and z (cm, z from the pad plane) of a beam line charge that grows linearly from 0 at
+ * the pad plane to lambda (C/m) at the window, 1 m away (the positive ions drift toward the window).
+ *   kLine:     all the charge on the line, no field inside kBeamRadius (as AtLineChargeZDep)
+ *   kUniform:  the charge spread uniformly over kBeamRadius, so the field grows linearly inside it
+ *   kConstant: as kLine, with the same total charge spread evenly in z (lambda / 2 everywhere)
+ */
+struct ScField {
+   enum Shape { kLine, kUniform, kConstant };
+   double lambda;
+   Shape shape;
+
+   double operator()(double rho, double z) const
+   {
+      constexpr double eps2pi = 2 * 3.14159265358979 * 8.85418782E-12; // SI
+      double rBeam = kBeamRadius / 1000;                               // m
+      rho /= 100.;                                                     // cm to m
+      z /= 100.;
+      double lambdaZ = shape == kConstant ? lambda / 2 : lambda * z / 1.;
+      double field = 0;
+      if (rho > rBeam)
+         field = lambdaZ / eps2pi / rho;
+      else if (shape == kUniform)
+         field = lambdaZ / eps2pi * rho / rBeam / rBeam;
+      return field / 100.; // V/m to V/cm
+   }
+};
+
+/**
+ * The space-charge model named by type, with magnitude lambda (C/m) about the beam line `beam` (see SetScBeam):
+ *   none:        nullptr
+ *   line:        AtLineChargeModel, the model the experimental data are corrected with
+ *   lineNumeric: the same charge, the electrons' drift integrated step by step (AtRadialChargeModel)
+ *   uniform, constant: AtRadialChargeModel with the ScField of that shape
+ */
+std::shared_ptr<AtSpaceChargeModel> MakeSpaceCharge(const std::string &type, double lambda, const std::string &beam)
+{
+   std::shared_ptr<AtSpaceChargeModel> model;
+   if (type == "none")
+      return nullptr;
+   if (type == "line") {
+      auto line = std::make_shared<AtLineChargeModel>();
+      line->SetLambda(lambda);
+      line->SetBeamRadius(kBeamRadius / 1000); // m
+      model = line;
+   } else {
+      ScField::Shape shape;
+      if (type == "lineNumeric")
+         shape = ScField::kLine;
+      else if (type == "uniform")
+         shape = ScField::kUniform;
+      else if (type == "constant")
+         shape = ScField::kConstant;
+      else
+         throw std::invalid_argument("Unknown space-charge model " + type +
+                                     " (use none, line, lineNumeric, uniform or constant)");
+      auto radial = std::make_shared<AtRadialChargeModel>(ScField{lambda, shape});
+      radial->SetStepSize(0.1); // us
+      model = radial;
+   }
+   SetScBeam(*model, beam);
+   return model;
+}
+
 /**
  * Mark the pads in TPC_SHARED_INFO/e12014_zap.csv low-gain. Digi turns them down by digi.lowGain, and
  * the fit's charge objective skips them (as it does on real data), so both stages must use the same list.

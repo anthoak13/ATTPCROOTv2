@@ -47,6 +47,7 @@ generate_target_and_root_library(${LIBRARY_NAME}
 
 set(TEST_SRCS
   AtPulseTest.cxx
+  AtSimpleSimulationTest.cxx
 )
 
 attpcroot_generate_tests(${LIBRARY_NAME}Tests

@@ -22,7 +22,7 @@ One iteration (`RunIterRange`) samples parameters, simulates (`AtMCFission::Simu
 | `AtPulse` / `AtPulseLine` | Yes | Cloned into `fThPulse` in `Init`. Each clone builds a `TH1F` per pad. The response function is shared read-only. |
 | `AtMap` | Shared | One map for the whole fit. Its pad lookup grid (`AtPadLookup`, 60 MB for the AT-TPC plane) is built once under `std::call_once` on the first lookup and is read-only afterwards. |
 | `AtSimpleSimulation` | Shared | Point array and track ID are `static thread_local`. Geometry lookups (`GetVolume`) go through `fGeoMutex`. |
-| Space-charge model | Shared, **written per iteration** | See bug 3. |
+| Space-charge model | Shared | Its magnitude (`lambda`) is set once per event in `AtMCFission::SetParamDistributions`, before the threads start. |
 | `AtClusterize` / `AtClusterizeLine` | Shared | `thread_local` statics. |
 | PSA | Shared | `AtPSADeconvFit` uses a `thread_local` histogram. Its fits build a `Minuit2Minimizer` directly (`AtTools::MinimizeMigrad`), not through `ROOT::Fit::Fitter`, whose minimizer creation takes ROOT's global lock. The FFT objects and response cache in `AtPSADeconv` are shared and unprotected; with `SetUseSimCharge(true)` they are never used, and a pad without a `"Q"` augment is a fatal error (the pulse needs `SetSaveCharge(true)`). |
 | Hit functions | — | `AtE12014` and `AtPSADeconvFit` evaluate hits with `AtTools::GaussianTB`, a plain struct; there are no per-thread `TF1`s. |
@@ -65,14 +65,9 @@ Ordered by impact on current runs.
 
 ### Dormant or latent
 
-3. **The shared space-charge model is mutated per iteration.**
-   - `AtMCFission::SimulateEvent` (existing TODO) calls `SetDistortionField` or `SetLambda` on the simulation's single model while other threads apply it.
-   - `SetDistortionField` reassigns a `std::function` (`AtRadialChargeModel`) that other threads may be calling, which is undefined behaviour and can crash, not just use a stale lambda.
-   - Dormant only because current macros leave space charge off; it becomes a race as soon as it is enabled.
-4. **Parameter spreads shrink from event to event.** `TruncateSpace` is never undone, and `AtMCFission::SetParamDistributions` resets only `Z`'s spread. Today this affects only `thBeam`, which is sampled but unused (`GetBeamDirSample` is never called), and the uniform spreads, which are 0. It will matter as soon as a macro sets nonzero spreads.
-5. **Smaller defects.**
+3. **Parameter spreads shrink from event to event.** `TruncateSpace` is never undone, and `AtMCFission::SetParamDistributions` resets only `Z`'s spread. Today this affects only `thBeam`, which is sampled but unused (`GetBeamDirSample` is never called), and the uniform spreads, which are 0. It will matter as soon as a macro sets nonzero spreads.
+4. **Smaller defects.**
    - `AtPulse::ApplyNoise` multiplies the signal by `Gaus(0, fNoiseSigma)` instead of adding noise; with nonzero noise the signal is scrambled.
    - `AtClusterize::getNumberOfElectronsGenerated` returns a `Gaus` draw as `uint64_t`; a negative draw is undefined.
    - `RecenterParamDistributions` dereferences `fResults.begin()` on an empty set when `fNumIter == 0`.
 
-Until bug 3 is fixed, enable space charge only with `SetNumThreads(1)`.
