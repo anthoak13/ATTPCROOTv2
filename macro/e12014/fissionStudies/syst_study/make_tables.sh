@@ -36,3 +36,7 @@ run "$BASE" $(for n in asad asad_s02 asad_s05 asad_s10 asad_p02 asad_p05 asad_p1
 for n in asad asad_s02 asad_s05 asad_s10 asad_p02 asad_p05 asad_p10; do
    run "$BASE" "hpc-syst3:syst_pads:$n@${T}_base-base.csv" --base rec --by dead --dead syst_study/dead/$n.csv
 done
+
+# Gas (A5, A6): digitizations of the baseline's simulation, so paired
+run "$BASE" $(for n in vdm2 vdm1 vdp1 vdp2 tm20 tp20 lm20 lp20; do echo "hpc-syst3:syst_gas:$n@${T}_base-base.csv"; done) \
+   --base rec $BY
