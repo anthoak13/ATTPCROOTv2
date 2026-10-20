@@ -3,9 +3,9 @@
 
     ./summary.py changes.csv --base rec --samples s095 s098 s102 s105 [--names "0.95" ...]
 
-Prints, for the given samples against --base: the changes over the whole sample (all), the change in bias per
+Prints, for the given samples against --base: the changes over the whole sample (all), the change in the mean dZ within 2 per
 2 deg band of the signed decay angle (side), and per true light-fragment Z within 4 deg of 90 (z-near). With
---slope X1 X2 ...: the input value of each sample, and the slope of the whole-sample bias change against it,
+--slope X1 X2 ...: the input value of each sample, and the slope of the whole-sample change in the mean dZ within 2 against it,
 weighted by the errors (the base is at --slope-base).
 """
 import argparse
@@ -48,7 +48,7 @@ def main():
     rows = load(a.csv, a.base)
     names = a.names or a.samples
 
-    table(["sample", "Δ correct (pp)", "Δ bias (Z)", "Δ off ≥ 3 (pp)", "Δ folding angle (deg)"],
+    table(["sample", "Δ correct (pp)", "Δ mean dZ within 2 (Z)", "Δ off ≥ 3 (pp)", "Δ folding angle (deg)"],
           [[n, pm(rows[(s, "all", "all")], "correct", 100, "+.1f"), pm(rows[(s, "all", "all")], "bias"),
             pm(rows[(s, "all", "all")], "off3", 100, "+.1f"), pm(rows[(s, "all", "all")], "fold")]
            for s, n in zip(a.samples, names) if (s, "all", "all") in rows])
@@ -58,7 +58,7 @@ def main():
         for (s, b, c) in rows:
             if b == binning and s in a.samples and c not in cells:
                 cells.append(c)
-        print(f"Δ bias (Z) by {title}:\n")
+        print(f"Δ mean dZ within 2 (Z) by {title}:\n")
         table([title] + names, [[c.replace(" near", "").replace("..", " to ")] +
                                 [pm(rows[(s, binning, c)], "bias", 1, "+.2f") if (s, binning, c) in rows else "-"
                                  for s in a.samples] for c in cells])
@@ -73,7 +73,7 @@ def main():
         # Line through the base (Δ = 0 at the base value)
         slope = sum(w * x * y for x, y, w in zip(xs, ys, ws)) / sum(w * x * x for x, w in zip(xs, ws))
         err = 1 / math.sqrt(sum(w * x * x for x, w in zip(xs, ws)))
-        print(f"Slope of Δ bias: {slope:+.4f} ± {err:.4f} Z per unit of the input\n")
+        print(f"Slope of Δ mean dZ within 2: {slope:+.4f} ± {err:.4f} Z per unit of the input\n")
 
 
 if __name__ == "__main__":

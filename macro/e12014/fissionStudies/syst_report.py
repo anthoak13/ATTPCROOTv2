@@ -14,7 +14,7 @@ tune_report.py --unfolded). Events are counted, per cell, as:
   unfittable     no simulation of the fit put charge on the pads with a data hit
   used           the rest; every dZ statistic is over these
   correct        dZ = 0;  within 1: |dZ| <= 1;  off by >= 3: |dZ| >= 3
-  bias, spread   mean and standard deviation of dZ over the events with |dZ| <= 2
+  mean dZ within 2, spread   mean and standard deviation of dZ over the events with |dZ| <= 2
   fold           mean folding angle of the Y-pattern (deg), from the fit's fragment directions
 
 --base LABEL adds the change of each other sample against it, per cell. Two fits of the same sim (the same
@@ -230,7 +230,7 @@ def main():
         cells = binning(kind, args)
         print(f"\n## By {kind}\n")
         header = ["sample", "cell", "events", "no Y", "ambig", "unfit", "correct (%)", "within 1 (%)", "off ≥ 3 (%)",
-                  "bias (Z)", "spread (Z)", "fold (deg)"]
+                  "mean dZ within 2 (Z)", "spread (Z)", "fold (deg)"]
         rows, table = [], {}
         for s in samples:
             for label, test in cells:
@@ -261,7 +261,7 @@ def main():
                     crows.append([s["label"], label, "paired" if paired else "independent", str(c["pairs"] or st["used"]),
                                   pm(c["correct"], "+.1f", 100), pm(c["bias"], "+.3f"), pm(c["off3"], "+.1f", 100),
                                   pm(c["fold"], "+.3f")])
-            print_table(["sample", "cell", "comparison", "events", "Δ correct (pp)", "Δ bias (Z)", "Δ off ≥ 3 (pp)",
+            print_table(["sample", "cell", "comparison", "events", "Δ correct (pp)", "Δ mean dZ within 2 (Z)", "Δ off ≥ 3 (pp)",
                          "Δ fold (deg)"], crows)
             if args.changes_csv:
                 new = not os.path.exists(args.changes_csv)
