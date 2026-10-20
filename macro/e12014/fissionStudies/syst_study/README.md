@@ -363,6 +363,26 @@ The distribution of fission fragments in Z is measured from the split each fit g
 - **The broadening shows up on the asymmetric side.** The measured split is folded at the symmetric split (42.5): a fit that overshoots symmetry comes back as a lighter fragment. Fitted light Z of 26–29, where no true event is, hold 35 events with the dead AsAd against 13 with every pad working. In a measured yield that falls toward asymmetric splits, such a tail adds false yield where the true yield is smallest.
 - **Noise, unlike dead pads and gain offsets, shifts the measured distribution.** At 5 ADC the mean fitted light Z falls by 0.203 ± 0.017: the fragments look more asymmetric. Gain offsets of 10% per AsAd broaden it about as much as the dead AsAd and do not shift it.
 
+#### Asymmetric and symmetric fission
+
+The pseudo-data have a flat distribution of the light fragment's Z (about 250 events at each Z from 31 to 42), so the fit's response to each true Z is measured. Weighting the events by a chosen true distribution gives the distribution the fit would measure for it, with every pad working and with each variation, on the same events (`shape_response.py`; errors from 200 bootstrap resamples of the events). Two shapes stand for asymmetric fission, with two Gaussian peaks placed symmetrically about the symmetric split; one stands for symmetric fission, with one Gaussian at Z = 42.5. The measured light Z is the lighter fitted Z, so the full fragment distribution is it mirrored about 42.5. All decay angles within 10° of 90° are used.
+
+| true distribution | variation | change of the mean measured light Z (peak position) | change of its standard deviation (peak width) | change of the height at Z = 42 over the peak height (valley) |
+|---|---|---|---|---|
+| peaks at Z 36 and 49, σ = 2 (measured width 2.27 with every pad working) | dead AsAd | +0.002 ± 0.030 | +0.149 ± 0.041 | +0.014 ± 0.014 |
+| | dead AsAd + 10% of pads in patches | +0.051 ± 0.037 | +0.203 ± 0.039 | +0.035 ± 0.015 |
+| | gain per AsAd, σ = 10% | +0.043 ± 0.043 | +0.388 ± 0.035 | +0.075 ± 0.018 |
+| | noise, σ = 5 ADC | −0.210 ± 0.024 | +0.043 ± 0.023 | −0.010 ± 0.010 |
+| peaks at Z 34 and 51, σ = 1.5 (measured width 1.85) | dead AsAd | +0.074 ± 0.041 | +0.238 ± 0.058 | +0.008 ± 0.011 |
+| | noise, σ = 5 ADC | −0.276 ± 0.025 | +0.042 ± 0.043 | −0.006 ± 0.009 |
+| one peak at Z 42.5, σ = 3 (measured width of the light half 1.92) | dead AsAd | −0.172 ± 0.042 | +0.349 ± 0.083 | — |
+| | noise, σ = 5 ADC | −0.065 ± 0.017 | +0.045 ± 0.020 | — |
+
+- **For asymmetric fission, dead pads widen the peaks and leave them in place.** With the dead AsAd, each peak of the 36/49 distribution stays within 0.03 Z of where it is with every pad working and widens from 2.27 to 2.42, as an extra Gaussian smearing of about 0.8 Z would. The valley at the symmetric split fills by 1.4 ± 1.4% of the peak height. Further dead pads up to 10% in patches widen the peaks a little more (to 2.47) and fill the valley by 3.5 ± 1.5%. The distribution does not look more or less asymmetric in the position of its peaks; its peaks are broader and its valley slightly shallower.
+- **For symmetric fission, dead pads widen the one peak.** The measured light half of the peak widens from 1.92 to 2.27 and its mean falls by 0.17 ± 0.04 Z: in the full distribution, mirrored about 42.5, the symmetric peak is wider, not split.
+- **Noise moves asymmetric peaks apart.** At 5 ADC, the light peak moves by −0.21 ± 0.02 Z (36/49) and −0.28 ± 0.03 Z (34/51) and the heavy peak by the same amount the other way; the widths hardly change. Measured with noise the fission looks more asymmetric than it is.
+- **Gain offsets per AsAd widen the peaks most and fill the valley.** With σ = 10%, the 36/49 peaks widen to 2.66 and the valley fills by 7.5 ± 1.8% of the peak height.
+
 ### Drift velocity and diffusion of the gas (probes A5, A6)
 
 Each variation digitizes the baseline's simulation again with the electrons drifting or diffusing differently from the parameter file. The hits (pulse-shape analysis) and the fit keep the parameter file's drift velocity (0.815 cm/µs) and diffusion coefficients (transverse 0.0038 cm²/µs, longitudinal 0.0055 cm²/µs), as the analysis of the experimental data does. Charge from the window stays at the time bucket the experimental data fix for it (`TBEntrance`, 457), so a different drift velocity moves the pad plane in time. The changes are paired event by event with the baseline.
