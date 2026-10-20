@@ -18,7 +18,7 @@
 - **The fit's own random scatter is small.** Fitting the same events with another seed changes the fraction with the correct Z by +0.4 ± 0.5 pp and the bias by −0.001 ± 0.005 Z.
 - **The mass unit has no effect (probe C4 of the plan).** Simulating at 939.0 instead of 931.5 MeV per mass unit changes the fraction with the correct Z by +0.8 ± 0.7 pp, the bias by +0.008 ± 0.008 Z and the folding angle (between the two fragment tracks) by +0.001 ± 0.001°. The simulation starts from kinetic energies, so scaling every mass leaves every lab kinetic energy unchanged to 10⁻⁵, and the energy-loss tables depend only on kinetic energy.
 
-- **The choice of stopping-power model shifts the fitted Z by about 0.6 Z, more for asymmetric splits.** Pseudo-data made with SRIM and fitted with the nominal tables (LISE's ATIMA) give a bias +0.60 ± 0.01 Z higher; the reverse gives −0.55 ± 0.01 Z. The shift is the same at every decay angle within 10° of 90°, and for the light fragment's true Z it falls from about 1 Z at Z = 31–32 to 0.15 Z at Z = 42. SRIM pseudo-data fitted with SRIM have the baseline's bias (+0.007 ± 0.009 Z).
+- **The difference between the LISE and SRIM stopping powers shifts the fitted Z by about 0.6 Z, more for asymmetric splits.** Pseudo-data made with SRIM and fitted with LISE give a bias +0.60 ± 0.01 Z higher than LISE pseudo-data fitted with LISE; LISE pseudo-data fitted with SRIM give −0.55 ± 0.01 Z. The shift is the same at every decay angle within 10° of 90°, and for the light fragment's true Z it falls from about 1 Z at Z = 31–32 to 0.15 Z at Z = 42. SRIM pseudo-data fitted with SRIM have the baseline's bias (+0.007 ± 0.009 Z).
 - **A common scale on every fragment's stopping power hardly matters.** dE/dx × 0.95 to × 1.05 changes the bias by at most 0.014 Z (+0.0025 ± 0.0008 Z per percent). The fit's amplitude absorbs the scale; only vertices within 200 mm of the window, whose fragments stop in the gas, move by ±0.05 Z for ±5%.
 
 ![The fitted light-fragment Z against the true decay angle](figures/angle.png)
@@ -160,33 +160,33 @@ The C4 events simulated at 939.0 MeV per mass unit (the simulation's old value) 
 
 ## Systematic shifts
 
-Each variation simulates the baseline's 3000 events again with one input to the model changed and the same seeds, or digitizes the baseline's simulation again, and fits it with the recommended settings and the nominal model. Where an input can also be changed in the fit, a second fit with the changed input in both separates the effect of the mismatch from that of the changed input itself.
+Each variation simulates the baseline's 3000 events again with one input to the model changed and the same seeds, or digitizes the baseline's simulation again, and fits it with the recommended settings and the baseline's model of the detector and reaction (with LISE stopping powers). Where an input can also be changed in the fit, a second fit with the changed input in both separates the effect of the mismatch from that of the changed input itself.
 
 The changes are taken event by event against the baseline's fit (`rec`). A changed simulation keeps 98.9–99.6% of the events identical at the start (the same Z split, decay angle and directions; the rest differ because a changed track redraws an event or shifts the random draws), so the pairing holds for nearly every event. Δ bias is the change of the mean dZ over the fits with |dZ| ≤ 2 in both.
 
 ### Energy loss (B1, B2)
 
-The fit gets Z from the shape of each fragment's charge along its track (its Bragg curve), with one amplitude shared by both fragments, so it depends on how the stopping power changes with the fragment's energy and Z. The nominal tables (`LISE` in the code) are the ATIMA 1.2 column of the LISE files; ATIMA (CATIMA) itself gives the same dE/dx to 0.1%. SRIM's tables differ from them by up to 13% in dE/dx, in a way that depends on Z and energy, and were made for a 2.6% lower gas density (1.752 × 10⁻⁴ against 1.7985 × 10⁻⁴ g/cm³). The beam always uses the nominal table.
+The fit gets Z from the shape of each fragment's charge along its track (its Bragg curve), with one amplitude shared by both fragments, so it depends on how the stopping power changes with the fragment's energy and Z. Neither model is preferred: the difference between them is the systematic. The baseline uses LISE: the ATIMA 1.2 column of the LISE files (`LISE` in the code), which ATIMA itself (CATIMA) reproduces to 0.1% in dE/dx. SRIM's tables differ from LISE's by up to 13% in dE/dx, in a way that depends on Z and energy, and were made for a 2.6% lower gas density (1.752 × 10⁻⁴ against 1.7985 × 10⁻⁴ g/cm³). The beam always uses LISE.
 
 | variation | Δ correct (pp) | Δ bias (Z) | Δ off ≥ 3 (pp) |
 |---|---|---|---|
-| SRIM data, nominal fit | −3.0 ± 1.1 | +0.602 ± 0.011 | +1.2 ± 0.3 |
-| nominal data, SRIM fit | +4.5 ± 1.1 | −0.553 ± 0.010 | +0.2 ± 0.1 |
+| SRIM data, LISE fit | −3.0 ± 1.1 | +0.602 ± 0.011 | +1.2 ± 0.3 |
+| LISE data, SRIM fit | +4.5 ± 1.1 | −0.553 ± 0.010 | +0.2 ± 0.1 |
 | SRIM data, SRIM fit | +5.1 ± 0.7 | +0.007 ± 0.009 | −0.2 ± 0.2 |
-| dE/dx × 0.95 | +1.1 ± 0.5 | −0.014 ± 0.006 | +0.2 ± 0.2 |
-| dE/dx × 0.98 | −0.1 ± 0.4 | −0.001 ± 0.005 | +0.1 ± 0.2 |
-| dE/dx × 1.02 | −0.2 ± 0.4 | +0.004 ± 0.005 | −0.1 ± 0.2 |
-| dE/dx × 1.05 | −0.4 ± 0.5 | +0.013 ± 0.006 | −0.2 ± 0.2 |
+| LISE dE/dx × 0.95 | +1.1 ± 0.5 | −0.014 ± 0.006 | +0.2 ± 0.2 |
+| LISE dE/dx × 0.98 | −0.1 ± 0.4 | −0.001 ± 0.005 | +0.1 ± 0.2 |
+| LISE dE/dx × 1.02 | −0.2 ± 0.4 | +0.004 ± 0.005 | −0.1 ± 0.2 |
+| LISE dE/dx × 1.05 | −0.4 ± 0.5 | +0.013 ± 0.006 | −0.2 ± 0.2 |
 
 The folding angle changes by at most 0.003°: it comes from the Y-pattern, which the stopping power does not move.
 
-- **The model mismatch shifts Z by the same amount at every decay angle.** In each 2° band of θ_CM − 90° within 10° of 90°, SRIM data fitted with the nominal tables shift by +0.43 to +0.75 Z, and the reverse by −0.36 to −0.79 Z. The mismatch alone, SRIM data fitted with the nominal tables against the same data fitted with SRIM, is +0.596 ± 0.010 Z. The Δ correct depends on the angle only because the baseline's own bias does (see [Decay angle](#decay-angle)): where the baseline is too low, a positive shift brings fits to the correct Z.
+- **The model mismatch shifts Z by the same amount at every decay angle.** In each 2° band of θ_CM − 90° within 10° of 90°, SRIM data fitted with LISE shift by +0.43 to +0.75 Z, and LISE data fitted with SRIM by −0.36 to −0.79 Z. The mismatch alone, SRIM data fitted with LISE against the same data fitted with SRIM, is +0.596 ± 0.010 Z. The Δ correct depends on the angle only because the baseline's own bias does (see [Decay angle](#decay-angle)): where the baseline is too low, a positive shift brings fits to the correct Z.
 - **The shift depends on the split.** Within 4° of 90°:
 
   | true light-fragment Z | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 |
   |---|---|---|---|---|---|---|---|---|---|---|---|---|
-  | SRIM data, nominal fit | +0.91 | +1.23 | +0.73 | +0.69 | +0.66 | +0.67 | +0.44 | +0.43 | +0.36 | +0.29 | +0.84 | +0.15 |
-  | nominal data, SRIM fit | −0.98 | −0.89 | −0.69 | −0.64 | −0.61 | −0.61 | −0.59 | −0.37 | −0.40 | −0.58 | −0.36 | −0.13 |
+  | SRIM data, LISE fit | +0.91 | +1.23 | +0.73 | +0.69 | +0.66 | +0.67 | +0.44 | +0.43 | +0.36 | +0.29 | +0.84 | +0.15 |
+  | LISE data, SRIM fit | −0.98 | −0.89 | −0.69 | −0.64 | −0.61 | −0.61 | −0.59 | −0.37 | −0.40 | −0.58 | −0.36 | −0.13 |
 
   Errors 0.04–0.06 Z. In a near-symmetric split both fragments have similar Z and velocity, so a change of model changes both Bragg curves alike, and the fit, which keeps the two Z adding up to 85, moves little. In an asymmetric split the two fragments sample different parts of the stopping-power curves.
 - **A scale common to both fragments is absorbed by the amplitude.** A uniform change of dE/dx changes the size of every charge curve, which the shared amplitude takes up, and the length of each track. The length is seen only where a fragment stops in the gas: for vertices within 200 mm of the window, dE/dx × 0.95 and × 1.05 shift the bias by −0.05 ± 0.02 and +0.05 ± 0.02 Z; for deeper vertices, at most 0.04 Z. A shift of the scale between the models is therefore not a concern; the difference in shape is.

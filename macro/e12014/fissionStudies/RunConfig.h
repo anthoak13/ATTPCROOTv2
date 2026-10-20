@@ -183,7 +183,7 @@ std::vector<std::pair<int, int>> IonList(RunConfig &cfg)
 /**
  * Load an energy-loss table for [Z, A] from TPC_SHARED_INFO/eLoss/, with every dE/dx multiplied by scale (LISE
  * files only). type is
- *   LISE:    the LISE file's ATIMA 1.2 column (column 2), the nominal model
+ *   LISE:    the LISE file's ATIMA 1.2 column (column 2), the baseline's model
  *   ZIEGLER: the same file's Ziegler column (column 1, "H-base", the stopping powers of older SRIM versions)
  *   SRIM:    the SRIM file
  * A LISE file gives dE/dx against energy per nucleon, so massA != 0 loads it for the same Z with mass massA.
