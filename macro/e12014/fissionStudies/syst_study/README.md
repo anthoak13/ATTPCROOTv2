@@ -1,6 +1,6 @@
 # Systematic Uncertainties of the Fitted Fragment Z: Results
 
-**Status (2026-10-20).** Done: the prerequisites, the baseline, the energy-loss probes (B1 with SRIM, B2), the space-charge probes (A1–A4) and the kinematics probes (C2, C3, C5) of the [plan](PLAN.md). Running: B1 with Ziegler stopping powers, and the pad, electronics and gas probes. All results are from simulated events (pseudo-data). Decision log: [LOG.md](LOG.md).
+**Status (2026-10-20).** Done: the prerequisites, the baseline, the energy-loss probes (B1 with SRIM, B2), the space-charge probes (A1–A4), the kinematics probes (C2, C3, C5), and the dead-pad, pad-gain and noise probes (D1, D3, D4) of the [plan](PLAN.md). Running: B1 with Ziegler stopping powers, and the gas probes (A5, A6). Not done: D2, the pads' own electronics responses, which are not available. All results are from simulated events (pseudo-data). Decision log: [LOG.md](LOG.md).
 
 **Notation.**
 - **dZ** = true Z − fitted Z of the light fragment. A positive dZ means the fit gives the light fragment too low a Z.
@@ -23,6 +23,9 @@
 - **How the space charge is distributed along the beam matters; its radial shape and the beam position do not.** The same total charge spread evenly from the pad plane to the window, instead of growing toward the window as the correction assumes, shifts the mean dZ within 2 by +0.146 ± 0.010 Z. Spreading the charge over the 20 mm beam radius, or moving the beam line by 5 mm or onto the simulated beam's mean track, shifts it by at most 0.015 Z. Without any correction, the mean dZ within 2 shifts by +0.095 ± 0.014 Z and 84% of the fits are within one Z, against 93% without space charge.
 - **Errors of plausible size in the reaction's kinematics hardly move the fitted Z.** A total kinetic energy (TKE) 2% above or below Viola systematics shifts the mean dZ within 2 by +0.021 ± 0.006 and −0.023 ± 0.006 Z. A spread around Viola's TKE with σ = 8% shifts it by +0.007 ± 0.024 Z and leaves 2.3 pp fewer fits within one Z. Shifting the light fragment's mass number by ±1 (the heavy fragment's by ∓1) shifts the mean dZ within 2 by at most 0.016 Z. Doubling the beam spot, tripling the beam's angular spread or tilting the beam by 10 mrad shifts it by at most 0.009 Z.
 
+- **Electronics noise shifts the fitted Z, by +0.25 Z at 5 ADC counts.** Gaussian noise on every trace with charge shifts the mean dZ of all fits by +0.250 ± 0.030 Z at σ = 5 ADC and +0.463 ± 0.042 Z at 10 ADC, about the same at every decay angle. Within 4° of 90°, the shift of the mean dZ within 2 is +0.26 to +0.35 Z for light Z 31–35 and +0.05 to +0.08 Z for Z 40–42 at 5 ADC. The fit's simulation has no noise.
+- **The AsAd that is dead in the experimental data makes 32% of the events it touches fit 3 or more Z off.** With CoBo 2, AsAd 3 dead, the 323 events (11%) in which at least 10% of the fragments' pads are on it have 31.6% of their fits off by 3 or more, against 1.2% with every pad working; the other events do not change. Further dead pads, up to 10% of the pads the fit uses, scattered or in patches, add at most 0.5 pp of fits off by 3 or more.
+- **Gain differences between pads widen dZ without shifting it.** A fixed gain factor per AsAd with a 10% spread leaves 62% of the fits within one Z, against 93%, and 15.5% off by 3 or more; the mean dZ of all fits changes by −0.050 ± 0.036 Z. With 5% per AsAd or 10% per AGET, 78–79% are within one Z. Independent factors per pad (5–10%) hardly matter.
 ![The fitted light-fragment Z against the true decay angle](figures/angle.png)
 
 ## The baseline
@@ -251,6 +254,39 @@ The fit assumes the total kinetic energy (TKE) of Viola systematics and the mass
 - **A spread in the TKE with σ = 8% widens the distribution of dZ a little and does not shift it.** Against the baseline, 90.5% of the fits are within one Z instead of 92.8%, and the spread of dZ within 2 is 0.95 Z instead of 0.91 Z. The mean dZ within 2 changes by +0.007 ± 0.024 Z.
 - **Mass numbers one unit away from the fit's assumption shift the mean dZ within 2 by at most 0.016 Z.** In each 2° band of θ_CM − 90°, and for each true Z within 4° of 90°, the shift is at most 0.09 Z.
 - **The beam spot and direction shift the mean dZ within 2 by at most 0.009 Z.** The fit takes the fragment directions and the vertex from each event's Y-pattern, not from an assumed beam. Doubling the beam spot adds 1.2 ± 0.3 pp of fits off by 3 or more.
+
+### Dead pads, pad gains and electronics noise (probes D1, D3, D4)
+
+Each variation digitizes the baseline's simulation again with the baseline's random seed and one change to the pads or electronics. The fit is not told about the change: it compares charge only on pads with a hit in the data and assumes every pad has the same gain and no noise. The changes are paired event by event with the baseline. The mean dZ within 2 alone is misleading here: a change that widens dZ moves fits across the |dZ| ≤ 2 window, which pulls the mean within 2 toward zero in every band where the baseline's mean is off zero. The table therefore also gives the mean dZ of all fits.
+
+| variation of the digitization | Δ correct (pp) | Δ within 1 (pp) | Δ off ≥ 3 (pp) | Δ mean dZ within 2 (Z) | Δ mean dZ of all fits (Z) |
+|---|---|---|---|---|---|
+| dead: CoBo 2, AsAd 3 | −1.1 ± 0.5 | −3.8 | +3.1 ± 0.4 | −0.016 ± 0.007 | −0.173 ± 0.045 |
+| dead: the AsAd + 2% of pads, scattered | −1.7 ± 0.5 | −3.9 | +3.1 ± 0.4 | −0.012 ± 0.008 | −0.170 ± 0.041 |
+| dead: the AsAd + 10% of pads, scattered | −2.0 ± 0.5 | −4.3 | +3.4 ± 0.4 | −0.018 ± 0.007 | −0.196 ± 0.041 |
+| dead: the AsAd + 10% of pads, in patches of 16 | −1.8 ± 0.6 | −4.8 | +3.6 ± 0.4 | −0.023 ± 0.008 | −0.187 ± 0.044 |
+| gain per pad, σ = 10% | +1.1 ± 0.7 | −4.4 | −0.0 ± 0.2 | +0.010 ± 0.010 | +0.004 ± 0.027 |
+| gain per AGET, σ = 5% | +1.0 ± 0.8 | −6.0 | −0.0 ± 0.2 | −0.016 ± 0.011 | +0.010 ± 0.030 |
+| gain per AGET, σ = 10% | −2.1 ± 1.1 | −15.0 | +2.6 ± 0.3 | −0.015 ± 0.016 | −0.015 ± 0.032 |
+| gain per AsAd, σ = 5% | −1.2 ± 1.0 | −13.4 | +1.8 ± 0.3 | −0.011 ± 0.015 | +0.003 ± 0.027 |
+| gain per AsAd, σ = 10% | −8.2 ± 1.1 | −30.7 | +13.7 ± 0.6 | −0.041 ± 0.024 | −0.050 ± 0.036 |
+| noise, σ = 5 ADC | +0.2 ± 0.7 | −3.9 | −0.2 ± 0.2 | +0.198 ± 0.008 | +0.250 ± 0.030 |
+| noise, σ = 10 ADC | −1.2 ± 1.0 | −13.7 | +2.2 ± 0.4 | +0.418 ± 0.012 | +0.463 ± 0.042 |
+
+Δ within 1 is the difference of the two samples' fractions within one Z (errors about 0.7 pp). The other samples with further dead pads (5%, and 2% and 5% in patches) lie between the rows shown: Δ off ≥ 3 of +3.3 to +3.5 pp and Δ mean dZ within 2 of −0.016 to −0.014 Z.
+
+- **Dead pads matter only where a fragment's track covers many of them, and the dead AsAd is such a block.** The dead AsAd's 256 pads form one contiguous region. For each event, the fraction of its fragments' pads (in the baseline's hits) that are dead sorts the events:
+
+  | dead pads | fraction of the fragments' pads dead | events | off ≥ 3, all pads working | off ≥ 3, dead pads | within 1, dead pads |
+  |---|---|---|---|---|---|
+  | the AsAd | none | 2407 | 1.8% | 1.8% | 93.0% |
+  | the AsAd | below 10% | 270 | 1.9% | 1.9% | 93.7% |
+  | the AsAd | 10% or more | 323 | 1.2% | 31.6% | 53.4% |
+
+  Further dead pads, scattered or in patches, make almost every event cross some dead pad (98% with 2% scattered, 96% with 10% in patches) without hurting the fit: events with less than 10% of their pads dead change by at most 0.02 Z in the mean dZ within 2 and 0.3 pp in the fraction off by 3 or more. The events with 10% or more dead pads, which include most of those on the AsAd, carry the whole effect.
+- **The fit can lose a fragment's track on the dead AsAd.** It compares the simulated charge only on pads with a data hit, so a dead pad drops out of the comparison; but a large dead region removes a long part of one fragment's charge curve, and 30% of those events end 3 or more Z off. The mean dZ of all fits of the whole sample falls by 0.17 Z because of them.
+- **Gain differences widen dZ.** A gain error common to an AsAd (256 pads) or an AGET (64 pads) makes a step in a fragment's charge curve where its track crosses into another AsAd or AGET, as a change of stopping power would. Independent factors per pad average out over the many pads in each time bucket. The mean dZ of all fits does not move by more than 0.05 Z. The gain factors are one fixed draw per sample (about 40 AsAds), so the sizes above hold for that draw.
+- **Noise shifts dZ upward, most for asymmetric splits.** The fit's simulation has no noise. With noise on the pseudo-data, the fit gives the light fragment a lower Z: at 5 ADC, +0.06 to +0.34 Z in the mean dZ of all fits per 2° band of θ_CM − 90°, and, within 4° of 90°, +0.26 to +0.35 Z in the mean dZ within 2 for light Z 31–35 against +0.05 to +0.08 Z for Z 40–42. The shift roughly doubles from 5 to 10 ADC. The cause of the shift is not traced here. The noise is added only to traces with charge; pads without a simulated signal have no trace and no noise.
 
 ## Code and tools (branch `fit-syst`)
 

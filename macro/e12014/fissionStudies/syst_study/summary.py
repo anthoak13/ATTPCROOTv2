@@ -44,13 +44,17 @@ def main():
     p.add_argument("--names", nargs="+", help="column names for the samples")
     p.add_argument("--slope", type=float, nargs="+", help="input value of each sample")
     p.add_argument("--slope-base", type=float, default=0, help="input value of the base")
+    p.add_argument("--measure", choices=("bias", "meanall"), default="bias",
+                   help="per-band tables: bias (mean dZ within 2) or meanall (mean dZ of all fits)")
     a = p.parse_args()
     rows = load(a.csv, a.base)
     names = a.names or a.samples
 
-    table(["sample", "Δ correct (pp)", "Δ mean dZ within 2 (Z)", "Δ off ≥ 3 (pp)", "Δ folding angle (deg)"],
+    table(["sample", "Δ correct (pp)", "Δ mean dZ within 2 (Z)", "Δ mean dZ of all fits (Z)", "Δ off ≥ 3 (pp)",
+           "Δ folding angle (deg)"],
           [[n, pm(rows[(s, "all", "all")], "correct", 100, "+.1f"), pm(rows[(s, "all", "all")], "bias"),
-            pm(rows[(s, "all", "all")], "off3", 100, "+.1f"), pm(rows[(s, "all", "all")], "fold")]
+            pm(rows[(s, "all", "all")], "meanall"), pm(rows[(s, "all", "all")], "off3", 100, "+.1f"),
+            pm(rows[(s, "all", "all")], "fold")]
            for s, n in zip(a.samples, names) if (s, "all", "all") in rows])
 
     for binning, title in (("side", "θ_CM − 90°"), ("z-near", "true Z (within 4° of 90°)")):
@@ -58,9 +62,10 @@ def main():
         for (s, b, c) in rows:
             if b == binning and s in a.samples and c not in cells:
                 cells.append(c)
-        print(f"Δ mean dZ within 2 (Z) by {title}:\n")
+        what = "mean dZ within 2" if a.measure == "bias" else "mean dZ of all fits"
+        print(f"Δ {what} (Z) by {title}:\n")
         table([title] + names, [[c.replace(" near", "").replace("..", " to ")] +
-                                [pm(rows[(s, binning, c)], "bias", 1, "+.2f") if (s, binning, c) in rows else "-"
+                                [pm(rows[(s, binning, c)], a.measure, 1, "+.2f") if (s, binning, c) in rows else "-"
                                  for s in a.samples] for c in cells])
 
     if a.slope:

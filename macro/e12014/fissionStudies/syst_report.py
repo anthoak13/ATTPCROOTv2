@@ -15,6 +15,7 @@ tune_report.py --unfolded). Events are counted, per cell, as:
   used           the rest; every dZ statistic is over these
   correct        dZ = 0;  within 1: |dZ| <= 1;  off by >= 3: |dZ| >= 3
   mean dZ within 2, spread   mean and standard deviation of dZ over the events with |dZ| <= 2
+  mean dZ all    mean of dZ over every used event (the mean within 2 is pulled toward 0 when dZ widens)
   fold           mean folding angle of the Y-pattern (deg), from the fit's fragment directions
 
 --base LABEL adds the change of each other sample against it, per cell. Two fits of the same sim (the same
@@ -100,6 +101,7 @@ def stats(events):
     s["off3"] = frac_err(sum(1 for x in d if abs(x) >= FAIL), n)
     s["bias"] = sr.mean_err(core) if core else (math.nan, math.nan)
     s["spread"] = statistics.stdev(core) if len(core) > 1 else math.nan
+    s["meanall"] = sr.mean_err(d) if d else (math.nan, math.nan)
     folds = [e["fold"] for e in used if e["fold"] is not None]
     s["fold"] = sr.mean_err(folds) if folds else (math.nan, math.nan)
     return s
@@ -109,6 +111,7 @@ MEASURES = (  # (name, function of an event that is used, or None)
     ("correct", lambda e: float(e["d"] == 0)),
     ("off3", lambda e: float(abs(e["d"]) >= FAIL)),
     ("fold", lambda e: e["fold"]),
+    ("meanall", lambda e: e["d"]),
 )
 
 
@@ -131,7 +134,7 @@ def change(sample, base, keys_in_cell, paired):
 
 def unpaired(s, b):
     out = {}
-    for name in ("correct", "off3", "fold", "bias"):
+    for name in ("correct", "off3", "fold", "bias", "meanall"):
         (x, ex), (y, ey) = s[name], b[name]
         out[name] = (x - y, math.hypot(ex, ey))
     out["pairs"] = 0
@@ -230,7 +233,7 @@ def main():
         cells = binning(kind, args)
         print(f"\n## By {kind}\n")
         header = ["sample", "cell", "events", "no Y", "ambig", "unfit", "correct (%)", "within 1 (%)", "off ≥ 3 (%)",
-                  "mean dZ within 2 (Z)", "spread (Z)", "fold (deg)"]
+                  "mean dZ within 2 (Z)", "spread (Z)", "mean dZ all (Z)", "fold (deg)"]
         rows, table = [], {}
         for s in samples:
             for label, test in cells:
@@ -242,7 +245,7 @@ def main():
                 rows.append([s["label"], label, str(st["n"]), str(st["no Y-pattern"]), str(st["ambiguous"]),
                              str(st["unfittable"]), pm(st["correct"], ".1f", 100), pm(st["within1"], ".1f", 100),
                              pm(st["off3"], ".1f", 100), pm(st["bias"], "+.3f"), fmt(st["spread"], ".2f"),
-                             pm(st["fold"], ".2f")])
+                             pm(st["meanall"], "+.3f"), pm(st["fold"], ".2f")])
         print_table(header, rows)
         if base:
             print(f"\nChange against {base['label']}\n")
@@ -260,19 +263,20 @@ def main():
                     cvals.append(((s["label"], s["study"], label), c))
                     crows.append([s["label"], label, "paired" if paired else "independent", str(c["pairs"] or st["used"]),
                                   pm(c["correct"], "+.1f", 100), pm(c["bias"], "+.3f"), pm(c["off3"], "+.1f", 100),
-                                  pm(c["fold"], "+.3f")])
+                                  pm(c["fold"], "+.3f"), pm(c["meanall"], "+.3f")])
             print_table(["sample", "cell", "comparison", "events", "Δ correct (pp)", "Δ mean dZ within 2 (Z)", "Δ off ≥ 3 (pp)",
-                         "Δ fold (deg)"], crows)
+                         "Δ fold (deg)", "Δ mean dZ all (Z)"], crows)
             if args.changes_csv:
                 new = not os.path.exists(args.changes_csv)
                 with open(args.changes_csv, "a", newline="") as out:
                     w = csv.writer(out)
                     if new:
                         w.writerow(["base", "sample", "study", "binning", "cell", "pairs", "correct", "correct_err",
-                                    "bias", "bias_err", "off3", "off3_err", "fold", "fold_err"])
+                                    "bias", "bias_err", "off3", "off3_err", "fold", "fold_err", "meanall",
+                                    "meanall_err"])
                     for row, c in cvals:
                         w.writerow([base["label"], row[0], row[1], kind, row[2], c["pairs"], *c["correct"], *c["bias"],
-                                    *c["off3"], *c["fold"]])
+                                    *c["off3"], *c["fold"], *c["meanall"]])
         if args.csv:
             for s in samples:
                 path = os.path.join(args.csv, f"{s['study']}-{s['label'].split(':')[-1]}-{kind}.csv")
