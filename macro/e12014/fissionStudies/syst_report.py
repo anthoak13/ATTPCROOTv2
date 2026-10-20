@@ -27,7 +27,7 @@ binomial.
 --by chooses the cells (repeatable): all (the whole sample, default), z (true light-fragment Z), angle
 (|90 - true decay angle in the CoM frame|, --angle-edges), side (true angle - 90, signed: below 0 the heavy
 fragment goes forward in the CoM frame), depth (true vertex depth from the window, --depth-edges), z-angle
-(true Z within each angle band), z-near (true Z, events within --near degrees of 90 only). --csv DIR writes one
+(true Z within each angle band), dead (fraction of the fragments' pads that are dead, with --dead), z-near (true Z, events within --near degrees of 90 only). --csv DIR writes one
 CSV per sample and binning; --changes-csv FILE appends the changes against --base, one row per sample and cell.
 
 The events come from dump_fit.C through speed_report.py: run with the ATTPC environment loaded, after
@@ -74,6 +74,7 @@ def load(spec, args, tmp):
         e["state"] = ("no Y-pattern" if not e["fitted"] else "unfittable" if tr.unfittable(e)
                       else "ambiguous" if e["dzu"] is None else "used")
         e["d"] = e["dzu"]
+        e["chunk"], e["entry_n"] = tr.chunk_of(e["file"]), int(e["entry"])
     return {"label": name, "study": study_name, "truth": os.path.abspath(truth_path), "cost": cost,
             "events": {(tr.chunk_of(e["file"]), int(e["entry"])): e for e in events}}
 
@@ -154,6 +155,12 @@ def binning(kind, args):
     if kind == "depth":
         edges = args.depth_edges
         return [(f"{lo:g}-{hi:g}", lambda e, lo=lo, hi=hi: lo <= e["vz"] < hi) for lo, hi in zip(edges, edges[1:])]
+    if kind == "dead":
+        if not args.dead:
+            sys.exit("--by dead needs --dead CSV (dead_cross.C)")
+        return [(label, lambda e, lo=lo, hi=hi: (k := (e["chunk"], e["entry_n"])) in args.dead_frac
+                 and lo <= args.dead_frac[k] < hi)
+                for label, lo, hi in (("no dead pad", 0, 1e-9), ("dead < 10%", 1e-9, 0.1), ("dead >= 10%", 0.1, 2))]
     if kind == "z-near":
         return [(f"Z={z} near", lambda e, z=z: e["zlight"] == z and abs(90 - e["thcm"]) < args.near)
                 for z in range(31, 43)]
@@ -189,12 +196,20 @@ def main():
     parser.add_argument("--by", action="append", default=[], help="all, z, angle, side, depth, z-angle (repeatable)")
     parser.add_argument("--angle-edges", type=float, nargs="+", default=[0, 2, 4, 6, 8, 10])
     parser.add_argument("--depth-edges", type=float, nargs="+", default=[0, 100, 200, 300, 400, 500, 600, 700])
+    parser.add_argument("--dead", metavar="CSV", help="dead_cross.C's output: --by dead splits the events by the "
+                        "fraction of their fragments' pads (nominal hits) that are dead")
     parser.add_argument("--near", type=float, default=4, help="z-near: events within this many degrees of 90")
     parser.add_argument("--csv", metavar="DIR", help="write one CSV per sample and binning here")
     parser.add_argument("--changes-csv", metavar="FILE", help="append the changes against --base to this CSV")
     parser.add_argument("--dump-dir", metavar="DIR", help="keep dump_fit.C's per-event CSVs here")
     parser.add_argument("--reuse", action="store_true", help="with --dump-dir: use dumps already there")
     args = parser.parse_args()
+    args.dead_frac = {}
+    if args.dead:
+        with open(args.dead) as f:
+            for r in csv.DictReader(f):
+                pads = int(r["pads0"]) + int(r["pads1"])
+                args.dead_frac[(r["chunk"], int(r["entry"]))] = (int(r["dead0"]) + int(r["dead1"])) / pads if pads else 0
     for d in (args.dump_dir, args.csv):
         if d:
             os.makedirs(d, exist_ok=True)
