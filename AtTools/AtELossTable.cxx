@@ -17,7 +17,7 @@ void AtELossTable::SetDensity(double density)
 
    auto fDensityIni = fDensity; // store initial density
    AtELossModel::SetDensity(density);
-   LOG(info) << "Scaling energy loss table to " << density << " g/cm^3 from " << fDensity << " g/cm^3";
+   LOG(info) << "Scaling energy loss table to " << density << " g/cm^3 from " << fDensityIni << " g/cm^3";
    auto x = fdXdE.get_x();
    auto y = fdXdE.get_y();
    auto r_var = fRangeVariance.get_y();
@@ -26,11 +26,11 @@ void AtELossTable::SetDensity(double density)
       elem = fScaling / elem; // scale dx/de by the density
    }
    for (auto &elem : r_var) {
-      LOG(info) << "Scaling range variance by " << fScaling * fScaling;
       elem = elem / (fScaling * fScaling); // scale range variance by the density
    }
    LoadTable(x, y);
-   LoadRangeVariance(x, r_var);
+   if (!r_var.empty()) // Tables without straggling (e.g. LISE) have no range variance to scale
+      LoadRangeVariance(x, r_var);
 }
 
 void AtELossTable::LoadTable(const std::vector<double> &energy, const std::vector<double> &dEdX)

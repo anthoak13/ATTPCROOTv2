@@ -41,6 +41,16 @@ TEST_F(AtELossTableTestFixture, ConstructTableModel)
    EXPECT_GT(range, 0.0);
 }
 
+TEST(AtELossTableTest, SetDensityWithoutRangeVariance)
+{
+   // A table with no range variance (as loaded from LISE) scales its dE/dx with the density
+   AtELossTable nominal({1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}, 1);
+   AtELossTable table({1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}, 1);
+   table.SetDensity(2);
+   EXPECT_NEAR(table.GetdEdx(3), 6, 1e-9);
+   EXPECT_NEAR(table.GetRange(5, 1), nominal.GetRange(5, 1) / 2, 1e-9);
+}
+
 TEST_F(AtELossTableTestFixture, TestRange)
 {
    tableModel.SetDensity(4.1906E-05);
