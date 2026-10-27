@@ -200,14 +200,19 @@ void FillPlots(float ampMin = 0, float ampCut = 1, float qMin = 0, float qMax = 
    }
 }
 
-void plot_fit(vector<int> runNums, bool draw = true)
+void plot_fit(vector<int> runNums, bool draw = true, TString fitELossModel = "SRIM")
 {
+   if (fitELossModel != "SRIM" && fitELossModel != "LISE") {
+      Error("plot_fit", "Unknown energy-loss model '%s'. Use SRIM or LISE.", fitELossModel.Data());
+      return;
+   }
    TString inOutDir = "/mnt/tpc-data/"; // Directory to save the output file
    // inOutDir = "./ data / ;"
    int newTree = 0;
    for (auto runNum : runNums) {
 
-      TString fileName = inOutDir + TString::Format("output_fit%02d.root", runNum);
+      TString fileName = inOutDir + (fitELossModel == "LISE" ? TString::Format("output_fit_LISE%02d.root", runNum)
+                                    : TString::Format("output_fit%02d.root", runNum));
       TString fileNameSim = inOutDir + TString::Format("output_digi%02d.root", runNum);
 
       if (!tree) {
@@ -252,9 +257,9 @@ void plot_fit(vector<int> runNums, bool draw = true)
       zHist->Draw();
 }
 
-void plot_fit(int runNum = 5, bool draw = true)
+void plot_fit(int runNum = 5, bool draw = true, TString fitELossModel = "SRIM")
 {
-   plot_fit(std::vector<int>{runNum}, true);
+   plot_fit(std::vector<int>{runNum}, draw, fitELossModel);
    return;
 }
 

@@ -151,12 +151,64 @@ void group_fit_plots_by_angle(std::vector<std::vector<int>> runGroups, std::vect
    }
 }
 
-void show_angles(TString plotName = "Z", TString outputDir = "./plots_by_angle", bool overlay = false,
-                 int requestedColumns = 0)
+void group_fit_plots_by_label(std::vector<std::vector<int>> runGroups, std::vector<TString> labels,
+                              TString labelType = "group", TString outputDir = "./plots_by_label")
+{
+   if (runGroups.size() != labels.size()) {
+      Error("group_fit_plots_by_label", "runGroups and labels must have the same size");
+      return;
+   }
+
+   for (const auto &runGroup : runGroups) {
+      if (runGroup.empty()) {
+         Error("group_fit_plots_by_label", "Run groups cannot be empty");
+         return;
+      }
+   }
+
+   gSystem->mkdir(outputDir, true);
+
+   std::vector<TFile *> outputFiles;
+   for (auto &plot : GetGroupedFitPlots())
+      outputFiles.push_back(new TFile(outputDir + "/" + plot.name + ".root", "RECREATE"));
+
+   for (size_t i = 0; i < runGroups.size(); ++i) {
+      if (tree) {
+         delete tree;
+         tree = nullptr;
+      }
+
+      plot_fit(runGroups[i], false);
+      TString label = TString::Format("%s_%s", labelType.Data(), labels[i].Data());
+      auto plots = GetGroupedFitPlots();
+
+      for (size_t plotIndex = 0; plotIndex < plots.size(); ++plotIndex) {
+         outputFiles[plotIndex]->cd();
+         auto copy = static_cast<TH1 *>(plots[plotIndex].hist->Clone(label));
+         copy->SetTitle(TString::Format("%s, %s = %s (runs combined)", plots[plotIndex].hist->GetTitle(),
+                                        labelType.Data(), labels[i].Data()));
+         copy->Write();
+      }
+   }
+
+   if (tree) {
+      delete tree;
+      tree = nullptr;
+   }
+
+   for (auto file : outputFiles) {
+      file->Write();
+      file->Close();
+      delete file;
+   }
+}
+
+void show_grouped_plots(TString plotName = "Z", TString outputDir = "./plots_by_label", TString labelPrefix = "group_",
+                        bool overlay = false, int requestedColumns = 0)
 {
    TFile *file = TFile::Open(outputDir + "/" + plotName + ".root", "READ");
    if (!file || file->IsZombie()) {
-      Error("show_angles", "Could not open %s/%s.root", outputDir.Data(), plotName.Data());
+      Error("show_grouped_plots", "Could not open %s/%s.root", outputDir.Data(), plotName.Data());
       return;
    }
 
@@ -164,12 +216,12 @@ void show_angles(TString plotName = "Z", TString outputDir = "./plots_by_angle",
    TIter next(file->GetListOfKeys());
    while (auto key = static_cast<TKey *>(next())) {
       auto plot = dynamic_cast<TH1 *>(key->ReadObj());
-      if (plot && TString(plot->GetName()).BeginsWith("angle_") && key->GetCycle() == 2)
+      if (plot && TString(plot->GetName()).BeginsWith(labelPrefix) && key->GetCycle() == 2)
          plots.push_back(plot);
    }
    std::cout << "Plots found for " << plotName << ": " << plots.size() << std::endl;
    if (plots.empty()) {
-      Error("show_angles", "No angle plots found in %s/%s.root", outputDir.Data(), plotName.Data());
+      Error("show_grouped_plots", "No grouped plots found in %s/%s.root", outputDir.Data(), plotName.Data());
       file->Close();
       delete file;
       return;
@@ -183,7 +235,7 @@ void show_angles(TString plotName = "Z", TString outputDir = "./plots_by_angle",
    const int rows = (plots.size() + columns - 1) / columns;
    const int canvasWidth = usePads ? columns * 700 : 1200;
    const int canvasHeight = usePads ? rows * 500 : 700;
-   auto canvas = new TCanvas(TString::Format("angleComparison_%s", plotName.Data()), "Decay angle comparison",
+   auto canvas = new TCanvas(TString::Format("groupComparison_%s", plotName.Data()), "Grouped plot comparison",
                              canvasWidth, canvasHeight);
 
    if (usePads) {
@@ -204,4 +256,19 @@ void show_angles(TString plotName = "Z", TString outputDir = "./plots_by_angle",
    }
 
    canvas->Update();
+}
+
+void show_angles(TString plotName = "Z", TString outputDir = "./plots_by_angle", bool overlay = false,
+                 int requestedColumns = 0)
+{
+   show_grouped_plots(plotName, outputDir, "angle_", overlay, requestedColumns);
+}
+
+void compare_energy_loss_models(std::vector<std::vector<int>> runGroups = {{46, 47}, {48, 49}},
+                                std::vector<TString> labels = {"LISE", "SRIM"}, TString plotName = "Z",
+                                TString outputDir = "./plots_by_sim_eloss", bool overlay = false,
+                                int requestedColumns = 0)
+{
+   group_fit_plots_by_label(runGroups, labels, "simELoss", outputDir);
+   show_grouped_plots(plotName, outputDir, "simELoss_", overlay, requestedColumns);
 }

@@ -7,7 +7,7 @@
 */
 // #include <FairLogger.h>
 
-void run_fit(int runNum = 2)
+void run_fit(int runNum = 2, TString fitELossModel = "SRIM")
 {
    // Set the limits of the potential species to try to match to
    int Zcn = 83 + 2;  // Number of protons in the compound nucleus
@@ -26,7 +26,12 @@ void run_fit(int runNum = 2)
    // outputFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
 
    TString InputDataFile = inOutDir + TString::Format("output_digi%02d.root", runNum);
-   TString OutputDataFile = inOutDir + TString::Format("output_fit%02d.root", runNum);
+   if (fitELossModel != "SRIM" && fitELossModel != "LISE") {
+      Error("run_fit", "Unknown energy-loss model '%s'. Use SRIM or LISE.", fitELossModel.Data());
+      return;
+   }
+   TString OutputDataFile = inOutDir + (fitELossModel == "LISE" ? TString::Format("output_fit_LISE%02d.root", runNum)
+                                                                  : TString::Format("output_fit%02d.root", runNum));
 
    std::cout << "Opening: " << InputDataFile << std::endl;
 
@@ -77,10 +82,10 @@ void run_fit(int runNum = 2)
    // For all our ions, load the energy loss tables
    for (auto [Z, A] : ions) {
       auto eloss = std::make_shared<AtTools::AtELossTable>();
-      // eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A,
-      //   0);
-      eloss->LoadSrimTable(TString::Format(energyLossDir + "/SRIM/%d_%d.txt", Z, A)
-                              .Data()); // Note a different function call will be needed if loading SRIM tables
+      if (fitELossModel == "LISE")
+         eloss->LoadLiseTable(TString::Format(energyLossDir + "/LISE/%d_%d.txt", Z, A).Data(), A, 0);
+      else
+         eloss->LoadSrimTable(TString::Format(energyLossDir + "/SRIM/%d_%d.txt", Z, A).Data());
       sim->AddModel(Z, A, eloss);
    }
 
